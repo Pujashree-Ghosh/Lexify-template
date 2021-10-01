@@ -1045,7 +1045,8 @@
   "TopbarDesktop.logo": "Yogatime",
   "TopbarDesktop.logout": "Log out",
   "TopbarDesktop.profileSettingsLink": "User profile",
-  "TopbarDesktop.signup": "Sign up",
+  "TopbarDesktop.signup": "Join as a Client",
+  "TopbarDesktop.signupLawyer":"Join as a Lawyer",
   "TopbarDesktop.viewListing": "Teacher profile",
   "TopbarMobileMenu.accountSettingsLink": "Account settings",
   "TopbarMobileMenu.greeting": "Hello {displayName}",
@@ -1116,5 +1117,13 @@
   "UserNav.newListing": "Create teacher profile",
   "UserNav.editListing": "Edit teacher profile",
   "UserNav.profileSettingsPage": "Edit user profile",
-  "UserNav.contactDetailsPage": "Account settings"
+  "UserNav.contactDetailsPage" : "Account settings",
+  "signupFormForm.phonePlaceholder" :"99999 55555",
+  "signupFormForm.phoneLabel" : "Phone number",
+  "SignupForm.phoneRequired" : "You need to add a phone number",
+  "SignupForm.sendOtp" : "Send Otp",
+  "SignupForm.verify" : "Verify",
+  "signupFormForm.otpLabel" : "Enter the otp send to your mobile",
+  "signupFormForm.otpPlaceholder" :"1111",
+  "SignupForm.otpRequired" : "Otp is required to signup"
 }

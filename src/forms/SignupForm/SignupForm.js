@@ -1,11 +1,17 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { compose } from 'redux';
 import { FormattedMessage, injectIntl, intlShape } from '../../util/reactIntl';
 import { Form as FinalForm } from 'react-final-form';
 import classNames from 'classnames';
 import * as validators from '../../util/validators';
-import { Form, PrimaryButton, FieldTextInput } from '../../components';
+import {
+  Form,
+  PrimaryButton,
+  FieldTextInput,
+  FieldPhoneNumberInput,
+  Button,
+} from '../../components';
 
 import css from './SignupForm.module.css';
 
@@ -24,7 +30,10 @@ const SignupFormComponent = props => (
         invalid,
         intl,
         onOpenTermsOfService,
+        values,
       } = fieldRenderProps;
+      const [showOtp, setShowOtp] = useState(false);
+      const [enableSubmit, setEnableSubmit] = useState(true);
 
       // email
       const emailLabel = intl.formatMessage({
@@ -107,9 +116,30 @@ const SignupFormComponent = props => (
       });
       const lastNameRequired = validators.required(lastNameRequiredMessage);
 
+      const phonePlaceholder = intl.formatMessage({
+        id: 'signupFormForm.phonePlaceholder',
+      });
+      const phoneLabel = intl.formatMessage({ id: 'signupFormForm.phoneLabel' });
+
+      const phoneRequiredMessage = intl.formatMessage({
+        id: 'SignupForm.phoneRequired',
+      });
+      const phoneRequired = validators.required(phoneRequiredMessage);
+
+      const otpPlaceholder = intl.formatMessage({
+        id: 'signupFormForm.otpPlaceholder',
+      });
+      const otpLabel = intl.formatMessage({ id: 'signupFormForm.otpLabel' });
+
+      const otpRequiredMessage = intl.formatMessage({
+        id: 'SignupForm.otpRequired',
+      });
+      const otpRequired = validators.required(otpRequiredMessage);
+
       const classes = classNames(rootClassName || css.root, className);
       const submitInProgress = inProgress;
-      const submitDisabled = invalid || submitInProgress;
+      const submitDisabled = invalid || submitInProgress || !enableSubmit;
+      const sendOtpDisable = values.phoneNumber && values.phoneNumber.length > 0 ? false : true;
 
       const handleTermsKeyUp = e => {
         // Allow click action with keyboard like with normal links
@@ -132,15 +162,6 @@ const SignupFormComponent = props => (
       return (
         <Form className={classes} onSubmit={handleSubmit}>
           <div>
-            <FieldTextInput
-              type="email"
-              id={formId ? `${formId}.email` : 'email'}
-              name="email"
-              autoComplete="email"
-              label={emailLabel}
-              placeholder={emailPlaceholder}
-              validate={validators.composeValidators(emailRequired, emailValid)}
-            />
             <div className={css.name}>
               <FieldTextInput
                 className={css.firstNameRoot}
@@ -164,6 +185,56 @@ const SignupFormComponent = props => (
               />
             </div>
             <FieldTextInput
+              type="email"
+              id={formId ? `${formId}.email` : 'email'}
+              name="email"
+              autoComplete="email"
+              label={emailLabel}
+              placeholder={emailPlaceholder}
+              validate={validators.composeValidators(emailRequired, emailValid)}
+            />
+
+            <FieldPhoneNumberInput
+              className={css.phone}
+              name="phoneNumber"
+              id={formId ? `${formId}.phoneNumber` : 'phoneNumber'}
+              label={phoneLabel}
+              placeholder={phonePlaceholder}
+              validate={phoneRequired}
+            />
+            <Button
+              type="button"
+              onClick={() => setShowOtp(true)}
+              // inProgress={}
+              disabled={sendOtpDisable}
+            >
+              <FormattedMessage id="SignupForm.sendOtp" />
+            </Button>
+            {showOtp ? (
+              <div>
+                <FieldTextInput
+                  className={css.otp}
+                  type="password"
+                  id={formId ? `${formId}.otp` : 'otp'}
+                  name="otp"
+                  label={otpLabel}
+                  placeholder={otpPlaceholder}
+                  // validate={otpRequired}
+                />
+                <Button
+                  type="button"
+                  onClick={() => setEnableSubmit(true)}
+                  // inProgress={}
+                  // disabled={}
+                >
+                  <FormattedMessage id="SignupForm.verify" />
+                </Button>
+              </div>
+            ) : (
+              ''
+            )}
+
+            <FieldTextInput
               className={css.password}
               type="password"
               id={formId ? `${formId}.password` : 'password'}
@@ -184,7 +255,13 @@ const SignupFormComponent = props => (
                 />
               </span>
             </p>
-            <PrimaryButton type="submit" inProgress={submitInProgress} disabled={submitDisabled}>
+
+            <PrimaryButton
+              type="button"
+              onClick={() => handleSubmit()}
+              inProgress={submitInProgress}
+              disabled={submitDisabled}
+            >
               <FormattedMessage id="SignupForm.signUp" />
             </PrimaryButton>
           </div>

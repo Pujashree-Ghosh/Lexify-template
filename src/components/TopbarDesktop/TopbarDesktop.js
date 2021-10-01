@@ -135,6 +135,14 @@ const TopbarDesktop = props => {
     </NamedLink>
   );
 
+  const signupLawyer = isAuthenticatedOrJustHydrated ? null : (
+    <NamedLink name="SignupLawyerPage" className={css.signupLink}>
+      <span className={css.signup}>
+        <FormattedMessage id="TopbarDesktop.signupLawyer" />
+      </span>
+    </NamedLink>
+  );
+
   const loginLink = isAuthenticatedOrJustHydrated ? null : (
     <NamedLink name="LoginPage" className={css.loginLink}>
       <span className={css.login}>
@@ -179,6 +187,7 @@ const TopbarDesktop = props => {
       {createListingLink}
       {inboxLink}
       {profileMenu}
+      {signupLawyer}
       {signupLink}
       {loginLink}
     </nav>

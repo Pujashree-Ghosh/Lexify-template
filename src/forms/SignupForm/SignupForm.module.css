@@ -27,6 +27,12 @@
 .lastNameRoot {
   width: calc(66% - 9px);
 }
+.phone {
+  margin-bottom: 20px;
+}
+.otp {
+  margin-bottom: 20px;
+}
 
 .password {
   @apply --marketplaceModalPasswordMargins;

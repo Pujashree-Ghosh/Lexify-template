@@ -169,6 +169,12 @@ const routeConfiguration = () => {
       extraProps: { tab: 'signup' },
     },
     {
+      path: '/signup-lawyer',
+      name: 'SignupLawyerPage',
+      component: AuthenticationPage,
+      extraProps: { tab: 'signup-lawyer' },
+    },
+    {
       path: '/confirm',
       name: 'ConfirmPage',
       component: AuthenticationPage,

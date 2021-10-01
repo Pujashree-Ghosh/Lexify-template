@@ -34,6 +34,7 @@ import {
   Footer,
   Modal,
   TermsOfService,
+  Button,
 } from '../../components';
 import { ConfirmSignupForm, LoginForm, SignupForm } from '../../forms';
 import { TopbarContainer } from '../../containers';
@@ -100,12 +101,29 @@ export class AuthenticationPageComponent extends Component {
     // tab if the user isn't being redirected somewhere else
     // (i.e. `from` is present). We must also check the `emailVerified`
     // flag only when the current user is fully loaded.
-    const showEmailVerification = !isLogin && currentUserLoaded && !user.attributes.emailVerified;
+    const showEmailVerification =
+      (!isLogin && currentUserLoaded && !user.attributes.emailVerified) ||
+      (isLogin && currentUserLoaded && !user.attributes.emailVerified);
+
+    const showProfileVerification =
+      (!isLogin &&
+        currentUserLoaded &&
+        user.attributes.emailVerified &&
+        !user.attributes.profile.protectedData.isProfileVerified) ||
+      (isLogin &&
+        currentUserLoaded &&
+        user.attributes.emailVerified &&
+        !user.attributes.profile.protectedData.isProfileVerified);
 
     // Already authenticated, redirect away from auth page
     if (isAuthenticated && from) {
       return <Redirect to={from} />;
-    } else if (isAuthenticated && currentUserLoaded && !showEmailVerification) {
+    } else if (
+      isAuthenticated &&
+      currentUserLoaded &&
+      !showEmailVerification &&
+      !showProfileVerification
+    ) {
       return <NamedRedirect name="LandingPage" />;
     }
 
@@ -142,17 +160,19 @@ export class AuthenticationPageComponent extends Component {
       : errorMessage(signupError, signupErrorMessage);
 
     const fromState = { state: from ? { from } : null };
+    const path = tab === 'signup-lawyer' ? 'SignupLawyerPage' : 'SignupPage';
 
     const tabs = [
       {
         text: (
           <h1 className={css.tab}>
-            <FormattedMessage id="AuthenticationPage.signupLinkText" />
+            {/* <FormattedMessage id="AuthenticationPage.signupLinkText" /> */}
+            {tab === 'signup-lawyer' ? 'Sign up Lawyer' : 'Sign up Client'}
           </h1>
         ),
         selected: !isLogin,
         linkProps: {
-          name: 'SignupPage',
+          name: path,
           to: fromState,
         },
       },
@@ -171,8 +191,15 @@ export class AuthenticationPageComponent extends Component {
     ];
 
     const handleSubmitSignup = values => {
-      const { fname, lname, ...rest } = values;
-      const params = { firstName: fname.trim(), lastName: lname.trim(), ...rest };
+      const { fname, lname, isLawyer, ...rest } = values;
+      const params = {
+        firstName: fname.trim(),
+        lastName: lname.trim(),
+        isLawyer: tab === 'signup-lawyer' ? true : false,
+        isProfileVerified: false,
+        ...rest,
+      };
+      delete params.otp;
       submitSignup(params);
     };
 
@@ -381,6 +408,28 @@ export class AuthenticationPageComponent extends Component {
       </div>
     );
 
+    const profileVerificationContent = (
+      <div className={css.content}>
+        <NamedLink className={css.verifyClose} name="ProfileSettingsPage">
+          <span className={css.closeText}>
+            <FormattedMessage id="AuthenticationPage.verifyEmailClose" />
+          </span>
+          <IconClose rootClassName={css.closeIcon} />
+        </NamedLink>
+        <IconEmailSent className={css.modalIcon} />
+        <h1 className={css.modalTitle}>
+          {/* <FormattedMessage id="AuthenticationPage.verifyEmailTitle" values={{ name }} /> */}
+          Profile verification needed
+        </h1>
+        <p className={css.modalMessage}>
+          {/* <FormattedMessage id="AuthenticationPage.verifyEmailText" values={{ email }} /> */}
+          profile is not verified yet.
+        </p>
+
+        <Button>Edit Profile</Button>
+      </div>
+    );
+
     const siteTitle = config.siteTitle;
     const schemaTitle = isLogin
       ? intl.formatMessage({ id: 'AuthenticationPage.schemaTitleLogin' }, { siteTitle })
@@ -406,7 +455,11 @@ export class AuthenticationPageComponent extends Component {
           </LayoutWrapperTopbar>
           <LayoutWrapperMain className={css.layoutWrapperMain}>
             <div className={css.root}>
-              {showEmailVerification ? emailVerificationContent : formContent}
+              {showEmailVerification
+                ? emailVerificationContent
+                : showProfileVerification
+                ? profileVerificationContent
+                : formContent}
             </div>
             <Modal
               id="AuthenticationPage.tos"
@@ -455,7 +508,7 @@ AuthenticationPageComponent.propTypes = {
 
   submitLogin: func.isRequired,
   submitSignup: func.isRequired,
-  tab: oneOf(['login', 'signup', 'confirm']),
+  tab: oneOf(['login', 'signup', 'confirm', 'signup-lawyer']),
 
   sendVerificationEmailInProgress: bool.isRequired,
   sendVerificationEmailError: propTypes.error,
