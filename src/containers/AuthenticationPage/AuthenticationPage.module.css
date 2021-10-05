@@ -20,8 +20,19 @@
 .content {
   @apply --marketplaceModalBaseStyles;
   padding-top: 29px;
-}
+  flex-basis: 650px;
 
+  & .pvicon {
+    width: auto;
+    margin: 50px auto 25px 0;
+    height: 54px;
+  }
+}
+.vyhed {
+  font-size: 34px !important;
+  line-height: 48px !important;
+  margin-bottom: 20px !important;
+}
 /* ================ Tabs & Form ================ */
 
 .tabs {
@@ -87,6 +98,7 @@
 
 .bottomWrapper {
   @apply --marketplaceModalBottomWrapper;
+  margin-top: 46px;
 
   /* Align the helper links to the left since there isn't a Primary Button anymore */
   text-align: left;
@@ -127,13 +139,14 @@
 
 .verifyClose {
   @apply --marketplaceModalCloseStyles;
-
+  color: #7c7c7c;
   /* This is not a real modal, z-index should not be modal's z-index */
   z-index: 1;
 }
 
 .closeText {
   @apply --marketplaceModalCloseText;
+  margin-top: 1px;
 }
 
 .closeIcon {
@@ -145,13 +158,33 @@
 /* Title of the modal */
 .modalTitle {
   @apply --marketplaceModalTitleStyles;
+  font-weight: 600;
+  line-height: 40px;
+  letter-spacing: 0;
+  margin: 0;
+  color: #000;
+  font-size: 24px;
 }
 
 /* Paragraph for the Modal */
 .modalMessage {
   @apply --marketplaceModalParagraphStyles;
+  margin: 10px 0 30px 0;
+  font-size: 16px;
+  color: #000;
+  font-weight: 300;
+  line-height: 25px;
+  & a {
+    font-weight: 600;
+    color: #000;
+  }
 }
-
+.epbtn {
+  max-width: 60%;
+  margin: 50px auto 0;
+  min-height: 48px;
+  border-radius: 8px;
+}
 /* Make the email pop */
 .email {
   font-weight: var(--fontWeightHighlightEmail);
@@ -161,13 +194,29 @@
 .modalHelperLink {
   @apply --marketplaceLinkStyles;
   @apply --marketplaceModalHelperLink;
+  color: #a91722;
+  font-size: 16px;
+  text-align: left;
+  margin: 0 0 0 0;
+  flex-basis: 30%;
 }
 
 /* Helper texts for the links, not the actual links */
 .modalHelperText {
   @apply --marketplaceModalHelperText;
-}
+  color: #7a7a7a;
+  font-size: 16px;
+  margin: 12px 0 0;
 
+  & span {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+}
+.femtxt {
+  margin-top: 30px;
+}
 .modalIcon {
   @apply --marketplaceModalIconStyles;
 

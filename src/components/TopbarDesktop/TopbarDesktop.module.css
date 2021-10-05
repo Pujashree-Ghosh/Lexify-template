@@ -28,11 +28,13 @@
 .logoLink {
   @apply --TopbarDesktop_linkHover;
   flex-shrink: 0;
-  padding: 21px 24px 21px 24px;
+  padding: 5px 24px 0 24px;
   height: 100%;
-
+  & img {
+    height: 60px;
+  }
   @media (--viewportLarge) {
-    padding: 21px 36px 21px 36px;
+    padding: 5px 24px 0 24px;
   }
 }
 
