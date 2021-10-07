@@ -14,6 +14,15 @@ import {
 } from '../../components';
 
 import css from './SignupForm.module.css';
+import 'react-phone-number-input/style.css';
+import PhoneInput, {
+  formatPhoneNumber,
+  formatPhoneNumberIntl,
+  isValidPhoneNumber,
+  isPossiblePhoneNumber,
+} from 'react-phone-number-input';
+import axios from 'axios';
+import { apiBaseUrl } from '../../util/api';
 
 const KEY_CODE_ENTER = 13;
 
@@ -31,9 +40,12 @@ const SignupFormComponent = props => (
         intl,
         onOpenTermsOfService,
         values,
+        form,
       } = fieldRenderProps;
       const [showOtp, setShowOtp] = useState(false);
-      const [enableSubmit, setEnableSubmit] = useState(true);
+      const [otpErr, setOtpErr] = useState(false);
+      const [phoneErr, setPhoneErr] = useState(false);
+      const [submitProgress, setSubmitProgress] = useState(false);
 
       // email
       const emailLabel = intl.formatMessage({
@@ -119,7 +131,7 @@ const SignupFormComponent = props => (
       const phonePlaceholder = intl.formatMessage({
         id: 'signupFormForm.phonePlaceholder',
       });
-      const phoneLabel = intl.formatMessage({ id: 'signupFormForm.phoneLabel' });
+      const phoneLabel = intl.formatMessage({ id: 'SignupForm.phoneLabel' });
 
       const phoneRequiredMessage = intl.formatMessage({
         id: 'SignupForm.phoneRequired',
@@ -136,10 +148,22 @@ const SignupFormComponent = props => (
       });
       const otpRequired = validators.required(otpRequiredMessage);
 
+      const EMAIL_RE = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+
+      const emailCheck = val => {
+        return val && EMAIL_RE.test(val) ? true : false;
+      };
+
       const classes = classNames(rootClassName || css.root, className);
       const submitInProgress = inProgress;
-      const submitDisabled = invalid || submitInProgress || !enableSubmit;
-      const sendOtpDisable = values.phoneNumber && values.phoneNumber.length > 0 ? false : true;
+      const submitDisabled = !values.otp || invalid || submitInProgress;
+      const sendOtpDisable =
+        emailCheck(values.email) &&
+        values.phoneNumber &&
+        isPossiblePhoneNumber(values.phoneNumber) &&
+        formatPhoneNumberIntl(values.phoneNumber).split(' ')[0] > 0
+          ? false
+          : true;
 
       const handleTermsKeyUp = e => {
         // Allow click action with keyboard like with normal links
@@ -159,8 +183,51 @@ const SignupFormComponent = props => (
         </span>
       );
 
+      const sendOtp = () => {
+        axios
+          .post(`${apiBaseUrl()}/api/user`, {
+            email: values.email,
+            mobile: values.phoneNumber,
+          })
+          .then(resp => {
+            console.log(resp);
+          })
+          .catch(err => console.log(err));
+      };
+
+      const signUpSubmit = () => {
+        setSubmitProgress(true);
+        console.log(submitInProgress, inProgress);
+
+        axios
+          .post(`${apiBaseUrl()}/api/user/verify`, {
+            otp: values.otp * 1,
+            mobile: values.phoneNumber,
+          })
+          .then(resp => {
+            console.log(resp);
+            handleSubmit();
+          })
+          .catch(err => {
+            if (err.response.status === 401) {
+              setOtpErr(true);
+            }
+            setTimeout(() => {
+              setSubmitProgress(false);
+            }, 2000);
+            console.log(err.response.status);
+          });
+      };
+
+      // console.log(
+      //   values.phoneNumber && formatPhoneNumber(values.phoneNumber),
+      //   values.phoneNumber && isValidPhoneNumber(values.phoneNumber),
+      //   values.phoneNumber && isPossiblePhoneNumber(values.phoneNumber),
+      //   values.phoneNumber && formatPhoneNumberIntl(values.phoneNumber).split(' ')
+      // );
+
       return (
-        <Form className={classes} onSubmit={handleSubmit}>
+        <Form className={classes}>
           <div>
             <div className={css.name}>
               <FieldTextInput
@@ -194,22 +261,85 @@ const SignupFormComponent = props => (
               validate={validators.composeValidators(emailRequired, emailValid)}
             />
 
-            <FieldPhoneNumberInput
+            <div className={css.selectLabel}>{phoneLabel}</div>
+            <div className={css.phoneInputField}>
+              <div className={css.phnWithErr}>
+                <PhoneInput
+                  international
+                  // countryCallingCodeEditable={false}
+                  onChange={val => {
+                    values.phoneNumber && isPossiblePhoneNumber(values.phoneNumber)
+                      ? setPhoneErr(false)
+                      : '';
+                    form.change('phoneNumber', val);
+                  }}
+                  onBlur={() => {
+                    values.phoneNumber && isPossiblePhoneNumber(values.phoneNumber)
+                      ? setPhoneErr(false)
+                      : setPhoneErr(true);
+                  }}
+                />
+                {phoneErr ? (
+                  <span className={css.phnErrMsg}>
+                    <FormattedMessage id="SignupForm.phoneRequired" />
+                  </span>
+                ) : (
+                  ''
+                )}
+              </div>
+              <button
+                className={css.sendOtpButton}
+                type="button"
+                onClick={() => {
+                  setShowOtp(true);
+                  sendOtp();
+                }}
+                // inProgress={}
+                disabled={sendOtpDisable}
+              >
+                <FormattedMessage id="SignupForm.sendOtp" />
+              </button>
+            </div>
+
+            {/* <div className={css.selectLabel}>Select country</div>
+
+            <Select
+              options={countryOptions || []}
+              // value={values.countryCode}
+              // label="name"
+              getOptionLabel={option => `${option.name} (${option.dialCode})`}
+              // getOptionValue={option => option.dialCode}
+              getOptionValue={option => option['dialCode']}
+              // onChange={changeHandler}
+              // options={this.state.roleData}
+              name="countryCode"
+              id="countryCode"
+              // placeholder="Now type the Job Role or Government Position Classification Hereyr"
+              value={countryOptions.filter(
+                item => item.dialCode === values.countryCode && item.name === values.countryName
+              )}
+              // // id="subsectors"
+              onChange={val => {
+                if (val && val.dialCode) {
+                  form.change('countryCode', val.dialCode);
+                  form.change('countryName', val.name);
+                }
+                // val &&
+                //   val.dialCode &&
+                //   form.change('phoneNumber', `${val.dialCode}${phoneNumber}`);
+                // val && form.change('isGrade', values.isGrade || null);
+              }}
+            /> */}
+
+            {/* <FieldPhoneNumberInput
               className={css.phone}
               name="phoneNumber"
               id={formId ? `${formId}.phoneNumber` : 'phoneNumber'}
               label={phoneLabel}
               placeholder={phonePlaceholder}
               validate={phoneRequired}
-            />
-            <Button
-              type="button"
-              onClick={() => setShowOtp(true)}
-              // inProgress={}
-              disabled={sendOtpDisable}
-            >
-              <FormattedMessage id="SignupForm.sendOtp" />
-            </Button>
+            /> */}
+
             {showOtp ? (
               <div>
                 <FieldTextInput
@@ -219,16 +349,16 @@ const SignupFormComponent = props => (
                   name="otp"
                   label={otpLabel}
                   placeholder={otpPlaceholder}
-                  // validate={otpRequired}
+                  validate={otpRequired}
                 />
-                <Button
-                  type="button"
-                  onClick={() => setEnableSubmit(true)}
-                  // inProgress={}
-                  // disabled={}
-                >
-                  <FormattedMessage id="SignupForm.verify" />
-                </Button>
+                {otpErr ? (
+                  <span className={css.otpErrMsg}>
+                    {' '}
+                    <FormattedMessage id="SignupForm.otpErrMsg" />
+                  </span>
+                ) : (
+                  ''
+                )}
               </div>
             ) : (
               ''
@@ -258,8 +388,8 @@ const SignupFormComponent = props => (
 
             <PrimaryButton
               type="button"
-              onClick={() => handleSubmit()}
-              inProgress={submitInProgress}
+              onClick={() => signUpSubmit()}
+              inProgress={submitInProgress || submitProgress}
               disabled={submitDisabled}
             >
               <FormattedMessage id="SignupForm.signUp" />

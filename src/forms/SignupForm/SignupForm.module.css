@@ -58,3 +58,38 @@
     cursor: pointer;
   }
 }
+.phoneInputField {
+  display: flex;
+  flex-direction: row;
+}
+.phnWithErr {
+  display: flex;
+  flex-direction: column;
+}
+.phnErrMsg {
+  margin-top: 6px;
+  margin-bottom: 10px;
+  color: var(--failColor);
+  overflow: hidden;
+  font-weight: var(--fontWeightMedium);
+  font-size: 15px;
+  line-height: 24px;
+  letter-spacing: 0;
+}
+.otpErrMsg {
+  margin-top: 6px;
+  margin-bottom: 10px;
+  color: var(--failColor);
+  overflow: hidden;
+  font-weight: var(--fontWeightMedium);
+  font-size: 15px;
+  line-height: 24px;
+  letter-spacing: 0;
+}
+
+.sendOtpButton {
+  color: rgb(0, 0, 0);
+  cursor: pointer;
+  margin-left: 20px;
+  height: fit-content;
+}
