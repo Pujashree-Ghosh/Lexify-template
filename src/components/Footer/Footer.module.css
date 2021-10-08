@@ -7,15 +7,15 @@
   border-top-color: var(--matterColorNegative);
 
   width: 100%;
-  padding: 24px 24px 42px 24px;
+  padding: 0;
   background-color: var(--matterColorBright);
 
   @media (--viewportMedium) {
-    padding: 0 24px 33px 24px;
+    padding: 0;
   }
 
   @media (--viewportLarge) {
-    padding: 0 0 81px 0;
+    padding: 0;
     border-top: none;
   }
 }
@@ -23,7 +23,9 @@
 /* Wrapper to limit the top border in desktop
  * view from the outermost paddings*/
 .topBorderWrapper {
-  @media (--viewportMedium) {
+  background: #38394e;
+  padding: 50px 0 0;
+  /* @media (--viewportMedium) {
     padding-top: 41px;
   }
 
@@ -33,7 +35,7 @@
     border-top-style: solid;
     border-top-width: 1px;
     border-top-color: var(--matterColorNegative);
-  }
+  } */
 }
 
 .content {
@@ -329,4 +331,33 @@
 
 .privacy {
   margin-right: 24px;
+}
+.updatfoot {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+
+  & .footerlinks {
+    display: flex;
+    justify-content: space-evenly;
+    width: 100%;
+    margin: 40px 0 30px;
+    & a {
+      color: #c4c4c4;
+      font-size: 16px;
+      font-weight: 300;
+    }
+  }
+}
+.copyright {
+  text-align: center;
+  color: #c4c4c4;
+  background: #303146;
+  margin: 40px 0 0;
+  padding: 15px 0;
+  font-size: 14px;
+  font-weight: 300;
+  letter-spacing: 1px;
 }

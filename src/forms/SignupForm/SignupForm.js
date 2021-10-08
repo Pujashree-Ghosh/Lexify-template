@@ -229,7 +229,7 @@ const SignupFormComponent = props => (
       return (
         <Form className={classes}>
           <div>
-            <div className={css.name}>
+            <div className={`${css.name} ${css.fromgp}`}>
               <FieldTextInput
                 className={css.firstNameRoot}
                 type="text"
@@ -251,55 +251,83 @@ const SignupFormComponent = props => (
                 validate={lastNameRequired}
               />
             </div>
-            <FieldTextInput
-              type="email"
-              id={formId ? `${formId}.email` : 'email'}
-              name="email"
-              autoComplete="email"
-              label={emailLabel}
-              placeholder={emailPlaceholder}
-              validate={validators.composeValidators(emailRequired, emailValid)}
-            />
 
-            <div className={css.selectLabel}>{phoneLabel}</div>
-            <div className={css.phoneInputField}>
-              <div className={css.phnWithErr}>
-                <PhoneInput
-                  international
-                  // countryCallingCodeEditable={false}
-                  onChange={val => {
-                    values.phoneNumber && isPossiblePhoneNumber(values.phoneNumber)
-                      ? setPhoneErr(false)
-                      : '';
-                    form.change('phoneNumber', val);
+            <div className={css.fromgp}>
+              <FieldTextInput
+                type="email"
+                id={formId ? `${formId}.email` : 'email'}
+                name="email"
+                autoComplete="email"
+                label={emailLabel}
+                placeholder={emailPlaceholder}
+                validate={validators.composeValidators(emailRequired, emailValid)}
+              />
+            </div>
+            <div className={css.fromgp}>
+              <label className={css.selectLabel}>{phoneLabel}</label>
+              <div className={css.phoneInputField}>
+                <div className={css.phnWithErr}>
+                  <PhoneInput
+                    international
+                    // countryCallingCodeEditable={false}
+                    onChange={val => {
+                      values.phoneNumber && isPossiblePhoneNumber(values.phoneNumber)
+                        ? setPhoneErr(false)
+                        : '';
+                      form.change('phoneNumber', val);
+                    }}
+                    onBlur={() => {
+                      values.phoneNumber && isPossiblePhoneNumber(values.phoneNumber)
+                        ? setPhoneErr(false)
+                        : setPhoneErr(true);
+                    }}
+                  />
+                  {phoneErr ? (
+                    <span className={css.phnErrMsg}>
+                      <FormattedMessage id="SignupForm.phoneRequired" />
+                    </span>
+                  ) : (
+                    ''
+                  )}
+                </div>
+                <button
+                  className={css.sendOtpButton}
+                  type="button"
+                  onClick={() => {
+                    setShowOtp(true);
+                    sendOtp();
                   }}
-                  onBlur={() => {
-                    values.phoneNumber && isPossiblePhoneNumber(values.phoneNumber)
-                      ? setPhoneErr(false)
-                      : setPhoneErr(true);
-                  }}
+                  // inProgress={}
+                  disabled={sendOtpDisable}
+                >
+                  <FormattedMessage id="SignupForm.sendOtp" />
+                </button>
+              </div>
+            </div>
+
+            {showOtp ? (
+              <div className={css.fromgp}>
+                <FieldTextInput
+                  className={css.otp}
+                  type="password"
+                  id={formId ? `${formId}.otp` : 'otp'}
+                  name="otp"
+                  label={otpLabel}
+                  placeholder={otpPlaceholder}
+                  validate={otpRequired}
                 />
-                {phoneErr ? (
-                  <span className={css.phnErrMsg}>
-                    <FormattedMessage id="SignupForm.phoneRequired" />
+                {otpErr ? (
+                  <span className={css.otpErrMsg}>
+                    {' '}
+                    <FormattedMessage id="SignupForm.otpErrMsg" />
                   </span>
                 ) : (
                   ''
                 )}
               </div>
-              <button
-                className={css.sendOtpButton}
-                type="button"
-                onClick={() => {
-                  setShowOtp(true);
-                  sendOtp();
-                }}
-                // inProgress={}
-                disabled={sendOtpDisable}
-              >
-                <FormattedMessage id="SignupForm.sendOtp" />
-              </button>
-            </div>
+            ) : (
+              ''
+            )}
 
             {/* <div className={css.selectLabel}>Select country</div>
 
@@ -339,61 +367,38 @@ const SignupFormComponent = props => (
               placeholder={phonePlaceholder}
               validate={phoneRequired}
             /> */}
+            <div className={css.fromgp}>
+              <FieldTextInput
+                className={css.password}
+                type="password"
+                id={formId ? `${formId}.password` : 'password'}
+                name="password"
+                autoComplete="new-password"
+                label={passwordLabel}
+                placeholder={passwordPlaceholder}
+                validate={passwordValidators}
+              />
+            </div>
 
-            {showOtp ? (
-              <div>
-                <FieldTextInput
-                  className={css.otp}
-                  type="password"
-                  id={formId ? `${formId}.otp` : 'otp'}
-                  name="otp"
-                  label={otpLabel}
-                  placeholder={otpPlaceholder}
-                  validate={otpRequired}
-                />
-                {otpErr ? (
-                  <span className={css.otpErrMsg}>
-                    {' '}
-                    <FormattedMessage id="SignupForm.otpErrMsg" />
-                  </span>
-                ) : (
-                  ''
-                )}
-              </div>
-            ) : (
-              ''
-            )}
+            <div className={css.bottomWrapper}>
+              <p className={css.bottomWrapperText}>
+                <span className={css.termsText}>
+                  <FormattedMessage
+                    id="SignupForm.termsAndConditionsAcceptText"
+                    values={{ termsLink }}
+                  />
+                </span>
+              </p>
 
-            <FieldTextInput
-              className={css.password}
-              type="password"
-              id={formId ? `${formId}.password` : 'password'}
-              name="password"
-              autoComplete="new-password"
-              label={passwordLabel}
-              placeholder={passwordPlaceholder}
-              validate={passwordValidators}
-            />
-          </div>
-
-          <div className={css.bottomWrapper}>
-            <p className={css.bottomWrapperText}>
-              <span className={css.termsText}>
-                <FormattedMessage
-                  id="SignupForm.termsAndConditionsAcceptText"
-                  values={{ termsLink }}
-                />
-              </span>
-            </p>
-
-            <PrimaryButton
-              type="button"
-              onClick={() => signUpSubmit()}
-              inProgress={submitInProgress || submitProgress}
-              disabled={submitDisabled}
-            >
-              <FormattedMessage id="SignupForm.signUp" />
-            </PrimaryButton>
+              <PrimaryButton
+                type="button"
+                onClick={() => signUpSubmit()}
+                inProgress={submitInProgress || submitProgress}
+                disabled={submitDisabled}
+              >
+                <FormattedMessage id="SignupForm.signUp" />
+              </PrimaryButton>
+            </div>
           </div>
         </Form>
       );

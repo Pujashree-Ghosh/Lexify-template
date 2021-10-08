@@ -29,7 +29,7 @@
   --successColorLight: #f0fff6;
   --failColor: #ff0000;
   --failColorLight: #fff0f0;
-  --attentionColor: #ffaa00;
+  --attentionColor: #a91722;
   --attentionColorLight: #fff7f0;
   --bannedColorLight: var(--marketplaceColorLight);
   --bannedColorDark: var(--marketplaceColor);

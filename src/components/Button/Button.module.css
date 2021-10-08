@@ -9,6 +9,9 @@
 
 .primaryButtonRoot {
   @apply --marketplaceButtonStylesPrimary;
+  background: #a91722;
+  min-height: 45px;
+  border-radius: 10px;
 
   /* Clear padding that is set for link elements looking like buttons */
   padding: 0;

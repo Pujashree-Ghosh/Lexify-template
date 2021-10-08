@@ -10,13 +10,16 @@
   }
 }
 
+.fromgp {
+  margin: 0 0 20px;
+}
 .name {
   display: flex;
   justify-content: space-between;
-  margin-top: 24px;
+  /* margin-top: 24px; */
 
   @media (--viewportMedium) {
-    margin-top: 32px;
+    /* margin-top: 32px; */
   }
 }
 
@@ -35,7 +38,7 @@
 }
 
 .password {
-  @apply --marketplaceModalPasswordMargins;
+  /* @apply --marketplaceModalPasswordMargins; */
 }
 
 .bottomWrapper {
@@ -61,10 +64,12 @@
 .phoneInputField {
   display: flex;
   flex-direction: row;
+  position: relative;
 }
 .phnWithErr {
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
 .phnErrMsg {
   margin-top: 6px;
@@ -88,8 +93,12 @@
 }
 
 .sendOtpButton {
-  color: rgb(0, 0, 0);
+  color: #fff;
   cursor: pointer;
-  margin-left: 20px;
-  height: fit-content;
+  position: absolute;
+  right: 0;
+  border: 0;
+  font-size: 12px;
+  background: #a91722;
+  padding: 0 12px;
 }

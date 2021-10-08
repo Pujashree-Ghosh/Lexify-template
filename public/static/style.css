@@ -1,0 +1,16 @@
+.PhoneInputCountryIconImg {
+   height: 16px !important;
+    margin: 5px 5px 5px 0;
+}
+.PhoneInputInput {
+    padding-right: 80px;
+}
+@media (min-width: 1440px) {
+ 
+}
+@media (max-width: 767px) {
+
+}
+@media (max-width: 575px) {
+
+}
