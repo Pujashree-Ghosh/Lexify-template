@@ -14,7 +14,7 @@ import {
 } from '../../components';
 
 import css from './SignupForm.module.css';
-import 'react-phone-number-input/style.css';
+import './reactPhoneInput.css';
 import PhoneInput, {
   formatPhoneNumber,
   formatPhoneNumberIntl,
