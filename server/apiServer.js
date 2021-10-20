@@ -10,7 +10,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const apiRouter = require('./apiRouter');
 const wellKnownRouter = require('./wellKnownRouter');
-require('./globalHelpers');
+// require('./globalHelpers');
 const radix = 10;
 const PORT = parseInt(process.env.REACT_APP_DEV_API_SERVER_PORT, radix);
 const app = express();
