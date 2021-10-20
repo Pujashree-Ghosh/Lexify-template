@@ -23,6 +23,7 @@
   /* This is done to stretch the contents of this component. */
   display: flex;
   align-items: center;
+  margin-right: 90px;
 }
 
 .PhoneInputInput {
