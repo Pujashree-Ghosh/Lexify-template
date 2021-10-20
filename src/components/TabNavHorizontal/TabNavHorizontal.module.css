@@ -44,7 +44,7 @@
   &:hover,
   &:focus {
     text-decoration: none;
-    color: var(--matterColorDark);
+    color: #a91722;
   }
 
   @media (--viewportMedium) {
@@ -62,8 +62,8 @@
 }
 
 .selectedTabContent {
-  border-bottom-color: var(--matterColorDark);
-  color: var(--matterColorDark);
+  border-bottom-color: #a91722;
+  color: #a91722;
 }
 
 .disabled {

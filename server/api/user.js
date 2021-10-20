@@ -6,6 +6,7 @@ const client = require('twilio')(accountSid, authToken);
 module.exports.sendOtp = async (req, res) => {
   try {
     const { email, mobile } = req.body;
+    console.log(req.body);
     if (!email) return res.status(404).send('email is required');
     if (!mobile) return res.status(404).send('mobile is required');
     let digits = '0123456789';

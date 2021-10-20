@@ -45,6 +45,8 @@ import { manageDisableScrolling } from '../../ducks/UI.duck';
 
 import css from './AuthenticationPage.module.css';
 import { FacebookLogo, GoogleLogo } from './socialLoginLogos';
+import PvnIcon from '../../assets/pvnicon.svg';
+import MailIcon from '../../assets/mailicon.svg';
 
 export class AuthenticationPageComponent extends Component {
   constructor(props) {
@@ -384,8 +386,8 @@ export class AuthenticationPageComponent extends Component {
           </span>
           <IconClose rootClassName={css.closeIcon} />
         </NamedLink>
-        <IconEmailSent className={css.modalIcon} />
-        <h1 className={css.modalTitle}>
+        <img src={MailIcon} className={`${css.modalIcon} ${css.pvicon}`} />
+        <h1 className={`${css.modalTitle} ${css.vyhed}`}>
           <FormattedMessage id="AuthenticationPage.verifyEmailTitle" values={{ name }} />
         </h1>
         <p className={css.modalMessage}>
@@ -401,7 +403,7 @@ export class AuthenticationPageComponent extends Component {
               <FormattedMessage id="AuthenticationPage.resendEmail" values={{ resendEmailLink }} />
             )}
           </p>
-          <p className={css.modalHelperText}>
+          <p className={`${css.modalHelperText} ${css.femtxt}`}>
             <FormattedMessage id="AuthenticationPage.fixEmail" values={{ fixEmailLink }} />
           </p>
         </div>
@@ -416,17 +418,20 @@ export class AuthenticationPageComponent extends Component {
           </span>
           <IconClose rootClassName={css.closeIcon} />
         </NamedLink>
-        <IconEmailSent className={css.modalIcon} />
+        {/* <IconEmailSent className={css.modalIcon} /> */}
+        <img src={PvnIcon} className={`${css.modalIcon} ${css.pvicon}`} />
         <h1 className={css.modalTitle}>
           {/* <FormattedMessage id="AuthenticationPage.verifyEmailTitle" values={{ name }} /> */}
           Profile verification needed
         </h1>
         <p className={css.modalMessage}>
           {/* <FormattedMessage id="AuthenticationPage.verifyEmailText" values={{ email }} /> */}
-          profile is not verified yet.
+          Your profile is not verified yet. To book any consultation you have to verify your
+          profile. Please visit <a href="">Edit your profile</a> section to complete your profile
+          and proceed to verify.
         </p>
 
-        <Button>Edit Profile</Button>
+        <Button className={css.epbtn}>Go to Edit Profile</Button>
       </div>
     );
 
