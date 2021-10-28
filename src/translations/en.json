@@ -1127,5 +1127,6 @@
   "signupFormForm.otpPlaceholder" :"1111",
   "SignupForm.otpRequired" : "Otp is required to signup",
   "SignupForm.otpErrMsg": "Invalid OTP",
-  "ProfileSettingPage.cNamePlaceHolder": "Enter company name"
+  "ProfileSettingPage.cNamePlaceHolder": "Enter company name",
+  "SignupForm.codeRequired":"Country code required"
 }
