@@ -11818,7 +11818,6 @@ react-outside-click-handler@^1.2.4:
     object.values "^1.1.0"
     prop-types "^15.7.2"
 
-<<<<<<< HEAD
 react-phone-input-2@^2.14.0:
   version "2.14.0"
   resolved "https://registry.yarnpkg.com/react-phone-input-2/-/react-phone-input-2-2.14.0.tgz#75dff7ba503becc7a19e0e8ff5aa3d878265af77"
@@ -11829,17 +11828,6 @@ react-phone-input-2@^2.14.0:
     lodash.memoize "^4.1.2"
     lodash.reduce "^4.6.0"
     lodash.startswith "^4.2.1"
-=======
-react-phone-number-input@^3.1.31:
-  version "3.1.31"
-  resolved "https://registry.yarnpkg.com/react-phone-number-input/-/react-phone-number-input-3.1.31.tgz#5f9921e015b24c2c9e3be87eac866ef848354023"
-  integrity sha512-VKm4M7cJj5yw/r/r30XdHNX5HFXz4Rmsgq77mKG+HALEv1C138dmu+lDjuinb/iU+7+MW1MH4VKrXMiF0kCAbQ==
-  dependencies:
-    classnames "^2.2.5"
-    country-flag-icons "^1.0.2"
-    input-format "^0.3.6"
-    libphonenumber-js "^1.9.35"
->>>>>>> 62e9bc21a4fb96d87d706c9fe0ccccbf5a346196
     prop-types "^15.7.2"
 
 react-portal@^4.2.0:

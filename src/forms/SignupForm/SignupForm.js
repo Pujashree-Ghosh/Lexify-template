@@ -166,14 +166,7 @@ const SignupFormComponent = props => (
       const submitInProgress = inProgress;
       const submitDisabled = !values.otp || invalid || submitInProgress;
       const sendOtpDisable =
-<<<<<<< HEAD
         emailCheck(values.email) && values.phoneNumber && values.phoneNumber.length > 8
-=======
-        emailCheck(values.email) &&
-        values.phoneNumber &&
-        isPossiblePhoneNumber(values.phoneNumber) &&
-        formatPhoneNumberIntl(values.phoneNumber).split(' ')[0] > 0
->>>>>>> 62e9bc21a4fb96d87d706c9fe0ccccbf5a346196
           ? false
           : true;
 
