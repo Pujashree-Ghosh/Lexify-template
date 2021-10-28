@@ -14,7 +14,6 @@ import {
 } from '../../components';
 
 import css from './SignupForm.module.css';
-import './reactPhoneInput.css';
 import axios from 'axios';
 import { apiBaseUrl } from '../../util/api';
 import Select from 'react-select';
