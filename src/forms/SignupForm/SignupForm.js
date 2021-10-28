@@ -20,9 +20,11 @@ import PhoneInput, {
   formatPhoneNumberIntl,
   isValidPhoneNumber,
   isPossiblePhoneNumber,
-} from 'react-phone-number-input';
+} from 'react-phone-input-2';
 import axios from 'axios';
 import { apiBaseUrl } from '../../util/api';
+// import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
 
 const KEY_CODE_ENTER = 13;
 
@@ -158,10 +160,7 @@ const SignupFormComponent = props => (
       const submitInProgress = inProgress;
       const submitDisabled = !values.otp || invalid || submitInProgress;
       const sendOtpDisable =
-        emailCheck(values.email) &&
-        values.phoneNumber &&
-        isPossiblePhoneNumber(values.phoneNumber) &&
-        formatPhoneNumberIntl(values.phoneNumber).split(' ')[0] > 0
+        emailCheck(values.email) && values.phoneNumber && values.phoneNumber.length > 8
           ? false
           : true;
 
@@ -187,7 +186,7 @@ const SignupFormComponent = props => (
         axios
           .post(`${apiBaseUrl()}/api/user`, {
             email: values.email,
-            mobile: values.phoneNumber,
+            mobile: '+' + values.phoneNumber,
           })
           .then(resp => {
             console.log(resp);
@@ -268,18 +267,17 @@ const SignupFormComponent = props => (
               <div className={css.phoneInputField}>
                 <div className={css.phnWithErr}>
                   <PhoneInput
-                    international
+                    // international
                     // countryCallingCodeEditable={false}
                     onChange={val => {
-                      values.phoneNumber && isPossiblePhoneNumber(values.phoneNumber)
-                        ? setPhoneErr(false)
-                        : '';
+                      values.phoneNumber && values.phoneNumber.length > 8 ? setPhoneErr(false) : '';
                       form.change('phoneNumber', val);
                     }}
                     onBlur={() => {
-                      values.phoneNumber && isPossiblePhoneNumber(values.phoneNumber)
+                      values.phoneNumber && values.phoneNumber.length > 8
                         ? setPhoneErr(false)
                         : setPhoneErr(true);
+                      console.log(values.phoneNumber);
                     }}
                   />
                   {phoneErr ? (

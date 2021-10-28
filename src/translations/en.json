@@ -1126,5 +1126,6 @@
   "signupFormForm.otpLabel" : "Enter the otp send to your mobile",
   "signupFormForm.otpPlaceholder" :"1111",
   "SignupForm.otpRequired" : "Otp is required to signup",
-  "SignupForm.otpErrMsg": "Invalid OTP"
+  "SignupForm.otpErrMsg": "Invalid OTP",
+  "ProfileSettingPage.cNamePlaceHolder": "Enter company name"
 }
