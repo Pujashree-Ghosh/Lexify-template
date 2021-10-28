@@ -3,14 +3,18 @@
 
 // Configure process.env with .env.* files
 require('./env').configureEnv();
-
+// require('./globalHelpers');
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const apiRouter = require('./apiRouter');
 const wellKnownRouter = require('./wellKnownRouter');
+<<<<<<< HEAD
 require('./globalHelpers');
+=======
+// require('./globalHelpers');
+>>>>>>> 62e9bc21a4fb96d87d706c9fe0ccccbf5a346196
 const radix = 10;
 const PORT = parseInt(process.env.REACT_APP_DEV_API_SERVER_PORT, radix);
 const app = express();

@@ -57,7 +57,11 @@
     "react-helmet-async": "^1.0.6",
     "react-intl": "^3.1.13",
     "react-moment-proptypes": "^1.6.0",
+<<<<<<< HEAD
     "react-phone-input-2": "^2.14.0",
+=======
+    "react-phone-number-input": "^3.1.31",
+>>>>>>> 62e9bc21a4fb96d87d706c9fe0ccccbf5a346196
     "react-redux": "^7.2.1",
     "react-router-dom": "^5.2.0",
     "react-select": "^5.1.0",

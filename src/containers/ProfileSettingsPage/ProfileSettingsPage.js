@@ -15,6 +15,7 @@ import {
   LayoutWrapperFooter,
   Footer,
   NamedLink,
+  FieldRadioButton,
 } from '../../components';
 import { ProfileSettingsForm } from '../../forms';
 import { TopbarContainer } from '../../containers';
@@ -30,6 +31,13 @@ const onImageUploadHandler = (values, fn) => {
 };
 
 export class ProfileSettingsPageComponent extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      selectedOption: 'legalEntity',
+    };
+  }
+
   render() {
     const {
       currentUser,
@@ -45,6 +53,8 @@ export class ProfileSettingsPageComponent extends Component {
       intl,
     } = this.props;
 
+    console.log(this.state);
+    // console.log(currentUser);
     const handleSubmit = values => {
       const { firstName, lastName, bio: rawBio } = values;
 
@@ -84,8 +94,89 @@ export class ProfileSettingsPageComponent extends Component {
         uploadImageError={uploadImageError}
         updateProfileError={updateProfileError}
         onSubmit={handleSubmit}
+        selectedOption={this.state.selectedOption}
       />
     ) : null;
+    const cNamePlaceHolder = intl.formatMessage({
+      id: 'ProfileSettingPage.cNamePlaceHolder',
+    });
+    // const cNamePlaceHolder = intl.formatMessage({
+    //   id: 'ProfileSettingPage.cNamePlaceHolder',
+    // });
+    // const cNamePlaceHolder = intl.formatMessage({
+    //   id: 'ProfileSettingPage.cNamePlaceHolder',
+    // });
+    // const cNamePlaceHolder = intl.formatMessage({
+    //   id: 'ProfileSettingPage.cNamePlaceHolder',
+    // });
+    // const cNamePlaceHolder = intl.formatMessage({
+    //   id: 'ProfileSettingPage.cNamePlaceHolder',
+    // });
+    // const cNamePlaceHolder = intl.formatMessage({
+    //   id: 'ProfileSettingPage.cNamePlaceHolder',
+    // });
+    // const cNamePlaceHolder = intl.formatMessage({
+    //   id: 'ProfileSettingPage.cNamePlaceHolder',
+    // });
+    // const cNamePlaceHolder = intl.formatMessage({
+    //   id: 'ProfileSettingPage.cNamePlaceHolder',
+    // });
+
+    const userProfileType =
+      user && !user?.attributes?.profile?.protectedData?.isLawyer ? (
+        <div>
+          <div className={css.radioButtons}>
+            <label className={css.radio}>
+              <input
+                className={css.radioInput}
+                name="userType"
+                type="radio"
+                value="legalEntity"
+                checked={this.state.selectedOption === 'legalEntity'}
+                onChange={() => {
+                  this.setState({ selectedOption: 'legalEntity' });
+                  console.log('clicked');
+                }}
+              />
+              Legal entity
+            </label>
+            <label className={css.radio}>
+              <input
+                className={css.radioInput}
+                name="userType"
+                type="radio"
+                value="privateIndividual"
+                checked={this.state.selectedOption === 'privateIndividual'}
+                onChange={() => {
+                  this.setState({ selectedOption: 'privateIndividual' });
+                  console.log('clicked....');
+                }}
+              />
+              Private individual
+            </label>
+          </div>
+          <div className={css.companyDetail}>
+            <input type="text" placeholder={cNamePlaceHolder} />
+            <input type="text" placeholder={cNamePlaceHolder} />
+            <select name="cars" id="cars">
+              <option value="volvo">Volvo</option>
+              <option value="saab">Saab</option>
+              <option value="mercedes">Mercedes</option>
+              <option value="audi">Audi</option>
+            </select>
+            <input type="text" placeholder={cNamePlaceHolder} />
+            <input type="text" placeholder={cNamePlaceHolder} />
+            <input type="text" placeholder={cNamePlaceHolder} />
+            <input type="text" placeholder={cNamePlaceHolder} />
+            <select name="cars" id="cars">
+              <option value="volvo">Volvo</option>
+              <option value="saab">Saab</option>
+              <option value="mercedes">Mercedes</option>
+              <option value="audi">Audi</option>
+            </select>
+          </div>
+        </div>
+      ) : null;
 
     const title = intl.formatMessage({ id: 'ProfileSettingsPage.title' });
 
@@ -98,6 +189,7 @@ export class ProfileSettingsPageComponent extends Component {
           </LayoutWrapperTopbar>
           <LayoutWrapperMain>
             <div className={css.content}>
+              {userProfileType}
               <div className={css.headingContainer}>
                 <h1 className={css.heading}>
                   <FormattedMessage id="ProfileSettingsPage.heading" />

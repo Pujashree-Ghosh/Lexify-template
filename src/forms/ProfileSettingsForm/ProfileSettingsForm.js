@@ -9,7 +9,15 @@ import { ensureCurrentUser } from '../../util/data';
 import { propTypes } from '../../util/types';
 import * as validators from '../../util/validators';
 import { isUploadImageOverLimitError } from '../../util/errors';
-import { Form, Avatar, Button, ImageFromFile, IconSpinner, FieldTextInput } from '../../components';
+import {
+  Form,
+  Avatar,
+  Button,
+  ImageFromFile,
+  IconSpinner,
+  FieldTextInput,
+  FieldSelect,
+} from '../../components';
 
 import css from './ProfileSettingsForm.module.css';
 
@@ -61,7 +69,9 @@ class ProfileSettingsFormComponent extends Component {
             uploadInProgress,
             form,
             values,
+            selectedOption,
           } = fieldRenderProps;
+          console.log(selectedOption);
 
           const user = ensureCurrentUser(currentUser);
 
@@ -276,6 +286,101 @@ class ProfileSettingsFormComponent extends Component {
                     validate={lastNameRequired}
                   />
                 </div>
+              </div>
+              <div className={css.sectionContainer}>
+                <h3 className={css.sectionTitle}>
+                  <FormattedMessage id="ProfileSettingsForm.address" />
+                </h3>
+                {/* <div className={css.nameContainer}> */}
+                <FieldSelect
+                  id="country"
+                  name="country"
+                  // label="Choose an option:"
+                  // validate={required}
+                >
+                  <option value="">Pick something...</option>
+                  <option value="first">First option</option>
+                  <option value="second">Second option</option>
+                </FieldSelect>
+                <FieldTextInput
+                  className={css.street}
+                  type="text"
+                  id="street"
+                  name="street"
+                  // placeholder={streetPlaceholder}
+                  // validate={streetRequired}
+                />
+                <FieldTextInput
+                  className={css.city}
+                  type="text"
+                  id="city"
+                  name="city"
+                  // placeholder={cityPlaceholder}
+                  // validate={cityRequired}
+                />
+                <FieldTextInput
+                  className={css.state}
+                  type="text"
+                  id="state"
+                  name="state"
+                  // placeholder={statePlaceholder}
+                  // validate={stateRequired}
+                />
+                <FieldTextInput
+                  className={css.zipCode}
+                  type="text"
+                  id="zipCode"
+                  name="zipCode"
+                  // placeholder={zipCodePlaceholder}
+                  // validate={zipCodeRequired}
+                />
+                {/* </div> */}
+              </div>
+              <div className={css.sectionContainer}>
+                <h3 className={css.sectionTitle}>
+                  <FormattedMessage id="ProfileSettingsForm.timeZone" />
+                </h3>
+                {/* <div className={css.nameContainer}> */}
+                <FieldSelect
+                  id="timeZone"
+                  name="timeZone"
+                  // label="Choose an option:"
+                  // validate={required}
+                >
+                  <option value="">Pick something...</option>
+                  <option value="first">First option</option>
+                  <option value="second">Second option</option>
+                </FieldSelect>
+              </div>
+              <div className={css.sectionContainer}>
+                <h3 className={css.sectionTitle}>
+                  <FormattedMessage id="ProfileSettingsForm.vatNo" />
+                </h3>
+                {/* <div className={css.nameContainer}> */}
+                <FieldTextInput
+                  className={css.street}
+                  type="text"
+                  id="vat"
+                  name="vat"
+                  // placeholder={vatPlaceholder}
+                  // validate={vatRequired}
+                />
+              </div>
+              <div className={css.sectionContainer}>
+                <h3 className={css.sectionTitle}>
+                  <FormattedMessage id="ProfileSettingsForm.languages" />
+                </h3>
+                {/* <div className={css.nameContainer}> */}
+                <FieldSelect
+                  id="language"
+                  name="language"
+                  // label="Choose an option:"
+                  // validate={required}
+                >
+                  <option value="">Pick something...</option>
+                  <option value="first">First option</option>
+                  <option value="second">Second option</option>
+                </FieldSelect>
               </div>
               <div className={classNames(css.sectionContainer, css.lastSection)}>
                 <h3 className={css.sectionTitle}>

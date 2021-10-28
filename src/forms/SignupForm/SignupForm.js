@@ -20,11 +20,17 @@ import PhoneInput, {
   formatPhoneNumberIntl,
   isValidPhoneNumber,
   isPossiblePhoneNumber,
+<<<<<<< HEAD
 } from 'react-phone-input-2';
 import axios from 'axios';
 import { apiBaseUrl } from '../../util/api';
 // import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
+=======
+} from 'react-phone-number-input';
+import axios from 'axios';
+import { apiBaseUrl } from '../../util/api';
+>>>>>>> 62e9bc21a4fb96d87d706c9fe0ccccbf5a346196
 
 const KEY_CODE_ENTER = 13;
 
@@ -160,7 +166,14 @@ const SignupFormComponent = props => (
       const submitInProgress = inProgress;
       const submitDisabled = !values.otp || invalid || submitInProgress;
       const sendOtpDisable =
+<<<<<<< HEAD
         emailCheck(values.email) && values.phoneNumber && values.phoneNumber.length > 8
+=======
+        emailCheck(values.email) &&
+        values.phoneNumber &&
+        isPossiblePhoneNumber(values.phoneNumber) &&
+        formatPhoneNumberIntl(values.phoneNumber).split(' ')[0] > 0
+>>>>>>> 62e9bc21a4fb96d87d706c9fe0ccccbf5a346196
           ? false
           : true;
 
@@ -186,7 +199,11 @@ const SignupFormComponent = props => (
         axios
           .post(`${apiBaseUrl()}/api/user`, {
             email: values.email,
+<<<<<<< HEAD
             mobile: '+' + values.phoneNumber,
+=======
+            mobile: values.phoneNumber,
+>>>>>>> 62e9bc21a4fb96d87d706c9fe0ccccbf5a346196
           })
           .then(resp => {
             console.log(resp);
@@ -267,6 +284,7 @@ const SignupFormComponent = props => (
               <div className={css.phoneInputField}>
                 <div className={css.phnWithErr}>
                   <PhoneInput
+<<<<<<< HEAD
                     // international
                     // countryCallingCodeEditable={false}
                     onChange={val => {
@@ -278,6 +296,20 @@ const SignupFormComponent = props => (
                         ? setPhoneErr(false)
                         : setPhoneErr(true);
                       console.log(values.phoneNumber);
+=======
+                    international
+                    // countryCallingCodeEditable={false}
+                    onChange={val => {
+                      values.phoneNumber && isPossiblePhoneNumber(values.phoneNumber)
+                        ? setPhoneErr(false)
+                        : '';
+                      form.change('phoneNumber', val);
+                    }}
+                    onBlur={() => {
+                      values.phoneNumber && isPossiblePhoneNumber(values.phoneNumber)
+                        ? setPhoneErr(false)
+                        : setPhoneErr(true);
+>>>>>>> 62e9bc21a4fb96d87d706c9fe0ccccbf5a346196
                     }}
                   />
                   {phoneErr ? (
