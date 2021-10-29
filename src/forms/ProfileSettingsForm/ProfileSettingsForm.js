@@ -21,7 +21,7 @@ import {
 import PhoneInput from 'react-phone-input-2';
 
 import css from './ProfileSettingsForm.module.css';
-import 'react-phone-input-2/lib/style.css';
+// import 'react-phone-input-2/lib/style.css';
 
 const ACCEPT_IMAGES = 'image/*';
 const UPLOAD_CHANGE_DELAY = 2000; // Show spinner so that browser has time to load img srcset
