@@ -1128,5 +1128,24 @@
   "SignupForm.otpRequired" : "Otp is required to signup",
   "SignupForm.otpErrMsg": "Invalid OTP",
   "ProfileSettingPage.cNamePlaceHolder": "Enter company name",
-  "SignupForm.codeRequired":"Country code required"
+  "SignupForm.codeRequired":"Country code required",
+  "ProfileSettingsForm.companyDetail":"Company details",
+  "ProfileSettingsForm.address" : "Address",
+  "ProfileSettingsForm.timeZone":"TimeZone",
+  "ProfileSettingsForm.vatNo":"Vat Number (Optional)",
+  "ProfileSettingsForm.languages": "Languages",
+  "ProfileSettingsForm.companyNameRequired":"Company name required",
+  "ProfileSettingsForm.companyNamePlaceholder": "Company name",
+  "ProfileSettingsForm.companyNumberPlaceholder":"Company number (optional)",
+  "ProfileSettingsForm.countryPlaceHolder":"Select country ",
+  "ProfileSettingsForm.streetPlaceholder":"Street adress",
+  "ProfileSettingsForm.streetRequired":"Street address required",
+  "ProfileSettingsForm.cityPlaceholder":"Town/city name",
+  "ProfileSettingsForm.cityRequired":"Town/city name required",
+  "ProfileSettingsForm.statePlaceholder":"State",
+  "ProfileSettingsForm.stateRequired":"Enter your state",
+  "ProfileSettingsForm.zipCodePlaceholder":"Postal / ZIP code",
+  "ProfileSettingsForm.zipCodeRequired":"Enter valid postal/zip code",
+  "ProfileSettingsForm.phone" :"Phone"
+
 }

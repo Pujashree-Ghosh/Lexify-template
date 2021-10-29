@@ -53,7 +53,7 @@ export class ProfileSettingsPageComponent extends Component {
       intl,
     } = this.props;
 
-    console.log(this.state);
+    // console.log(this.state);
     // console.log(currentUser);
     const handleSubmit = values => {
       const { firstName, lastName, bio: rawBio } = values;
@@ -65,6 +65,9 @@ export class ProfileSettingsPageComponent extends Component {
         firstName: firstName.trim(),
         lastName: lastName.trim(),
         bio,
+        // protectedData: {
+        //   demo: 'asdf',
+        // },
       };
       const uploadedImage = this.props.image;
 
@@ -189,7 +192,7 @@ export class ProfileSettingsPageComponent extends Component {
           </LayoutWrapperTopbar>
           <LayoutWrapperMain>
             <div className={css.content}>
-              {userProfileType}
+              {/* {userProfileType} */}
               <div className={css.headingContainer}>
                 <h1 className={css.heading}>
                   <FormattedMessage id="ProfileSettingsPage.heading" />

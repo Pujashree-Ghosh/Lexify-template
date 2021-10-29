@@ -18,8 +18,10 @@ import {
   FieldTextInput,
   FieldSelect,
 } from '../../components';
+import PhoneInput from 'react-phone-input-2';
 
 import css from './ProfileSettingsForm.module.css';
+import 'react-phone-input-2/lib/style.css';
 
 const ACCEPT_IMAGES = 'image/*';
 const UPLOAD_CHANGE_DELAY = 2000; // Show spinner so that browser has time to load img srcset
@@ -29,7 +31,7 @@ class ProfileSettingsFormComponent extends Component {
     super(props);
 
     this.uploadDelayTimeoutId = null;
-    this.state = { uploadDelay: false };
+    this.state = { uploadDelay: false, selectedOption: 'legalEntity' };
     this.submittedValues = {};
   }
 
@@ -71,7 +73,7 @@ class ProfileSettingsFormComponent extends Component {
             values,
             selectedOption,
           } = fieldRenderProps;
-          console.log(selectedOption);
+          console.log(values);
 
           const user = ensureCurrentUser(currentUser);
 
@@ -106,6 +108,53 @@ class ProfileSettingsFormComponent extends Component {
           const bioPlaceholder = intl.formatMessage({
             id: 'ProfileSettingsForm.bioPlaceholder',
           });
+
+          const companyNamePlaceholder = intl.formatMessage({
+            id: 'ProfileSettingsForm.companyNamePlaceholder',
+          });
+          const companyNameRequiredMessage = intl.formatMessage({
+            id: 'ProfileSettingsForm.companyNameRequired',
+          });
+          const companyNameRequired = validators.required(companyNameRequiredMessage);
+
+          const companyNumberPlaceholder = intl.formatMessage({
+            id: 'ProfileSettingsForm.companyNumberPlaceholder',
+          });
+
+          const countryPlaceHolder = intl.formatMessage({
+            id: 'ProfileSettingsForm.countryPlaceHolder',
+          });
+          const streetPlaceholder = intl.formatMessage({
+            id: 'ProfileSettingsForm.streetPlaceholder',
+          });
+          const streetRequiredMessage = intl.formatMessage({
+            id: 'ProfileSettingsForm.streetRequired',
+          });
+          const streetRequired = validators.required(streetRequiredMessage);
+
+          const cityPlaceholder = intl.formatMessage({
+            id: 'ProfileSettingsForm.cityPlaceholder',
+          });
+          const cityRequiredMessage = intl.formatMessage({
+            id: 'ProfileSettingsForm.cityRequired',
+          });
+          const cityRequired = validators.required(cityRequiredMessage);
+
+          const statePlaceholder = intl.formatMessage({
+            id: 'ProfileSettingsForm.statePlaceholder',
+          });
+          const stateRequiredMessage = intl.formatMessage({
+            id: 'ProfileSettingsForm.stateRequired',
+          });
+          const stateRequired = validators.required(stateRequiredMessage);
+
+          const zipCodePlaceholder = intl.formatMessage({
+            id: 'ProfileSettingsForm.zipCodePlaceholder',
+          });
+          const zipCodeRequiredMessage = intl.formatMessage({
+            id: 'ProfileSettingsForm.zipCodeRequired',
+          });
+          const zipCodeRequired = validators.required(zipCodeRequiredMessage);
 
           const uploadingOverlay =
             uploadInProgress || this.state.uploadDelay ? (
@@ -262,6 +311,38 @@ class ProfileSettingsFormComponent extends Component {
                   <FormattedMessage id="ProfileSettingsForm.fileInfo" />
                 </div>
               </div>
+              {user && !user?.attributes?.profile?.protectedData?.isLawyer ? (
+                <div className={css.radioButtons}>
+                  <label className={css.radio}>
+                    <input
+                      className={css.radioInput}
+                      name="userType"
+                      type="radio"
+                      value="legalEntity"
+                      checked={this.state.selectedOption === 'legalEntity'}
+                      onChange={() => {
+                        this.setState({ selectedOption: 'legalEntity' });
+                      }}
+                    />
+                    Legal entity
+                  </label>
+                  <label className={css.radio}>
+                    <input
+                      className={css.radioInput}
+                      name="userType"
+                      type="radio"
+                      value="privateIndividual"
+                      checked={this.state.selectedOption === 'privateIndividual'}
+                      onChange={() => {
+                        this.setState({ selectedOption: 'privateIndividual' });
+                      }}
+                    />
+                    Private individual
+                  </label>
+                </div>
+              ) : (
+                ''
+              )}
               <div className={css.sectionContainer}>
                 <h3 className={css.sectionTitle}>
                   <FormattedMessage id="ProfileSettingsForm.yourName" />
@@ -287,55 +368,151 @@ class ProfileSettingsFormComponent extends Component {
                   />
                 </div>
               </div>
+
               <div className={css.sectionContainer}>
                 <h3 className={css.sectionTitle}>
-                  <FormattedMessage id="ProfileSettingsForm.address" />
+                  <FormattedMessage id="ProfileSettingsForm.phone" />
                 </h3>
-                {/* <div className={css.nameContainer}> */}
-                <FieldSelect
-                  id="country"
-                  name="country"
-                  // label="Choose an option:"
-                  // validate={required}
-                >
-                  <option value="">Pick something...</option>
-                  <option value="first">First option</option>
-                  <option value="second">Second option</option>
-                </FieldSelect>
-                <FieldTextInput
-                  className={css.street}
-                  type="text"
-                  id="street"
-                  name="street"
-                  // placeholder={streetPlaceholder}
-                  // validate={streetRequired}
-                />
-                <FieldTextInput
-                  className={css.city}
-                  type="text"
-                  id="city"
-                  name="city"
-                  // placeholder={cityPlaceholder}
-                  // validate={cityRequired}
-                />
-                <FieldTextInput
-                  className={css.state}
-                  type="text"
-                  id="state"
-                  name="state"
-                  // placeholder={statePlaceholder}
-                  // validate={stateRequired}
-                />
-                <FieldTextInput
-                  className={css.zipCode}
-                  type="text"
-                  id="zipCode"
-                  name="zipCode"
-                  // placeholder={zipCodePlaceholder}
-                  // validate={zipCodeRequired}
-                />
-                {/* </div> */}
+                <div className={css.phoneContainer}>
+                  <PhoneInput
+                    onChange={val => {
+                      // values.phoneNumber && isPossiblePhoneNumber(values.phoneNumber)
+                      //   ? setPhoneErr(false)
+                      //   : '';
+                      // values.phoneNumber && values.phoneNumber.length > 8 ? setPhoneErr(false) : '';
+                      form.change('phoneNumber', val);
+                    }}
+                    onBlur={() => {
+                      // values.phoneNumber && isPossiblePhoneNumber(values.phoneNumber)
+                      // values.phoneNumber && values.phoneNumber.length > 8
+                      //   ? setPhoneErr(false)
+                      //   : setPhoneErr(true);
+                      console.log(values.phoneNumber);
+                    }}
+                  />
+                </div>
               </div>
+
+              {this.state.selectedOption === 'legalEntity' ? (
+                <div className={css.sectionContainer}>
+                  <h3 className={css.sectionTitle}>
+                    <FormattedMessage id="ProfileSettingsForm.companyDetail" />
+                  </h3>
+                  {/* <div className={css.nameContainer}> */}
+                  <FieldTextInput
+                    className={css.companyName}
+                    type="text"
+                    id="companyName"
+                    name="companyName"
+                    placeholder={companyNamePlaceholder}
+                    validate={companyNameRequired}
+                  />
+                  <FieldTextInput
+                    className={css.companyNumber}
+                    type="text"
+                    id="companyNumber"
+                    name="companyNumber"
+                    placeholder={companyNumberPlaceholder}
+                    // validate={companyNumberRequired}
+                  />
+                  <FieldSelect
+                    id="country"
+                    name="country"
+                    // label="Choose an option:"
+                    // validate={required}
+                  >
+                    <option value="">{countryPlaceHolder}</option>
+                    <option value="USA">USA</option>
+                    <option value="India">India</option>
+                    <option value="UK">UK</option>
+                  </FieldSelect>
+                  <FieldTextInput
+                    className={css.street}
+                    type="text"
+                    id="street"
+                    name="street"
+                    placeholder={streetPlaceholder}
+                    validate={streetRequired}
+                  />
+                  <FieldTextInput
+                    className={css.city}
+                    type="text"
+                    id="city"
+                    name="city"
+                    placeholder={cityPlaceholder}
+                    validate={cityRequired}
+                  />
+                  <FieldTextInput
+                    className={css.state}
+                    type="text"
+                    id="state"
+                    name="state"
+                    placeholder={statePlaceholder}
+                    validate={stateRequired}
+                  />
+                  <FieldTextInput
+                    className={css.ZipCode}
+                    type="text"
+                    id="zipCode"
+                    name="zipCode"
+                    placeholder={zipCodePlaceholder}
+                    validate={zipCodeRequired}
+                  />
+                  {/* </div> */}
+                </div>
+              ) : (
+                <div className={css.sectionContainer}>
+                  <h3 className={css.sectionTitle}>
+                    <FormattedMessage id="ProfileSettingsForm.address" />
+                  </h3>
+                  {/* <div className={css.nameContainer}> */}
+                  <FieldSelect
+                    id="country"
+                    name="country"
+                    // label="Choose an option:"
+                    // validate={required}
+                  >
+                    <option value="">{countryPlaceHolder}</option>
+                    <option value="USA">USA</option>
+                    <option value="India">India</option>
+                    <option value="UK">UK</option>
+                  </FieldSelect>
+                  <FieldTextInput
+                    className={css.street}
+                    type="text"
+                    id="street"
+                    name="street"
+                    placeholder={streetPlaceholder}
+                    validate={streetRequired}
+                  />
+                  <FieldTextInput
+                    className={css.city}
+                    type="text"
+                    id="city"
+                    name="city"
+                    placeholder={cityPlaceholder}
+                    validate={cityRequired}
+                  />
+                  <FieldTextInput
+                    className={css.state}
+                    type="text"
+                    id="state"
+                    name="state"
+                    placeholder={statePlaceholder}
+                    validate={stateRequired}
+                  />
+                  <FieldTextInput
+                    className={css.zipCode}
+                    type="text"
+                    id="zipCode"
+                    name="zipCode"
+                    placeholder={zipCodePlaceholder}
+                    validate={zipCodeRequired}
+                  />
+                  {/* </div> */}
+                </div>
+              )}
+
               <div className={css.sectionContainer}>
                 <h3 className={css.sectionTitle}>
                   <FormattedMessage id="ProfileSettingsForm.timeZone" />
@@ -382,7 +559,7 @@ class ProfileSettingsFormComponent extends Component {
                   <option value="second">Second option</option>
                 </FieldSelect>
               </div>
-              <div className={classNames(css.sectionContainer, css.lastSection)}>
+              {/* <div className={classNames(css.sectionContainer, css.lastSection)}>
                 <h3 className={css.sectionTitle}>
                   <FormattedMessage id="ProfileSettingsForm.bioHeading" />
                 </h3>
@@ -396,7 +573,7 @@ class ProfileSettingsFormComponent extends Component {
                 <p className={css.bioInfo}>
                   <FormattedMessage id="ProfileSettingsForm.bioInfo" />
                 </p>
-              </div>
+              </div> */}
               {submitError}
               <Button
                 className={css.submitButton}
