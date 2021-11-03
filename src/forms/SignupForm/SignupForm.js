@@ -260,6 +260,7 @@ const SignupFormComponent = props => (
                   <div className={css.selectLabel}>Select country</div>
 
                   <Select
+                    className={css.scphone}
                     options={countryOptions || []}
                     getOptionLabel={option => `${option.name} (${option.dialCode})`}
                     getOptionValue={option => option['dialCode']}

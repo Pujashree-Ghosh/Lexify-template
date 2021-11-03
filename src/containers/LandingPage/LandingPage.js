@@ -2,12 +2,18 @@ import React from 'react';
 import { bool, object } from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { injectIntl, intlShape } from '../../util/reactIntl';
 import { isScrollingDisabled } from '../../ducks/UI.duck';
 import { propTypes } from '../../util/types';
 import config from '../../config';
+// import { Field, Form as FinalForm } from 'react-final-form';
 import {
+  Form,
+  Button,
+  FieldTextInput,
+  FieldSelect,
+  FieldDateInput,
   Page,
   SectionHero,
   SectionHowItWorks,
@@ -18,11 +24,14 @@ import {
   LayoutWrapperFooter,
   Footer,
 } from '../../components';
+
 import { TopbarContainer } from '../../containers';
 
 import facebookImage from '../../assets/yogatimeFacebook-1200x630.jpg';
 import twitterImage from '../../assets/yogatimeTwitter-600x314.jpg';
 import css from './LandingPage.module.css';
+
+import searchiconbtn from '../../assets/Icon-awesome-search.svg';
 
 export const LandingPageComponent = props => {
   const {
@@ -66,10 +75,96 @@ export const LandingPageComponent = props => {
           <TopbarContainer />
         </LayoutWrapperTopbar>
         <LayoutWrapperMain>
-          <div className={css.heroContainer}>
-            <SectionHero className={css.hero} history={history} location={location} />
+          <div className={css.sectionContent}>
+            <div className={css.updthmform}>
+              <h2>Find Legal Advice Online</h2>
+              <p>Find experienced lawyers you need. Anytime. Anywhere.</p>
+
+              <div className={css.lformrow}>
+                <div className={css.lformcol}>
+                  <label>Country</label>
+                  <select className={css.formcontrol}>
+                    <option selected>Select Country</option>
+                    <option>adasd</option>
+                    <option>adasd</option>
+                  </select>
+                  {/* <FieldTextInput className={css.firstName} type="text" />
+                  <FieldSelect
+                    // id="timeZone"
+                    name="timeZone"
+                  >
+                    <option value="">aa</option>
+                    <option value="first">bbb</option>
+                    <option value="second">ccc</option>
+                  </FieldSelect> */}
+                </div>
+
+                <div className={css.lformcol}>
+                  <label>City</label>
+                  <input type="text" className={css.formcontrol} placeholder="Enter City Name" />
+                </div>
+
+                {/* <div className={css.lformcol}>
+                  <label>State</label>
+                  <select className={css.formcontrol}>
+                    <option selected>Select State</option>
+                    <option>adasd</option>
+                    <option>adasd</option>
+                  </select>
+                </div>
+
+                <div className={css.lformcol}>
+                  <label>ZIP</label>
+                  <input type="text" className={css.formcontrol} placeholder="Type ZIP Code" />
+                </div> */}
+
+                <div className={css.lformcol}>
+                  <label>Practice Area</label>
+                  <select className={css.formcontrol}>
+                    <option selected>Select Practice Area</option>
+                    <option>adasd</option>
+                    <option>adasd</option>
+                  </select>
+                </div>
+              </div>
+              <div className={css.lformrow}>
+                <div className={css.lformcol}>
+                  <label>Keyword</label>
+                  <input type="text" className={css.formcontrol} placeholder="Type Keyword" />
+                </div>
+
+                <div className={css.lformcol}>
+                  <label>Language</label>
+                  <select className={css.formcontrol}>
+                    <option selected>Select Language</option>
+                    <option>adasd</option>
+                    <option>adasd</option>
+                  </select>
+                </div>
+
+                <div className={css.lformcol}>
+                  <label>Industry</label>
+                  <select className={css.formcontrol}>
+                    <option selected>Select Industry</option>
+                    <option>adasd</option>
+                    <option>adasd</option>
+                  </select>
+                </div>
+              </div>
+              <Button className={css.submitButton} type="submit">
+                <img src={searchiconbtn} /> Find Legal Advice
+              </Button>
+
+              <p className={css.aylbtntxt}>
+                Are you a lawyer?
+                <Link to="/">Join us now!</Link>
+              </p>
+            </div>
           </div>
-          <ul className={css.sections}>
+          {/* <div className={css.heroContainer}>
+            <SectionHero className={css.hero} history={history} location={location} />
+          </div> */}
+          {/* <ul className={css.sections}>
             <li className={css.section}>
               <div className={css.sectionContentFirstChild}>
                 <SectionLocations />
@@ -83,8 +178,9 @@ export const LandingPageComponent = props => {
                 />
               </div>
             </li>
-          </ul>
+          </ul> */}
         </LayoutWrapperMain>
+
         <LayoutWrapperFooter>
           <Footer />
         </LayoutWrapperFooter>
