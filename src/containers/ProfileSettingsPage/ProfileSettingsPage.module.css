@@ -43,3 +43,11 @@
     margin: 37px 0 0 auto;
   }
 }
+.radio {
+  display: flex;
+  align-items: center;
+  padding-top: 6px;
+}
+.radioInput {
+  width: 50%;
+}

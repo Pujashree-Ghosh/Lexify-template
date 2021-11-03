@@ -10,19 +10,14 @@ import {
   PrimaryButton,
   FieldTextInput,
   FieldPhoneNumberInput,
-  Button,
+  // Button,
 } from '../../components';
 
 import css from './SignupForm.module.css';
-import './reactPhoneInput.css';
-import PhoneInput, {
-  formatPhoneNumber,
-  formatPhoneNumberIntl,
-  isValidPhoneNumber,
-  isPossiblePhoneNumber,
-} from 'react-phone-number-input';
 import axios from 'axios';
 import { apiBaseUrl } from '../../util/api';
+import Select from 'react-select';
+import config from '../../config';
 
 const KEY_CODE_ENTER = 13;
 
@@ -44,8 +39,9 @@ const SignupFormComponent = props => (
       } = fieldRenderProps;
       const [showOtp, setShowOtp] = useState(false);
       const [otpErr, setOtpErr] = useState(false);
-      const [phoneErr, setPhoneErr] = useState(false);
+      const [codeErr, setCodeErr] = useState(false);
       const [submitProgress, setSubmitProgress] = useState(false);
+      const [countryOptions, setcountryOptions] = useState(config.custom.country_codes);
 
       // email
       const emailLabel = intl.formatMessage({
@@ -158,10 +154,7 @@ const SignupFormComponent = props => (
       const submitInProgress = inProgress;
       const submitDisabled = !values.otp || invalid || submitInProgress;
       const sendOtpDisable =
-        emailCheck(values.email) &&
-        values.phoneNumber &&
-        isPossiblePhoneNumber(values.phoneNumber) &&
-        formatPhoneNumberIntl(values.phoneNumber).split(' ')[0] > 0
+        emailCheck(values.email) && values.phoneNumber && values.phoneNumber.length > 8
           ? false
           : true;
 
@@ -184,15 +177,19 @@ const SignupFormComponent = props => (
       );
 
       const sendOtp = () => {
-        axios
-          .post(`${apiBaseUrl()}/api/user`, {
-            email: values.email,
-            mobile: values.phoneNumber,
-          })
-          .then(resp => {
-            console.log(resp);
-          })
-          .catch(err => console.log(err));
+        if (values.phoneNumber && values.countryCode) {
+          axios
+            .post(`${apiBaseUrl()}/api/user`, {
+              email: values.email,
+              mobile: values.countryCode + values.phoneNumber,
+            })
+            .then(resp => {
+              console.log(resp);
+            })
+            .catch(err => console.log(err));
+        } else {
+          return;
+        }
       };
 
       const signUpSubmit = () => {
@@ -218,13 +215,6 @@ const SignupFormComponent = props => (
             console.log(err.response.status);
           });
       };
-
-      // console.log(
-      //   values.phoneNumber && formatPhoneNumber(values.phoneNumber),
-      //   values.phoneNumber && isValidPhoneNumber(values.phoneNumber),
-      //   values.phoneNumber && isPossiblePhoneNumber(values.phoneNumber),
-      //   values.phoneNumber && formatPhoneNumberIntl(values.phoneNumber).split(' ')
-      // );
 
       return (
         <Form className={classes}>
@@ -267,24 +257,40 @@ const SignupFormComponent = props => (
               <label className={css.selectLabel}>{phoneLabel}</label>
               <div className={css.phoneInputField}>
                 <div className={css.phnWithErr}>
-                  <PhoneInput
-                    international
-                    // countryCallingCodeEditable={false}
+                  <div className={css.selectLabel}>Select country</div>
+
+                  <Select
+                    options={countryOptions || []}
+                    getOptionLabel={option => `${option.name} (${option.dialCode})`}
+                    getOptionValue={option => option['dialCode']}
+                    name="countryCode"
+                    id="countryCode"
+                    value={countryOptions.filter(
+                      item =>
+                        item.dialCode === values.countryCode && item.name === values.countryName
+                    )}
                     onChange={val => {
-                      values.phoneNumber && isPossiblePhoneNumber(values.phoneNumber)
-                        ? setPhoneErr(false)
-                        : '';
-                      form.change('phoneNumber', val);
-                    }}
-                    onBlur={() => {
-                      values.phoneNumber && isPossiblePhoneNumber(values.phoneNumber)
-                        ? setPhoneErr(false)
-                        : setPhoneErr(true);
+                      if (val && val.dialCode) {
+                        form.change('countryCode', val.dialCode);
+                        form.change('countryName', val.name);
+                        setCodeErr(false);
+                      }
                     }}
                   />
-                  {phoneErr ? (
+
+                  <FieldPhoneNumberInput
+                    className={css.phone}
+                    name="phoneNumber"
+                    id={formId ? `${formId}.phoneNumber` : 'phoneNumber'}
+                    label={phoneLabel}
+                    placeholder={phonePlaceholder}
+                    validate={phoneRequired}
+                    onBlur={() => (!values.countryCode ? setCodeErr(true) : setCodeErr(false))}
+                  />
+
+                  {codeErr ? (
                     <span className={css.phnErrMsg}>
-                      <FormattedMessage id="SignupForm.phoneRequired" />
+                      <FormattedMessage id="SignupForm.codeRequired" />
                     </span>
                   ) : (
                     ''
@@ -329,44 +335,6 @@ const SignupFormComponent = props => (
               ''
             )}
 
-            {/* <div className={css.selectLabel}>Select country</div>
-
-            <Select
-              options={countryOptions || []}
-              // value={values.countryCode}
-              // label="name"
-              getOptionLabel={option => `${option.name} (${option.dialCode})`}
-              // getOptionValue={option => option.dialCode}
-              getOptionValue={option => option['dialCode']}
-              // onChange={changeHandler}
-              // options={this.state.roleData}
-              name="countryCode"
-              id="countryCode"
-              // placeholder="Now type the Job Role or Government Position Classification Hereyr"
-              value={countryOptions.filter(
-                item => item.dialCode === values.countryCode && item.name === values.countryName
-              )}
-              // // id="subsectors"
-              onChange={val => {
-                if (val && val.dialCode) {
-                  form.change('countryCode', val.dialCode);
-                  form.change('countryName', val.name);
-                }
-                // val &&
-                //   val.dialCode &&
-                //   form.change('phoneNumber', `${val.dialCode}${phoneNumber}`);
-                // val && form.change('isGrade', values.isGrade || null);
-              }}
-            /> */}
-
-            {/* <FieldPhoneNumberInput
-              className={css.phone}
-              name="phoneNumber"
-              id={formId ? `${formId}.phoneNumber` : 'phoneNumber'}
-              label={phoneLabel}
-              placeholder={phonePlaceholder}
-              validate={phoneRequired}
-            /> */}
             <div className={css.fromgp}>
               <FieldTextInput
                 className={css.password}

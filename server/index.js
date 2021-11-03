@@ -32,7 +32,7 @@ const sharetribeSdk = require('sharetribe-flex-sdk');
 const sitemap = require('express-sitemap');
 const passport = require('passport');
 const auth = require('./auth');
-// require('./globalHelpers');
+require('./globalHelpers');
 const apiRouter = require('./apiRouter');
 const wellKnownRouter = require('./wellKnownRouter');
 const { getExtractors } = require('./importer');
