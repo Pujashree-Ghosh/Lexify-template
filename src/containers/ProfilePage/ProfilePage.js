@@ -64,6 +64,7 @@ export class ProfilePageComponent extends Component {
       viewport,
       intl,
     } = this.props;
+
     const ensuredCurrentUser = ensureCurrentUser(currentUser);
     const profileUser = ensureUser(user);
     const isCurrentUser =
@@ -72,6 +73,8 @@ export class ProfilePageComponent extends Component {
     const bio = profileUser.attributes.profile.bio;
     const hasBio = !!bio;
     const isMobileLayout = viewport.width < MAX_MOBILE_SCREEN_WIDTH;
+
+    console.log(profileUser, currentUser);
 
     const editLinkMobile = isCurrentUser ? (
       <NamedLink className={css.editLinkMobile} name="ProfileSettingsPage">
@@ -213,16 +216,28 @@ export class ProfilePageComponent extends Component {
           name: schemaTitle,
         }}
       >
-        <LayoutSideNavigation>
-          <LayoutWrapperTopbar>
-            <TopbarContainer currentPage="ProfilePage" />
-          </LayoutWrapperTopbar>
-          <LayoutWrapperSideNav className={css.aside}>{asideContent}</LayoutWrapperSideNav>
-          <LayoutWrapperMain>{content}</LayoutWrapperMain>
-          <LayoutWrapperFooter>
-            <Footer />
-          </LayoutWrapperFooter>
-        </LayoutSideNavigation>
+        {/* <LayoutSideNavigation> */}
+        <LayoutWrapperTopbar>
+          <TopbarContainer currentPage="ProfilePage" />
+        </LayoutWrapperTopbar>
+        {/* <LayoutWrapperSideNav className={css.aside}>{asideContent}</LayoutWrapperSideNav>
+          <LayoutWrapperMain>{content}</LayoutWrapperMain> */}
+        <div className={css.profileCard}>
+          <div className={css.profileImage}>
+            <AvatarLarge className={css.avatar} user={user} disableProfileLink />
+          </div>
+          <div className={css.nameBio}>
+            <div className={css.profileName}>{user?.attributes?.profile?.displayName}</div>
+            <div className={css.locationBio}>
+              <span>Certificate Year</span>
+              <span>Location</span>
+            </div>
+          </div>
+        </div>
+        <LayoutWrapperFooter>
+          <Footer />
+        </LayoutWrapperFooter>
+        {/* </LayoutSideNavigation> */}
       </Page>
     );
   }

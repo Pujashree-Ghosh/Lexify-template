@@ -891,8 +891,26 @@ class ProfileSettingsFormComponent extends Component {
                             onClick={() => {
                               fields.push();
                             }}
+                            disabled={
+                              !values.jurisdictionPractice[values.jurisdictionPractice?.length - 1]
+                                ?.country ||
+                              !values.jurisdictionPractice[values.jurisdictionPractice?.length - 1]
+                                ?.date ||
+                              !values.jurisdictionPractice[values.jurisdictionPractice?.length - 1]
+                                ?.status
+                            }
                           >
                             <FormattedMessage id="ProfileSettingsForm.addMore" />
+                          </Button>
+                          <Button
+                            className={css.remove}
+                            type="button"
+                            onClick={() => {
+                              fields.pop();
+                            }}
+                            disabled={values.jurisdictionPractice?.length < 2}
+                          >
+                            <FormattedMessage id="ProfileSettingsForm.remove" />
                           </Button>
                         </div>
                       );
@@ -984,8 +1002,23 @@ class ProfileSettingsFormComponent extends Component {
                             onClick={() => {
                               fields.push();
                             }}
+                            disabled={
+                              !values.education[values.education?.length - 1]?.instituteName ||
+                              !values.education[values.education?.length - 1]?.degree ||
+                              !values.education[values.education?.length - 1]?.graduationYear
+                            }
                           >
                             <FormattedMessage id="ProfileSettingsForm.addMore" />
+                          </Button>
+                          <Button
+                            className={css.remove}
+                            type="button"
+                            onClick={() => {
+                              fields.pop();
+                            }}
+                            disabled={values.education?.length < 2}
+                          >
+                            <FormattedMessage id="ProfileSettingsForm.remove" />
                           </Button>
                         </div>
                       );
@@ -1024,8 +1057,19 @@ class ProfileSettingsFormComponent extends Component {
                             onClick={() => {
                               fields.push();
                             }}
+                            disabled={!values.practice[values.practice?.length - 1]?.area}
                           >
                             <FormattedMessage id="ProfileSettingsForm.addMore" />
+                          </Button>
+                          <Button
+                            className={css.remove}
+                            type="button"
+                            onClick={() => {
+                              fields.pop();
+                            }}
+                            disabled={values.practice?.length < 2}
+                          >
+                            <FormattedMessage id="ProfileSettingsForm.remove" />
                           </Button>
                         </div>
                       );
@@ -1095,6 +1139,16 @@ class ProfileSettingsFormComponent extends Component {
                           >
                             <FormattedMessage id="ProfileSettingsForm.addMore" />
                           </Button>
+                          <Button
+                            className={css.remove}
+                            type="button"
+                            onClick={() => {
+                              fields.pop();
+                            }}
+                            disabled={values.industry?.length < 2}
+                          >
+                            <FormattedMessage id="ProfileSettingsForm.remove" />
+                          </Button>
                         </div>
                       );
                     }}
@@ -1112,23 +1166,6 @@ class ProfileSettingsFormComponent extends Component {
                       {fields.map((name, i) => {
                         return (
                           <div>
-                            {/* <FieldDateInput
-                              {...{
-                                name: `${name}.date`,
-                                useMobileMargins: false,
-                                id: `${name}.date`,
-                                label: 'Date',
-                                placeholderText: moment().format('ddd, MMMM D'),
-                                format: identity,
-                                validate: composeValidators(
-                                  required('Required'),
-                                  bookingDateRequired('Date is not valid')
-                                ),
-                                // onChange: val => form.change(`${values.schedule[i].date}`, val),
-                                // onBlur: values => console.log(values),
-                                // onFocus: () => console.log('onFocus called from DateInput props.'),
-                              }}
-                            /> */}
                             <FieldTextInput
                               className={css.street}
                               type="date"
@@ -1183,8 +1220,23 @@ class ProfileSettingsFormComponent extends Component {
                         onClick={() => {
                           fields.push();
                         }}
+                        disabled={
+                          !values.schedule[values.schedule?.length - 1]?.date ||
+                          !values.schedule[values.schedule?.length - 1]?.startTime ||
+                          !values.schedule[values.schedule?.length - 1]?.endTime
+                        }
                       >
                         <FormattedMessage id="ProfileSettingsForm.addMore" />
+                      </Button>
+                      <Button
+                        className={css.remove}
+                        type="button"
+                        onClick={() => {
+                          fields.pop();
+                        }}
+                        disabled={values.schedule?.length < 2}
+                      >
+                        <FormattedMessage id="ProfileSettingsForm.remove" />
                       </Button>
                     </div>
                   );

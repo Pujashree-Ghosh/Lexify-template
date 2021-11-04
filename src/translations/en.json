@@ -1195,5 +1195,6 @@
   "ProfileSettingsForm.fromLabel":"From",
   "ProfileSettingsForm.toLabel":"To",
   "ProfileSettingsForm.recentWorkLabel":"Recent work",
-  "ProfileSettingsForm.recentWorkPlaceholder":"Write your recent work relevant to this industry"
+  "ProfileSettingsForm.recentWorkPlaceholder":"Write your recent work relevant to this industry",
+  "ProfileSettingsForm.remove":"Remove"
 }

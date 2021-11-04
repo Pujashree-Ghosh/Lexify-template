@@ -13,6 +13,8 @@ import {
   // Button,
 } from '../../components';
 
+import PhoneInput from 'react-phone-input-2';
+import './PhoneInput2.css';
 import css from './SignupForm.module.css';
 import axios from 'axios';
 import { apiBaseUrl } from '../../util/api';
@@ -39,9 +41,8 @@ const SignupFormComponent = props => (
       } = fieldRenderProps;
       const [showOtp, setShowOtp] = useState(false);
       const [otpErr, setOtpErr] = useState(false);
-      const [codeErr, setCodeErr] = useState(false);
       const [submitProgress, setSubmitProgress] = useState(false);
-      const [countryOptions, setcountryOptions] = useState(config.custom.country_codes);
+      const [phnErr, setPhnErr] = useState(false);
 
       // email
       const emailLabel = intl.formatMessage({
@@ -177,11 +178,11 @@ const SignupFormComponent = props => (
       );
 
       const sendOtp = () => {
-        if (values.phoneNumber && values.countryCode) {
+        if (values.phoneNumber) {
           axios
             .post(`${apiBaseUrl()}/api/user`, {
               email: values.email,
-              mobile: values.countryCode + values.phoneNumber,
+              mobile: '+' + values.phoneNumber,
             })
             .then(resp => {
               console.log(resp);
@@ -199,7 +200,7 @@ const SignupFormComponent = props => (
         axios
           .post(`${apiBaseUrl()}/api/user/verify`, {
             otp: values.otp * 1,
-            mobile: values.phoneNumber,
+            mobile: '+' + values.phoneNumber,
           })
           .then(resp => {
             console.log(resp);
@@ -257,40 +258,25 @@ const SignupFormComponent = props => (
               <label className={css.selectLabel}>{phoneLabel}</label>
               <div className={css.phoneInputField}>
                 <div className={css.phnWithErr}>
-                  <div className={css.selectLabel}>Select country</div>
-
-                  <Select
-                    options={countryOptions || []}
-                    getOptionLabel={option => `${option.name} (${option.dialCode})`}
-                    getOptionValue={option => option['dialCode']}
-                    name="countryCode"
-                    id="countryCode"
-                    value={countryOptions.filter(
-                      item =>
-                        item.dialCode === values.countryCode && item.name === values.countryName
-                    )}
+                  <PhoneInput
+                    value={values.phoneNumber}
                     onChange={val => {
-                      if (val && val.dialCode) {
-                        form.change('countryCode', val.dialCode);
-                        form.change('countryName', val.name);
-                        setCodeErr(false);
-                      }
+                      // values.phoneNumber && isPossiblePhoneNumber(values.phoneNumber)
+                      //   ? setPhoneErr(false)
+                      //   : '';
+                      values.phoneNumber && values.phoneNumber.length > 8 ? setPhnErr(false) : '';
+                      form.change('phoneNumber', val);
+                    }}
+                    onBlur={() => {
+                      // values.phoneNumber && isPossiblePhoneNumber(values.phoneNumber)
+                      values.phoneNumber && values.phoneNumber.length > 8
+                        ? setPhnErr(false)
+                        : setPhnErr(true);
                     }}
                   />
-
-                  <FieldPhoneNumberInput
-                    className={css.phone}
-                    name="phoneNumber"
-                    id={formId ? `${formId}.phoneNumber` : 'phoneNumber'}
-                    label={phoneLabel}
-                    placeholder={phonePlaceholder}
-                    validate={phoneRequired}
-                    onBlur={() => (!values.countryCode ? setCodeErr(true) : setCodeErr(false))}
-                  />
-
-                  {codeErr ? (
+                  {phnErr ? (
                     <span className={css.phnErrMsg}>
-                      <FormattedMessage id="SignupForm.codeRequired" />
+                      <FormattedMessage id="profileSettingForm.phoneRequired" />
                     </span>
                   ) : (
                     ''
@@ -300,13 +286,14 @@ const SignupFormComponent = props => (
                   className={css.sendOtpButton}
                   type="button"
                   onClick={() => {
+                    // this.setState({ showOtp: true });
                     setShowOtp(true);
                     sendOtp();
                   }}
                   // inProgress={}
                   disabled={sendOtpDisable}
                 >
-                  <FormattedMessage id="SignupForm.sendOtp" />
+                  <FormattedMessage id="ProfileSettingsForm.sendOtp" />
                 </button>
               </div>
             </div>

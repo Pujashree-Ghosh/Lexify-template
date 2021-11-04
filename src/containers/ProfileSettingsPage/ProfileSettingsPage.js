@@ -48,29 +48,31 @@ export class ProfileSettingsPageComponent extends Component {
   componentDidMount() {
     const user = ensureCurrentUser(this.props.currentUser);
     const protectedData = user?.attributes?.profile?.protectedData;
-    const { clientType, isLawyer } = protectedData ? protectedData : '';
+    const publicData = user?.attributes?.profile?.publicData;
+    const { isLawyer } = protectedData ? protectedData : '';
+    const { clientType } = publicData ? publicData : '';
     // console.log(isLawyer);
     this.setState({ isLawyer: isLawyer });
     if (clientType === 'legalEntity') {
       this.setState({
-        companyName: protectedData.legalEntity.companyName,
-        companyNumber: protectedData.legalEntity.companyNumber,
-        country: protectedData.legalEntity.country,
-        street: protectedData.legalEntity.street,
-        city: protectedData.legalEntity.city,
-        state: protectedData.legalEntity.state,
-        zipCode: protectedData.legalEntity.zipCode,
+        companyName: publicData.legalEntity.companyName,
+        companyNumber: publicData.legalEntity.companyNumber,
+        country: publicData.legalEntity.country,
+        street: publicData.legalEntity.street,
+        city: publicData.legalEntity.city,
+        state: publicData.legalEntity.state,
+        zipCode: publicData.legalEntity.zipCode,
       });
     }
     if (clientType === 'privateIndividual') {
       this.setState({
         companyName: null,
         companyNumber: null,
-        country: protectedData.privateIndividual.country,
-        street: protectedData.privateIndividual.street,
-        city: protectedData.privateIndividual.city,
-        state: protectedData.privateIndividual.state,
-        zipCode: protectedData.privateIndividual.zipCode,
+        country: publicData.privateIndividual.country,
+        street: publicData.privateIndividual.street,
+        city: publicData.privateIndividual.city,
+        state: publicData.privateIndividual.state,
+        zipCode: publicData.privateIndividual.zipCode,
       });
     }
   }
@@ -91,9 +93,17 @@ export class ProfileSettingsPageComponent extends Component {
 
     // console.log(this.state);
     // console.log(currentUser);
+
+    const user = ensureCurrentUser(currentUser);
+    const { firstName, lastName, bio } = user.attributes.profile;
+    const profileImageId = user.profileImage ? user.profileImage.id : null;
+    const profileImage = image || { imageId: profileImageId };
+    const protectedData = user?.attributes?.profile?.protectedData;
+    const publicData = user?.attributes?.profile?.publicData;
+    const isLawyer = protectedData?.isLawyer;
     const handleSubmit = values => {
-      if (this.state.isLawyer) {
-        const { firstName, lastName, bio: rawBio, ...restVal } = values;
+      if (isLawyer === true) {
+        const { firstName, lastName, bio: rawBio, schedule, ...restVal } = values;
 
         const bio = rawBio || '';
 
@@ -101,7 +111,8 @@ export class ProfileSettingsPageComponent extends Component {
           firstName: firstName.trim(),
           lastName: lastName.trim(),
           bio,
-          protectedData: restVal,
+          protectedData: { schedule: schedule },
+          publicData: restVal,
         };
         const uploadedImage = this.props.image;
 
@@ -112,7 +123,8 @@ export class ProfileSettingsPageComponent extends Component {
             : profile;
 
         onUpdateProfile(updatedValues);
-      } else {
+      }
+      if (isLawyer === false) {
         const {
           firstName,
           lastName,
@@ -126,10 +138,10 @@ export class ProfileSettingsPageComponent extends Component {
           schedule,
           ...restVal
         } = values;
-        let protectedData;
+        let publicData;
         if (clientType === 'privateIndividual') {
           const { companyName, companyNumber, ...rest } = restVal;
-          protectedData = {
+          publicData = {
             clientType: clientType,
             privateIndividual: rest,
             legalEntity: {},
@@ -137,10 +149,9 @@ export class ProfileSettingsPageComponent extends Component {
             timeZone: timeZone,
             vatNo: vatNo,
             language: language,
-            schedule: schedule,
           };
         } else {
-          protectedData = {
+          publicData = {
             clientType: clientType,
             privateIndividual: {},
             legalEntity: restVal,
@@ -148,7 +159,6 @@ export class ProfileSettingsPageComponent extends Component {
             timeZone: timeZone,
             vatNo: vatNo,
             language: language,
-            schedule: schedule,
           };
         }
         // console.log('after', Object.keys(values).forEach(k => values[k] == null && delete values[k]));
@@ -160,7 +170,8 @@ export class ProfileSettingsPageComponent extends Component {
           firstName: firstName.trim(),
           lastName: lastName.trim(),
           bio,
-          protectedData: protectedData,
+          protectedData: { schedule: schedule },
+          publicData: publicData,
         };
         const uploadedImage = this.props.image;
 
@@ -174,12 +185,6 @@ export class ProfileSettingsPageComponent extends Component {
       }
     };
 
-    const user = ensureCurrentUser(currentUser);
-    const { firstName, lastName, bio } = user.attributes.profile;
-    const profileImageId = user.profileImage ? user.profileImage.id : null;
-    const profileImage = image || { imageId: profileImageId };
-    const protectedData = user?.attributes?.profile?.protectedData;
-
     const profileSettingsForm = user.id ? (
       protectedData.isLawyer ? (
         <ProfileSettingsForm
@@ -190,15 +195,15 @@ export class ProfileSettingsPageComponent extends Component {
             lastName,
             bio,
             profileImage: user.profileImage,
-            phoneNumber: protectedData?.phoneNumber,
-            jurisdictionPractice: protectedData?.jurisdictionPractice
-              ? protectedData.jurisdictionPractice
+            phoneNumber: publicData?.phoneNumber,
+            jurisdictionPractice: publicData?.jurisdictionPractice
+              ? publicData.jurisdictionPractice
               : [{}],
-            language: protectedData?.language,
-            timeZone: protectedData?.timeZone,
-            education: protectedData?.education ? protectedData.education : [{}],
-            practice: protectedData?.practice ? protectedData.practice : [{}],
-            industry: protectedData?.industry ? protectedData.industry : [{}],
+            language: publicData?.language,
+            timeZone: publicData?.timeZone,
+            education: publicData?.education ? publicData.education : [{}],
+            practice: publicData?.practice ? publicData.practice : [{}],
+            industry: publicData?.industry ? publicData.industry : [{}],
             schedule: protectedData?.schedule ? protectedData.schedule : [{}],
           }}
           profileImage={profileImage}
@@ -227,10 +232,10 @@ export class ProfileSettingsPageComponent extends Component {
             city: this.state.city,
             state: this.state.state,
             zipCode: this.state.zipCode,
-            phoneNumber: protectedData?.phoneNumber,
-            vatNo: protectedData?.vatNo,
-            language: protectedData?.language,
-            timeZone: protectedData?.timeZone,
+            phoneNumber: publicData?.phoneNumber,
+            vatNo: publicData?.vatNo,
+            language: publicData?.language,
+            timeZone: publicData?.timeZone,
             schedule: protectedData?.schedule ? protectedData.schedule : [{}],
           }}
           profileImage={profileImage}
