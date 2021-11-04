@@ -258,24 +258,8 @@ const SignupFormComponent = props => (
               <label className={css.selectLabel}>{phoneLabel}</label>
               <div className={css.phoneInputField}>
                 <div className={css.phnWithErr}>
-<<<<<<< HEAD
                   <PhoneInput
                     value={values.phoneNumber}
-=======
-                  <div className={css.selectLabel}>Select country</div>
-
-                  <Select
-                    className={css.scphone}
-                    options={countryOptions || []}
-                    getOptionLabel={option => `${option.name} (${option.dialCode})`}
-                    getOptionValue={option => option['dialCode']}
-                    name="countryCode"
-                    id="countryCode"
-                    value={countryOptions.filter(
-                      item =>
-                        item.dialCode === values.countryCode && item.name === values.countryName
-                    )}
->>>>>>> 95356bbb7e5ba7aab3f88da86cae6598d016eeed
                     onChange={val => {
                       // values.phoneNumber && isPossiblePhoneNumber(values.phoneNumber)
                       //   ? setPhoneErr(false)
