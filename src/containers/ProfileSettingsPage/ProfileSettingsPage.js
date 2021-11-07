@@ -33,49 +33,9 @@ const onImageUploadHandler = (values, fn) => {
 export class ProfileSettingsPageComponent extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      selectedOption: 'legalEntity',
-      companyName: '',
-      companyNumber: '',
-      country: '',
-      street: '',
-      city: '',
-      state: '',
-      zipCode: '',
-      isLawyer: '',
-    };
+    this.state = {};
   }
-  componentDidMount() {
-    const user = ensureCurrentUser(this.props.currentUser);
-    const protectedData = user?.attributes?.profile?.protectedData;
-    const publicData = user?.attributes?.profile?.publicData;
-    const { isLawyer } = protectedData ? protectedData : '';
-    const { clientType } = publicData ? publicData : '';
-    // console.log(isLawyer);
-    this.setState({ isLawyer: isLawyer });
-    if (clientType === 'legalEntity') {
-      this.setState({
-        companyName: publicData.legalEntity.companyName,
-        companyNumber: publicData.legalEntity.companyNumber,
-        country: publicData.legalEntity.country,
-        street: publicData.legalEntity.street,
-        city: publicData.legalEntity.city,
-        state: publicData.legalEntity.state,
-        zipCode: publicData.legalEntity.zipCode,
-      });
-    }
-    if (clientType === 'privateIndividual') {
-      this.setState({
-        companyName: null,
-        companyNumber: null,
-        country: publicData.privateIndividual.country,
-        street: publicData.privateIndividual.street,
-        city: publicData.privateIndividual.city,
-        state: publicData.privateIndividual.state,
-        zipCode: publicData.privateIndividual.zipCode,
-      });
-    }
-  }
+
   render() {
     const {
       currentUser,
@@ -185,70 +145,92 @@ export class ProfileSettingsPageComponent extends Component {
       }
     };
 
-    const profileSettingsForm = user.id ? (
-      protectedData.isLawyer ? (
-        <ProfileSettingsForm
-          className={css.form}
-          currentUser={currentUser}
-          initialValues={{
-            firstName,
-            lastName,
-            bio,
-            profileImage: user.profileImage,
-            phoneNumber: publicData?.phoneNumber,
-            jurisdictionPractice: publicData?.jurisdictionPractice
-              ? publicData.jurisdictionPractice
-              : [{}],
-            language: publicData?.language,
-            timeZone: publicData?.timeZone,
-            education: publicData?.education ? publicData.education : [{}],
-            practice: publicData?.practice ? publicData.practice : [{}],
-            industry: publicData?.industry ? publicData.industry : [{}],
-            schedule: protectedData?.schedule ? protectedData.schedule : [{}],
-          }}
-          profileImage={profileImage}
-          onImageUpload={e => onImageUploadHandler(e, onImageUpload)}
-          uploadInProgress={uploadInProgress}
-          updateInProgress={updateInProgress}
-          uploadImageError={uploadImageError}
-          updateProfileError={updateProfileError}
-          onSubmit={handleSubmit}
-          selectedOption={this.state.selectedOption}
-        />
-      ) : (
-        <ProfileSettingsForm
-          className={css.form}
-          currentUser={currentUser}
-          initialValues={{
-            firstName,
-            lastName,
-            bio,
-            profileImage: user.profileImage,
-            clientType: 'privateIndividual',
-            companyName: this.state.companyName,
-            companyNumber: this.state.companyNumber,
-            country: this.state.country,
-            street: this.state.street,
-            city: this.state.city,
-            state: this.state.state,
-            zipCode: this.state.zipCode,
-            phoneNumber: publicData?.phoneNumber,
-            vatNo: publicData?.vatNo,
-            language: publicData?.language,
-            timeZone: publicData?.timeZone,
-            schedule: protectedData?.schedule ? protectedData.schedule : [{}],
-          }}
-          profileImage={profileImage}
-          onImageUpload={e => onImageUploadHandler(e, onImageUpload)}
-          uploadInProgress={uploadInProgress}
-          updateInProgress={updateInProgress}
-          uploadImageError={uploadImageError}
-          updateProfileError={updateProfileError}
-          onSubmit={handleSubmit}
-          selectedOption={this.state.selectedOption}
-        />
-      )
-    ) : null;
+    // console.log(publicData.clientType);
+
+    const profileSettingsForm =
+      user.id && publicData && protectedData ? (
+        protectedData.isLawyer ? (
+          <ProfileSettingsForm
+            className={css.form}
+            currentUser={currentUser}
+            initialValues={{
+              firstName,
+              lastName,
+              bio,
+              profileImage: user.profileImage,
+              phoneNumber: publicData.phoneNumber,
+              jurisdictionPractice: publicData.jurisdictionPractice
+                ? publicData.jurisdictionPractice
+                : [{}],
+              language: publicData.language,
+              timeZone: publicData.timeZone,
+              education: publicData.education ? publicData.education : [{}],
+              practice: publicData.practice ? publicData.practice : [{}],
+              industry: publicData.industry ? publicData.industry : [{}],
+              schedule: protectedData.schedule ? protectedData.schedule : [{}],
+            }}
+            profileImage={profileImage}
+            onImageUpload={e => onImageUploadHandler(e, onImageUpload)}
+            uploadInProgress={uploadInProgress}
+            updateInProgress={updateInProgress}
+            uploadImageError={uploadImageError}
+            updateProfileError={updateProfileError}
+            onSubmit={handleSubmit}
+          />
+        ) : (
+          <ProfileSettingsForm
+            className={css.form}
+            currentUser={currentUser}
+            initialValues={{
+              firstName,
+              lastName,
+              bio,
+              profileImage: user.profileImage,
+              clientType: publicData.clientType,
+              companyName:
+                publicData.clientType === 'privateIndividual'
+                  ? null
+                  : publicData.legalEntity?.companyName,
+              companyNumber:
+                publicData.clientType === 'privateIndividual'
+                  ? null
+                  : publicData.legalEntity?.companyNumber,
+              country:
+                publicData.clientType === 'privateIndividual'
+                  ? publicData.privateIndividual?.country
+                  : publicData.legalEntity.country,
+              street:
+                publicData.clientType === 'privateIndividual'
+                  ? publicData.privateIndividual?.street
+                  : publicData.legalEntity.street,
+              city:
+                publicData.clientType === 'privateIndividual'
+                  ? publicData.privateIndividual?.city
+                  : publicData.legalEntity.city,
+              state:
+                publicData.clientType === 'privateIndividual'
+                  ? publicData.privateIndividual?.state
+                  : publicData.legalEntity.state,
+              zipCode:
+                publicData.clientType === 'privateIndividual'
+                  ? publicData.privateIndividual?.zipCode
+                  : publicData.legalEntity.zipCode,
+              phoneNumber: publicData.phoneNumber,
+              vatNo: publicData.vatNo,
+              language: publicData.language,
+              timeZone: publicData.timeZone,
+              schedule: protectedData.schedule ? protectedData.schedule : [{}],
+            }}
+            profileImage={profileImage}
+            onImageUpload={e => onImageUploadHandler(e, onImageUpload)}
+            uploadInProgress={uploadInProgress}
+            updateInProgress={updateInProgress}
+            uploadImageError={uploadImageError}
+            updateProfileError={updateProfileError}
+            onSubmit={handleSubmit}
+          />
+        )
+      ) : null;
     const cNamePlaceHolder = intl.formatMessage({
       id: 'ProfileSettingPage.cNamePlaceHolder',
     });

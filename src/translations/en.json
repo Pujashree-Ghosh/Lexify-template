@@ -1037,7 +1037,7 @@
   "Topbar.mobileSearchHelp": "Tip: You can also search teachers by zip code, for example \"10012\" or city district – \"Manhattan\".",
   "Topbar.searchIcon": "Open search",
   "TopbarDesktop.accountSettingsLink": "Account settings",
-  "TopbarDesktop.createListing": "Become a teacher",
+  "TopbarDesktop.createListing": "+ Create consultation",
   "TopbarDesktop.addYourListingLink": "Become a teacher",
   "TopbarDesktop.editYourListingLink": "Edit teacher profile",
   "TopbarDesktop.inbox": "Inbox",
@@ -1196,5 +1196,11 @@
   "ProfileSettingsForm.toLabel":"To",
   "ProfileSettingsForm.recentWorkLabel":"Recent work",
   "ProfileSettingsForm.recentWorkPlaceholder":"Write your recent work relevant to this industry",
-  "ProfileSettingsForm.remove":"Remove"
+  "ProfileSettingsForm.remove":"Remove",
+  "ProfilePage.practiceAre":"Practice areas",
+  "ProfilePage.language":"Languages spoken",
+  "ProfilePage.contactInfo":"Contact information",
+  "ProfilePage.professionalDetail":"Professional details",
+  "ProfilePage.workExp":"Work Experience",
+  "ProfilePage.education":"Education"
 }

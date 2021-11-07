@@ -21,6 +21,7 @@ import {
   Reviews,
   ButtonTabNavHorizontal,
 } from '../../components';
+import { MdEmail, MdLocalPhone } from 'react-icons/md';
 import { TopbarContainer, NotFoundPage } from '../../containers';
 import config from '../../config';
 
@@ -64,6 +65,7 @@ export class ProfilePageComponent extends Component {
       viewport,
       intl,
     } = this.props;
+    // console.log(user);
 
     const ensuredCurrentUser = ensureCurrentUser(currentUser);
     const profileUser = ensureUser(user);
@@ -73,8 +75,10 @@ export class ProfilePageComponent extends Component {
     const bio = profileUser.attributes.profile.bio;
     const hasBio = !!bio;
     const isMobileLayout = viewport.width < MAX_MOBILE_SCREEN_WIDTH;
+    const publicData = user?.attributes?.profile?.publicData;
+    console.log(publicData, user?.attributes?.profile);
 
-    console.log(profileUser, currentUser);
+    // console.log(profileUser, currentUser);
 
     const editLinkMobile = isCurrentUser ? (
       <NamedLink className={css.editLinkMobile} name="ProfileSettingsPage">
@@ -222,18 +226,206 @@ export class ProfilePageComponent extends Component {
         </LayoutWrapperTopbar>
         {/* <LayoutWrapperSideNav className={css.aside}>{asideContent}</LayoutWrapperSideNav>
           <LayoutWrapperMain>{content}</LayoutWrapperMain> */}
-        <div className={css.profileCard}>
-          <div className={css.profileImage}>
-            <AvatarLarge className={css.avatar} user={user} disableProfileLink />
-          </div>
-          <div className={css.nameBio}>
-            <div className={css.profileName}>{user?.attributes?.profile?.displayName}</div>
-            <div className={css.locationBio}>
-              <span>Certificate Year</span>
-              <span>Location</span>
+        {publicData?.isLawyer ? (
+          <div className={css.lawyerProfile}>
+            <div className={css.profileCard}>
+              <div className={css.profileImage}>
+                <AvatarLarge className={css.avatar} user={user} disableProfileLink />
+              </div>
+              <div className={css.nameBio}>
+                <div className={css.profileName}>{user?.attributes?.profile?.displayName}</div>
+                <div className={css.locationBio}>
+                  <span>Certificate Year</span>
+                  <span>Location</span>
+                  <span>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                    incididunt ut labore et dolore magna aliqua. Bibendum est ultricies integer
+                    quis. Iaculis urna id volutpat lacus laoreet. Mauris vitae ultricies leo integer
+                    malesuada. Ac odio tempor orci dapibus ultrices in. Egestas diam in arcu cursus
+                    euismod. Dictum fusce ut
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className={css.lawyerDetail}>
+              <hr />
+              <div className={css.sectionContainer}>
+                <h3 className={css.sectionTitle}>
+                  <FormattedMessage id="ProfilePage.practiceAre" />
+                </h3>
+                <div className={css.practiceArea}>
+                  {publicData?.practice.map(m => (
+                    <span className={css.areaElement}>{m.area}</span>
+                  ))}
+                </div>
+              </div>
+              <div className={css.sectionContainer}>
+                <h3 className={css.sectionTitle}>
+                  <FormattedMessage id="ProfilePage.language" />
+                </h3>
+                <div className={css.language}>
+                  {/* {publicData?.language.map(m => (
+                <span className={css.areaElement}>{m.area}</span>
+              ))} */}
+                  {publicData?.language}
+                </div>
+              </div>
+              <div className={css.sectionContainer}>
+                <h3 className={css.sectionTitle}>
+                  <FormattedMessage id="ProfilePage.contactInfo" />
+                </h3>
+                <div className={css.contact}>
+                  {/* {publicData?.practice.map(m => (
+                <span className={css.areaElement}>{m.area}</span>
+              ))} */}
+                </div>
+              </div>
+              <div className={css.sectionContainer}>
+                <h3 className={css.sectionTitle}>
+                  <FormattedMessage id="ProfilePage.professionalDetail" />
+                </h3>
+                <div className={css.profDetail}>
+                  <label>Jurisdiction</label>
+                  <table>
+                    <th>State</th>
+                    <th>Status</th>
+                    <th>Acquired on</th>
+                    {publicData?.jurisdictionPractice.map(m => (
+                      <tr>
+                        <td>{m.country}</td>
+                        <td>{m.status}</td>
+                        <td>{m.date}</td>
+                      </tr>
+                    ))}
+                  </table>
+                </div>
+              </div>
+              <div className={css.sectionContainer}>
+                <h3 className={css.sectionTitle}>
+                  <FormattedMessage id="ProfilePage.workExp" />
+                </h3>
+                <div className={css.workExp}>
+                  {/* {publicData?.practice.map(m => (
+                <span className={css.areaElement}>{m.area}</span>
+              ))} */}
+                </div>
+              </div>
+              <div className={css.sectionContainer}>
+                <h3 className={css.sectionTitle}>
+                  <FormattedMessage id="ProfilePage.education" />
+                </h3>
+                <div className={css.education}>
+                  <table>
+                    <th>Institute</th>
+                    <th>Degree</th>
+                    <th>Graduated</th>
+                    {publicData?.education.map(m => (
+                      <tr>
+                        <td>{m.instituteName}</td>
+                        <td>{m.degree}</td>
+                        <td>{m.graduationYear}</td>
+                      </tr>
+                    ))}
+                  </table>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+        ) : publicData?.clientType === 'privateIndividual' ? (
+          <div className={css.privateIndividual}>
+            <div className={css.ClientId}>
+              <span>#Client Id</span>
+              <span>{'12345678'}</span>
+            </div>
+            <div className={css.clDetail}>Client Details</div>
+            <div className={css.profileCard}>
+              <hr />
+              <div className={css.profileImage}>
+                <AvatarLarge className={css.avatar} user={user} disableProfileLink />
+              </div>
+              <div className={css.nameBio}>
+                <div className={css.profileName}>{user?.attributes?.profile?.displayName}</div>
+                <div className={css.locationBio}>
+                  <MdLocalPhone />
+                  <span>{publicData?.phoneNumber}</span>
+                  <br />
+                  <MdEmail />
+                  <span>{publicData?.email}</span>
+                  <div className={css.pInfo}>
+                    <span>Country </span>
+                    <span>{publicData?.privateIndividual?.country}</span>
+                    <br />
+                    <span>Street </span>
+                    <span>{publicData?.privateIndividual?.street}</span>
+                    <br />
+                    <span>City </span>
+                    <span>{publicData?.privateIndividual?.city}</span>
+                    <br />
+                    <span>State </span>
+                    <span>{publicData?.privateIndividual?.state}</span>
+                    <br />
+                    <span>ZIP Code/Postal Code </span>
+                    <span>{publicData?.privateIndividual?.zipCode}</span>
+                    <br />
+                    <span>Languages </span>
+                    <span>{publicData?.language}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className={css.legal}>
+            <div className={css.ClientId}>
+              <span>#Client Id</span>
+              <span>{'12345678'}</span>
+            </div>
+            <div className={css.coDetail}>Company Details</div>
+            <div className={css.profileCard}>
+              <hr />
+              <div className={css.coInfo}>
+                <span>Company name </span>
+                <span>{publicData?.legalEntity?.country}</span>
+                <br />
+                <span>Country </span>
+                <span>{publicData?.legalEntity?.country}</span>
+                <br />
+                <span>Street </span>
+                <span>{publicData?.legalEntity?.street}</span>
+                <br />
+                <span>City </span>
+                <span>{publicData?.legalEntity?.city}</span>
+                <br />
+                <span>State </span>
+                <span>{publicData?.legalEntity?.state}</span>
+                <br />
+                <span>ZIP Code/Postal Code </span>
+                <span>{publicData?.legalEntity?.zipCode}</span>
+                <br />
+                <span>Languages </span>
+                <span>{publicData?.language}</span>
+              </div>
+            </div>
+            <div className={css.managerDetail}>Company Manager Details</div>
+            <div className={css.profileCard}>
+              <hr />
+              <div className={css.profileImage}>
+                <AvatarLarge className={css.avatar} user={user} disableProfileLink />
+              </div>
+              <div className={css.nameBio}>
+                <div className={css.profileName}>{user?.attributes?.profile?.displayName}</div>
+                <div className={css.locationBio}>
+                  <MdLocalPhone />
+                  <span>{publicData?.phoneNumber}</span>
+                  <br />
+                  <MdEmail />
+                  <span>{publicData?.email}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
         <LayoutWrapperFooter>
           <Footer />
         </LayoutWrapperFooter>

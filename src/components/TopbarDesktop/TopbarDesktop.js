@@ -165,7 +165,7 @@ const TopbarDesktop = props => {
     ) : null;
 
   const createListingLink =
-    isAuthenticatedOrJustHydrated && !(currentUserListingFetched && !currentUserListing) ? null : (
+    isAuthenticatedOrJustHydrated && !currentUserListingFetched ? null : (
       <NamedLink className={css.createListingLink} name="NewListingPage">
         <span className={css.createListing}>
           <FormattedMessage id="TopbarDesktop.createListing" />
@@ -183,8 +183,8 @@ const TopbarDesktop = props => {
         />
       </NamedLink>
       {search}
-      {listingLink}
-      {createListingLink}
+      {/* {currentUser?.attributes?.profile?.protectedData?.isLawyer ? listingLink : ''} */}
+      {currentUser?.attributes?.profile?.protectedData?.isLawyer ? createListingLink : ''}
       {inboxLink}
       {profileMenu}
       {signupLawyer}

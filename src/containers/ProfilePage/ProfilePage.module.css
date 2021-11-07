@@ -201,3 +201,10 @@
 .desktopReviewsTabNav {
   margin-bottom: 32px;
 }
+.areaElement {
+  border: 1px solid #b4aaa1;
+  top: 691px;
+  left: 65px;
+  width: 261px;
+  height: 40px;
+}

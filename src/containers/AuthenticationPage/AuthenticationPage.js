@@ -333,7 +333,11 @@ export class AuthenticationPageComponent extends Component {
     // Tabs for SignupForm and LoginForm
     const authenticationForms = (
       <div className={css.content}>
-        <LinkTabNavHorizontal className={css.tabs} tabs={tabs} />
+        {isLogin ? (
+          <LinkTabNavHorizontal className={css.tabs} tabs={tabs.splice(1)} />
+        ) : (
+          <LinkTabNavHorizontal className={css.tabs} tabs={tabs.splice(0, 1)} />
+        )}
         {loginOrSignupError}
 
         {isLogin ? (
@@ -560,10 +564,7 @@ const mapDispatchToProps = dispatch => ({
 // See: https://github.com/ReactTraining/react-router/issues/4671
 const AuthenticationPage = compose(
   withRouter,
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  ),
+  connect(mapStateToProps, mapDispatchToProps),
   injectIntl
 )(AuthenticationPageComponent);
 

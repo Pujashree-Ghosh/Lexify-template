@@ -39,7 +39,7 @@ class ProfileSettingsFormComponent extends Component {
     this.uploadDelayTimeoutId = null;
     this.state = {
       uploadDelay: false,
-      selectedOption: 'legalEntity',
+      selectedOption: null,
       phnErr: false,
       showOtp: false,
       otpErr: false,
@@ -67,7 +67,7 @@ class ProfileSettingsFormComponent extends Component {
   }
 
   render() {
-    // console.log(this.state);
+    // console.log(this.props);
 
     return (
       <FinalForm
@@ -90,9 +90,10 @@ class ProfileSettingsFormComponent extends Component {
             uploadInProgress,
             form,
             values,
+            initialValues,
           } = fieldRenderProps;
           // let { values } = fieldRenderProps;
-          console.log(values);
+          // console.log(initialValues);
 
           // console.log(this.state.verificationModule, verificationComponent);
 
@@ -845,7 +846,7 @@ class ProfileSettingsFormComponent extends Component {
                           </h3>
                           {fields.map((name, i) => {
                             return (
-                              <div>
+                              <div key={name}>
                                 <FieldSelect
                                   id={`${name}.country`}
                                   name={`${name}.country`}
@@ -961,7 +962,7 @@ class ProfileSettingsFormComponent extends Component {
                           </p>
                           {fields.map((name, i) => {
                             return (
-                              <div>
+                              <div key={name}>
                                 <FieldTextInput
                                   className={css.institute}
                                   type="text"
@@ -1035,7 +1036,7 @@ class ProfileSettingsFormComponent extends Component {
 
                           {fields.map((name, i) => {
                             return (
-                              <div>
+                              <div key={name}>
                                 <FieldSelect
                                   id={`${name}.area`}
                                   name={`${name}.area`}
@@ -1088,7 +1089,7 @@ class ProfileSettingsFormComponent extends Component {
                           </p>
                           {fields.map((name, i) => {
                             return (
-                              <div>
+                              <div key={name}>
                                 <FieldTextInput
                                   className={css.industry}
                                   type="text"
@@ -1111,7 +1112,7 @@ class ProfileSettingsFormComponent extends Component {
 
                                 <FieldTextInput
                                   className={css.street}
-                                  type="from"
+                                  type="date"
                                   id={`${name}.from`}
                                   name={`${name}.from`}
                                   label={fromLabel}
@@ -1120,7 +1121,7 @@ class ProfileSettingsFormComponent extends Component {
                                 />
                                 <FieldTextInput
                                   className={css.street}
-                                  type="to"
+                                  type="date"
                                   id={`${name}.to`}
                                   name={`${name}.to`}
                                   label={toLabel}
@@ -1165,7 +1166,7 @@ class ProfileSettingsFormComponent extends Component {
                       <p>Schedule a call for verification</p>
                       {fields.map((name, i) => {
                         return (
-                          <div>
+                          <div key={name}>
                             <FieldTextInput
                               className={css.street}
                               type="date"
@@ -1247,7 +1248,9 @@ class ProfileSettingsFormComponent extends Component {
                 className={css.submitButton}
                 type="submit"
                 inProgress={submitInProgress}
-                disabled={submitDisabled}
+                disabled={
+                  !(initialValues.clientType !== this.state.selectedOption) && submitDisabled
+                }
                 ready={pristineSinceLastSubmit}
               >
                 <FormattedMessage id="ProfileSettingsForm.saveChanges" />
