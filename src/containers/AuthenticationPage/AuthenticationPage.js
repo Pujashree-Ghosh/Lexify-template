@@ -6,7 +6,7 @@ import { withRouter, Redirect } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import classNames from 'classnames';
 import { isEmpty } from 'lodash';
-
+import { createResourceLocatorString } from '../../util/routes';
 import routeConfiguration from '../../routeConfiguration';
 import { pathByRouteName } from '../../util/routes';
 import { apiBaseUrl } from '../../util/api';
@@ -87,8 +87,10 @@ export class AuthenticationPageComponent extends Component {
       sendVerificationEmailError,
       onResendVerificationEmail,
       onManageDisableScrolling,
+      history,
     } = this.props;
 
+    const routes = routeConfiguration();
     const isConfirm = tab === 'confirm';
     const isLogin = tab === 'login';
     const locationFrom = location.state && location.state.from ? location.state.from : null;
@@ -435,7 +437,14 @@ export class AuthenticationPageComponent extends Component {
           and proceed to verify.
         </p>
 
-        <Button className={css.epbtn}>Go to Edit Profile</Button>
+        <Button
+          className={css.epbtn}
+          onClick={() => {
+            history.push(createResourceLocatorString('ProfileSettingsPage', routes, {}, {}));
+          }}
+        >
+          Go to Edit Profile
+        </Button>
       </div>
     );
 
