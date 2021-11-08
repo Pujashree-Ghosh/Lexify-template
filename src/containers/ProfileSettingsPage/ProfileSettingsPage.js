@@ -198,23 +198,23 @@ export class ProfileSettingsPageComponent extends Component {
               country:
                 publicData.clientType === 'privateIndividual'
                   ? publicData.privateIndividual?.country
-                  : publicData.legalEntity.country,
+                  : publicData.legalEntity?.country,
               street:
                 publicData.clientType === 'privateIndividual'
                   ? publicData.privateIndividual?.street
-                  : publicData.legalEntity.street,
+                  : publicData.legalEntity?.street,
               city:
                 publicData.clientType === 'privateIndividual'
                   ? publicData.privateIndividual?.city
-                  : publicData.legalEntity.city,
+                  : publicData.legalEntity?.city,
               state:
                 publicData.clientType === 'privateIndividual'
                   ? publicData.privateIndividual?.state
-                  : publicData.legalEntity.state,
+                  : publicData.legalEntity?.state,
               zipCode:
                 publicData.clientType === 'privateIndividual'
                   ? publicData.privateIndividual?.zipCode
-                  : publicData.legalEntity.zipCode,
+                  : publicData.legalEntity?.zipCode,
               phoneNumber: publicData.phoneNumber,
               vatNo: publicData.vatNo,
               language: publicData.language,
