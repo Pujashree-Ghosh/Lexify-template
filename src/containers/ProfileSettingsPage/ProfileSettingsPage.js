@@ -63,7 +63,7 @@ export class ProfileSettingsPageComponent extends Component {
     const isLawyer = protectedData?.isLawyer;
     const handleSubmit = values => {
       if (isLawyer === true) {
-        const { firstName, lastName, bio: rawBio, schedule, ...restVal } = values;
+        const { firstName, lastName, bio: rawBio, schedule, profileImage, ...restVal } = values;
 
         const bio = rawBio || '';
 
@@ -81,7 +81,6 @@ export class ProfileSettingsPageComponent extends Component {
           uploadedImage && uploadedImage.imageId && uploadedImage.file
             ? { ...profile, profileImageId: uploadedImage.imageId }
             : profile;
-
         onUpdateProfile(updatedValues);
       }
       if (isLawyer === false) {
