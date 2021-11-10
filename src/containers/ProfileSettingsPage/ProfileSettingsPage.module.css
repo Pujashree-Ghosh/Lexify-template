@@ -17,6 +17,9 @@
 .headingContainer {
   display: flex;
   flex-direction: row;
+  @media (max-width: 575px) {
+    flex-direction: column;
+  }
 }
 
 .heading {
@@ -27,6 +30,10 @@
 .profileLink {
   @apply --marketplaceButtonStylesSecondary;
   @apply --marketplaceH5FontStyles;
+
+  @media (max-width: 575px) {
+    margin-left: 0 !important;
+  }
 
   display: inline-block;
   width: auto;

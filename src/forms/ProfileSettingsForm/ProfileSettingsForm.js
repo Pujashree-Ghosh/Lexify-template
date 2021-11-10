@@ -206,6 +206,8 @@ class ProfileSettingsFormComponent extends Component {
           });
           const startTimeLabel = intl.formatMessage({ id: 'ProfileSettingsForm.startTimeLabel' });
 
+          const DateLabel = intl.formatMessage({ id: 'ProfileSettingsForm.DateLabel' });
+
           const startTimeRequiredMessage = intl.formatMessage({
             id: 'ProfileSettingsForm.startTimeRequired',
           });
@@ -484,7 +486,7 @@ class ProfileSettingsFormComponent extends Component {
                 handleSubmit(e);
               }}
             >
-              <div className={css.sectionContainer}>
+              <div className={`${css.sectionContainer}  ${css.centerh3}`}>
                 <h3 className={css.sectionTitle}>
                   <FormattedMessage id="ProfileSettingsForm.yourProfilePicture" />
                 </h3>
@@ -894,72 +896,82 @@ class ProfileSettingsFormComponent extends Component {
                           {fields.map((name, i) => {
                             return (
                               <div key={name}>
-                                <FieldSelect
-                                  id={`${name}.country`}
-                                  name={`${name}.country`}
-                                  // label="Choose an option:"
-                                  // validate={countryPlaceHolder}
-                                  validate={composeValidators(required(countryRequiredMessage))}
-                                >
-                                  <option value="">{countryPlaceHolder}</option>
-                                  <option value="USA">USA</option>
-                                  <option value="India">India</option>
-                                  <option value="UK">UK</option>
-                                </FieldSelect>
+                                <div className={css.fromgroup}>
+                                  <FieldSelect
+                                    id={`${name}.country`}
+                                    name={`${name}.country`}
+                                    // label="Choose an option:"
+                                    // validate={countryPlaceHolder}
+                                    validate={composeValidators(required(countryRequiredMessage))}
+                                  >
+                                    <option value="">{countryPlaceHolder}</option>
+                                    <option value="USA">USA</option>
+                                    <option value="India">India</option>
+                                    <option value="UK">UK</option>
+                                  </FieldSelect>
+                                </div>
 
-                                <FieldTextInput
-                                  className={css.street}
-                                  type="date"
-                                  id={`${name}.date`}
-                                  name={`${name}.date`}
-                                  // placeholder={pracTiceDatePlaceholder}
-                                  validate={composeValidators(
-                                    required(practiceDateRequiredMessage)
-                                  )}
-                                  label={practiceDateLabel}
-                                />
+                                <div className={`${css.fromgroup} ${css.inlinefrom}`}>
+                                  <FieldTextInput
+                                    className={css.halfinput}
+                                    type="date"
+                                    id={`${name}.date`}
+                                    name={`${name}.date`}
+                                    // placeholder={pracTiceDatePlaceholder}
+                                    validate={composeValidators(
+                                      required(practiceDateRequiredMessage)
+                                    )}
+                                    label={practiceDateLabel}
+                                  />
 
-                                <FieldSelect
-                                  id={`${name}.status`}
-                                  name={`${name}.status`}
-                                  label={statusLabel}
-                                  validate={composeValidators(required(statusRequiredMessage))}
-                                >
-                                  <option value="">{statusPlaceholder}</option>
-                                  <option value="status1">Status 1</option>
-                                  <option value="status2">Status 1</option>
-                                  <option value="status3">Status 1</option>
-                                </FieldSelect>
+                                  <FieldSelect
+                                    className={css.halfinput}
+                                    id={`${name}.status`}
+                                    name={`${name}.status`}
+                                    label={statusLabel}
+                                    validate={composeValidators(required(statusRequiredMessage))}
+                                  >
+                                    <option value="">{statusPlaceholder}</option>
+                                    <option value="status1">Status 1</option>
+                                    <option value="status2">Status 1</option>
+                                    <option value="status3">Status 1</option>
+                                  </FieldSelect>
+                                </div>
                               </div>
                             );
                           })}
-                          <Button
-                            className={css.addMore}
-                            type="button"
-                            onClick={() => {
-                              fields.push();
-                            }}
-                            disabled={
-                              !values.jurisdictionPractice[values.jurisdictionPractice?.length - 1]
-                                ?.country ||
-                              !values.jurisdictionPractice[values.jurisdictionPractice?.length - 1]
-                                ?.date ||
-                              !values.jurisdictionPractice[values.jurisdictionPractice?.length - 1]
-                                ?.status
-                            }
-                          >
-                            <FormattedMessage id="ProfileSettingsForm.addMore" />
-                          </Button>
-                          <Button
-                            className={css.remove}
-                            type="button"
-                            onClick={() => {
-                              fields.pop();
-                            }}
-                            disabled={values.jurisdictionPractice?.length < 2}
-                          >
-                            <FormattedMessage id="ProfileSettingsForm.remove" />
-                          </Button>
+                          <div className={`${css.fromgroup} ${css.inlinefrom}`}>
+                            <Button
+                              className={css.addMore}
+                              type="button"
+                              onClick={() => {
+                                fields.push();
+                              }}
+                              disabled={
+                                !values.jurisdictionPractice[
+                                  values.jurisdictionPractice?.length - 1
+                                ]?.country ||
+                                !values.jurisdictionPractice[
+                                  values.jurisdictionPractice?.length - 1
+                                ]?.date ||
+                                !values.jurisdictionPractice[
+                                  values.jurisdictionPractice?.length - 1
+                                ]?.status
+                              }
+                            >
+                              <FormattedMessage id="ProfileSettingsForm.addMore" />
+                            </Button>
+                            <Button
+                              className={css.remove}
+                              type="button"
+                              onClick={() => {
+                                fields.pop();
+                              }}
+                              disabled={values.jurisdictionPractice?.length < 2}
+                            >
+                              <FormattedMessage id="ProfileSettingsForm.remove" />
+                            </Button>
+                          </div>
                         </div>
                       );
                     }}
@@ -979,6 +991,7 @@ class ProfileSettingsFormComponent extends Component {
                       <option value="first">First option</option>
                       <option value="second">Second option</option>
                     </FieldSelect> */}
+
                     <Select
                       closeMenuOnSelect={false}
                       className={css.reactSelect}
@@ -1031,64 +1044,74 @@ class ProfileSettingsFormComponent extends Component {
                           {fields.map((name, i) => {
                             return (
                               <div key={name}>
-                                <FieldTextInput
-                                  className={css.institute}
-                                  type="text"
-                                  id={`${name}.instituteName`}
-                                  name={`${name}.instituteName`}
-                                  placeholder={institutePlaceholder}
-                                  validate={composeValidators(required(instituteRequiredMessage))}
-                                  label={instituteLabel}
-                                />
+                                <div className={css.fromgroup}>
+                                  <FieldTextInput
+                                    className={css.institute}
+                                    type="text"
+                                    id={`${name}.instituteName`}
+                                    name={`${name}.instituteName`}
+                                    placeholder={institutePlaceholder}
+                                    validate={composeValidators(required(instituteRequiredMessage))}
+                                    label={instituteLabel}
+                                  />
+                                </div>
 
-                                <FieldTextInput
-                                  className={css.degree}
-                                  type="text"
-                                  id={`${name}.degree`}
-                                  name={`${name}.degree`}
-                                  placeholder={degreePlaceholder}
-                                  validate={composeValidators(required(degreeRequiredMessage))}
-                                  label={degreeLabel}
-                                />
+                                <div className={`${css.fromgroup} ${css.inlinefrom}`}>
+                                  <FieldTextInput
+                                    className={`${css.degree} ${css.halfinput}`}
+                                    type="text"
+                                    id={`${name}.degree`}
+                                    name={`${name}.degree`}
+                                    placeholder={degreePlaceholder}
+                                    validate={composeValidators(required(degreeRequiredMessage))}
+                                    label={degreeLabel}
+                                  />
 
-                                <FieldSelect
-                                  id={`${name}.graduationYear`}
-                                  name={`${name}.graduationYear`}
-                                  label={graduationLabel}
-                                  validate={composeValidators(required(graduationRequiredMessage))}
-                                >
-                                  <option value="">{graduationPlaceholder}</option>
-                                  <option value="2022">2022</option>
-                                  <option value="2021">2021</option>
-                                  <option value="2020">2020</option>
-                                </FieldSelect>
+                                  <FieldSelect
+                                    className={css.halfinput}
+                                    id={`${name}.graduationYear`}
+                                    name={`${name}.graduationYear`}
+                                    label={graduationLabel}
+                                    validate={composeValidators(
+                                      required(graduationRequiredMessage)
+                                    )}
+                                  >
+                                    <option value="">{graduationPlaceholder}</option>
+                                    <option value="2022">2022</option>
+                                    <option value="2021">2021</option>
+                                    <option value="2020">2020</option>
+                                  </FieldSelect>
+                                </div>
                               </div>
                             );
                           })}
-                          <Button
-                            className={css.addMore}
-                            type="button"
-                            onClick={() => {
-                              fields.push();
-                            }}
-                            disabled={
-                              !values.education[values.education?.length - 1]?.instituteName ||
-                              !values.education[values.education?.length - 1]?.degree ||
-                              !values.education[values.education?.length - 1]?.graduationYear
-                            }
-                          >
-                            <FormattedMessage id="ProfileSettingsForm.addMore" />
-                          </Button>
-                          <Button
-                            className={css.remove}
-                            type="button"
-                            onClick={() => {
-                              fields.pop();
-                            }}
-                            disabled={values.education?.length < 2}
-                          >
-                            <FormattedMessage id="ProfileSettingsForm.remove" />
-                          </Button>
+
+                          <div className={css.inlinefrom}>
+                            <Button
+                              className={css.addMore}
+                              type="button"
+                              onClick={() => {
+                                fields.push();
+                              }}
+                              disabled={
+                                !values.education[values.education?.length - 1]?.instituteName ||
+                                !values.education[values.education?.length - 1]?.degree ||
+                                !values.education[values.education?.length - 1]?.graduationYear
+                              }
+                            >
+                              <FormattedMessage id="ProfileSettingsForm.addMore" />
+                            </Button>
+                            <Button
+                              className={css.remove}
+                              type="button"
+                              onClick={() => {
+                                fields.pop();
+                              }}
+                              disabled={values.education?.length < 2}
+                            >
+                              <FormattedMessage id="ProfileSettingsForm.remove" />
+                            </Button>
+                          </div>
                         </div>
                       );
                     }}
@@ -1105,41 +1128,46 @@ class ProfileSettingsFormComponent extends Component {
                           {fields.map((name, i) => {
                             return (
                               <div key={name}>
-                                <FieldSelect
-                                  id={`${name}.area`}
-                                  name={`${name}.area`}
-                                  validate={composeValidators(
-                                    required(practiceAreaRequiredMessage)
-                                  )}
-                                >
-                                  <option value="">{practiceAreaPlaceholder}</option>
-                                  <option value="area1">Area 1</option>
-                                  <option value="area2">Area 2</option>
-                                  <option value="area3">Area 3</option>
-                                </FieldSelect>
+                                <div className={css.fromgroup}>
+                                  <FieldSelect
+                                    id={`${name}.area`}
+                                    name={`${name}.area`}
+                                    validate={composeValidators(
+                                      required(practiceAreaRequiredMessage)
+                                    )}
+                                  >
+                                    <option value="">{practiceAreaPlaceholder}</option>
+                                    <option value="area1">Area 1</option>
+                                    <option value="area2">Area 2</option>
+                                    <option value="area3">Area 3</option>
+                                  </FieldSelect>
+                                </div>
                               </div>
                             );
                           })}
-                          <Button
-                            className={css.addMore}
-                            type="button"
-                            onClick={() => {
-                              fields.push();
-                            }}
-                            disabled={!values.practice[values.practice?.length - 1]?.area}
-                          >
-                            <FormattedMessage id="ProfileSettingsForm.addMore" />
-                          </Button>
-                          <Button
-                            className={css.remove}
-                            type="button"
-                            onClick={() => {
-                              fields.pop();
-                            }}
-                            disabled={values.practice?.length < 2}
-                          >
-                            <FormattedMessage id="ProfileSettingsForm.remove" />
-                          </Button>
+
+                          <div className={css.inlinefrom}>
+                            <Button
+                              className={css.addMore}
+                              type="button"
+                              onClick={() => {
+                                fields.push();
+                              }}
+                              disabled={!values.practice[values.practice?.length - 1]?.area}
+                            >
+                              <FormattedMessage id="ProfileSettingsForm.addMore" />
+                            </Button>
+                            <Button
+                              className={css.remove}
+                              type="button"
+                              onClick={() => {
+                                fields.pop();
+                              }}
+                              disabled={values.practice?.length < 2}
+                            >
+                              <FormattedMessage id="ProfileSettingsForm.remove" />
+                            </Button>
+                          </div>
                         </div>
                       );
                     }}
@@ -1158,66 +1186,73 @@ class ProfileSettingsFormComponent extends Component {
                           {fields.map((name, i) => {
                             return (
                               <div key={name}>
-                                <FieldTextInput
-                                  className={css.industry}
-                                  type="text"
-                                  id={`${name}.industryName`}
-                                  name={`${name}.industryName`}
-                                  placeholder={industryPlaceholder}
-                                  // validate={required}
-                                  label={industryLabel}
-                                />
+                                <div className={css.fromgroup}>
+                                  <FieldTextInput
+                                    className={css.industry}
+                                    type="text"
+                                    id={`${name}.industryName`}
+                                    name={`${name}.industryName`}
+                                    placeholder={industryPlaceholder}
+                                    // validate={required}
+                                    label={industryLabel}
+                                  />
+                                </div>
+                                <div className={css.fromgroup}>
+                                  <FieldTextInput
+                                    className={css.recentWork}
+                                    type="text"
+                                    id={`${name}.recentWork`}
+                                    name={`${name}.recentWork`}
+                                    placeholder={'Write your recent work relevant to this industry'}
+                                    // validate={required}
+                                    label="Recent work"
+                                  />
+                                </div>
 
-                                <FieldTextInput
-                                  className={css.recentWork}
-                                  type="text"
-                                  id={`${name}.recentWork`}
-                                  name={`${name}.recentWork`}
-                                  placeholder={'Write your recent work relevant to this industry'}
-                                  // validate={required}
-                                  label="Recent work"
-                                />
-
-                                <FieldTextInput
-                                  className={css.street}
-                                  type="date"
-                                  id={`${name}.from`}
-                                  name={`${name}.from`}
-                                  label={fromLabel}
-                                  // placeholder={vatPlaceholder}
-                                  // validate={vatRequired}
-                                />
-                                <FieldTextInput
-                                  className={css.street}
-                                  type="date"
-                                  id={`${name}.to`}
-                                  name={`${name}.to`}
-                                  label={toLabel}
-                                  // placeholder={vatPlaceholder}
-                                  // validate={vatRequired}
-                                />
+                                <div className={`${css.fromgroup} ${css.inlinefrom}`}>
+                                  <FieldTextInput
+                                    className={`${css.street} ${css.halfinput}`}
+                                    type="date"
+                                    id={`${name}.from`}
+                                    name={`${name}.from`}
+                                    label={fromLabel}
+                                    // placeholder={vatPlaceholder}
+                                    // validate={vatRequired}
+                                  />
+                                  <FieldTextInput
+                                    className={`${css.street} ${css.halfinput}`}
+                                    type="date"
+                                    id={`${name}.to`}
+                                    name={`${name}.to`}
+                                    label={toLabel}
+                                    // placeholder={vatPlaceholder}
+                                    // validate={vatRequired}
+                                  />
+                                </div>
                               </div>
                             );
                           })}
-                          <Button
-                            className={css.addMore}
-                            type="button"
-                            onClick={() => {
-                              fields.push();
-                            }}
-                          >
-                            <FormattedMessage id="ProfileSettingsForm.addMore" />
-                          </Button>
-                          <Button
-                            className={css.remove}
-                            type="button"
-                            onClick={() => {
-                              fields.pop();
-                            }}
-                            disabled={values.industry?.length < 2}
-                          >
-                            <FormattedMessage id="ProfileSettingsForm.remove" />
-                          </Button>
+                          <div className={css.inlinefrom}>
+                            <Button
+                              className={css.addMore}
+                              type="button"
+                              onClick={() => {
+                                fields.push();
+                              }}
+                            >
+                              <FormattedMessage id="ProfileSettingsForm.addMore" />
+                            </Button>
+                            <Button
+                              className={css.remove}
+                              type="button"
+                              onClick={() => {
+                                fields.pop();
+                              }}
+                              disabled={values.industry?.length < 2}
+                            >
+                              <FormattedMessage id="ProfileSettingsForm.remove" />
+                            </Button>
+                          </div>
                         </div>
                       );
                     }}
@@ -1235,78 +1270,83 @@ class ProfileSettingsFormComponent extends Component {
                       {fields.map((name, i) => {
                         return (
                           <div key={name}>
-                            <FieldTextInput
-                              className={css.street}
-                              type="date"
-                              id={`${name}.date`}
-                              name={`${name}.date`}
-                              // placeholder={vatPlaceholder}
-                              // validate={vatRequired}
-                            />
-                            <FieldSelect
-                              className={css.serviceTime}
-                              name={`${name}.startTime`}
-                              id={`${name}.startTime`}
-                              label={startTimeLabel}
-                              placeholder={startTimePlaceholder}
-                              validate={composeValidators(required(startTimeRequiredMessage))}
-                            >
-                              {values &&
-                                values.schedule[i] &&
-                                values.schedule[i].date &&
-                                time.map(c => (
-                                  <option key={c} value={c}>
-                                    {c ? c : startTimePlaceholder}
-                                  </option>
-                                ))}
-                            </FieldSelect>
-
-                            <FieldSelect
-                              className={css.endTime}
-                              name={`${name}.endTime`}
-                              id={`${name}.endTime`}
-                              label={endTimeLabel}
-                              placeholder={endTimePlaceholder}
-                              validate={composeValidators(required(endTimeRequiredMessage))}
-                            >
-                              {values &&
-                                values.schedule[i] &&
-                                values.schedule[i].startTime &&
-                                time
-                                  .slice(time.indexOf(values.schedule[i].startTime) + 1)
-                                  .map(c => (
+                            <div className={`${css.fromgroup} ${css.inlinefrom}`}>
+                              <FieldTextInput
+                                className={`${css.street} ${css.thirdinput}`}
+                                type="date"
+                                id={`${name}.date`}
+                                name={`${name}.date`}
+                                label={DateLabel}
+                                // placeholder={vatPlaceholder}
+                                // validate={vatRequired}
+                              />
+                              <FieldSelect
+                                className={`${css.serviceTime} ${css.thirdinput}`}
+                                name={`${name}.startTime`}
+                                id={`${name}.startTime`}
+                                label={startTimeLabel}
+                                placeholder={startTimePlaceholder}
+                                validate={composeValidators(required(startTimeRequiredMessage))}
+                              >
+                                {values &&
+                                  values.schedule[i] &&
+                                  values.schedule[i].date &&
+                                  time.map(c => (
                                     <option key={c} value={c}>
                                       {c ? c : startTimePlaceholder}
                                     </option>
                                   ))}
-                            </FieldSelect>
+                              </FieldSelect>
+
+                              <FieldSelect
+                                className={`${css.endTime} ${css.thirdinput}`}
+                                name={`${name}.endTime`}
+                                id={`${name}.endTime`}
+                                label={endTimeLabel}
+                                placeholder={endTimePlaceholder}
+                                validate={composeValidators(required(endTimeRequiredMessage))}
+                              >
+                                {values &&
+                                  values.schedule[i] &&
+                                  values.schedule[i].startTime &&
+                                  time
+                                    .slice(time.indexOf(values.schedule[i].startTime) + 1)
+                                    .map(c => (
+                                      <option key={c} value={c}>
+                                        {c ? c : startTimePlaceholder}
+                                      </option>
+                                    ))}
+                              </FieldSelect>
+                            </div>
                           </div>
                         );
                       })}
-                      <Button
-                        className={css.addMore}
-                        type="button"
-                        onClick={() => {
-                          fields.push();
-                        }}
-                        disabled={
-                          !values.schedule[values.schedule?.length - 1]?.date ||
-                          !values.schedule[values.schedule?.length - 1]?.startTime ||
-                          !values.schedule[values.schedule?.length - 1]?.endTime
-                        }
-                      >
-                        <FormattedMessage id="ProfileSettingsForm.addMore" />
-                      </Button>
-                      <Button
-                        className={css.remove}
-                        type="button"
-                        onClick={() => {
-                          fields.pop();
-                        }}
-                        disabled={values.schedule?.length < 2}
-                      >
-                        <FormattedMessage id="ProfileSettingsForm.remove" />
-                      </Button>
+                      <div className={css.inlinefrom}>
+                        <Button
+                          className={css.addMore}
+                          type="button"
+                          onClick={() => {
+                            fields.push();
+                          }}
+                          disabled={
+                            !values.schedule[values.schedule?.length - 1]?.date ||
+                            !values.schedule[values.schedule?.length - 1]?.startTime ||
+                            !values.schedule[values.schedule?.length - 1]?.endTime
+                          }
+                        >
+                          <FormattedMessage id="ProfileSettingsForm.addMore" />
+                        </Button>
+                        <Button
+                          className={css.remove}
+                          type="button"
+                          onClick={() => {
+                            fields.pop();
+                          }}
+                          disabled={values.schedule?.length < 2}
+                        >
+                          <FormattedMessage id="ProfileSettingsForm.remove" />
+                        </Button>
+                      </div>
                     </div>
                   );
                 }}
