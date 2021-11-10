@@ -92,7 +92,7 @@ export class ProfileSettingsPageComponent extends Component {
           clientType,
           phoneNumber,
           vatNo,
-          language,
+          languages,
           timeZone,
           schedule,
           ...restVal
@@ -107,7 +107,7 @@ export class ProfileSettingsPageComponent extends Component {
             phoneNumber: phoneNumber,
             timeZone: timeZone,
             vatNo: vatNo,
-            language: language,
+            languages: languages,
           };
         } else {
           publicData = {
@@ -117,7 +117,7 @@ export class ProfileSettingsPageComponent extends Component {
             phoneNumber: phoneNumber,
             timeZone: timeZone,
             vatNo: vatNo,
-            language: language,
+            languages: languages,
           };
         }
         // console.log('after', Object.keys(values).forEach(k => values[k] == null && delete values[k]));
@@ -161,7 +161,7 @@ export class ProfileSettingsPageComponent extends Component {
               jurisdictionPractice: publicData.jurisdictionPractice
                 ? publicData.jurisdictionPractice
                 : [{}],
-              language: publicData.language,
+              languages: publicData.languages,
               timeZone: publicData.timeZone,
               education: publicData.education ? publicData.education : [{}],
               practice: publicData.practice ? publicData.practice : [{}],
@@ -216,7 +216,7 @@ export class ProfileSettingsPageComponent extends Component {
                   : publicData.legalEntity?.zipCode,
               phoneNumber: publicData.phoneNumber,
               vatNo: publicData.vatNo,
-              language: publicData.language,
+              languages: publicData.languages,
               timeZone: publicData.timeZone,
               schedule: protectedData.schedule ? protectedData.schedule : [{}],
             }}

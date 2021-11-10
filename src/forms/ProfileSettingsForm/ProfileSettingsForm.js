@@ -21,6 +21,7 @@ import {
   FieldSelect,
   FieldDateInput,
 } from '../../components';
+import Select from 'react-select';
 import PhoneInput from 'react-phone-input-2';
 import css from './ProfileSettingsForm.module.css';
 import './PhoneInput2.css';
@@ -44,12 +45,21 @@ class ProfileSettingsFormComponent extends Component {
       showOtp: false,
       otpErr: false,
       verificationModule: [],
+      languages: [],
+      languageError: false,
+      languageChange: false,
     };
     this.submittedValues = {};
   }
 
   componentDidMount() {
-    this.setState({ selectedOption: this.props.initialValues?.clientType });
+    this.setState({
+      selectedOption: this.props.initialValues?.clientType,
+      languages:
+        this.props.initialValues && this.props.initialValues.languages
+          ? this.props.initialValues.languages
+          : [],
+    });
   }
   componentDidUpdate(prevProps) {
     // Upload delay is additional time window where Avatar is added to the DOM,
@@ -93,9 +103,9 @@ class ProfileSettingsFormComponent extends Component {
             initialValues,
           } = fieldRenderProps;
           // let { values } = fieldRenderProps;
-          // console.log(initialValues);
+          // console.log(values);
 
-          // console.log(this.state.verificationModule, verificationComponent);
+          // console.log(this.state.languages, initialValues.languages)
 
           const user = ensureCurrentUser(currentUser);
 
@@ -340,6 +350,22 @@ class ProfileSettingsFormComponent extends Component {
           // const toRequiredMessage = intl.formatMessage({
           //   id: 'ProfileSettingsForm.toRequired',
           // });
+
+          const onLanguageChangeHandler = e => {
+            // setEquipments(e);
+            // setEquipmentsError(false);
+            this.setState({ languages: e, languageError: false, languageChange: true });
+          };
+          console.log(this.state.languages);
+          const onLanguageBlurHandler = e => {
+            form.change('languages', JSON.stringify(this.state.languages));
+            this.setState({ languageChange: true });
+            if (!this.state.languages.length) {
+              this.setState({ languageError: true });
+            } else {
+              this.setState({ languageError: false });
+            }
+          };
 
           const time = [
             '00:00',
@@ -823,7 +849,7 @@ class ProfileSettingsFormComponent extends Component {
                       <FormattedMessage id="ProfileSettingsForm.languages" />
                     </h3>
                     {/* <div className={css.nameContainer}> */}
-                    <FieldSelect
+                    {/* <FieldSelect
                       id="language"
                       name="language"
                       // label="Choose an option:"
@@ -832,7 +858,28 @@ class ProfileSettingsFormComponent extends Component {
                       <option value="">{languagePlaceholder}</option>
                       <option value="first">First option</option>
                       <option value="second">Second option</option>
-                    </FieldSelect>
+                    </FieldSelect> */}
+                    <Select
+                      closeMenuOnSelect={false}
+                      className={css.reactSelect}
+                      isSearchable={true}
+                      name="language"
+                      placeholder={languagePlaceholder}
+                      onChange={onLanguageChangeHandler}
+                      defaultValue={initialValues.languages && JSON.parse(initialValues.languages)}
+                      isMulti
+                      options={[
+                        { label: 'Hindi', value: 'hindi' },
+                        { label: 'English', value: 'english' },
+                        { label: 'Bengali', value: 'bengali' },
+                      ]}
+                      onBlur={onLanguageBlurHandler}
+                    />
+                    {this.state.languageError ? (
+                      <div className={css.errorMessage}>{languageRequiredMessage}</div>
+                    ) : (
+                      ''
+                    )}
                   </div>
                 </div>
               ) : (
@@ -922,7 +969,7 @@ class ProfileSettingsFormComponent extends Component {
                       <FormattedMessage id="ProfileSettingsForm.lawyerLanguages" />
                     </h3>
                     {/* <div className={css.nameContainer}> */}
-                    <FieldSelect
+                    {/* <FieldSelect
                       id="language"
                       name="language"
                       // label="Choose an option:"
@@ -931,7 +978,28 @@ class ProfileSettingsFormComponent extends Component {
                       <option value="">{languagePlaceholder}</option>
                       <option value="first">First option</option>
                       <option value="second">Second option</option>
-                    </FieldSelect>
+                    </FieldSelect> */}
+                    <Select
+                      closeMenuOnSelect={false}
+                      className={css.reactSelect}
+                      isSearchable={true}
+                      name="language"
+                      placeholder={languagePlaceholder}
+                      onChange={onLanguageChangeHandler}
+                      defaultValue={initialValues.languages && JSON.parse(initialValues.languages)}
+                      isMulti
+                      options={[
+                        { label: 'Hindi', value: 'hindi' },
+                        { label: 'English', value: 'english' },
+                        { label: 'Bengali', value: 'bengali' },
+                      ]}
+                      onBlur={onLanguageBlurHandler}
+                    />
+                    {this.state.languageError ? (
+                      <div className={css.errorMessage}>{languageRequiredMessage}</div>
+                    ) : (
+                      ''
+                    )}
                   </div>
                   <div className={css.sectionContainer}>
                     <h3 className={css.sectionTitle}>
@@ -1249,7 +1317,9 @@ class ProfileSettingsFormComponent extends Component {
                 type="submit"
                 inProgress={submitInProgress}
                 disabled={
-                  !(initialValues.clientType !== this.state.selectedOption) && submitDisabled
+                  !(initialValues.clientType !== this.state.selectedOption) &&
+                  !this.state.languageChange &&
+                  submitDisabled
                 }
                 ready={pristineSinceLastSubmit}
               >

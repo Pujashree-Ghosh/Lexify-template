@@ -268,7 +268,11 @@ export class ProfilePageComponent extends Component {
                   {/* {publicData?.language.map(m => (
                 <span className={css.areaElement}>{m.area}</span>
               ))} */}
-                  {publicData?.language}
+                  {publicData &&
+                    publicData.languages &&
+                    JSON.parse(publicData?.languages).map(l => (
+                      <span className={css.language}>{l.label}</span>
+                    ))}
                 </div>
               </div>
               <div className={css.sectionContainer}>
@@ -369,7 +373,11 @@ export class ProfilePageComponent extends Component {
                     <span>{publicData?.privateIndividual?.zipCode}</span>
                     <br />
                     <span>Languages </span>
-                    <span>{publicData?.language}</span>
+                    {publicData &&
+                      publicData.languages &&
+                      JSON.parse(publicData?.languages).map(l => (
+                        <span className={css.language}>{l.label}</span>
+                      ))}
                   </div>
                 </div>
               </div>
@@ -404,7 +412,11 @@ export class ProfilePageComponent extends Component {
                 <span>{publicData?.legalEntity?.zipCode}</span>
                 <br />
                 <span>Languages </span>
-                <span>{publicData?.language}</span>
+                {publicData &&
+                  publicData.languages &&
+                  JSON.parse(publicData?.languages).map(l => (
+                    <span className={css.language}>{l.label}</span>
+                  ))}
               </div>
             </div>
             <div className={css.managerDetail}>Company Manager Details</div>
