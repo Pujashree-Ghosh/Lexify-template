@@ -491,7 +491,7 @@ export class ProfilePageComponent extends Component {
                     <div className={css.infoclnrow}>
                       <span className={css.coleftrow}>Company name </span>
                       <span>
-                        <strong>{publicData?.legalEntity?.country}</strong>
+                        <strong>{publicData?.legalEntity?.companyName}</strong>
                       </span>
                     </div>
                     <div className={css.infoclnrow}>
@@ -516,11 +516,13 @@ export class ProfilePageComponent extends Component {
                     </div>
                     <div className={css.infoclnrow}>
                       <span className={css.coleftrow}>Languages </span>
-                      {publicData &&
-                        publicData.languages &&
-                        JSON.parse(publicData?.languages).map(l => (
-                          <span className={css.language}>{l.label}</span>
-                        ))}
+                      <div className={css.lan}>
+                        {publicData &&
+                          publicData.languages &&
+                          JSON.parse(publicData?.languages).map(l => (
+                            <span className={css.language}>{l.label}</span>
+                          ))}
+                      </div>
                     </div>
                   </div>
                 </div>
