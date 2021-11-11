@@ -82,7 +82,6 @@ export class ProfilePageComponent extends Component {
     const hasBio = !!bio;
     const isMobileLayout = viewport.width < MAX_MOBILE_SCREEN_WIDTH;
     const publicData = user?.attributes?.profile?.publicData;
-    console.log(publicData, user?.attributes?.profile);
 
     // console.log(profileUser, currentUser);
 

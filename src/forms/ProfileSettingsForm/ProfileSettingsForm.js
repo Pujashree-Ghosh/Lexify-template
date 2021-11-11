@@ -484,24 +484,27 @@ class ProfileSettingsFormComponent extends Component {
               onSubmit={e => {
                 e.preventDefault();
                 this.submittedValues = values;
-                axios
-                  .post(`${apiBaseUrl()}/api/user/verify`, {
-                    otp: values.otp * 1,
-                    mobile: '+' + values.phoneNumber,
-                  })
-                  .then(resp => {
-                    handleSubmit(e);
-                  })
-                  .catch(err => {
-                    if (err.response.status === 401 || err.response.status === 404) {
-                      this.setState({ otpErr: true });
-                    }
-                    // setTimeout(() => {
-                    //   // setSubmitProgress(false);
-                    // }, 2000);
-                    console.log(err.response.status);
-                  });
-                // handleSubmit(e);
+                if (phnChange) {
+                  axios
+                    .post(`${apiBaseUrl()}/api/user/verify`, {
+                      otp: values.otp * 1,
+                      mobile: '+' + values.phoneNumber,
+                    })
+                    .then(resp => {
+                      handleSubmit(e);
+                    })
+                    .catch(err => {
+                      if (err.response.status === 401 || err.response.status === 404) {
+                        this.setState({ otpErr: true });
+                      }
+                      // setTimeout(() => {
+                      //   // setSubmitProgress(false);
+                      // }, 2000);
+                      console.log(err.response.status);
+                    });
+                } else {
+                  handleSubmit(e);
+                }
               }}
             >
               <div className={`${css.sectionContainer}  ${css.centerh3}`}>
