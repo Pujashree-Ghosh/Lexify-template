@@ -63,7 +63,15 @@ export class ProfileSettingsPageComponent extends Component {
     const isLawyer = protectedData?.isLawyer;
     const handleSubmit = values => {
       if (isLawyer === true) {
-        const { firstName, lastName, bio: rawBio, schedule, profileImage, ...restVal } = values;
+        const {
+          firstName,
+          lastName,
+          bio: rawBio,
+          schedule,
+          profileImage,
+          otp,
+          ...restVal
+        } = values;
 
         const bio = rawBio || '';
 
@@ -71,7 +79,7 @@ export class ProfileSettingsPageComponent extends Component {
           firstName: firstName.trim(),
           lastName: lastName.trim(),
           bio,
-          protectedData: { schedule: schedule },
+          protectedData: { schedule: schedule, phoneNumber: `+${restVal.phoneNumber}` },
           publicData: restVal,
         };
         const uploadedImage = this.props.image;
@@ -92,6 +100,7 @@ export class ProfileSettingsPageComponent extends Component {
           clientType,
           phoneNumber,
           vatNo,
+          otp,
           languages,
           timeZone,
           schedule,
@@ -104,7 +113,7 @@ export class ProfileSettingsPageComponent extends Component {
             clientType: clientType,
             privateIndividual: rest,
             legalEntity: {},
-            phoneNumber: phoneNumber,
+            phoneNumber: `+${phoneNumber}`,
             timeZone: timeZone,
             vatNo: vatNo,
             languages: languages,
@@ -114,7 +123,7 @@ export class ProfileSettingsPageComponent extends Component {
             clientType: clientType,
             privateIndividual: {},
             legalEntity: restVal,
-            phoneNumber: phoneNumber,
+            phoneNumber: `+${phoneNumber}`,
             timeZone: timeZone,
             vatNo: vatNo,
             languages: languages,
@@ -129,7 +138,7 @@ export class ProfileSettingsPageComponent extends Component {
           firstName: firstName.trim(),
           lastName: lastName.trim(),
           bio,
-          protectedData: { schedule: schedule },
+          protectedData: { schedule: schedule, phoneNumber: `+${phoneNumber}` },
           publicData: publicData,
         };
         const uploadedImage = this.props.image;
@@ -144,8 +153,6 @@ export class ProfileSettingsPageComponent extends Component {
       }
     };
 
-    // console.log(publicData.clientType);
-
     const profileSettingsForm =
       user.id && publicData && protectedData ? (
         protectedData.isLawyer ? (
@@ -157,7 +164,7 @@ export class ProfileSettingsPageComponent extends Component {
               lastName,
               bio,
               profileImage: user.profileImage,
-              phoneNumber: publicData.phoneNumber,
+              phoneNumber: publicData.phoneNumber && protectedData.phoneNumber.split('+')[1],
               jurisdictionPractice: publicData.jurisdictionPractice
                 ? publicData.jurisdictionPractice
                 : [{}],
@@ -214,7 +221,7 @@ export class ProfileSettingsPageComponent extends Component {
                 publicData.clientType === 'privateIndividual'
                   ? publicData.privateIndividual?.zipCode
                   : publicData.legalEntity?.zipCode,
-              phoneNumber: publicData.phoneNumber,
+              phoneNumber: publicData.phoneNumber && protectedData.phoneNumber.split('+')[1],
               vatNo: publicData.vatNo,
               languages: publicData.languages,
               timeZone: publicData.timeZone,

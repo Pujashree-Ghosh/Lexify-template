@@ -26,8 +26,9 @@ import PhoneInput from 'react-phone-input-2';
 import css from './ProfileSettingsForm.module.css';
 import './PhoneInput2.css';
 import moment from 'moment';
-
+import axios from 'axios';
 import { FieldArray } from 'react-final-form-arrays';
+import { apiBaseUrl } from '../../util/api';
 
 const ACCEPT_IMAGES = 'image/*';
 const UPLOAD_CHANGE_DELAY = 2000; // Show spinner so that browser has time to load img srcset
@@ -42,7 +43,6 @@ class ProfileSettingsFormComponent extends Component {
       uploadDelay: false,
       selectedOption: null,
       phnErr: false,
-      showOtp: false,
       otpErr: false,
       verificationModule: [],
       languages: [],
@@ -106,7 +106,6 @@ class ProfileSettingsFormComponent extends Component {
           // console.log(values);
 
           // console.log(this.state.languages, initialValues.languages)
-
           const user = ensureCurrentUser(currentUser);
 
           // First name
@@ -354,11 +353,12 @@ class ProfileSettingsFormComponent extends Component {
           // });
 
           const onLanguageChangeHandler = e => {
+            form.change('languages', JSON.stringify(this.state.languages));
+
             // setEquipments(e);
             // setEquipmentsError(false);
             this.setState({ languages: e, languageError: false, languageChange: true });
           };
-          console.log(this.state.languages);
           const onLanguageBlurHandler = e => {
             form.change('languages', JSON.stringify(this.state.languages));
             this.setState({ languageChange: true });
@@ -397,8 +397,7 @@ class ProfileSettingsFormComponent extends Component {
             '24:00',
           ];
 
-          const phnChange =
-            user?.attributes?.profile?.protectedData?.phoneNumber !== values.phoneNumber;
+          const phnChange = initialValues.phoneNumber !== values.phoneNumber;
 
           const uploadingOverlay =
             uploadInProgress || this.state.uploadDelay ? (
@@ -474,7 +473,8 @@ class ProfileSettingsFormComponent extends Component {
           const classes = classNames(rootClassName || css.root, className);
           const submitInProgress = updateInProgress;
           const submittedOnce = Object.keys(this.submittedValues).length > 0;
-          const pristineSinceLastSubmit = submittedOnce && isEqual(values, this.submittedValues);
+          const pristineSinceLastSubmit = submittedOnce && isEqual(values, initialValues);
+
           const submitDisabled =
             invalid || pristine || pristineSinceLastSubmit || uploadInProgress || submitInProgress;
 
@@ -482,8 +482,26 @@ class ProfileSettingsFormComponent extends Component {
             <Form
               className={classes}
               onSubmit={e => {
+                e.preventDefault();
                 this.submittedValues = values;
-                handleSubmit(e);
+                axios
+                  .post(`${apiBaseUrl()}/api/user/verify`, {
+                    otp: values.otp * 1,
+                    mobile: '+' + values.phoneNumber,
+                  })
+                  .then(resp => {
+                    handleSubmit(e);
+                  })
+                  .catch(err => {
+                    if (err.response.status === 401 || err.response.status === 404) {
+                      this.setState({ otpErr: true });
+                    }
+                    // setTimeout(() => {
+                    //   // setSubmitProgress(false);
+                    // }, 2000);
+                    console.log(err.response.status);
+                  });
+                // handleSubmit(e);
               }}
             >
               <div className={`${css.sectionContainer}  ${css.centerh3}`}>
@@ -653,22 +671,37 @@ class ProfileSettingsFormComponent extends Component {
                           ''
                         )}
                       </div>
-                      <button
-                        className={css.sendOtpButton}
-                        type="button"
-                        onClick={() => {
-                          this.setState({ showOtp: true });
-                          // sendOtp();
-                        }}
-                        // inProgress={}
-                        // disabled={sendOtpDisable}
-                      >
-                        <FormattedMessage id="ProfileSettingsForm.sendOtp" />
-                      </button>
+                      {phnChange ? (
+                        <button
+                          className={css.sendOtpButton}
+                          type="button"
+                          onClick={() => {
+                            if (values.phoneNumber) {
+                              axios
+                                .post(`${apiBaseUrl()}/api/user`, {
+                                  email: user?.attributes?.email,
+                                  mobile: '+' + values.phoneNumber,
+                                })
+                                .then(resp => {
+                                  console.log(resp);
+                                })
+                                .catch(err => console.log(err));
+                            } else {
+                              return;
+                            }
+                          }}
+                          // inProgress={}
+                          // disabled={sendOtpDisable}
+                        >
+                          <FormattedMessage id="ProfileSettingsForm.sendOtp" />
+                        </button>
+                      ) : (
+                        ''
+                      )}
                     </div>
                   </div>
                 </div>
-                {this.state.showOtp ? (
+                {phnChange ? (
                   <div className={css.sectionContainer}>
                     <h3 className={css.sectionTitle}>{otpLabel}</h3>
                     <div className={css.otpContainer}>
@@ -682,7 +715,7 @@ class ProfileSettingsFormComponent extends Component {
                         validate={otpRequired}
                       />
                       {this.state.otpErr ? (
-                        <span className={css.otpErrMsg}>
+                        <span className={css.errorMessage}>
                           {' '}
                           <FormattedMessage id="ProfileSettingsForm.otpErrMsg" />
                         </span>
@@ -1386,7 +1419,7 @@ class ProfileSettingsFormComponent extends Component {
                 inProgress={submitInProgress}
                 disabled={
                   !(initialValues.clientType !== this.state.selectedOption) &&
-                  !this.state.languageChange &&
+                  !(this.state.languageChange && this.state.languages.length > 0) &&
                   submitDisabled
                 }
                 ready={pristineSinceLastSubmit}
