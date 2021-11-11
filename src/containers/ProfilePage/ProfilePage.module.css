@@ -1,6 +1,31 @@
 @import '../../styles/customMediaQueries.css';
 @import '../../styles/propertySets.css';
 
+.sectionContent {
+  margin: 50px auto 51px;
+  width: 100%;
+  @media (max-width: 1023px) {
+    margin: 50px 0;
+    padding: 0 35px;
+  }
+
+  @media (--viewportMedium) {
+    max-width: 100%;
+    /* margin: 60px 24px 60px 24px; */
+    padding: 0 35px;
+  }
+
+  @media (--viewportLarge) {
+    max-width: 1128px;
+    padding: 0 36px 0 36px;
+    /* margin: 60px auto 60px auto; */
+  }
+
+  @media (--viewportXLarge) {
+    max-width: 1056px;
+    padding: 0 35px;
+  }
+}
 .error {
   margin-top: 5px;
 
@@ -33,11 +58,11 @@
 }
 
 .avatar {
-  margin: 30px 26px 29px 0;
-  flex-shrink: 0;
-
-  @media (--viewportLarge) {
-    margin: 0 96px 44px 0;
+  margin: 0 30px 0 0;
+  width: 150px;
+  height: 150px;
+  @media (max-width: 575px) {
+    margin: 0 0 30px 0;
   }
 }
 
@@ -207,4 +232,235 @@
   left: 65px;
   width: 261px;
   height: 40px;
+}
+.profileCard {
+  display: flex;
+  margin: 0 0 40px;
+  @media (max-width: 575px) {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+.profileName {
+  color: #000;
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0 0 15px;
+}
+.locationBio span {
+  display: block;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+  color: #7a7a7a;
+  margin: 0 0 10px;
+}
+.locationBio span img {
+  margin: 0 10px 0 0;
+}
+.locationBio p {
+  color: #000;
+  font-weight: 400;
+  line-height: 24px;
+}
+.lawyerDetail hr {
+  margin-bottom: 50px;
+  border: 1px solid #dbdbdb;
+}
+.sectionprofin {
+  margin-bottom: 30px;
+}
+.sectionprofin .sectionTitle {
+  color: #000;
+  font-weight: 500;
+  font-size: 20px;
+  letter-spacing: 1px;
+}
+.areaElement {
+  border: 1px solid #b4aaa1;
+  background: #fffae7;
+  margin: 0 10px 10px 0;
+  padding: 5px 14px;
+  font-size: 12px;
+  font-weight: 400;
+  border-radius: 6px;
+  color: #4e4e4e;
+}
+.cncol1 {
+  display: flex;
+  margin: 0 0 30px;
+  @media (max-width: 575px) {
+    flex-direction: column;
+  }
+}
+.contacttag {
+  flex-basis: 30%;
+  @media (max-width: 767px) {
+    flex-basis: 44%;
+  }
+}
+.contacttag p {
+  color: #000;
+  margin: 0;
+  font-weight: 500;
+  font-size: 18px;
+  @media (max-width: 767px) {
+    font-size: 16px;
+  }
+  @media (max-width: 575px) {
+    margin: 0 0 10px;
+  }
+}
+.contactinfo {
+  display: flex;
+}
+.contactinfo img {
+  height: 16px;
+  margin: 4px 10px 0 0;
+}
+.contactinfo p,
+.contactinfo a {
+  color: #38394e;
+  font-weight: 300;
+  line-height: 22px;
+  font-size: 14px;
+  margin: 0 0 5px;
+}
+.contactinfo a {
+  text-decoration: underline;
+}
+.contactinfo p img {
+  margin-top: 0;
+  height: 14px;
+  vertical-align: text-top;
+}
+.mdalign {
+  margin-top: 9px !important;
+}
+.sectionprofin label {
+  color: #000;
+  font-size: 16px;
+}
+.profDetail {
+  @media (max-width: 575px) {
+    overflow-x: auto;
+  }
+}
+.profDetail table {
+  width: 100%;
+  max-width: 50%;
+  margin: 20px 0 0 10px;
+
+  @media (max-width: 1023px) {
+    max-width: 60%;
+  }
+  @media (max-width: 991px) {
+    max-width: 100%;
+  }
+  @media (max-width: 575px) {
+    min-width: 500px;
+    margin-left: 0;
+  }
+}
+.profDetail table th {
+  font-size: 14px;
+  text-align: left;
+  font-weight: 600;
+  padding: 5px 10px;
+}
+.profDetail table td {
+  padding: 12px 10px;
+  font-size: 14px;
+  line-height: 18px;
+  font-weight: 400;
+}
+.profDetail table tr:nth-child(odd) {
+  background: #fff;
+}
+.profDetail table tr:nth-child(even) {
+  background: #f5f5f5;
+}
+.profDetail table .state {
+  width: 150px;
+  word-break: break-all;
+}
+.profDetail table .status {
+  width: 150px;
+  word-break: break-all;
+}
+
+.profDetail table .ao {
+  width: 150px;
+  word-break: break-all;
+}
+.workexp .status {
+  width: 250px !important;
+}
+.ClientId {
+  margin: 0 0 30px;
+}
+.ClientId span {
+  color: #a91722;
+  font-size: 24px;
+  font-weight: 900;
+  margin-right: 15%;
+  @media (max-width: 575px) {
+    display: block;
+    margin: 0 0 15px;
+  }
+}
+.cdrowclnt {
+  margin-bottom: 50px;
+}
+.cdrowclnt .coDetail {
+  color: #000;
+  font-size: 20px;
+  margin: 0 0 20px;
+  border-bottom: 1px solid #c4c4c4;
+  padding-bottom: 15px;
+}
+.coInfo {
+  min-width: 60%;
+  @media (max-width: 991px) {
+    min-width: 100%;
+  }
+}
+.infoclnrow {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  @media (max-width: 575px) {
+    flex-direction: column;
+  }
+}
+
+.infoclnrow span {
+  margin: 0 auto 0 0;
+  color: #000;
+  font-size: 16px;
+  flex-basis: 40%;
+}
+.coleftrow {
+  color: #7a7a7a !important;
+  font-weight: 400;
+  @media (max-width: 767px) {
+    flex-basis: 100% !important;
+  }
+}
+.locationBio {
+  flex-basis: 50%;
+}
+.locationBio p {
+  display: flex;
+  font-size: 24px !important;
+  color: #000 !important;
+}
+.locationBio p span {
+  font-size: 20px !important;
+  color: #000 !important;
+  margin: 0 0 0 12px;
+}
+.pInfo {
+  margin: 50px 0 0;
+  max-width: 60%;
 }
