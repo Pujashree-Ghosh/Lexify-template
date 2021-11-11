@@ -410,3 +410,27 @@
   padding: 0;
   margin-top: 40px;
 }
+.psradioButtons {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 0 40px;
+  @media (max-width: 575px) {
+    flex-direction: column;
+  }
+}
+.psradioButtons label {
+  flex-basis: 45%;
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+  color: #000;
+  font-weight: 500;
+  @media (max-width: 575px) {
+    margin: 0 0 30px;
+  }
+}
+.psradioButtons label input {
+  width: auto;
+  margin: 0 20px 0 0;
+  transform: scale(2);
+}

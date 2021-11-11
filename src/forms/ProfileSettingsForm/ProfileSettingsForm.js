@@ -557,7 +557,7 @@ class ProfileSettingsFormComponent extends Component {
               </div>
 
               {user && !user?.attributes?.profile?.protectedData?.isLawyer ? (
-                <div className={css.radioButtons}>
+                <div className={css.psradioButtons}>
                   <label className={css.radio}>
                     <input
                       className={css.radioInput}
@@ -624,46 +624,48 @@ class ProfileSettingsFormComponent extends Component {
                   <FormattedMessage id="ProfileSettingsForm.phone" />
                 </h3>
                 <div className={css.phoneContainer}>
-                  <div className={css.phoneInputField}>
-                    <div className={css.phnWithErr}>
-                      <PhoneInput
-                        value={values.phoneNumber}
-                        onChange={val => {
-                          // values.phoneNumber && isPossiblePhoneNumber(values.phoneNumber)
-                          //   ? setPhoneErr(false)
-                          //   : '';
-                          values.phoneNumber && values.phoneNumber.length > 8
-                            ? this.setState({ phnErr: false })
-                            : '';
-                          form.change('phoneNumber', val);
+                  <div className={css.fromgroup}>
+                    <div className={css.phoneInputField}>
+                      <div className={css.phnWithErr}>
+                        <PhoneInput
+                          value={values.phoneNumber}
+                          onChange={val => {
+                            // values.phoneNumber && isPossiblePhoneNumber(values.phoneNumber)
+                            //   ? setPhoneErr(false)
+                            //   : '';
+                            values.phoneNumber && values.phoneNumber.length > 8
+                              ? this.setState({ phnErr: false })
+                              : '';
+                            form.change('phoneNumber', val);
+                          }}
+                          onBlur={() => {
+                            // values.phoneNumber && isPossiblePhoneNumber(values.phoneNumber)
+                            values.phoneNumber && values.phoneNumber.length > 8
+                              ? this.setState({ phnErr: false })
+                              : this.setState({ phnErr: true });
+                          }}
+                        />
+                        {this.state.phnErr ? (
+                          <span className={css.phnErrMsg}>
+                            <FormattedMessage id="profileSettingForm.phoneRequired" />
+                          </span>
+                        ) : (
+                          ''
+                        )}
+                      </div>
+                      <button
+                        className={css.sendOtpButton}
+                        type="button"
+                        onClick={() => {
+                          this.setState({ showOtp: true });
+                          // sendOtp();
                         }}
-                        onBlur={() => {
-                          // values.phoneNumber && isPossiblePhoneNumber(values.phoneNumber)
-                          values.phoneNumber && values.phoneNumber.length > 8
-                            ? this.setState({ phnErr: false })
-                            : this.setState({ phnErr: true });
-                        }}
-                      />
-                      {this.state.phnErr ? (
-                        <span className={css.phnErrMsg}>
-                          <FormattedMessage id="profileSettingForm.phoneRequired" />
-                        </span>
-                      ) : (
-                        ''
-                      )}
+                        // inProgress={}
+                        // disabled={sendOtpDisable}
+                      >
+                        <FormattedMessage id="ProfileSettingsForm.sendOtp" />
+                      </button>
                     </div>
-                    <button
-                      className={css.sendOtpButton}
-                      type="button"
-                      onClick={() => {
-                        this.setState({ showOtp: true });
-                        // sendOtp();
-                      }}
-                      // inProgress={}
-                      // disabled={sendOtpDisable}
-                    >
-                      <FormattedMessage id="ProfileSettingsForm.sendOtp" />
-                    </button>
                   </div>
                 </div>
                 {this.state.showOtp ? (
@@ -702,65 +704,80 @@ class ProfileSettingsFormComponent extends Component {
                         <FormattedMessage id="ProfileSettingsForm.companyDetail" />
                       </h3>
                       {/* <div className={css.nameContainer}> */}
-                      <FieldTextInput
-                        className={css.companyName}
-                        type="text"
-                        id="companyName"
-                        name="companyName"
-                        placeholder={companyNamePlaceholder}
-                        validate={companyNameRequired}
-                      />
-                      <FieldTextInput
-                        className={css.companyNumber}
-                        type="text"
-                        id="companyNumber"
-                        name="companyNumber"
-                        placeholder={companyNumberPlaceholder}
-                        // validate={companyNumberRequired}
-                      />
-                      <FieldSelect
-                        id="country"
-                        name="country"
-                        // label="Choose an option:"
-                        validate={composeValidators(required(countryRequiredMessage))}
-                      >
-                        <option value="">{countryPlaceHolder}</option>
-                        <option value="USA">USA</option>
-                        <option value="India">India</option>
-                        <option value="UK">UK</option>
-                      </FieldSelect>
-                      <FieldTextInput
-                        className={css.street}
-                        type="text"
-                        id="street"
-                        name="street"
-                        placeholder={streetPlaceholder}
-                        validate={streetRequired}
-                      />
-                      <FieldTextInput
-                        className={css.city}
-                        type="text"
-                        id="city"
-                        name="city"
-                        placeholder={cityPlaceholder}
-                        validate={cityRequired}
-                      />
-                      <FieldTextInput
-                        className={css.state}
-                        type="text"
-                        id="state"
-                        name="state"
-                        placeholder={statePlaceholder}
-                        validate={stateRequired}
-                      />
-                      <FieldTextInput
-                        className={css.ZipCode}
-                        type="text"
-                        id="zipCode"
-                        name="zipCode"
-                        placeholder={zipCodePlaceholder}
-                        validate={zipCodeRequired}
-                      />
+
+                      <div className={css.fromgroup}>
+                        <FieldTextInput
+                          className={css.companyName}
+                          type="text"
+                          id="companyName"
+                          name="companyName"
+                          placeholder={companyNamePlaceholder}
+                          validate={companyNameRequired}
+                        />
+                      </div>
+                      <div className={css.fromgroup}>
+                        <FieldTextInput
+                          className={css.companyNumber}
+                          type="text"
+                          id="companyNumber"
+                          name="companyNumber"
+                          placeholder={companyNumberPlaceholder}
+                          // validate={companyNumberRequired}
+                        />
+                      </div>
+                      <div className={css.fromgroup}>
+                        <FieldSelect
+                          id="country"
+                          name="country"
+                          // label="Choose an option:"
+                          validate={composeValidators(required(countryRequiredMessage))}
+                        >
+                          <option value="">{countryPlaceHolder}</option>
+                          <option value="USA">USA</option>
+                          <option value="India">India</option>
+                          <option value="UK">UK</option>
+                        </FieldSelect>
+                      </div>
+                      <div className={css.fromgroup}>
+                        <FieldTextInput
+                          className={css.street}
+                          type="text"
+                          id="street"
+                          name="street"
+                          placeholder={streetPlaceholder}
+                          validate={streetRequired}
+                        />
+                      </div>
+                      <div className={css.fromgroup}>
+                        <FieldTextInput
+                          className={css.city}
+                          type="text"
+                          id="city"
+                          name="city"
+                          placeholder={cityPlaceholder}
+                          validate={cityRequired}
+                        />
+                      </div>
+                      <div className={css.fromgroup}>
+                        <FieldTextInput
+                          className={css.state}
+                          type="text"
+                          id="state"
+                          name="state"
+                          placeholder={statePlaceholder}
+                          validate={stateRequired}
+                        />
+                      </div>
+                      <div className={css.fromgroup}>
+                        <FieldTextInput
+                          className={css.ZipCode}
+                          type="text"
+                          id="zipCode"
+                          name="zipCode"
+                          placeholder={zipCodePlaceholder}
+                          validate={zipCodeRequired}
+                        />
+                      </div>
                       {/* </div> */}
                     </div>
                   ) : (
@@ -769,49 +786,60 @@ class ProfileSettingsFormComponent extends Component {
                         <FormattedMessage id="ProfileSettingsForm.address" />
                       </h3>
                       {/* <div className={css.nameContainer}> */}
-                      <FieldSelect
-                        id="country"
-                        name="country"
-                        // label="Choose an option:"
-                        // validate={required}
-                      >
-                        <option value="">{countryPlaceHolder}</option>
-                        <option value="USA">USA</option>
-                        <option value="India">India</option>
-                        <option value="UK">UK</option>
-                      </FieldSelect>
-                      <FieldTextInput
-                        className={css.street}
-                        type="text"
-                        id="street"
-                        name="street"
-                        placeholder={streetPlaceholder}
-                        validate={streetRequired}
-                      />
-                      <FieldTextInput
-                        className={css.city}
-                        type="text"
-                        id="city"
-                        name="city"
-                        placeholder={cityPlaceholder}
-                        validate={cityRequired}
-                      />
-                      <FieldTextInput
-                        className={css.state}
-                        type="text"
-                        id="state"
-                        name="state"
-                        placeholder={statePlaceholder}
-                        validate={stateRequired}
-                      />
-                      <FieldTextInput
-                        className={css.zipCode}
-                        type="text"
-                        id="zipCode"
-                        name="zipCode"
-                        placeholder={zipCodePlaceholder}
-                        validate={zipCodeRequired}
-                      />
+
+                      <div className={css.fromgroup}>
+                        <FieldSelect
+                          id="country"
+                          name="country"
+                          // label="Choose an option:"
+                          // validate={required}
+                        >
+                          <option value="">{countryPlaceHolder}</option>
+                          <option value="USA">USA</option>
+                          <option value="India">India</option>
+                          <option value="UK">UK</option>
+                        </FieldSelect>
+                      </div>
+                      <div className={css.fromgroup}>
+                        <FieldTextInput
+                          className={css.street}
+                          type="text"
+                          id="street"
+                          name="street"
+                          placeholder={streetPlaceholder}
+                          validate={streetRequired}
+                        />
+                      </div>
+                      <div className={css.fromgroup}>
+                        <FieldTextInput
+                          className={css.city}
+                          type="text"
+                          id="city"
+                          name="city"
+                          placeholder={cityPlaceholder}
+                          validate={cityRequired}
+                        />
+                      </div>
+                      <div className={css.fromgroup}>
+                        <FieldTextInput
+                          className={css.state}
+                          type="text"
+                          id="state"
+                          name="state"
+                          placeholder={statePlaceholder}
+                          validate={stateRequired}
+                        />
+                      </div>
+                      <div className={css.fromgroup}>
+                        <FieldTextInput
+                          className={css.zipCode}
+                          type="text"
+                          id="zipCode"
+                          name="zipCode"
+                          placeholder={zipCodePlaceholder}
+                          validate={zipCodeRequired}
+                        />
+                      </div>
                       {/* </div> */}
                     </div>
                   )}
