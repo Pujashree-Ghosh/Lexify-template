@@ -246,7 +246,7 @@ export class ProfilePageComponent extends Component {
                     <span>
                       <img src={locationIcon} /> New Jersey, USA
                     </span>
-                    <p>
+                    <p className={css.infotxtp}>
                       Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
                       incididunt ut labore et dolore magna aliqua. Bibendum est ultricies integer
                       quis. Iaculis urna id volutpat lacus laoreet. Mauris vitae ultricies leo
@@ -468,11 +468,13 @@ export class ProfilePageComponent extends Component {
                   </div>
                   <div className={css.infoclnrow}>
                     <span className={css.coleftrow}>Languages </span>
-                    {publicData &&
-                      publicData.languages &&
-                      JSON.parse(publicData?.languages).map(l => (
-                        <span className={css.language}>{l.label}</span>
-                      ))}
+                    <div className={css.lan}>
+                      {publicData &&
+                        publicData.languages &&
+                        JSON.parse(publicData?.languages).map(l => (
+                          <span className={css.language}>{l.label},</span>
+                        ))}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -520,7 +522,7 @@ export class ProfilePageComponent extends Component {
                         {publicData &&
                           publicData.languages &&
                           JSON.parse(publicData?.languages).map(l => (
-                            <span className={css.language}>{l.label}</span>
+                            <span className={css.language}>{l.label},</span>
                           ))}
                       </div>
                     </div>
