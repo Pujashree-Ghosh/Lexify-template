@@ -325,7 +325,7 @@ export class ProfilePageComponent extends Component {
                         <img src={biophone} />
 
                         <span>
-                          <p>+1 8480431048</p>
+                          <p>{publicData?.phoneNumber}</p>
                         </span>
                       </div>
                     </div>

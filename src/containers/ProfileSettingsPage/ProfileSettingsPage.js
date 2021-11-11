@@ -70,6 +70,7 @@ export class ProfileSettingsPageComponent extends Component {
           schedule,
           profileImage,
           otp,
+          phoneNumber,
           ...restVal
         } = values;
 
@@ -79,8 +80,8 @@ export class ProfileSettingsPageComponent extends Component {
           firstName: firstName.trim(),
           lastName: lastName.trim(),
           bio,
-          protectedData: { schedule: schedule, phoneNumber: `+${restVal.phoneNumber}` },
-          publicData: restVal,
+          protectedData: { schedule: schedule, phoneNumber: `+${phoneNumber}` },
+          publicData: { phoneNumber: `+${phoneNumber}`, restVal },
         };
         const uploadedImage = this.props.image;
 
