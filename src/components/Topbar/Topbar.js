@@ -218,10 +218,41 @@ class TopbarComponent extends Component {
           </NamedLink>
           <Button
             rootClassName={css.searchMenu}
-            onClick={this.handleMobileSearchOpen}
+            // onClick={this.handleMobileSearchOpen}
             title={intl.formatMessage({ id: 'Topbar.searchIcon' })}
           >
-            <SearchIcon className={css.searchMenuIcon} />
+            {!isAuthenticated ? (
+              location.pathname === '/signup-lawyer' ? (
+                <NamedLink
+                  name="SignupPage"
+                  className={classNames(css.signupLink, css.bottom_line)}
+                >
+                  <FormattedMessage id="TopbarDesktop.signup" />
+                </NamedLink>
+              ) : location.pathname === '/signup' ? (
+                <NamedLink
+                  name="SignupLawyerPage"
+                  className={classNames(css.signupLink, css.bottom_line)}
+                >
+                  <FormattedMessage id="TopbarDesktop.signupLawyer" />
+                </NamedLink>
+              ) : (
+                <NamedLink
+                  name="SignupPage"
+                  className={classNames(css.signupLink, css.bottom_line)}
+                >
+                  <FormattedMessage id="TopbarDesktop.signup" />
+                </NamedLink>
+              )
+            ) : isMentor ? (
+              <NamedLink
+                className={classNames(css.signupLink, css.bottom_line)}
+                name="NewListingPage"
+              >
+                <FormattedMessage id="Topbar.mentorRoleCreationLink" />
+              </NamedLink>
+            ) : null}
+            {/* <SearchIcon className={css.searchMenuIcon} /> */}
           </Button>
         </div>
         <div className={css.desktop}>
@@ -340,10 +371,7 @@ TopbarComponent.propTypes = {
   intl: intlShape.isRequired,
 };
 
-const Topbar = compose(
-  withViewport,
-  injectIntl
-)(TopbarComponent);
+const Topbar = compose(withViewport, injectIntl)(TopbarComponent);
 
 Topbar.displayName = 'Topbar';
 

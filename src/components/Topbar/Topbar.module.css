@@ -56,7 +56,7 @@
 
   /* Layout */
   display: flex;
-  width: 66px;
+  /* width: 66px; */
   margin: 0;
   border-width: 0px;
   background-color: transparent;
