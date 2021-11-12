@@ -150,6 +150,7 @@ class TopbarComponent extends Component {
       sendVerificationEmailInProgress,
       sendVerificationEmailError,
       showGenericError,
+      isLawyer,
     } = this.props;
 
     const { mobilemenu, mobilesearch, address, origin, bounds } = parse(location.search, {
@@ -244,15 +245,14 @@ class TopbarComponent extends Component {
                   <FormattedMessage id="TopbarDesktop.signup" />
                 </NamedLink>
               )
-            ) : null}
-            {/* isMentor ? (
+            ) : isLawyer ? (
               <NamedLink
                 className={classNames(css.signupLink, css.bottom_line)}
                 name="NewListingPage"
               >
-                <FormattedMessage id="Topbar.mentorRoleCreationLink" />
+                <FormattedMessage id="Topbar.createListing" />
               </NamedLink>
-            ) :null */}
+            ) : null}
             {/* <SearchIcon className={css.searchMenuIcon} /> */}
           </Button>
         </div>

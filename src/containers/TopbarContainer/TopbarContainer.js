@@ -30,6 +30,7 @@ export const TopbarContainerComponent = props => {
     sendVerificationEmailInProgress,
     sendVerificationEmailError,
     onResendVerificationEmail,
+    isLawyer,
     ...rest
   } = props;
 
@@ -54,6 +55,7 @@ export const TopbarContainerComponent = props => {
       sendVerificationEmailInProgress={sendVerificationEmailInProgress}
       sendVerificationEmailError={sendVerificationEmailError}
       showGenericError={hasGenericError}
+      isLawyer={isLawyer}
       {...rest}
     />
   );
@@ -99,6 +101,10 @@ TopbarContainerComponent.propTypes = {
 const mapStateToProps = state => {
   // Topbar needs isAuthenticated
   const { isAuthenticated, logoutError, authScopes } = state.Auth;
+  const isLawyer =
+    state.user.currentUser &&
+    state.user.currentUser.attributes.profile.protectedData &&
+    state.user.currentUser.attributes.profile.protectedData.isLawyer;
   // Topbar needs user info.
   const {
     currentUser,
@@ -124,6 +130,7 @@ const mapStateToProps = state => {
     sendVerificationEmailInProgress,
     sendVerificationEmailError,
     hasGenericError,
+    isLawyer,
   };
 };
 
@@ -142,10 +149,7 @@ const mapDispatchToProps = dispatch => ({
 // See: https://github.com/ReactTraining/react-router/issues/4671
 const TopbarContainer = compose(
   withRouter,
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )
+  connect(mapStateToProps, mapDispatchToProps)
 )(TopbarContainerComponent);
 
 export default TopbarContainer;
