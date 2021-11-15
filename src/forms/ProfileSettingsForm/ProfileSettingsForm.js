@@ -1326,98 +1326,103 @@ class ProfileSettingsFormComponent extends Component {
               {user?.attributes?.profile?.protectedData?.isProfileVerified ? (
                 ''
               ) : (
-                <FieldArray name="schedule">
-                  {({ fields }) => {
-                    return (
-                      <div className={css.sectionContainer}>
-                        <h3 className={css.sectionTitle}>
-                          <FormattedMessage id="ProfileSettingsForm.verification" />
-                        </h3>
-                        <p>Schedule a call for verification</p>
-                        {fields.map((name, i) => {
-                          return (
-                            <div key={name}>
-                              <div className={`${css.fromgroup} ${css.inlinefrom}`}>
-                                <FieldTextInput
-                                  className={`${css.street} ${css.thirdinput}`}
-                                  type="date"
-                                  id={`${name}.date`}
-                                  name={`${name}.date`}
-                                  label={DateLabel}
-                                  // placeholder={vatPlaceholder}
-                                  // validate={vatRequired}
-                                />
-                                <FieldSelect
-                                  className={`${css.serviceTime} ${css.thirdinput}`}
-                                  name={`${name}.startTime`}
-                                  id={`${name}.startTime`}
-                                  label={startTimeLabel}
-                                  placeholder={startTimePlaceholder}
-                                  validate={composeValidators(required(startTimeRequiredMessage))}
-                                >
-                                  {values &&
-                                    values.schedule[i] &&
-                                    values.schedule[i].date &&
-                                    time.map(c => (
-                                      <option key={c} value={c}>
-                                        {c ? c : startTimePlaceholder}
-                                      </option>
-                                    ))}
-                                </FieldSelect>
-
-                                <FieldSelect
-                                  className={`${css.endTime} ${css.thirdinput}`}
-                                  name={`${name}.endTime`}
-                                  id={`${name}.endTime`}
-                                  label={endTimeLabel}
-                                  placeholder={endTimePlaceholder}
-                                  validate={composeValidators(required(endTimeRequiredMessage))}
-                                >
-                                  {values &&
-                                    values.schedule[i] &&
-                                    values.schedule[i].startTime &&
-                                    time
-                                      .slice(time.indexOf(values.schedule[i].startTime) + 1)
-                                      .map(c => (
+                <div>
+                  <FieldArray name="schedule">
+                    {({ fields }) => {
+                      return (
+                        <div className={css.sectionContainer}>
+                          <h3 className={css.sectionTitle}>
+                            <FormattedMessage id="ProfileSettingsForm.verification" />
+                          </h3>
+                          <p>Schedule a call for verification</p>
+                          {fields.map((name, i) => {
+                            return (
+                              <div key={name}>
+                                <div className={`${css.fromgroup} ${css.inlinefrom}`}>
+                                  <FieldTextInput
+                                    className={`${css.street} ${css.thirdinput}`}
+                                    type="date"
+                                    id={`${name}.date`}
+                                    name={`${name}.date`}
+                                    label={DateLabel}
+                                    // placeholder={vatPlaceholder}
+                                    // validate={vatRequired}
+                                  />
+                                  <FieldSelect
+                                    className={`${css.serviceTime} ${css.thirdinput}`}
+                                    name={`${name}.startTime`}
+                                    id={`${name}.startTime`}
+                                    label={startTimeLabel}
+                                    placeholder={startTimePlaceholder}
+                                    validate={composeValidators(required(startTimeRequiredMessage))}
+                                  >
+                                    {values &&
+                                      values.schedule[i] &&
+                                      values.schedule[i].date &&
+                                      time.map(c => (
                                         <option key={c} value={c}>
                                           {c ? c : startTimePlaceholder}
                                         </option>
                                       ))}
-                                </FieldSelect>
+                                  </FieldSelect>
+
+                                  <FieldSelect
+                                    className={`${css.endTime} ${css.thirdinput}`}
+                                    name={`${name}.endTime`}
+                                    id={`${name}.endTime`}
+                                    label={endTimeLabel}
+                                    placeholder={endTimePlaceholder}
+                                    validate={composeValidators(required(endTimeRequiredMessage))}
+                                  >
+                                    {values &&
+                                      values.schedule[i] &&
+                                      values.schedule[i].startTime &&
+                                      time
+                                        .slice(time.indexOf(values.schedule[i].startTime) + 1)
+                                        .map(c => (
+                                          <option key={c} value={c}>
+                                            {c ? c : startTimePlaceholder}
+                                          </option>
+                                        ))}
+                                  </FieldSelect>
+                                </div>
                               </div>
-                            </div>
-                          );
-                        })}
-                        <div className={css.inlinefrom}>
-                          <Button
-                            className={css.addMore}
-                            type="button"
-                            onClick={() => {
-                              fields.push();
-                            }}
-                            disabled={
-                              !values.schedule[values.schedule?.length - 1]?.date ||
-                              !values.schedule[values.schedule?.length - 1]?.startTime ||
-                              !values.schedule[values.schedule?.length - 1]?.endTime
-                            }
-                          >
-                            <FormattedMessage id="ProfileSettingsForm.addMore" />
-                          </Button>
-                          <Button
-                            className={css.remove}
-                            type="button"
-                            onClick={() => {
-                              fields.pop();
-                            }}
-                            disabled={values.schedule?.length < 2}
-                          >
-                            <FormattedMessage id="ProfileSettingsForm.remove" />
-                          </Button>
+                            );
+                          })}
+                          <div className={css.inlinefrom}>
+                            <Button
+                              className={css.addMore}
+                              type="button"
+                              onClick={() => {
+                                fields.push();
+                              }}
+                              disabled={
+                                !values.schedule[values.schedule?.length - 1]?.date ||
+                                !values.schedule[values.schedule?.length - 1]?.startTime ||
+                                !values.schedule[values.schedule?.length - 1]?.endTime
+                              }
+                            >
+                              <FormattedMessage id="ProfileSettingsForm.addMore" />
+                            </Button>
+                            <Button
+                              className={css.remove}
+                              type="button"
+                              onClick={() => {
+                                fields.pop();
+                              }}
+                              disabled={values.schedule?.length < 2}
+                            >
+                              <FormattedMessage id="ProfileSettingsForm.remove" />
+                            </Button>
+                          </div>
                         </div>
-                      </div>
-                    );
-                  }}
-                </FieldArray>
+                      );
+                    }}
+                  </FieldArray>
+                  <span className={css.info}>
+                    * Verification is required to complete registration
+                  </span>
+                </div>
               )}
               {submitError}
               <Button
