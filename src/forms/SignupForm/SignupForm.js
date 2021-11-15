@@ -265,7 +265,7 @@ const SignupFormComponent = props => (
                       //   ? setPhoneErr(false)
                       //   : '';
                       values.phoneNumber && values.phoneNumber.length > 8 ? setPhnErr(false) : '';
-                      form.change('phoneNumber', val);
+                      form.change('phoneNumber', `+${val}`);
                     }}
                     onBlur={() => {
                       // values.phoneNumber && isPossiblePhoneNumber(values.phoneNumber)
