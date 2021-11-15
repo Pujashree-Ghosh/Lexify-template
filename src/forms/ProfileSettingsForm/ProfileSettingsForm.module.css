@@ -184,6 +184,13 @@
   @media (max-width: 575px) {
     right: 0;
     bottom: 0;
+    left: 0;
+    margin: 0 auto;
+    background-position: 11px 6px;
+    width: 82px;
+    height: 28px;
+    padding: 4px 14px 15px 33px;
+    font-size: 10px !important;
   }
 
   @media (--viewportMedium) {
