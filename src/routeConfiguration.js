@@ -7,6 +7,7 @@ import { NotFoundPage } from './containers';
 // Otherwise, components will import form container eventually and
 // at that point css bundling / imports will happen in wrong order.
 import { NamedRedirect } from './components';
+import CreateListing from './components/CreateListing/CreateListing';
 
 const pageDataLoadingAPI = getPageDataLoadingAPI();
 
@@ -101,6 +102,45 @@ const routeConfiguration = () => {
       loadData: pageDataLoadingAPI.ListingPage.loadData,
     },
     {
+      path: '/create-listing',
+      name:'CreateListing',
+      auth:true,
+      component:CreateListing,
+    },
+    {
+      path: '/l-public-oral/new',
+      name: 'NewListingPublicOralPage',
+      auth: true,
+      component: () => (
+        <NamedRedirect
+          name="EditListingPublicOralPage"
+          params={{ slug: draftSlug, id: draftId, type: 'new', tab: 'description' }}
+        />
+      ),
+    },
+    {
+      path: '/l-custom-oral/new',
+      name: 'NewListingCustomOralPage',
+      auth: true,
+      component: () => (
+        <NamedRedirect
+          name="EditListingCustomOralPage"
+          params={{ slug: draftSlug, id: draftId, type: 'new', tab: 'description' }}
+        />
+      ),
+    },
+    {
+      path: '/l-custom-service/new',
+      name: 'NewListingCustomServicePage',
+      auth: true,
+      component: () => (
+        <NamedRedirect
+          name="EditListingCustomServicePage"
+          params={{ slug: draftSlug, id: draftId, type: 'new', tab: 'description' }}
+        />
+      ),
+    },
+    {
       path: '/l/new',
       name: 'NewListingPage',
       auth: true,
@@ -125,6 +165,33 @@ const routeConfiguration = () => {
       auth: true,
       component: EditListingPage,
       // extraProps: { allowOnlyOneListing: true },
+      loadData: pageDataLoadingAPI.EditListingPage.loadData,
+    },
+    {
+      path: '/l-public-oral/:slug/:id/:type/:tab/',
+      name: 'EditListingPublicOralPage',
+      auth: true,
+      component: EditListingPage,
+      // extraProps: { allowOnlyOneListing: true },
+      extraProps: { category:'publicOral' },
+      loadData: pageDataLoadingAPI.EditListingPage.loadData,
+    },
+    {
+      path: '/l-custom-oral/:slug/:id/:type/:tab/',
+      name: 'EditListingCustomOralPage',
+      auth: true,
+      component: EditListingPage,
+      // extraProps: { allowOnlyOneListing: true },
+      extraProps: { category:'customOral' },
+      loadData: pageDataLoadingAPI.EditListingPage.loadData,
+    },
+    {
+      path: '/l-custom-service/:slug/:id/:type/:tab/',
+      name: 'EditListingCustomServicePage',
+      auth: true,
+      component: EditListingPage,
+      // extraProps: { allowOnlyOneListing: true },
+      extraProps: { category: 'customService' },
       loadData: pageDataLoadingAPI.EditListingPage.loadData,
     },
     {

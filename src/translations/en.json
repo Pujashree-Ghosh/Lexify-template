@@ -1206,5 +1206,12 @@
   "ProfilePage.education":"Education",
   "Topbar.createListing":"+ Create consultation",
   "ManageListingsPage.yourListings":"Manage Your Listings",
-  "TopbarDesktop.manageListingsLink":"Manage your listings"
+  "TopbarDesktop.manageListingsLink":"Manage your listings",
+  "EditListingWizard.tabLabelAreaOfLaw":"Area of Law",
+  "EditListingWizard.tabLabelDuration":"Duration",
+  "EditListingWizard.tabLabelClient":"Client ID",
+  "EditListingWizard.tabLabelDeadline":"Dead Line",
+  "EditListingDescriptionPanel.publicOralTitle":"Oral Consultation Description",
+  "EditListingDescriptionPanel.customOralTitle":"Custom Tailored Oral Consultation Description",
+  "EditListingDescriptionPanel.customServiceTitle":"Custom Tailored Service Description"
 }

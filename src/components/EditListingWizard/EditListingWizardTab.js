@@ -29,13 +29,21 @@ export const POLICY = 'policy';
 export const LOCATION = 'location';
 export const PRICING = 'pricing';
 export const PHOTOS = 'photos';
+export const AREAOFLAW = 'areaoflaw';
+export const CLIENT = 'client';
+export const DURATION = 'duration';
+export const DEADLINE = 'DEADLINE';
 
 // EditListingWizardTab component supports these tabs
 export const SUPPORTED_TABS = [
   DESCRIPTION,
-  FEATURES,
-  POLICY,
-  LOCATION,
+  AREAOFLAW,
+  CLIENT,
+  DURATION,
+  DEADLINE,
+  // FEATURES,
+  // POLICY,
+  // LOCATION,
   PRICING,
   AVAILABILITY,
   PHOTOS,
@@ -99,6 +107,7 @@ const EditListingWizardTab = props => {
     intl,
     fetchExceptionsInProgress,
     availabilityExceptions,
+    category,
   } = props;
 
   const { type } = params;
@@ -174,6 +183,7 @@ const EditListingWizardTab = props => {
       return (
         <EditListingDescriptionPanel
           {...panelProps(DESCRIPTION)}
+          category={category}
           submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
           onSubmit={values => {
             onCompleteEditListingWizardTab(tab, values);
@@ -181,46 +191,106 @@ const EditListingWizardTab = props => {
         />
       );
     }
-    case FEATURES: {
+    // case FEATURES: {
+    //   const submitButtonTranslationKey = isNewListingFlow
+    //     ? 'EditListingWizard.saveNewFeatures'
+    //     : 'EditListingWizard.saveEditFeatures';
+    //   return (
+    //     <EditListingFeaturesPanel
+    //       {...panelProps(FEATURES)}
+    //       submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
+    //       onSubmit={values => {
+    //         onCompleteEditListingWizardTab(tab, values);
+    //       }}
+    //     />
+    //   );
+    // }
+    // case POLICY: {
+    //   const submitButtonTranslationKey = isNewListingFlow
+    //     ? 'EditListingWizard.saveNewPolicies'
+    //     : 'EditListingWizard.saveEditPolicies';
+    //   return (
+    //     <EditListingPoliciesPanel
+    //       {...panelProps(POLICY)}
+    //       submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
+    //       onSubmit={values => {
+    //         onCompleteEditListingWizardTab(tab, values);
+    //       }}
+    //     />
+    //   );
+    // }
+    // case LOCATION: {
+    //   const submitButtonTranslationKey = isNewListingFlow
+    //     ? 'EditListingWizard.saveNewLocation'
+    //     : 'EditListingWizard.saveEditLocation';
+    //   return (
+    //     <EditListingLocationPanel
+    //       {...panelProps(LOCATION)}
+    //       submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
+    //       onSubmit={values => {
+    //         onCompleteEditListingWizardTab(tab, values);
+    //       }}
+    //     />
+    //   );
+    // }
+    case AREAOFLAW: {
       const submitButtonTranslationKey = isNewListingFlow
         ? 'EditListingWizard.saveNewFeatures'
         : 'EditListingWizard.saveEditFeatures';
       return (
-        <EditListingFeaturesPanel
-          {...panelProps(FEATURES)}
-          submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
-          onSubmit={values => {
-            onCompleteEditListingWizardTab(tab, values);
-          }}
-        />
+        // <EditListingFeaturesPanel
+        //   {...panelProps(FEATURES)}
+        //   submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
+        //   onSubmit={values => {
+        //     onCompleteEditListingWizardTab(tab, values);
+        //   }}
+        // />
+        <h1>AREA_OF_LAW</h1>
       );
     }
-    case POLICY: {
+    case DEADLINE: {
       const submitButtonTranslationKey = isNewListingFlow
-        ? 'EditListingWizard.saveNewPolicies'
-        : 'EditListingWizard.saveEditPolicies';
+        ? 'EditListingWizard.saveNewFeatures'
+        : 'EditListingWizard.saveEditFeatures';
       return (
-        <EditListingPoliciesPanel
-          {...panelProps(POLICY)}
-          submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
-          onSubmit={values => {
-            onCompleteEditListingWizardTab(tab, values);
-          }}
-        />
+        // <EditListingFeaturesPanel
+        //   {...panelProps(FEATURES)}
+        //   submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
+        //   onSubmit={values => {
+        //     onCompleteEditListingWizardTab(tab, values);
+        //   }}
+        // />
+        <h1>DEADLINE</h1>
       );
     }
-    case LOCATION: {
+    case CLIENT: {
       const submitButtonTranslationKey = isNewListingFlow
-        ? 'EditListingWizard.saveNewLocation'
-        : 'EditListingWizard.saveEditLocation';
+        ? 'EditListingWizard.saveNewFeatures'
+        : 'EditListingWizard.saveEditFeatures';
       return (
-        <EditListingLocationPanel
-          {...panelProps(LOCATION)}
-          submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
-          onSubmit={values => {
-            onCompleteEditListingWizardTab(tab, values);
-          }}
-        />
+        // <EditListingFeaturesPanel
+        //   {...panelProps(FEATURES)}
+        //   submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
+        //   onSubmit={values => {
+        //     onCompleteEditListingWizardTab(tab, values);
+        //   }}
+        // />
+        <h1>CLIENT</h1>
+      );
+    }
+    case DURATION: {
+      const submitButtonTranslationKey = isNewListingFlow
+        ? 'EditListingWizard.saveNewFeatures'
+        : 'EditListingWizard.saveEditFeatures';
+      return (
+        // <EditListingFeaturesPanel
+        //   {...panelProps(FEATURES)}
+        //   submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
+        //   onSubmit={values => {
+        //     onCompleteEditListingWizardTab(tab, values);
+        //   }}
+        // />
+        <h1>DURATION</h1>
       );
     }
     case PRICING: {

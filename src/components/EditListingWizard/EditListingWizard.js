@@ -21,9 +21,13 @@ import { StripeConnectAccountForm } from '../../forms';
 import EditListingWizardTab, {
   AVAILABILITY,
   DESCRIPTION,
-  FEATURES,
-  POLICY,
-  LOCATION,
+  // FEATURES,
+  // POLICY,
+  // LOCATION,
+  AREAOFLAW,
+  CLIENT,
+  DEADLINE,
+  DURATION,
   PRICING,
   PHOTOS,
 } from './EditListingWizardTab';
@@ -38,15 +42,15 @@ const availabilityMaybe = config.enableAvailability ? [AVAILABILITY] : [];
 // and listing publishing happens after last panel.
 // Note 3: in FTW-hourly template we don't use the POLICY tab so it's commented out.
 // If you want to add a free text field to your listings you can enable the POLICY tab
-export const TABS = [
-  DESCRIPTION,
-  FEATURES,
-  //POLICY,
-  LOCATION,
-  PRICING,
-  ...availabilityMaybe,
-  PHOTOS,
-];
+// export const TABS = [
+//   DESCRIPTION,
+//   // FEATURES,
+//   // //POLICY,
+//   // LOCATION,
+//   PRICING,
+//   ...availabilityMaybe,
+//   PHOTOS,
+// ];
 
 // Tabs are horizontal in small screens
 const MAX_HORIZONTAL_NAV_SCREEN_WIDTH = 1023;
@@ -58,12 +62,22 @@ const tabLabel = (intl, tab) => {
   let key = null;
   if (tab === DESCRIPTION) {
     key = 'EditListingWizard.tabLabelDescription';
-  } else if (tab === FEATURES) {
-    key = 'EditListingWizard.tabLabelFeatures';
-  } else if (tab === POLICY) {
-    key = 'EditListingWizard.tabLabelPolicy';
-  } else if (tab === LOCATION) {
-    key = 'EditListingWizard.tabLabelLocation';
+  }
+  //  else if (tab === FEATURES) {
+  //   key = 'EditListingWizard.tabLabelFeatures';
+  // } else if (tab === POLICY) {
+  //   key = 'EditListingWizard.tabLabelPolicy';
+  // } else if (tab === LOCATION) {
+  //   key = 'EditListingWizard.tabLabelLocation';
+  // }
+  else if (tab === AREAOFLAW) {
+    key = 'EditListingWizard.tabLabelAreaOfLaw';
+  } else if (tab === CLIENT) {
+    key = 'EditListingWizard.tabLabelClient';
+  } else if (tab === DURATION) {
+    key = 'EditListingWizard.tabLabelDuration';
+  } else if (tab === DEADLINE) {
+    key = 'EditListingWizard.tabLabelDeadline';
   } else if (tab === PRICING) {
     key = 'EditListingWizard.tabLabelPricing';
   } else if (tab === AVAILABILITY) {
@@ -97,12 +111,20 @@ const tabCompleted = (tab, listing) => {
   switch (tab) {
     case DESCRIPTION:
       return !!(description && title);
-    case FEATURES:
-      return !!(publicData && publicData.yogaStyles);
-    case POLICY:
-      return !!(publicData && typeof publicData.rules !== 'undefined');
-    case LOCATION:
-      return !!(geolocation && publicData && publicData.location && publicData.location.address);
+    // case FEATURES:
+    //   return !!(publicData && publicData.yogaStyles);
+    // case POLICY:
+    //   return !!(publicData && typeof publicData.rules !== 'undefined');
+    // case LOCATION:
+    //   return !!(geolocation && publicData && publicData.location && publicData.location.address);
+    case AREAOFLAW:
+      return false; //!!(description && title);
+    case CLIENT:
+      return false; //!!(description && title);
+    case DURATION:
+      return false; //!!(description && title);
+    case DEADLINE:
+      return false; //!!(description && title);
     case PRICING:
       return !!price;
     case AVAILABILITY:
@@ -123,14 +145,14 @@ const tabCompleted = (tab, listing) => {
  *
  * @return object containing activity / editability of different tabs of this wizard
  */
-const tabsActive = (isNew, listing) => {
-  return TABS.reduce((acc, tab) => {
-    const previousTabIndex = TABS.findIndex(t => t === tab) - 1;
-    const isActive =
-      previousTabIndex >= 0 ? !isNew || tabCompleted(TABS[previousTabIndex], listing) : true;
-    return { ...acc, [tab]: isActive };
-  }, {});
-};
+// const tabsActive = (isNew, listing) => {
+//   return TABS.reduce((acc, tab) => {
+//     const previousTabIndex = TABS.findIndex(t => t === tab) - 1;
+//     const isActive =
+//       previousTabIndex >= 0 ? !isNew || tabCompleted(TABS[previousTabIndex], listing) : true;
+//     return { ...acc, [tab]: isActive };
+//   }, {});
+// };
 
 const scrollToTab = (tabPrefix, tabId) => {
   const el = document.querySelector(`#${tabPrefix}_${tabId}`);
@@ -278,8 +300,30 @@ class EditListingWizard extends Component {
       stripeAccountError,
       stripeAccountLinkError,
       currentUser,
+      category,
       ...rest
     } = this.props;
+    let TABS =
+      category === 'publicOral'
+        ? [DESCRIPTION, AREAOFLAW, DURATION, PRICING, ...availabilityMaybe, PHOTOS]
+        : category === 'customOral'
+        ? [DESCRIPTION, CLIENT, DURATION, PRICING, ...availabilityMaybe, PHOTOS]
+        : [
+            DESCRIPTION,
+            CLIENT,
+            PRICING,
+            // ...availabilityMaybe,
+            DEADLINE,
+            PHOTOS,
+          ];
+    const tabsActive = (isNew, listing) => {
+      return TABS.reduce((acc, tab) => {
+        const previousTabIndex = TABS.findIndex(t => t === tab) - 1;
+        const isActive =
+          previousTabIndex >= 0 ? !isNew || tabCompleted(TABS[previousTabIndex], listing) : true;
+        return { ...acc, [tab]: isActive };
+      }, {});
+    };
 
     const selectedTab = params.tab;
     const isNewListingFlow = [LISTING_PAGE_PARAM_TYPE_NEW, LISTING_PAGE_PARAM_TYPE_DRAFT].includes(
@@ -401,6 +445,7 @@ class EditListingWizard extends Component {
                 handlePublishListing={this.handlePublishListing}
                 fetchInProgress={fetchInProgress}
                 onManageDisableScrolling={onManageDisableScrolling}
+                category={category}
               />
             );
           })}
@@ -499,7 +544,7 @@ EditListingWizard.propTypes = {
     id: string.isRequired,
     slug: string.isRequired,
     type: oneOf(LISTING_PAGE_PARAM_TYPES).isRequired,
-    tab: oneOf(TABS).isRequired,
+    // tab: oneOf(TABS).isRequired,
   }).isRequired,
   stripeAccount: object,
   stripeAccountFetched: bool,
@@ -547,7 +592,4 @@ EditListingWizard.propTypes = {
   intl: intlShape.isRequired,
 };
 
-export default compose(
-  withViewport,
-  injectIntl
-)(EditListingWizard);
+export default compose(withViewport, injectIntl)(EditListingWizard);

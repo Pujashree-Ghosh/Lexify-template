@@ -24,6 +24,7 @@ const EditListingDescriptionPanel = props => {
     panelUpdated,
     updateInProgress,
     errors,
+    category,
   } = props;
 
   const classes = classNames(rootClassName || css.root, className);
@@ -31,20 +32,70 @@ const EditListingDescriptionPanel = props => {
   const { description, title, publicData } = currentListing.attributes;
 
   const isPublished = currentListing.id && currentListing.attributes.state !== LISTING_STATE_DRAFT;
-  const panelTitle = isPublished ? (
-    <FormattedMessage
-      id="EditListingDescriptionPanel.title"
-      values={{
-        listingTitle: (
-          <ListingLink listing={listing}>
-            <FormattedMessage id="EditListingDescriptionPanel.listingTitle" />
-          </ListingLink>
-        ),
-      }}
-    />
-  ) : (
-    <FormattedMessage id="EditListingDescriptionPanel.createListingTitle" />
-  );
+  const panelTitle =
+    category === 'publicOral' ? (
+      isPublished ? (
+        <FormattedMessage
+          id="EditListingDescriptionPanel.title"
+          values={{
+            listingTitle: (
+              <ListingLink listing={listing}>
+                <FormattedMessage id="EditListingDescriptionPanel.publicOralTitle" />
+              </ListingLink>
+            ),
+          }}
+        />
+      ) : (
+        <FormattedMessage id="EditListingDescriptionPanel.publicOralTitle" />
+      )
+    ) : category === 'customOral' ? (
+      isPublished ? (
+        <FormattedMessage
+          id="EditListingDescriptionPanel.title"
+          values={{
+            listingTitle: (
+              <ListingLink listing={listing}>
+                <FormattedMessage id="EditListingDescriptionPanel.customOralTitle" />
+              </ListingLink>
+            ),
+          }}
+        />
+      ) : (
+        <FormattedMessage id="EditListingDescriptionPanel.customOralTitle" />
+      )
+    ) : category === 'customService' ? (
+      isPublished ? (
+        <FormattedMessage
+          id="EditListingDescriptionPanel.title"
+          values={{
+            listingTitle: (
+              <ListingLink listing={listing}>
+                <FormattedMessage id="EditListingDescriptionPanel.customServiceTitle" />
+              </ListingLink>
+            ),
+          }}
+        />
+      ) : (
+        <FormattedMessage id="EditListingDescriptionPanel.customServiceTitle" />
+      )
+    ) : (
+      ''
+    );
+  // console.log(panelTitle);
+  // isPublished ? (
+  //   <FormattedMessage
+  //     id="EditListingDescriptionPanel.title"
+  //     values={{
+  //       listingTitle: (
+  //         <ListingLink listing={listing}>
+  //           <FormattedMessage id="EditListingDescriptionPanel.listingTitle" />
+  //         </ListingLink>
+  //       ),
+  //     }}
+  //   />
+  // ) : (
+  //   <FormattedMessage id="EditListingDescriptionPanel.createListingTitle" />
+  // );
 
   const certificateOptions = findOptionsForSelectFilter('certificate', config.custom.filters);
   return (
