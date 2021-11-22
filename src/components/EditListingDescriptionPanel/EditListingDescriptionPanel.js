@@ -122,6 +122,7 @@ const EditListingDescriptionPanel = props => {
         updateInProgress={updateInProgress}
         fetchErrors={errors}
         certificateOptions={certificateOptions}
+        category={category}
       />
     </div>
   );
