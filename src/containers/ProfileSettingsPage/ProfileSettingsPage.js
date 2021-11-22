@@ -139,7 +139,7 @@ export class ProfileSettingsPageComponent extends Component {
           firstName: firstName.trim(),
           lastName: lastName.trim(),
           bio,
-          protectedData: { schedule: schedule, phoneNumber: `+${phoneNumber}` },
+          protectedData: { schedule: schedule, phoneNumber: `+${phoneNumber}`, changedOnce: true },
           publicData: publicData,
         };
         const uploadedImage = this.props.image;

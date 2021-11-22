@@ -33,6 +33,7 @@ import { apiBaseUrl } from '../../util/api';
 const ACCEPT_IMAGES = 'image/*';
 const UPLOAD_CHANGE_DELAY = 2000; // Show spinner so that browser has time to load img srcset
 const identity = v => v;
+const MAX_LIMIT = 100;
 
 class ProfileSettingsFormComponent extends Component {
   constructor(props) {
@@ -48,6 +49,8 @@ class ProfileSettingsFormComponent extends Component {
       languages: [],
       languageError: false,
       languageChange: false,
+      description: '',
+      descriptionError: false,
     };
     this.submittedValues = {};
   }
@@ -352,6 +355,13 @@ class ProfileSettingsFormComponent extends Component {
           //   id: 'ProfileSettingsForm.toRequired',
           // });
 
+          const descriptionLabel = intl.formatMessage({
+            id: 'ProfileSettingsForm.descriptionLabel',
+          });
+          const descriptionPlaceholder = intl.formatMessage({
+            id: 'ProfileSettingsForm.descriptionPlaceholder',
+          });
+
           const onLanguageChangeHandler = e => {
             form.change('languages', JSON.stringify(this.state.languages));
 
@@ -368,6 +378,11 @@ class ProfileSettingsFormComponent extends Component {
               this.setState({ languageError: false });
             }
           };
+
+          const clientType =
+            user?.attributes?.profile?.publicData?.clientType === 'privateIndividual'
+              ? 'Private Individual'
+              : 'Legal Entity';
 
           const time = [
             '00:00',
@@ -476,7 +491,14 @@ class ProfileSettingsFormComponent extends Component {
           const pristineSinceLastSubmit = submittedOnce && isEqual(values, initialValues);
 
           const submitDisabled =
-            invalid || pristine || pristineSinceLastSubmit || uploadInProgress || submitInProgress;
+            invalid ||
+            pristine ||
+            pristineSinceLastSubmit ||
+            uploadInProgress ||
+            submitInProgress ||
+            values?.industry?.filter(f => f?.description?.length > MAX_LIMIT).length > 0
+              ? true
+              : false;
 
           return (
             <Form
@@ -577,7 +599,9 @@ class ProfileSettingsFormComponent extends Component {
                 </div>
               </div>
 
-              {user && !user?.attributes?.profile?.protectedData?.isLawyer ? (
+              {user &&
+              !user?.attributes?.profile?.protectedData?.isLawyer &&
+              !user?.attributes?.profile?.protectedData?.changedOnce ? (
                 <div className={css.psradioButtons}>
                   <label className={css.radio}>
                     <input
@@ -610,6 +634,17 @@ class ProfileSettingsFormComponent extends Component {
                     />
                     Private individual
                   </label>
+                </div>
+              ) : (
+                ''
+              )}
+              {user?.attributes?.profile?.protectedData?.changedOnce &&
+              user?.attributes?.profile?.publicData?.clientType ? (
+                <div className={css.sectionContainer}>
+                  <h3 className={css.sectionTitle}>
+                    {/* <FormattedMessage id="ProfileSettingsForm.yourName" /> */}
+                    {`Registered as ${clientType}`}
+                  </h3>
                 </div>
               ) : (
                 ''
@@ -1271,6 +1306,68 @@ class ProfileSettingsFormComponent extends Component {
                                     // validate={required}
                                     label="Recent work"
                                   />
+                                </div>
+
+                                {/* <div className={css.fromgroup}>
+                                  <label>{descriptionLabel}</label>
+                                  <input
+                                    type="textarea"
+                                    id={`${name}.description`}
+                                    className={css.recentWork}
+                                    name={`${name}.description`}
+                                    // label={descriptionLabel}
+                                    placeholder={descriptionPlaceholder}
+                                    values={this.state.description}
+                                    onChange={e => {
+                                      form.change(`${name}.description`, e.target.value);
+                                      console.log(values?.industry[i]?.description?.length);
+
+                                      if (values?.industry[i]?.description?.length > 3) {
+                                        this.setState({ descriptionError: true });
+                                      } else {
+                                        this.setState({ descriptionError: false });
+                                      }
+                                    }}
+                                  />
+                                  {this.state.descriptionError ? (
+                                    <span className={css.errorMessage}>
+                                      Max 100 words are allowed.
+                                    </span>
+                                  ) : (
+                                    ''
+                                  )}
+                                </div> */}
+
+                                <div className={css.fromgroup}>
+                                  {/* <label>{descriptionLabel}</label> */}
+                                  <FieldTextInput
+                                    type="textarea"
+                                    id={`${name}.description`}
+                                    className={css.recentWork}
+                                    name={`${name}.description`}
+                                    label={descriptionLabel}
+                                    placeholder={descriptionPlaceholder}
+                                    // onChange={() => console.log(values?.industry[i]?.description)}
+                                    // onChange={e => {
+                                    //   form.change('description', e.target.value);
+                                    //   console.log(values.description);
+                                    //   this.setState({
+                                    //     description: e.target.value,
+                                    //   });
+                                    //   if (values.description.length > 3) {
+                                    //     this.setState({ descriptionError: true });
+                                    //   } else {
+                                    //     this.setState({ descriptionError: false });
+                                    //   }
+                                    // }}
+                                  />
+                                  {values?.industry[i]?.description?.length > MAX_LIMIT ? (
+                                    <span className={css.errorMessage}>
+                                      {`Max ${MAX_LIMIT} limits are allowed.`}
+                                    </span>
+                                  ) : (
+                                    ''
+                                  )}
                                 </div>
 
                                 <div className={`${css.fromgroup} ${css.inlinefrom}`}>

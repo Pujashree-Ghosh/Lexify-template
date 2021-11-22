@@ -1204,5 +1204,7 @@
   "ProfilePage.professionalDetail":"Professional details",
   "ProfilePage.workExp":"Work Experience",
   "ProfilePage.education":"Education",
-  "Topbar.createListing":"+ Create consultation"
+  "Topbar.createListing":"+ Create consultation",
+  "ProfileSettingsForm.descriptionPlaceholder":"Add description",
+  "ProfileSettingsForm.descriptionLabel":"Description"
 }
