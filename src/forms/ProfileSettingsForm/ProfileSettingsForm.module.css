@@ -373,6 +373,9 @@
 .fromgroup {
   margin: 0 0 25px;
 }
+/* .fromgroup textarea {
+  height: auto !important;
+} */
 .inlinefrom {
   display: flex;
   justify-content: space-between;

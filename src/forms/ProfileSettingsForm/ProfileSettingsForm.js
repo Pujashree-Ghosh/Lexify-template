@@ -1308,58 +1308,14 @@ class ProfileSettingsFormComponent extends Component {
                                   />
                                 </div>
 
-                                {/* <div className={css.fromgroup}>
-                                  <label>{descriptionLabel}</label>
-                                  <input
-                                    type="textarea"
-                                    id={`${name}.description`}
-                                    className={css.recentWork}
-                                    name={`${name}.description`}
-                                    // label={descriptionLabel}
-                                    placeholder={descriptionPlaceholder}
-                                    values={this.state.description}
-                                    onChange={e => {
-                                      form.change(`${name}.description`, e.target.value);
-                                      console.log(values?.industry[i]?.description?.length);
-
-                                      if (values?.industry[i]?.description?.length > 3) {
-                                        this.setState({ descriptionError: true });
-                                      } else {
-                                        this.setState({ descriptionError: false });
-                                      }
-                                    }}
-                                  />
-                                  {this.state.descriptionError ? (
-                                    <span className={css.errorMessage}>
-                                      Max 100 words are allowed.
-                                    </span>
-                                  ) : (
-                                    ''
-                                  )}
-                                </div> */}
-
                                 <div className={css.fromgroup}>
-                                  {/* <label>{descriptionLabel}</label> */}
                                   <FieldTextInput
                                     type="textarea"
                                     id={`${name}.description`}
-                                    className={css.recentWork}
+                                    className={css.description}
                                     name={`${name}.description`}
                                     label={descriptionLabel}
                                     placeholder={descriptionPlaceholder}
-                                    // onChange={() => console.log(values?.industry[i]?.description)}
-                                    // onChange={e => {
-                                    //   form.change('description', e.target.value);
-                                    //   console.log(values.description);
-                                    //   this.setState({
-                                    //     description: e.target.value,
-                                    //   });
-                                    //   if (values.description.length > 3) {
-                                    //     this.setState({ descriptionError: true });
-                                    //   } else {
-                                    //     this.setState({ descriptionError: false });
-                                    //   }
-                                    // }}
                                   />
                                   {values?.industry[i]?.description?.length > MAX_LIMIT ? (
                                     <span className={css.errorMessage}>
