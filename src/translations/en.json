@@ -226,6 +226,11 @@
   "EditListingDescriptionForm.serviceDescription": "Service description",
   "EditListingDescriptionForm.serviceDescriptionPlaceholder": "Write a short description about the service",
   "EditListingDescriptionForm.descriptionRequired": "A description is required.",
+  "EditListingDescriptionForm.oralDisclaimer": "Disclaimer",
+  "EditListingDescriptionForm.oralDisclaimerPlaceholder": "Write a disclaimer about this consultation",
+  "EditListingDescriptionForm.serviceDisclaimer": "Disclaimer",
+  "EditListingDescriptionForm.serviceDisclaimerPlaceholder": "Write a short disclaimer about the service",
+  "EditListingDescriptionForm.disclaimerRequired": "A disclaimer is required",
   "EditListingDescriptionForm.maxLength": "Must be {maxLength} characters or less",
   "EditListingDescriptionForm.showListingFailed": "Fetching teacher profile data failed",
   "EditListingDescriptionForm.oralTitle": "Consultation topic title",
@@ -1217,5 +1222,12 @@
   "EditListingWizard.tabLabelDeadline":"Dead Line",
   "EditListingDescriptionPanel.publicOralTitle":"Oral Consultation Description",
   "EditListingDescriptionPanel.customOralTitle":"Custom Tailored Oral Consultation Description",
-  "EditListingDescriptionPanel.customServiceTitle":"Custom Tailored Service Description"
+  "EditListingDescriptionPanel.customServiceTitle":"Custom Tailored Service Description",
+  "EditListingWizard.saveNewPublicOralDescription":"Next: Area of Law",
+  "EditListingAreOfLawPanel.listingTitle": "Area of Law",
+  "EditListingAreOfLawPanel.title": "Edit {listingTitle}",
+  "EditListingAreOfLawForm.title" : "Select appropriate area(s) of law for this topic",
+  "EditlistingAreaOfLawForm.addMore":"Add More",
+  "EditListingWizard.saveNewAreaOfLaw":"Next: Duration",
+  "EditListingWizard.saveEditAreaOfLaw": "Save Area Of Law"
 }

@@ -21,6 +21,7 @@ import {
 } from '../../components';
 
 import css from './EditListingWizard.module.css';
+import EditListingAreOfLawPanel from '../EditListingAreaOfLawPanel/EditListingAreaOfLawPanel';
 
 export const AVAILABILITY = 'availability';
 export const DESCRIPTION = 'description';
@@ -177,9 +178,14 @@ const EditListingWizardTab = props => {
 
   switch (tab) {
     case DESCRIPTION: {
-      const submitButtonTranslationKey = isNewListingFlow
-        ? 'EditListingWizard.saveNewDescription'
-        : 'EditListingWizard.saveEditDescription';
+      const submitButtonTranslationKey =
+        category === 'publicOral'
+          ? isNewListingFlow
+            ? 'EditListingWizard.saveNewPublicOralDescription'
+            : 'EditListingWizard.saveEditDescription'
+          : isNewListingFlow
+          ? 'EditListingWizard.saveNewDescription'
+          : 'EditListingWizard.saveEditDescription';
       return (
         <EditListingDescriptionPanel
           {...panelProps(DESCRIPTION)}
@@ -235,17 +241,16 @@ const EditListingWizardTab = props => {
     // }
     case AREAOFLAW: {
       const submitButtonTranslationKey = isNewListingFlow
-        ? 'EditListingWizard.saveNewFeatures'
-        : 'EditListingWizard.saveEditFeatures';
+        ? 'EditListingWizard.saveNewAreaOfLaw'
+        : 'EditListingWizard.saveEditAreaOfLaw';
       return (
-        // <EditListingFeaturesPanel
-        //   {...panelProps(FEATURES)}
-        //   submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
-        //   onSubmit={values => {
-        //     onCompleteEditListingWizardTab(tab, values);
-        //   }}
-        // />
-        <h1>AREA_OF_LAW</h1>
+        <EditListingAreOfLawPanel
+          {...panelProps(AREAOFLAW)}
+          submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
+          onSubmit={values => {
+            onCompleteEditListingWizardTab(tab, values);
+          }}
+        />
       );
     }
     case DEADLINE: {

@@ -118,7 +118,7 @@ const tabCompleted = (tab, listing) => {
     // case LOCATION:
     //   return !!(geolocation && publicData && publicData.location && publicData.location.address);
     case AREAOFLAW:
-      return false; //!!(description && title);
+      return !!(publicData && publicData.areaOfLaw);
     case CLIENT:
       return false; //!!(description && title);
     case DURATION:
