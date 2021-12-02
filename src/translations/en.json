@@ -1206,5 +1206,8 @@
   "ProfilePage.education":"Education",
   "Topbar.createListing":"+ Create consultation",
   "ProfileSettingsForm.descriptionPlaceholder":"Add description",
-  "ProfileSettingsForm.descriptionLabel":"Description"
+  "ProfileSettingsForm.descriptionLabel":"Description",
+  "SignupForm.clientTypeRequired":"This field is required",
+  "SignupForm.clientTypePlaceholder":"Choose account type",
+  "SignupForm.clientTypeLabel":"Register as"
 }

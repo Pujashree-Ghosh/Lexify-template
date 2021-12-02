@@ -349,6 +349,7 @@ export class AuthenticationPageComponent extends Component {
             className={css.signupForm}
             onSubmit={handleSubmitSignup}
             inProgress={authInProgress}
+            tab={tab}
             onOpenTermsOfService={() => this.setState({ tosModalOpen: true })}
           />
         )}

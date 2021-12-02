@@ -9,6 +9,7 @@ import {
   Form,
   PrimaryButton,
   FieldTextInput,
+  FieldSelect,
   FieldPhoneNumberInput,
   // Button,
 } from '../../components';
@@ -38,7 +39,9 @@ const SignupFormComponent = props => (
         onOpenTermsOfService,
         values,
         form,
+        tab,
       } = fieldRenderProps;
+      console.log(tab);
       const [showOtp, setShowOtp] = useState(false);
       const [otpErr, setOtpErr] = useState(false);
       const [submitProgress, setSubmitProgress] = useState(false);
@@ -151,6 +154,19 @@ const SignupFormComponent = props => (
         return val && EMAIL_RE.test(val) ? true : false;
       };
 
+      const clientTypeLabel = intl.formatMessage({
+        id: 'SignupForm.clientTypeLabel',
+      });
+      const clientTypePlaceholder = intl.formatMessage({
+        id: 'SignupForm.clientTypePlaceholder',
+      });
+      const clientTypeRequiredMessage = intl.formatMessage({
+        id: 'SignupForm.clientTypeRequired',
+      });
+      const clientTypeRequired = validators.required(clientTypeRequiredMessage);
+
+      const required = validators.required('This field is required');
+
       const classes = classNames(rootClassName || css.root, className);
       const submitInProgress = inProgress;
       const submitDisabled = !values.otp || invalid || submitInProgress;
@@ -254,6 +270,22 @@ const SignupFormComponent = props => (
                 validate={validators.composeValidators(emailRequired, emailValid)}
               />
             </div>
+            {tab === 'signup' ? (
+              <div className={css.fromgp}>
+                <FieldSelect
+                  id="clientType"
+                  name="clientType"
+                  label={clientTypeLabel}
+                  validate={clientTypeRequired}
+                >
+                  <option value="">{clientTypePlaceholder}</option>
+                  <option value="legalEntity">Legal Entity</option>
+                  <option value="privateIndividual">Private Individual</option>
+                </FieldSelect>
+              </div>
+            ) : (
+              ''
+            )}
             <div className={css.fromgp}>
               <label className={css.selectLabel}>{phoneLabel}</label>
               <div className={css.phoneInputField}>
