@@ -13,6 +13,7 @@ import * as validators from '../../util/validators';
 import { MdOutlineClose } from 'react-icons/md';
 
 import css from './EditListingAreOfLawForm.module.css';
+import cloneDeep from 'lodash.clonedeep';
 
 const EditListingAreOfLawFormComponent = props => (
   <FinalForm
@@ -30,12 +31,13 @@ const EditListingAreOfLawFormComponent = props => (
         updated,
         updateInProgress,
         fetchErrors,
-        filterConfig,
+        areaOfLawOptions,
         invalid,
         values,
         form,
       } = formRenderProps;
-      console.log(values, values.areaOfLaw.length);
+      // console.log(values, values.areaOfLaw.length);
+      // console.log(123, areaOfLawOptions);
 
       const classes = classNames(rootClassName || css.root, className);
       const submitReady = (updated && pristine) || ready;
@@ -55,7 +57,7 @@ const EditListingAreOfLawFormComponent = props => (
         </p>
       ) : null;
 
-      const options = findOptionsForSelectFilter('yogaStyles', filterConfig);
+      // const options = findOptionsForSelectFilter('yogaStyles', filterConfig);
       const required = validators.required('This field is required');
 
       return (
@@ -70,6 +72,16 @@ const EditListingAreOfLawFormComponent = props => (
                     <FormattedMessage id="EditListingAreOfLawForm.title" />
                   </h3>
                   {fields.map((name, i) => {
+                    const options = cloneDeep(areaOfLawOptions).filter(
+                      ({ key }) => !values.areaOfLaw.filter((m, index) => index !== i).includes(key)
+                    );
+
+                    console.log(
+                      areaOfLawOptions.map(({ key }) => key),
+                      values.areaOfLaw,
+                      i
+                    );
+
                     return (
                       <div key={name}>
                         <div className={css.fromgroup}>
@@ -79,9 +91,12 @@ const EditListingAreOfLawFormComponent = props => (
                             // label="Choose an option:"
                             validate={required}
                           >
-                            <option value="">Contracts and Agreements</option>
-                            <option value="first">First option</option>
-                            <option value="second">Second option</option>
+                            <option value="">Choose an option</option>
+                            {cloneDeep(options)
+                              // .filter(({ key }) => !values.areaOfLaw.includes(key))
+                              .map(m => (
+                                <option value={m.key}>{m.label}</option>
+                              ))}
                           </FieldSelect>
                           <MdOutlineClose
                             onClick={() => {
@@ -102,6 +117,12 @@ const EditListingAreOfLawFormComponent = props => (
                       type="button"
                       onClick={() => {
                         fields.push();
+                        // console.log(
+                        //   values.areaOfLaw,
+                        //   areaOfLawOptions.map(m => m.key),
+                        //   values.areaOfLaw.includes('contractsAndAgreements'),
+                        //   areaOfLawOptions?.filter(f => !values.areaOfLaw.includes(f.key))
+                        // );
                       }}
                     >
                       <FormattedMessage id="EditlistingAreaOfLawForm.addMore" />
@@ -141,7 +162,7 @@ EditListingAreOfLawFormComponent.defaultProps = {
   rootClassName: null,
   className: null,
   fetchErrors: null,
-  filterConfig: config.custom.filters,
+  areaOfLawOptions: config.custom.areaOfLaw.options,
 };
 
 EditListingAreOfLawFormComponent.propTypes = {
@@ -157,7 +178,7 @@ EditListingAreOfLawFormComponent.propTypes = {
     showListingsError: propTypes.error,
     updateListingError: propTypes.error,
   }),
-  filterConfig: propTypes.filterConfig,
+  areaOfLawOptions: propTypes.areaOfLawOptions,
 };
 
 const EditListingAreOfLawForm = EditListingAreOfLawFormComponent;

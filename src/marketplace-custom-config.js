@@ -163,3 +163,11 @@ export const sortConfig = {
     { key: 'relevance', label: 'Relevance', longLabel: 'Relevance (Keyword search)' },
   ],
 };
+
+export const areaOfLaw = {
+  options: [
+    { key: 'contractsAndAgreements', label: 'Contracts and Agreements' },
+    { key: 'employeeBenefits', label: 'Employee Benefits' },
+    { key: 'employmentAndLabor', label: 'Employment and Labor' },
+  ],
+};
