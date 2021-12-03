@@ -13,6 +13,7 @@ import { createResourceLocatorString } from '../../util/routes';
 import {
   EditListingAvailabilityPanel,
   EditListingDescriptionPanel,
+  EditListingDurationPanel,
   EditListingFeaturesPanel,
   EditListingLocationPanel,
   EditListingPhotosPanel,
@@ -285,17 +286,16 @@ const EditListingWizardTab = props => {
     }
     case DURATION: {
       const submitButtonTranslationKey = isNewListingFlow
-        ? 'EditListingWizard.saveNewFeatures'
-        : 'EditListingWizard.saveEditFeatures';
+        ? 'EditListingWizard.saveNewDuration'
+        : 'EditListingWizard.saveEditDuration';
       return (
-        // <EditListingFeaturesPanel
-        //   {...panelProps(FEATURES)}
-        //   submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
-        //   onSubmit={values => {
-        //     onCompleteEditListingWizardTab(tab, values);
-        //   }}
-        // />
-        <h1>DURATION</h1>
+        <EditListingDurationPanel
+          {...panelProps(DURATION)}
+          submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
+          onSubmit={values => {
+            onCompleteEditListingWizardTab(tab, values);
+          }}
+        />
       );
     }
     case PRICING: {

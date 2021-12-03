@@ -122,7 +122,7 @@ const tabCompleted = (tab, listing) => {
     case CLIENT:
       return false; //!!(description && title);
     case DURATION:
-      return false; //!!(description && title);
+      return !!(publicData && publicData.duration && publicData.durationUnit);
     case DEADLINE:
       return false; //!!(description && title);
     case PRICING:

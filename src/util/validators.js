@@ -110,6 +110,12 @@ export const emailFormatValid = message => value => {
   return value && EMAIL_RE.test(value) ? VALID : message;
 };
 
+const numberValid_RE = /^[0-9\b]+$/;
+
+export const numberValid = message => value => {
+  return value && numberValid_RE.test(value) ? VALID : message;
+};
+
 export const moneySubUnitAmountAtLeast = (message, minValue) => value => {
   return value instanceof Money && value.amount >= minValue ? VALID : message;
 };

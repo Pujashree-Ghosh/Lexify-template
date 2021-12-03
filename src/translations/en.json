@@ -1224,10 +1224,17 @@
   "EditListingDescriptionPanel.customOralTitle":"Custom Tailored Oral Consultation Description",
   "EditListingDescriptionPanel.customServiceTitle":"Custom Tailored Service Description",
   "EditListingWizard.saveNewPublicOralDescription":"Next: Area of Law",
-  "EditListingAreOfLawPanel.listingTitle": "Area of Law",
-  "EditListingAreOfLawPanel.title": "Edit {listingTitle}",
-  "EditListingAreOfLawForm.title" : "Select appropriate area(s) of law for this topic",
+  "EditListingAreaOfLawPanel.listingTitle": "Area of Law",
+  "EditListingAreaOfLawPanel.title": "Edit {listingTitle}",
+  "EditListingAreaOfLawForm.title" : "Select appropriate area(s) of law for this topic",
   "EditlistingAreaOfLawForm.addMore":"Add More",
   "EditListingWizard.saveNewAreaOfLaw":"Next: Duration",
-  "EditListingWizard.saveEditAreaOfLaw": "Save Area Of Law"
+  "EditListingWizard.saveEditAreaOfLaw": "Save Area Of Law",
+  "EditListingWizard.saveNewDuration":"Next: Pricing",
+  "EditListingWizard.saveEditDuration": " Save Duration",
+  "EditListingDurationPanel.listingTitle":"Duration",
+  "EditListingDurationForm.title":"Enter duration",
+  "EditListingDurationForm.durationRequired":"Duration is required",
+  "EditListingDurationForm.durationInvalid":"Invalid duration",
+  "EditListingDurationForm.durationPlaceholder": "Enter duration"
 }

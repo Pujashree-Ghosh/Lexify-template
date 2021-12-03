@@ -5,14 +5,14 @@ import { FormattedMessage } from '../../util/reactIntl';
 
 import { LISTING_STATE_DRAFT } from '../../util/types';
 import { ensureListing } from '../../util/data';
-import { EditListingAreaOfLawForm } from '../../forms';
+import { EditListingDurationForm } from '../../forms';
 import { ListingLink } from '../../components';
 
-import css from './EditListingAreaOfLawPanel.module.css';
+import css from './EditListingDurationPanel.module.css';
 
 const FEATURES_NAME = 'yogaStyles';
 
-const EditListingAreaOfLawPanel = props => {
+const EditListingDurationPanel = props => {
   const {
     rootClassName,
     className,
@@ -30,39 +30,40 @@ const EditListingAreaOfLawPanel = props => {
   const classes = classNames(rootClassName || css.root, className);
   const currentListing = ensureListing(listing);
   const { publicData } = currentListing.attributes;
+  //   const { duration, durationUnit } = publicData;
 
   const isPublished = currentListing.id && currentListing.attributes.state !== LISTING_STATE_DRAFT;
   const panelTitle = isPublished ? (
     <FormattedMessage
-      id="EditListingAreaOfLawPanel.title"
+      id="EditListingDurationPanel.title"
       values={{
         listingTitle: (
           <ListingLink listing={listing}>
-            <FormattedMessage id="EditListingAreaOfLawPanel.listingTitle" />
+            <FormattedMessage id="EditListingDurationPanel.listingTitle" />
           </ListingLink>
         ),
       }}
     />
   ) : (
-    <FormattedMessage id="EditListingAreaOfLawPanel.listingTitle" />
+    <FormattedMessage id="EditListingDurationPanel.listingTitle" />
   );
 
-  const areaOfLaw = publicData && publicData.areaOfLaw;
-  const initialValues = areaOfLaw ? areaOfLaw : [{}];
+  const duration = publicData && publicData.duration;
+  const durationUnit = publicData && publicData.durationUnit;
+
+  //   const initialValues = areaOfLaw ? areaOfLaw : [{}];
 
   return (
     <div className={classes}>
       <h1 className={css.title}>{panelTitle}</h1>
-      <EditListingAreaOfLawForm
+      <EditListingDurationForm
         className={css.form}
-        initialValues={{ areaOfLaw: initialValues }}
+        initialValues={{ duration, durationUnit }}
         onSubmit={values => {
-          const { areaOfLaw } = values;
-          console.log(values);
+          const { duration, durationUnit } = values;
           const updatedValues = {
-            publicData: { areaOfLaw },
+            publicData: { duration, durationUnit },
           };
-          console.log(updatedValues);
           onSubmit(updatedValues);
         }}
         onChange={onChange}
@@ -77,7 +78,7 @@ const EditListingAreaOfLawPanel = props => {
   );
 };
 
-EditListingAreaOfLawPanel.defaultProps = {
+EditListingDurationPanel.defaultProps = {
   rootClassName: null,
   className: null,
   listing: null,
@@ -85,7 +86,7 @@ EditListingAreaOfLawPanel.defaultProps = {
 
 const { bool, func, object, string } = PropTypes;
 
-EditListingAreaOfLawPanel.propTypes = {
+EditListingDurationPanel.propTypes = {
   rootClassName: string,
   className: string,
 
@@ -102,4 +103,4 @@ EditListingAreaOfLawPanel.propTypes = {
   errors: object.isRequired,
 };
 
-export default EditListingAreaOfLawPanel;
+export default EditListingDurationPanel;

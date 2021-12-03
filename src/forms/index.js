@@ -26,4 +26,5 @@ export { default as SignupForm } from './SignupForm/SignupForm';
 export { default as StripePaymentForm } from './StripePaymentForm/StripePaymentForm';
 export { default as StripeConnectAccountForm } from './StripeConnectAccountForm/StripeConnectAccountForm';
 export { default as TopbarSearchForm } from './TopbarSearchForm/TopbarSearchForm';
-export {default as EditListingAreOfLawForm} from './EditListingAreOfLawForm/EditListingAreOfLawForm'
+export { default as EditListingAreaOfLawForm } from './EditListingAreaOfLawForm/EditListingAreaOfLawForm';
+export { default as EditListingDurationForm } from './EditListingDurationForm/EditListingDurationForm'

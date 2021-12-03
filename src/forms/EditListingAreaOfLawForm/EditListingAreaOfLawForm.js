@@ -12,10 +12,10 @@ import { FieldArray } from 'react-final-form-arrays';
 import * as validators from '../../util/validators';
 import { MdOutlineClose } from 'react-icons/md';
 
-import css from './EditListingAreOfLawForm.module.css';
+import css from './EditListingAreaOfLawForm.module.css';
 import cloneDeep from 'lodash.clonedeep';
 
-const EditListingAreOfLawFormComponent = props => (
+const EditListingAreaOfLawFormComponent = props => (
   <FinalForm
     {...props}
     mutators={{ ...arrayMutators }}
@@ -42,18 +42,18 @@ const EditListingAreOfLawFormComponent = props => (
       const classes = classNames(rootClassName || css.root, className);
       const submitReady = (updated && pristine) || ready;
       const submitInProgress = updateInProgress;
-      const submitDisabled = disabled || invalid || submitInProgress || pristine;
+      const submitDisabled = disabled || invalid || submitInProgress;
 
       const { updateListingError, showListingsError } = fetchErrors || {};
       const errorMessage = updateListingError ? (
         <p className={css.error}>
-          <FormattedMessage id="EditListingAreOfLawForm.updateFailed" />
+          <FormattedMessage id="EditListingAreaOfLawForm.updateFailed" />
         </p>
       ) : null;
 
       const errorMessageShowListing = showListingsError ? (
         <p className={css.error}>
-          <FormattedMessage id="EditListingAreOfLawForm.showListingFailed" />
+          <FormattedMessage id="EditListingAreaOfLawForm.showListingFailed" />
         </p>
       ) : null;
 
@@ -69,38 +69,32 @@ const EditListingAreOfLawFormComponent = props => (
               return (
                 <div className={css.sectionContainer}>
                   <h3 className={css.sectionTitle}>
-                    <FormattedMessage id="EditListingAreOfLawForm.title" />
+                    <FormattedMessage id="EditListingAreaOfLawForm.title" />
                   </h3>
                   {fields.map((name, i) => {
                     const options = cloneDeep(areaOfLawOptions).filter(
                       ({ key }) => !values.areaOfLaw.filter((m, index) => index !== i).includes(key)
                     );
 
-                    console.log(
-                      areaOfLawOptions.map(({ key }) => key),
-                      values.areaOfLaw,
-                      i
-                    );
+                    // console.log(
+                    //   areaOfLawOptions.map(({ key }) => key),
+                    //   values.areaOfLaw,
+                    //   i
+                    // );
+
+                    console.log(values);
 
                     return (
                       <div key={name}>
                         <div className={css.fromgroup}>
-                          <FieldSelect
-                            id={`${name}`}
-                            name={`${name}`}
-                            // label="Choose an option:"
-                            validate={required}
-                          >
+                          <FieldSelect id={`${name}`} name={`${name}`} validate={required}>
                             <option value="">Choose an option</option>
-                            {cloneDeep(options)
-                              // .filter(({ key }) => !values.areaOfLaw.includes(key))
-                              .map(m => (
-                                <option value={m.key}>{m.label}</option>
-                              ))}
+                            {cloneDeep(options).map(m => (
+                              <option value={m.key}>{m.label}</option>
+                            ))}
                           </FieldSelect>
                           <MdOutlineClose
                             onClick={() => {
-                              // fields = fields.filter();
                               form.change(
                                 'areaOfLaw',
                                 values.areaOfLaw.filter(f => f !== values.areaOfLaw[i])
@@ -117,13 +111,8 @@ const EditListingAreOfLawFormComponent = props => (
                       type="button"
                       onClick={() => {
                         fields.push();
-                        // console.log(
-                        //   values.areaOfLaw,
-                        //   areaOfLawOptions.map(m => m.key),
-                        //   values.areaOfLaw.includes('contractsAndAgreements'),
-                        //   areaOfLawOptions?.filter(f => !values.areaOfLaw.includes(f.key))
-                        // );
                       }}
+                      disabled={!values?.areaOfLaw[values?.areaOfLaw?.length - 1]}
                     >
                       <FormattedMessage id="EditlistingAreaOfLawForm.addMore" />
                     </Button>
@@ -158,14 +147,14 @@ const EditListingAreOfLawFormComponent = props => (
   />
 );
 
-EditListingAreOfLawFormComponent.defaultProps = {
+EditListingAreaOfLawFormComponent.defaultProps = {
   rootClassName: null,
   className: null,
   fetchErrors: null,
   areaOfLawOptions: config.custom.areaOfLaw.options,
 };
 
-EditListingAreOfLawFormComponent.propTypes = {
+EditListingAreaOfLawFormComponent.propTypes = {
   rootClassName: string,
   className: string,
   onSubmit: func.isRequired,
@@ -181,6 +170,6 @@ EditListingAreOfLawFormComponent.propTypes = {
   areaOfLawOptions: propTypes.areaOfLawOptions,
 };
 
-const EditListingAreOfLawForm = EditListingAreOfLawFormComponent;
+const EditListingAreaOfLawForm = EditListingAreaOfLawFormComponent;
 
-export default EditListingAreOfLawForm;
+export default EditListingAreaOfLawForm;
