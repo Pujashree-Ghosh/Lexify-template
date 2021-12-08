@@ -379,7 +379,7 @@ export class ProfilePageComponent extends Component {
 
                   <div className={`${css.profDetail} ${css.workexp}`}>
                     <table>
-                      <th className={css.state}>Recent Work</th>
+                      <th className={css.state}>Industry</th>
                       <th className={css.status}>Recent Work</th>
                       <th className={css.ao}>Year</th>
                       {publicData?.jurisdictionPractice.map(m => (

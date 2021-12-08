@@ -1314,9 +1314,10 @@ class ProfileSettingsFormComponent extends Component {
                                     label={descriptionLabel}
                                     placeholder={descriptionPlaceholder}
                                   />
-                                  {values?.industry[i]?.description?.length > MAX_LIMIT ? (
+                                  {values?.industry[i]?.description?.split(' ').length >
+                                  MAX_LIMIT ? (
                                     <span className={css.errorMessage}>
-                                      {`Max ${MAX_LIMIT} limits are allowed.`}
+                                      {'You have exceeded the maximum word limit'}
                                     </span>
                                   ) : (
                                     ''
