@@ -203,7 +203,7 @@ export const signup = params => (dispatch, getState, sdk) => {
 
   const createUserParams = isEmpty(rest)
     ? { email, password, firstName, lastName }
-    : clientType
+    : !clientType
     ? {
         email,
         password,

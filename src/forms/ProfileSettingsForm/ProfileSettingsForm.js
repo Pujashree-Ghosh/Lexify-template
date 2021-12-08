@@ -42,7 +42,6 @@ class ProfileSettingsFormComponent extends Component {
     this.uploadDelayTimeoutId = null;
     this.state = {
       uploadDelay: false,
-      selectedOption: null,
       phnErr: false,
       otpErr: false,
       verificationModule: [],
@@ -57,7 +56,6 @@ class ProfileSettingsFormComponent extends Component {
 
   componentDidMount() {
     this.setState({
-      selectedOption: this.props.initialValues?.clientType,
       languages:
         this.props.initialValues && this.props.initialValues.languages
           ? this.props.initialValues.languages
@@ -599,7 +597,7 @@ class ProfileSettingsFormComponent extends Component {
                 </div>
               </div>
 
-              {user &&
+              {/* {user &&
               !user?.attributes?.profile?.protectedData?.isLawyer &&
               !user?.attributes?.profile?.protectedData?.changedOnce ? (
                 <div className={css.psradioButtons}>
@@ -637,9 +635,8 @@ class ProfileSettingsFormComponent extends Component {
                 </div>
               ) : (
                 ''
-              )}
-              {user?.attributes?.profile?.protectedData?.changedOnce &&
-              user?.attributes?.profile?.publicData?.clientType ? (
+              )} */}
+              {!user?.attributes?.profile?.protectedData?.isLawyer && clientType ? (
                 <div className={css.sectionContainer}>
                   <h3 className={css.sectionTitle}>
                     {/* <FormattedMessage id="ProfileSettingsForm.yourName" /> */}
@@ -769,7 +766,7 @@ class ProfileSettingsFormComponent extends Component {
 
               {user && !user?.attributes?.profile?.protectedData?.isLawyer ? (
                 <div className={css.client}>
-                  {this.state.selectedOption === 'legalEntity' ? (
+                  {user?.attributes?.profile?.publicData?.clientType === 'legalEntity' ? (
                     <div className={css.sectionContainer}>
                       <h3 className={css.sectionTitle}>
                         <FormattedMessage id="ProfileSettingsForm.companyDetail" />
@@ -1483,9 +1480,7 @@ class ProfileSettingsFormComponent extends Component {
                 type="submit"
                 inProgress={submitInProgress}
                 disabled={
-                  !(initialValues.clientType !== this.state.selectedOption) &&
-                  !(this.state.languageChange && this.state.languages.length > 0) &&
-                  submitDisabled
+                  !(this.state.languageChange && this.state.languages.length > 0) && submitDisabled
                 }
                 ready={pristineSinceLastSubmit}
               >
