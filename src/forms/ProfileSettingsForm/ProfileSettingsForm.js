@@ -494,7 +494,7 @@ class ProfileSettingsFormComponent extends Component {
             pristineSinceLastSubmit ||
             uploadInProgress ||
             submitInProgress ||
-            values?.industry?.filter(f => f?.description?.length > MAX_LIMIT).length > 0
+            values?.industry?.filter(f => f?.description?.split(' ').length > MAX_LIMIT).length > 0
               ? true
               : false;
 
@@ -1317,7 +1317,7 @@ class ProfileSettingsFormComponent extends Component {
                                   {values?.industry[i]?.description?.split(' ').length >
                                   MAX_LIMIT ? (
                                     <span className={css.errorMessage}>
-                                      {'You have exceeded the maximum word limit'}
+                                      {`You have exceeded the maximum word limit (max ${MAX_LIMIT} words)`}
                                     </span>
                                   ) : (
                                     ''
