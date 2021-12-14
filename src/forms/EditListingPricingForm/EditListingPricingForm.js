@@ -9,7 +9,7 @@ import { LINE_ITEM_NIGHT, LINE_ITEM_DAY, propTypes } from '../../util/types';
 import * as validators from '../../util/validators';
 import { formatMoney } from '../../util/currency';
 import { types as sdkTypes } from '../../util/sdkLoader';
-import { Button, Form, FieldCurrencyInput } from '../../components';
+import { Button, Form, FieldCurrencyInput, FieldSelect } from '../../components';
 import css from './EditListingPricingForm.module.css';
 
 const { Money } = sdkTypes;
@@ -29,7 +29,9 @@ export const EditListingPricingFormComponent = props => (
         saveActionMsg,
         updated,
         updateInProgress,
+        category,
         fetchErrors,
+        values,
       } = formRenderProps;
 
       const unitType = config.bookingUnitType;
@@ -76,6 +78,9 @@ export const EditListingPricingFormComponent = props => (
       const submitInProgress = updateInProgress;
       const submitDisabled = invalid || disabled || submitInProgress;
       const { updateListingError, showListingsError } = fetchErrors || {};
+      const required = validators.required('This field is required');
+      const vatLabel = intl.formatMessage({ id: 'EditListingPricingForm.vatLabel' });
+      const pricingLabel = intl.formatMessage({ id: 'EditListingPriceForm.pricingLabel' });
 
       return (
         <Form onSubmit={handleSubmit} className={classes}>
@@ -89,22 +94,35 @@ export const EditListingPricingFormComponent = props => (
               <FormattedMessage id="EditListingPricingForm.showListingFailed" />
             </p>
           ) : null}
+
+          {category !== 'publicOral' ? (
+            <FieldSelect id="vat" name="vat" label={vatLabel} validate={required}>
+              <option value="">Select VAT</option>
+              <option value="5">5%</option>
+              <option value="10">10%</option>
+              <option value="15">15%</option>
+              <option value="20">20%</option>
+            </FieldSelect>
+          ) : (
+            ''
+          )}
           <FieldCurrencyInput
             id="price"
             name="price"
             className={css.priceInput}
             autoFocus
-            label={pricePerUnitMessage}
+            label={pricingLabel}
             placeholder={pricePlaceholderMessage}
             currencyConfig={config.currencyConfig}
             validate={priceValidators}
           />
+          <div className="css.priceInfoText">Minimum price is 30 USD</div>
 
           <Button
             className={css.submitButton}
             type="submit"
             inProgress={submitInProgress}
-            disabled={submitDisabled}
+            disabled={submitDisabled || values?.price?.amount < 3000}
             ready={submitReady}
           >
             {saveActionMsg}

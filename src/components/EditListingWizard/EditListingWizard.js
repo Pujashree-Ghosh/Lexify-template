@@ -120,11 +120,11 @@ const tabCompleted = (tab, listing) => {
     case AREAOFLAW:
       return !!(publicData && publicData.areaOfLaw);
     case CLIENT:
-      return false; //!!(description && title);
+      return !!(publicData && publicData.clientId);
     case DURATION:
       return !!(publicData && publicData.duration && publicData.durationUnit);
     case DEADLINE:
-      return false; //!!(description && title);
+      return !!(publicData && publicData.Deadline);
     case PRICING:
       return !!price;
     case AVAILABILITY:

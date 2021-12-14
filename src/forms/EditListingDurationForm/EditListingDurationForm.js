@@ -53,6 +53,10 @@ const EditListingDurationFormComponent = props => (
         </p>
       ) : null;
 
+      const durationLabel = intl.formatMessage({
+        id: 'EditListingDurationForm.durationLabel',
+      });
+
       const durationPlaceholder = intl.formatMessage({
         id: 'EditListingDurationForm.durationPlaceholder',
       });
@@ -74,26 +78,25 @@ const EditListingDurationFormComponent = props => (
           {errorMessageShowListing}
 
           <div className={css.sectionContainer}>
-            <h3 className={css.sectionTitle}>
-              <FormattedMessage id="EditListingDurationForm.title" />
-            </h3>
             <FieldTextInput
               id="duration"
               name="duration"
               className={css.duration}
               type="text"
+              label={durationLabel}
               placeholder={durationPlaceholder}
               validate={validators.composeValidators(durationRequired, durationValid)}
             />
             <FieldSelect id="durationUnit" name="durationUnit" validate={required}>
-              <option>Select one</option>
+              <option value="">Select one</option>
               <option key="hour" value="hours">
-                Hour
+                Hours
               </option>
               <option key="minutes" value="minutes">
                 Minutes
               </option>
             </FieldSelect>
+            <div className="css.infoText">Enter duration for this consultation</div>
           </div>
 
           <Button

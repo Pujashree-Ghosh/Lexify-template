@@ -14,7 +14,7 @@ import {
   EditListingAvailabilityPanel,
   EditListingDescriptionPanel,
   EditListingDurationPanel,
-  EditListingFeaturesPanel,
+  EditListingDeadlinePanel,
   EditListingLocationPanel,
   EditListingPhotosPanel,
   EditListingPoliciesPanel,
@@ -23,6 +23,7 @@ import {
 
 import css from './EditListingWizard.module.css';
 import EditListingAreOfLawPanel from '../EditListingAreaOfLawPanel/EditListingAreaOfLawPanel';
+import EditListingClientIdPanel from '../EditListingClientIdPanel/EditListingClientIdPanel';
 
 export const AVAILABILITY = 'availability';
 export const DESCRIPTION = 'description';
@@ -184,6 +185,10 @@ const EditListingWizardTab = props => {
           ? isNewListingFlow
             ? 'EditListingWizard.saveNewPublicOralDescription'
             : 'EditListingWizard.saveEditDescription'
+          : category === 'customOral'
+          ? isNewListingFlow
+            ? 'EditListingWizard.saveNewcustomOralDescription'
+            : 'EditListingWizard.saveEditDescription'
           : isNewListingFlow
           ? 'EditListingWizard.saveNewDescription'
           : 'EditListingWizard.saveEditDescription';
@@ -256,32 +261,35 @@ const EditListingWizardTab = props => {
     }
     case DEADLINE: {
       const submitButtonTranslationKey = isNewListingFlow
-        ? 'EditListingWizard.saveNewFeatures'
-        : 'EditListingWizard.saveEditFeatures';
+        ? 'EditListingWizard.saveNewDeadline'
+        : 'EditListingWizard.saveEditDeadline';
       return (
-        // <EditListingFeaturesPanel
-        //   {...panelProps(FEATURES)}
-        //   submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
-        //   onSubmit={values => {
-        //     onCompleteEditListingWizardTab(tab, values);
-        //   }}
-        // />
-        <h1>DEADLINE</h1>
+        <EditListingDeadlinePanel
+          {...panelProps(DEADLINE)}
+          submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
+          onSubmit={values => {
+            onCompleteEditListingWizardTab(tab, values);
+          }}
+        />
       );
     }
     case CLIENT: {
-      const submitButtonTranslationKey = isNewListingFlow
-        ? 'EditListingWizard.saveNewFeatures'
-        : 'EditListingWizard.saveEditFeatures';
+      const submitButtonTranslationKey =
+        category === 'customOral'
+          ? isNewListingFlow
+            ? 'EditListingWizard.customOralSaveNewClient'
+            : 'EditListingWizard.saveEditClient'
+          : isNewListingFlow
+          ? 'EditListingWizard.saveNewClient'
+          : 'EditListingWizard.saveEditClient';
       return (
-        // <EditListingFeaturesPanel
-        //   {...panelProps(FEATURES)}
-        //   submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
-        //   onSubmit={values => {
-        //     onCompleteEditListingWizardTab(tab, values);
-        //   }}
-        // />
-        <h1>CLIENT</h1>
+        <EditListingClientIdPanel
+          {...panelProps(CLIENT)}
+          submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
+          onSubmit={values => {
+            onCompleteEditListingWizardTab(tab, values);
+          }}
+        />
       );
     }
     case DURATION: {
@@ -299,12 +307,18 @@ const EditListingWizardTab = props => {
       );
     }
     case PRICING: {
-      const submitButtonTranslationKey = isNewListingFlow
-        ? 'EditListingWizard.saveNewPricing'
-        : 'EditListingWizard.saveEditPricing';
+      const submitButtonTranslationKey =
+        category === 'customService'
+          ? isNewListingFlow
+            ? 'EditListingWizard.saveNewCustomOralPricing'
+            : 'EditListingWizard.saveEditPricing'
+          : isNewListingFlow
+          ? 'EditListingWizard.saveNewPricing'
+          : 'EditListingWizard.saveEditPricing';
       return (
         <EditListingPricingPanel
           {...panelProps(PRICING)}
+          category={category}
           submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
           onSubmit={values => {
             onCompleteEditListingWizardTab(tab, values);

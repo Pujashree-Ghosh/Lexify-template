@@ -181,4 +181,5 @@ export { default as TopbarMobileMenu } from './TopbarMobileMenu/TopbarMobileMenu
 export { default as TransactionPanel } from './TransactionPanel/TransactionPanel';
 export { default as EditListingAreaOfLawPanel } from './EditListingAreaOfLawPanel/EditListingAreaOfLawPanel';
 export { default as EditListingDurationPanel } from './EditListingDurationPanel/EditListingDurationPanel'
-
+export { default as EditListingClientIdPanel } from './EditListingClientIdPanel/EditListingClientIdPanel'
+export { default as EditListingDeadlinePanel } from './EditListingDeadlinePanel/EditListingDeadlinePanel'

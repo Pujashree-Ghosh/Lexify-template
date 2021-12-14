@@ -5,14 +5,12 @@ import { FormattedMessage } from '../../util/reactIntl';
 
 import { LISTING_STATE_DRAFT } from '../../util/types';
 import { ensureListing } from '../../util/data';
-import { EditListingAreaOfLawForm } from '../../forms';
+import { EditListingClientIdForm, EditListingDeadlineForm } from '../../forms';
 import { ListingLink } from '../../components';
 
-import css from './EditListingAreaOfLawPanel.module.css';
+import css from './EditListingDeadlinePanel.module.css';
 
-const FEATURES_NAME = 'yogaStyles';
-
-const EditListingAreaOfLawPanel = props => {
+const EditListingDeadlinePanel = props => {
   const {
     rootClassName,
     className,
@@ -34,32 +32,31 @@ const EditListingAreaOfLawPanel = props => {
   const isPublished = currentListing.id && currentListing.attributes.state !== LISTING_STATE_DRAFT;
   const panelTitle = isPublished ? (
     <FormattedMessage
-      id="EditListingAreaOfLawPanel.title"
+      id="EditListingDeadlinePanel.title"
       values={{
         listingTitle: (
           <ListingLink listing={listing}>
-            <FormattedMessage id="EditListingAreaOfLawPanel.listingTitle" />
+            <FormattedMessage id="EditListingDeadlinePanel.listingTitle" />
           </ListingLink>
         ),
       }}
     />
   ) : (
-    <FormattedMessage id="EditListingAreaOfLawPanel.listingTitle" />
+    <FormattedMessage id="EditListingDeadlinePanel.listingTitle" />
   );
 
-  const areaOfLaw = publicData && publicData.areaOfLaw;
-  const initialValues = areaOfLaw ? areaOfLaw : [{}];
+  const Deadline = publicData && publicData.Deadline;
 
   return (
     <div className={classes}>
       <h1 className={css.title}>{panelTitle}</h1>
-      <EditListingAreaOfLawForm
+      <EditListingDeadlineForm
         className={css.form}
-        initialValues={{ areaOfLaw: initialValues }}
+        initialValues={{ Deadline }}
         onSubmit={values => {
-          const { areaOfLaw } = values;
+          const { Deadline } = values;
           const updatedValues = {
-            publicData: { areaOfLaw },
+            publicData: { Deadline },
           };
           onSubmit(updatedValues);
         }}
@@ -75,7 +72,7 @@ const EditListingAreaOfLawPanel = props => {
   );
 };
 
-EditListingAreaOfLawPanel.defaultProps = {
+EditListingDeadlinePanel.defaultProps = {
   rootClassName: null,
   className: null,
   listing: null,
@@ -83,7 +80,7 @@ EditListingAreaOfLawPanel.defaultProps = {
 
 const { bool, func, object, string } = PropTypes;
 
-EditListingAreaOfLawPanel.propTypes = {
+EditListingDeadlinePanel.propTypes = {
   rootClassName: string,
   className: string,
 
@@ -100,4 +97,4 @@ EditListingAreaOfLawPanel.propTypes = {
   errors: object.isRequired,
 };
 
-export default EditListingAreaOfLawPanel;
+export default EditListingDeadlinePanel;
