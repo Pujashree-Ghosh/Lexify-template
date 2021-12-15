@@ -6,7 +6,6 @@ import { pathByRouteName } from '../../util/routes';
 import routeConfiguration from '../../routeConfiguration';
 import { FormattedMessage, injectIntl, intlShape } from '../../util/reactIntl';
 import { isScrollingDisabled } from '../../ducks/UI.duck';
-import { setListingCategory } from '../../ducks/user.duck';
 import {
   Page,
   UserNav,
@@ -15,15 +14,13 @@ import {
   LayoutWrapperMain,
   LayoutWrapperFooter,
   Footer,
-  NamedLink,
-  FieldRadioButton,
 } from '../../components';
 import { TopbarContainer } from '../../containers';
 
 import css from './CreateListing.module.css';
 
 function CreateListingPageComponent(props) {
-  const { onSetListingCategory, history, scrollingDisabled, intl } = props;
+  const { history, scrollingDisabled, intl } = props;
   const routes = routeConfiguration();
   const title = intl.formatMessage({ id: 'ProfileSettingsPage.title' });
 
