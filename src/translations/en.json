@@ -1124,7 +1124,7 @@
   "UserCard.viewProfileLink": "View user profile",
   "UserDisplayName.banned": "Banned user",
   "UserDisplayName.deleted": "Deleted user",
-  "UserNav.newListing": "Create teacher profile",
+  "UserNav.newListing": "Create consultation/service",
   "UserNav.editListing": "Edit teacher profile",
   "UserNav.profileSettingsPage": "Edit user profile",
   "UserNav.contactDetailsPage" : "Account settings",
@@ -1253,5 +1253,10 @@
   "EditListingDeadlineForm.subTitle":"Please select a date by which you can deliver this service",
   "EditListingDeadlinePanel.listingTitle":"Deadline",
   "EditListingWizard.saveEditDeadline":"Save Deadline",
-  "EditListingWizard.saveNewDeadline":"Next: Photos"
+  "EditListingWizard.saveNewDeadline":"Next: Photos",
+  "CreateListing.heading":"Choose your consultation / service type",
+  "CreateListing.subHeading":"Select one of the following type of consultation/service",
+  "CreateListing.oralInfo":"This consultation will be visible to all registered users",
+  "CreateListing.customInfo":"For creating custom tailor-made consultation only visible to specific client",
+  "CreateListing.serviceInfo":"For creating custom tailor-made service only visible to specific client"
 }
