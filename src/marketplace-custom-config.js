@@ -134,6 +134,16 @@ export const filters = [
       ],
     },
   },
+  // {
+  //   id: 'clientId',
+  //   label: 'clientId',
+  //   type: 'SelectSingleFilter',
+  //   group: 'primary',
+  //   queryParamNames: ['pub_clientId'],
+  //   config: {
+  //     options: [],
+  //   },
+  // },
 ];
 
 export const sortConfig = {

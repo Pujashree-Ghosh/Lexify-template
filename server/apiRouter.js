@@ -21,6 +21,7 @@ const createUserWithIdp = require('./api/auth/createUserWithIdp');
 const { authenticateFacebook, authenticateFacebookCallback } = require('./api/auth/facebook');
 const { authenticateGoogle, authenticateGoogleCallback } = require('./api/auth/google');
 const { sendOtp, verifyOtp } = require('./api/user');
+const createProviderListing = require('./api/create-provider-listing');
 
 const router = express.Router();
 
@@ -54,6 +55,8 @@ router.use((req, res, next) => {
 
 router.post('/user', sendOtp);
 router.post('/user/verify', verifyOtp);
+
+router.post('/createProviderListing', createProviderListing);
 
 router.get('/initiate-login-as', initiateLoginAs);
 router.get('/login-as', loginAs);
