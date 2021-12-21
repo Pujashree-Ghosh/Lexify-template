@@ -285,9 +285,9 @@ const EditListingAvailabilityPlanFormComponent = props => {
             <div className={css.timezonePicker}>
               <FieldTimeZoneSelect id="timezone" name="timezone" />
             </div>
-            <h3 className={css.subheading}>
+            {/* <h3 className={css.subheading}>
               <FormattedMessage id="EditListingAvailabilityPlanForm.hoursOfOperationTitle" />
-            </h3>
+            </h3> */}
             <div className={css.week}>
               {weekdays.map(w => {
                 return <DailyPlan dayOfWeek={w} key={w} values={values} intl={intl} />;

@@ -7,6 +7,7 @@ import { NotFoundPage } from './containers';
 // Otherwise, components will import form container eventually and
 // at that point css bundling / imports will happen in wrong order.
 import { NamedRedirect } from './components';
+import CreateListing from './components/CreateListing/CreateListing';
 
 const pageDataLoadingAPI = getPageDataLoadingAPI();
 
@@ -22,6 +23,7 @@ const ListingPage = loadable(() => import(/* webpackChunkName: "ListingPage" */ 
 const PasswordChangePage = loadable(() => import(/* webpackChunkName: "PasswordChangePage" */ './containers/PasswordChangePage/PasswordChangePage'));
 const PasswordRecoveryPage = loadable(() => import(/* webpackChunkName: "PasswordRecoveryPage" */ './containers/PasswordRecoveryPage/PasswordRecoveryPage'));
 const PasswordResetPage = loadable(() => import(/* webpackChunkName: "PasswordResetPage" */ './containers/PasswordResetPage/PasswordResetPage'));
+const ManageListingsPage = loadable(() => import(/* webpackChunkName: "ManageListingsPage" */ './containers/ManageListingsPage/ManageListingsPage'));
 const PaymentMethodsPage = loadable(() => import(/* webpackChunkName: "PaymentMethodsPage" */ './containers/PaymentMethodsPage/PaymentMethodsPage'));
 const PrivacyPolicyPage = loadable(() => import(/* webpackChunkName: "PrivacyPolicyPage" */ './containers/PrivacyPolicyPage/PrivacyPolicyPage'));
 const ProfilePage = loadable(() => import(/* webpackChunkName: "ProfilePage" */ './containers/ProfilePage/ProfilePage'));
@@ -100,6 +102,45 @@ const routeConfiguration = () => {
       loadData: pageDataLoadingAPI.ListingPage.loadData,
     },
     {
+      path: '/create-listing',
+      name:'CreateListing',
+      auth:true,
+      component:CreateListing,
+    },
+    {
+      path: '/l-public-oral/new',
+      name: 'NewListingPublicOralPage',
+      auth: true,
+      component: () => (
+        <NamedRedirect
+          name="EditListingPublicOralPage"
+          params={{ slug: draftSlug, id: draftId, type: 'new', tab: 'description' }}
+        />
+      ),
+    },
+    {
+      path: '/l-custom-oral/new',
+      name: 'NewListingCustomOralPage',
+      auth: true,
+      component: () => (
+        <NamedRedirect
+          name="EditListingCustomOralPage"
+          params={{ slug: draftSlug, id: draftId, type: 'new', tab: 'description' }}
+        />
+      ),
+    },
+    {
+      path: '/l-custom-service/new',
+      name: 'NewListingCustomServicePage',
+      auth: true,
+      component: () => (
+        <NamedRedirect
+          name="EditListingCustomServicePage"
+          params={{ slug: draftSlug, id: draftId, type: 'new', tab: 'description' }}
+        />
+      ),
+    },
+    {
       path: '/l/new',
       name: 'NewListingPage',
       auth: true,
@@ -111,11 +152,46 @@ const routeConfiguration = () => {
       ),
     },
     {
-      path: '/l/:slug/:id/:type/:tab',
+      path: '/listings',
+      name: 'ManageListingsPage',
+      auth: true,
+      authPage: 'LoginPage',
+      component: ManageListingsPage,
+      loadData: pageDataLoadingAPI.ManageListingsPage.loadData,
+    },
+    {
+      path: '/l/:slug/:id/:type/:tab/',
       name: 'EditListingPage',
       auth: true,
       component: EditListingPage,
-      extraProps: { allowOnlyOneListing: true },
+      // extraProps: { allowOnlyOneListing: true },
+      loadData: pageDataLoadingAPI.EditListingPage.loadData,
+    },
+    {
+      path: '/l-public-oral/:slug/:id/:type/:tab/',
+      name: 'EditListingPublicOralPage',
+      auth: true,
+      component: EditListingPage,
+      // extraProps: { allowOnlyOneListing: true },
+      extraProps: { category:'publicOral' },
+      loadData: pageDataLoadingAPI.EditListingPage.loadData,
+    },
+    {
+      path: '/l-custom-oral/:slug/:id/:type/:tab/',
+      name: 'EditListingCustomOralPage',
+      auth: true,
+      component: EditListingPage,
+      // extraProps: { allowOnlyOneListing: true },
+      extraProps: { category:'customOral' },
+      loadData: pageDataLoadingAPI.EditListingPage.loadData,
+    },
+    {
+      path: '/l-custom-service/:slug/:id/:type/:tab/',
+      name: 'EditListingCustomServicePage',
+      auth: true,
+      component: EditListingPage,
+      // extraProps: { allowOnlyOneListing: true },
+      extraProps: { category: 'customService' },
       loadData: pageDataLoadingAPI.EditListingPage.loadData,
     },
     {

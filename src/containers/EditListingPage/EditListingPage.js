@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { bool, func, object, shape, string, oneOf } from 'prop-types';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
@@ -36,6 +36,8 @@ import {
   clearUpdatedTab,
   savePayoutDetails,
 } from './EditListingPage.duck';
+import { pathByRouteName } from '../../util/routes';
+import routeConfiguration from '../../routeConfiguration';
 
 import css from './EditListingPage.module.css';
 
@@ -83,6 +85,7 @@ export const EditListingPageComponent = props => {
     stripeAccount,
     updateStripeAccountError,
   } = props;
+  const [category, setCategory] = useState(null);
 
   const { id, type, returnURLType } = params;
   const isNewURI = type === LISTING_PAGE_PARAM_TYPE_NEW;
@@ -99,6 +102,15 @@ export const EditListingPageComponent = props => {
 
   const hasStripeOnboardingDataIfNeeded = returnURLType ? !!(currentUser && currentUser.id) : true;
   const showForm = hasStripeOnboardingDataIfNeeded && (isNewURI || currentListing.id);
+  const routes = routeConfiguration();
+
+  useEffect(() => {
+    if (isNewURI) {
+      setCategory(props.category);
+    } else {
+      setCategory(currentListing?.attributes?.publicData?.category);
+    }
+  });
 
   if (shouldRedirect) {
     const isPendingApproval =
@@ -233,6 +245,7 @@ export const EditListingPageComponent = props => {
           payoutDetailsSaved={page.payoutDetailsSaved}
           stripeAccountFetched={stripeAccountFetched}
           stripeAccount={stripeAccount}
+          category={category}
           stripeAccountError={
             createStripeAccountError || updateStripeAccountError || fetchStripeAccountError
           }
@@ -364,6 +377,7 @@ const mapStateToProps = state => {
     fetchInProgress,
     getOwnListing,
     page,
+    // category,
     scrollingDisabled: isScrollingDisabled(state),
   };
 };
@@ -394,10 +408,7 @@ const mapDispatchToProps = dispatch => ({
 // See: https://github.com/ReactTraining/react-router/issues/4671
 const EditListingPage = compose(
   withRouter,
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )
+  connect(mapStateToProps, mapDispatchToProps)
 )(injectIntl(EditListingPageComponent));
 
 export default EditListingPage;

@@ -419,6 +419,11 @@ propTypes.filterConfig = arrayOf(
     config: object,
   }).isRequired
 );
+propTypes.areaOfLawOptions = arrayOf(
+  shape({
+    options: Array,
+  }).isRequired
+);
 
 propTypes.sortConfig = shape({
   active: bool,

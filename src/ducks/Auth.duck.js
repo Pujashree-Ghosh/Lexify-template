@@ -1,8 +1,9 @@
 import isEmpty from 'lodash/isEmpty';
 import { clearCurrentUser, fetchCurrentUser } from './user.duck';
-import { createUserWithIdp } from '../util/api';
+import { apiBaseUrl, createUserWithIdp } from '../util/api';
 import { storableError } from '../util/errors';
 import * as log from '../util/log';
+import axios from 'axios';
 
 const authenticated = authInfo => authInfo && authInfo.isAnonymous === false;
 
@@ -226,7 +227,11 @@ export const signup = params => (dispatch, getState, sdk) => {
   return sdk.currentUser
     .create(createUserParams)
     .then(() => dispatch(signupSuccess()))
-    .then(() => dispatch(login(email, password)))
+    .then(() => {
+      axios
+        .post(`${apiBaseUrl()}/api/createProviderListing`, { username: email, password })
+        .then(() => dispatch(login(email, password)));
+    })
     .catch(e => {
       dispatch(signupError(storableError(e)));
       log.error(e, 'signup-failed', {

@@ -26,11 +26,13 @@ const EditListingPricingPanel = props => {
     panelUpdated,
     updateInProgress,
     errors,
+    category,
   } = props;
 
   const classes = classNames(rootClassName || css.root, className);
   const currentListing = ensureOwnListing(listing);
   const { price } = currentListing.attributes;
+  const vat = currentListing?.attributes?.publicData?.vat;
 
   const isPublished = currentListing.id && currentListing.attributes.state !== LISTING_STATE_DRAFT;
   const panelTitle = isPublished ? (
@@ -52,10 +54,19 @@ const EditListingPricingPanel = props => {
   const form = priceCurrencyValid ? (
     <EditListingPricingForm
       className={css.form}
-      initialValues={{ price }}
-      onSubmit={onSubmit}
+      initialValues={{ price, vat }}
+      onSubmit={values => {
+        const { vat, price } = values;
+        const updatedValues = {
+          publicData: { vat },
+          price: price,
+        };
+
+        onSubmit(updatedValues);
+      }}
       onChange={onChange}
       saveActionMsg={submitButtonText}
+      category={category}
       disabled={disabled}
       ready={ready}
       updated={panelUpdated}

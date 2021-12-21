@@ -7,7 +7,6 @@ import classNames from 'classnames';
 import { propTypes } from '../../util/types';
 import { maxLength, required, composeValidators } from '../../util/validators';
 import { Form, Button, FieldTextInput } from '../../components';
-import CustomCertificateSelectFieldMaybe from './CustomCertificateSelectFieldMaybe';
 
 import css from './EditListingDescriptionForm.module.css';
 
@@ -30,12 +29,21 @@ const EditListingDescriptionFormComponent = props => (
         updated,
         updateInProgress,
         fetchErrors,
+        category,
       } = formRenderProps;
 
-      const titleMessage = intl.formatMessage({ id: 'EditListingDescriptionForm.title' });
-      const titlePlaceholderMessage = intl.formatMessage({
-        id: 'EditListingDescriptionForm.titlePlaceholder',
-      });
+      const titleMessage =
+        category === 'customService'
+          ? intl.formatMessage({ id: 'EditListingDescriptionForm.serviceTitle' })
+          : intl.formatMessage({ id: 'EditListingDescriptionForm.oralTitle' });
+      const titlePlaceholderMessage =
+        category === 'customService'
+          ? intl.formatMessage({
+              id: 'EditListingDescriptionForm.serviceTitlePlaceholder',
+            })
+          : intl.formatMessage({
+              id: 'EditListingDescriptionForm.oralTitlePlaceholder',
+            });
       const titleRequiredMessage = intl.formatMessage({
         id: 'EditListingDescriptionForm.titleRequired',
       });
@@ -46,15 +54,45 @@ const EditListingDescriptionFormComponent = props => (
         }
       );
 
-      const descriptionMessage = intl.formatMessage({
-        id: 'EditListingDescriptionForm.description',
-      });
-      const descriptionPlaceholderMessage = intl.formatMessage({
-        id: 'EditListingDescriptionForm.descriptionPlaceholder',
-      });
+      const descriptionMessage =
+        category === 'customService'
+          ? intl.formatMessage({
+              id: 'EditListingDescriptionForm.serviceDescription',
+            })
+          : intl.formatMessage({
+              id: 'EditListingDescriptionForm.oralDescription',
+            });
+      const descriptionPlaceholderMessage =
+        category === 'customService'
+          ? intl.formatMessage({
+              id: 'EditListingDescriptionForm.serviceDescriptionPlaceholder',
+            })
+          : intl.formatMessage({
+              id: 'EditListingDescriptionForm.oralDescriptionPlaceholder',
+            });
       const maxLength60Message = maxLength(maxLengthMessage, TITLE_MAX_LENGTH);
       const descriptionRequiredMessage = intl.formatMessage({
         id: 'EditListingDescriptionForm.descriptionRequired',
+      });
+
+      const disclaimerMessage =
+        category === 'customService'
+          ? intl.formatMessage({
+              id: 'EditListingDescriptionForm.serviceDisclaimer',
+            })
+          : intl.formatMessage({
+              id: 'EditListingDescriptionForm.oralDisclaimer',
+            });
+      const disclaimerPlaceholderMessage =
+        category === 'customService'
+          ? intl.formatMessage({
+              id: 'EditListingDescriptionForm.serviceDisclaimerPlaceholder',
+            })
+          : intl.formatMessage({
+              id: 'EditListingDescriptionForm.oralDisclaimerPlaceholder',
+            });
+      const disclaimerRequiredMessage = intl.formatMessage({
+        id: 'EditListingDescriptionForm.disclaimerRequired',
       });
 
       const { updateListingError, createListingDraftError, showListingsError } = fetchErrors || {};
@@ -109,12 +147,22 @@ const EditListingDescriptionFormComponent = props => (
             validate={composeValidators(required(descriptionRequiredMessage))}
           />
 
-          <CustomCertificateSelectFieldMaybe
+          <FieldTextInput
+            id="disclaimer"
+            name="disclaimer"
+            className={css.disclaimer}
+            type="textarea"
+            label={disclaimerMessage}
+            placeholder={disclaimerPlaceholderMessage}
+            validate={composeValidators(required(disclaimerRequiredMessage))}
+          />
+
+          {/* <CustomCertificateSelectFieldMaybe
             id="certificate"
             name="certificate"
             certificateOptions={certificateOptions}
             intl={intl}
-          />
+          /> */}
 
           <Button
             className={css.submitButton}

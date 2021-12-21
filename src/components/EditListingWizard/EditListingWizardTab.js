@@ -13,7 +13,8 @@ import { createResourceLocatorString } from '../../util/routes';
 import {
   EditListingAvailabilityPanel,
   EditListingDescriptionPanel,
-  EditListingFeaturesPanel,
+  EditListingDurationPanel,
+  EditListingDeadlinePanel,
   EditListingLocationPanel,
   EditListingPhotosPanel,
   EditListingPoliciesPanel,
@@ -21,6 +22,8 @@ import {
 } from '../../components';
 
 import css from './EditListingWizard.module.css';
+import EditListingAreOfLawPanel from '../EditListingAreaOfLawPanel/EditListingAreaOfLawPanel';
+import EditListingClientIdPanel from '../EditListingClientIdPanel/EditListingClientIdPanel';
 
 export const AVAILABILITY = 'availability';
 export const DESCRIPTION = 'description';
@@ -29,13 +32,21 @@ export const POLICY = 'policy';
 export const LOCATION = 'location';
 export const PRICING = 'pricing';
 export const PHOTOS = 'photos';
+export const AREAOFLAW = 'areaoflaw';
+export const CLIENT = 'client';
+export const DURATION = 'duration';
+export const DEADLINE = 'DEADLINE';
 
 // EditListingWizardTab component supports these tabs
 export const SUPPORTED_TABS = [
   DESCRIPTION,
-  FEATURES,
-  POLICY,
-  LOCATION,
+  AREAOFLAW,
+  CLIENT,
+  DURATION,
+  DEADLINE,
+  // FEATURES,
+  // POLICY,
+  // LOCATION,
   PRICING,
   AVAILABILITY,
   PHOTOS,
@@ -99,6 +110,7 @@ const EditListingWizardTab = props => {
     intl,
     fetchExceptionsInProgress,
     availabilityExceptions,
+    category,
   } = props;
 
   const { type } = params;
@@ -168,12 +180,22 @@ const EditListingWizardTab = props => {
 
   switch (tab) {
     case DESCRIPTION: {
-      const submitButtonTranslationKey = isNewListingFlow
-        ? 'EditListingWizard.saveNewDescription'
-        : 'EditListingWizard.saveEditDescription';
+      const submitButtonTranslationKey =
+        category === 'publicOral'
+          ? isNewListingFlow
+            ? 'EditListingWizard.saveNewPublicOralDescription'
+            : 'EditListingWizard.saveEditDescription'
+          : category === 'customOral'
+          ? isNewListingFlow
+            ? 'EditListingWizard.saveNewcustomOralDescription'
+            : 'EditListingWizard.saveEditDescription'
+          : isNewListingFlow
+          ? 'EditListingWizard.saveNewDescription'
+          : 'EditListingWizard.saveEditDescription';
       return (
         <EditListingDescriptionPanel
           {...panelProps(DESCRIPTION)}
+          category={category}
           submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
           onSubmit={values => {
             onCompleteEditListingWizardTab(tab, values);
@@ -181,13 +203,55 @@ const EditListingWizardTab = props => {
         />
       );
     }
-    case FEATURES: {
+    // case FEATURES: {
+    //   const submitButtonTranslationKey = isNewListingFlow
+    //     ? 'EditListingWizard.saveNewFeatures'
+    //     : 'EditListingWizard.saveEditFeatures';
+    //   return (
+    //     <EditListingFeaturesPanel
+    //       {...panelProps(FEATURES)}
+    //       submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
+    //       onSubmit={values => {
+    //         onCompleteEditListingWizardTab(tab, values);
+    //       }}
+    //     />
+    //   );
+    // }
+    // case POLICY: {
+    //   const submitButtonTranslationKey = isNewListingFlow
+    //     ? 'EditListingWizard.saveNewPolicies'
+    //     : 'EditListingWizard.saveEditPolicies';
+    //   return (
+    //     <EditListingPoliciesPanel
+    //       {...panelProps(POLICY)}
+    //       submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
+    //       onSubmit={values => {
+    //         onCompleteEditListingWizardTab(tab, values);
+    //       }}
+    //     />
+    //   );
+    // }
+    // case LOCATION: {
+    //   const submitButtonTranslationKey = isNewListingFlow
+    //     ? 'EditListingWizard.saveNewLocation'
+    //     : 'EditListingWizard.saveEditLocation';
+    //   return (
+    //     <EditListingLocationPanel
+    //       {...panelProps(LOCATION)}
+    //       submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
+    //       onSubmit={values => {
+    //         onCompleteEditListingWizardTab(tab, values);
+    //       }}
+    //     />
+    //   );
+    // }
+    case AREAOFLAW: {
       const submitButtonTranslationKey = isNewListingFlow
-        ? 'EditListingWizard.saveNewFeatures'
-        : 'EditListingWizard.saveEditFeatures';
+        ? 'EditListingWizard.saveNewAreaOfLaw'
+        : 'EditListingWizard.saveEditAreaOfLaw';
       return (
-        <EditListingFeaturesPanel
-          {...panelProps(FEATURES)}
+        <EditListingAreOfLawPanel
+          {...panelProps(AREAOFLAW)}
           submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
           onSubmit={values => {
             onCompleteEditListingWizardTab(tab, values);
@@ -195,13 +259,13 @@ const EditListingWizardTab = props => {
         />
       );
     }
-    case POLICY: {
+    case DEADLINE: {
       const submitButtonTranslationKey = isNewListingFlow
-        ? 'EditListingWizard.saveNewPolicies'
-        : 'EditListingWizard.saveEditPolicies';
+        ? 'EditListingWizard.saveNewDeadline'
+        : 'EditListingWizard.saveEditDeadline';
       return (
-        <EditListingPoliciesPanel
-          {...panelProps(POLICY)}
+        <EditListingDeadlinePanel
+          {...panelProps(DEADLINE)}
           submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
           onSubmit={values => {
             onCompleteEditListingWizardTab(tab, values);
@@ -209,13 +273,32 @@ const EditListingWizardTab = props => {
         />
       );
     }
-    case LOCATION: {
-      const submitButtonTranslationKey = isNewListingFlow
-        ? 'EditListingWizard.saveNewLocation'
-        : 'EditListingWizard.saveEditLocation';
+    case CLIENT: {
+      const submitButtonTranslationKey =
+        category === 'customOral'
+          ? isNewListingFlow
+            ? 'EditListingWizard.customOralSaveNewClient'
+            : 'EditListingWizard.saveEditClient'
+          : isNewListingFlow
+          ? 'EditListingWizard.saveNewClient'
+          : 'EditListingWizard.saveEditClient';
       return (
-        <EditListingLocationPanel
-          {...panelProps(LOCATION)}
+        <EditListingClientIdPanel
+          {...panelProps(CLIENT)}
+          submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
+          onSubmit={values => {
+            onCompleteEditListingWizardTab(tab, values);
+          }}
+        />
+      );
+    }
+    case DURATION: {
+      const submitButtonTranslationKey = isNewListingFlow
+        ? 'EditListingWizard.saveNewDuration'
+        : 'EditListingWizard.saveEditDuration';
+      return (
+        <EditListingDurationPanel
+          {...panelProps(DURATION)}
           submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
           onSubmit={values => {
             onCompleteEditListingWizardTab(tab, values);
@@ -224,12 +307,18 @@ const EditListingWizardTab = props => {
       );
     }
     case PRICING: {
-      const submitButtonTranslationKey = isNewListingFlow
-        ? 'EditListingWizard.saveNewPricing'
-        : 'EditListingWizard.saveEditPricing';
+      const submitButtonTranslationKey =
+        category === 'customService'
+          ? isNewListingFlow
+            ? 'EditListingWizard.saveNewCustomOralPricing'
+            : 'EditListingWizard.saveEditPricing'
+          : isNewListingFlow
+          ? 'EditListingWizard.saveNewPricing'
+          : 'EditListingWizard.saveEditPricing';
       return (
         <EditListingPricingPanel
           {...panelProps(PRICING)}
+          category={category}
           submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
           onSubmit={values => {
             onCompleteEditListingWizardTab(tab, values);

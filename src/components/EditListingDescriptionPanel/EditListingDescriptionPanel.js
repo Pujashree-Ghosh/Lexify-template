@@ -24,6 +24,7 @@ const EditListingDescriptionPanel = props => {
     panelUpdated,
     updateInProgress,
     errors,
+    category,
   } = props;
 
   const classes = classNames(rootClassName || css.root, className);
@@ -31,20 +32,70 @@ const EditListingDescriptionPanel = props => {
   const { description, title, publicData } = currentListing.attributes;
 
   const isPublished = currentListing.id && currentListing.attributes.state !== LISTING_STATE_DRAFT;
-  const panelTitle = isPublished ? (
-    <FormattedMessage
-      id="EditListingDescriptionPanel.title"
-      values={{
-        listingTitle: (
-          <ListingLink listing={listing}>
-            <FormattedMessage id="EditListingDescriptionPanel.listingTitle" />
-          </ListingLink>
-        ),
-      }}
-    />
-  ) : (
-    <FormattedMessage id="EditListingDescriptionPanel.createListingTitle" />
-  );
+  const panelTitle =
+    category === 'publicOral' ? (
+      isPublished ? (
+        <FormattedMessage
+          id="EditListingDescriptionPanel.title"
+          values={{
+            listingTitle: (
+              <ListingLink listing={listing}>
+                <FormattedMessage id="EditListingDescriptionPanel.publicOralTitle" />
+              </ListingLink>
+            ),
+          }}
+        />
+      ) : (
+        <FormattedMessage id="EditListingDescriptionPanel.publicOralTitle" />
+      )
+    ) : category === 'customOral' ? (
+      isPublished ? (
+        <FormattedMessage
+          id="EditListingDescriptionPanel.title"
+          values={{
+            listingTitle: (
+              <ListingLink listing={listing}>
+                <FormattedMessage id="EditListingDescriptionPanel.customOralTitle" />
+              </ListingLink>
+            ),
+          }}
+        />
+      ) : (
+        <FormattedMessage id="EditListingDescriptionPanel.customOralTitle" />
+      )
+    ) : category === 'customService' ? (
+      isPublished ? (
+        <FormattedMessage
+          id="EditListingDescriptionPanel.title"
+          values={{
+            listingTitle: (
+              <ListingLink listing={listing}>
+                <FormattedMessage id="EditListingDescriptionPanel.customServiceTitle" />
+              </ListingLink>
+            ),
+          }}
+        />
+      ) : (
+        <FormattedMessage id="EditListingDescriptionPanel.customServiceTitle" />
+      )
+    ) : (
+      ''
+    );
+  // console.log(panelTitle);
+  // isPublished ? (
+  //   <FormattedMessage
+  //     id="EditListingDescriptionPanel.title"
+  //     values={{
+  //       listingTitle: (
+  //         <ListingLink listing={listing}>
+  //           <FormattedMessage id="EditListingDescriptionPanel.listingTitle" />
+  //         </ListingLink>
+  //       ),
+  //     }}
+  //   />
+  // ) : (
+  //   <FormattedMessage id="EditListingDescriptionPanel.createListingTitle" />
+  // );
 
   const certificateOptions = findOptionsForSelectFilter('certificate', config.custom.filters);
   return (
@@ -52,14 +103,14 @@ const EditListingDescriptionPanel = props => {
       <h1 className={css.title}>{panelTitle}</h1>
       <EditListingDescriptionForm
         className={css.form}
-        initialValues={{ title, description, certificate: publicData.certificate }}
+        initialValues={{ title, description, disclaimer: publicData.disclaimer }}
         saveActionMsg={submitButtonText}
         onSubmit={values => {
-          const { title, description, certificate } = values;
+          const { title, description, disclaimer } = values;
           const updateValues = {
             title: title.trim(),
             description,
-            publicData: { certificate },
+            publicData: { disclaimer, category },
           };
 
           onSubmit(updateValues);
@@ -71,6 +122,7 @@ const EditListingDescriptionPanel = props => {
         updateInProgress={updateInProgress}
         fetchErrors={errors}
         certificateOptions={certificateOptions}
+        category={category}
       />
     </div>
   );

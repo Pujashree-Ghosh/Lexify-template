@@ -83,7 +83,7 @@ const TopbarDesktop = props => {
         <Avatar className={css.avatar} user={currentUser} disableProfileLink />
       </MenuLabel>
       <MenuContent className={css.profileMenuContent}>
-        <MenuItem key="EditListingPage">
+        {/* <MenuItem key="EditListingPage">
           <OwnListingLink
             listing={currentUserListing}
             listingFetched={currentUserListingFetched}
@@ -98,6 +98,15 @@ const TopbarDesktop = props => {
               )}
             </div>
           </OwnListingLink>
+        </MenuItem> */}
+        <MenuItem key="ManageListingsPage">
+          <NamedLink
+            className={classNames(css.profileSettingsLink, currentPageClass('ManageListingsPage'))}
+            name="ManageListingsPage"
+          >
+            <span className={css.menuItemBorder} />
+            <FormattedMessage id="TopbarDesktop.manageListingsLink" />
+          </NamedLink>
         </MenuItem>
         <MenuItem key="ProfileSettingsPage">
           <NamedLink
@@ -166,7 +175,7 @@ const TopbarDesktop = props => {
 
   const createListingLink =
     isAuthenticatedOrJustHydrated && !currentUserListingFetched ? null : (
-      <NamedLink className={css.createListingLink} name="NewListingPage">
+      <NamedLink className={css.createListingLink} name="CreateListing">
         <span className={css.createListing}>
           <FormattedMessage id="TopbarDesktop.createListing" />
         </span>

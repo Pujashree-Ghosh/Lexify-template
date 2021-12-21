@@ -11,34 +11,41 @@ import { getListingType, createSlug } from '../../util/urlHelpers';
 import css from './UserNav.module.css';
 
 const listingTab = (listing, selectedPageName) => {
-  if (!listing) {
-    return {
-      text: <FormattedMessage id="UserNav.newListing" />,
-      selected: selectedPageName === 'NewListingPage',
-      linkProps: {
-        name: 'NewListingPage',
-      },
-    };
-  }
-  const currentListing = ensureOwnListing(listing);
-  const id = currentListing.id.uuid;
-  const { title = '', state } = currentListing.attributes;
-  const slug = createSlug(title);
-  const isDraft = state === LISTING_STATE_DRAFT;
-
   return {
-    text: <FormattedMessage id="UserNav.editListing" />,
-    selected: selectedPageName === 'EditListingPage',
+    text: <FormattedMessage id="UserNav.newListing" />,
+    selected: selectedPageName === 'CreateListing',
     linkProps: {
-      name: 'EditListingPage',
-      params: {
-        id,
-        slug,
-        type: getListingType(isDraft),
-        tab: 'photos',
-      },
+      name: 'CreateListing',
     },
   };
+  // if (!listing) {
+  //   return {
+  //     text: <FormattedMessage id="UserNav.newListing" />,
+  //     selected: selectedPageName === 'NewListingPage',
+  //     linkProps: {
+  //       name: 'NewListingPage',
+  //     },
+  //   };
+  // }
+  // const currentListing = ensureOwnListing(listing);
+  // const id = currentListing.id.uuid;
+  // const { title = '', state } = currentListing.attributes;
+  // const slug = createSlug(title);
+  // const isDraft = state === LISTING_STATE_DRAFT;
+
+  // return {
+  //   text: <FormattedMessage id="UserNav.editListing" />,
+  //   selected: selectedPageName === 'EditListingPage',
+  //   linkProps: {
+  //     name: 'EditListingPage',
+  //     params: {
+  //       id,
+  //       slug,
+  //       type: getListingType(isDraft),
+  //       tab: 'photos',
+  //     },
+  //   },
+  // };
 };
 
 const UserNav = props => {
@@ -48,6 +55,13 @@ const UserNav = props => {
   const tabs = [
     {
       ...listingTab(listing, selectedPageName),
+    },
+    {
+      text: <FormattedMessage id="ManageListingsPage.yourListings" />,
+      selected: selectedPageName === 'ManageListingsPage',
+      linkProps: {
+        name: 'ManageListingsPage',
+      },
     },
     {
       text: <FormattedMessage id="UserNav.profileSettingsPage" />,

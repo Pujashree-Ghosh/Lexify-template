@@ -16,6 +16,7 @@ import {
   TimeRange,
 } from '../../components';
 import { EditListingAvailabilityPlanForm, EditListingAvailabilityExceptionForm } from '../../forms';
+import { FaRegEdit } from 'react-icons/fa';
 
 import css from './EditListingAvailabilityPanel.module.css';
 
@@ -239,16 +240,22 @@ const EditListingAvailabilityPanel = props => {
 
       <section className={css.section}>
         <header className={css.sectionHeader}>
-          <h2 className={css.sectionTitle}>
-            <FormattedMessage id="EditListingAvailabilityPanel.defaultScheduleTitle" />
-          </h2>
-          <InlineTextButton
-            className={css.editPlanButton}
-            onClick={() => setIsEditPlanModalOpen(true)}
-          >
-            <IconEdit className={css.editPlanIcon} />{' '}
-            <FormattedMessage id="EditListingAvailabilityPanel.edit" />
-          </InlineTextButton>
+          <div className={css.headSec}>
+            <div className={css.subTitle}>
+              <FormattedMessage id="EditListingAvailabilityPanel.subTitle" />
+            </div>
+            <div className={css.editPlan}>
+              <InlineTextButton
+                className={css.editPlanButton}
+                onClick={() => setIsEditPlanModalOpen(true)}
+              >
+                {/* <IconEdit className={css.editPlanIcon} />{' '}
+              <FormattedMessage id="EditListingAvailabilityPanel.edit" /> */}
+                <FaRegEdit />
+                <FormattedMessage id="EditListingAvailabilityPanel.defaultScheduleTitle" />
+              </InlineTextButton>
+            </div>
+          </div>
         </header>
         <div className={css.week}>
           {WEEKDAYS.map(w => (

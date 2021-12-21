@@ -73,7 +73,7 @@ export const filters = [
     // Price filter configuration
     // Note: unlike most prices this is not handled in subunits
     config: {
-      min: 0,
+      min: 30,
       max: 1000,
       step: 5,
     },
@@ -134,6 +134,16 @@ export const filters = [
       ],
     },
   },
+  // {
+  //   id: 'clientId',
+  //   label: 'clientId',
+  //   type: 'SelectSingleFilter',
+  //   group: 'primary',
+  //   queryParamNames: ['pub_clientId'],
+  //   config: {
+  //     options: [],
+  //   },
+  // },
 ];
 
 export const sortConfig = {
@@ -161,5 +171,13 @@ export const sortConfig = {
     // parameter isn't sent to the Marketplace API. The key is purely
     // for handling the internal state of the sorting dropdown.
     { key: 'relevance', label: 'Relevance', longLabel: 'Relevance (Keyword search)' },
+  ],
+};
+
+export const areaOfLaw = {
+  options: [
+    { key: 'contractsAndAgreements', label: 'Contracts and Agreements' },
+    { key: 'employeeBenefits', label: 'Employee Benefits' },
+    { key: 'employmentAndLabor', label: 'Employment and Labor' },
   ],
 };
