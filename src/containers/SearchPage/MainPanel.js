@@ -75,12 +75,23 @@ class MainPanel extends Component {
     // SortBy
     this.handleSortBy = this.handleSortBy.bind(this);
   }
-
+  componentDidUpdate() {
+    const { history, urlQueryParams } = this.props;
+    if (urlQueryParams?.pub_isProviderType !== true) {
+      history.push(
+        createResourceLocatorString(
+          'SearchPage',
+          routeConfiguration(),
+          {},
+          { pub_isProviderType: true }
+        )
+      );
+    }
+  }
   // Apply the filters by redirecting to SearchPage with new filters.
   applyFilters() {
     const { history, urlQueryParams, sortConfig, filterConfig } = this.props;
     const searchParams = { ...urlQueryParams, ...this.state.currentQueryParams };
-    // const searchParams=this.state.practiceArea?{ ...urlQueryParams,...{pub_practiceArea=this.state.practiceArea}}:urlQueryParams
     const search = cleanSearchFromConflictingParams(searchParams, sortConfig, filterConfig);
 
     Object.keys(search).forEach(key => {
@@ -266,7 +277,6 @@ class MainPanel extends Component {
 
     return (
       <div className={classes}>
-        {/* <form > */}
         <div className={css.sectionContent}>
           <div className={css.updthmform}>
             <h2>Find Legal Advice Online</h2>
@@ -289,15 +299,6 @@ class MainPanel extends Component {
                     <option value={m.country}>{m.country}</option>
                   ))}
                 </select>
-                {/* <FieldTextInput className={css.firstName} type="text" />
-                  <FieldSelect
-                    // id="timeZone"
-                    name="timeZone"
-                  >
-                    <option value="">aa</option>
-                    <option value="first">bbb</option>
-                    <option value="second">ccc</option>
-                  </FieldSelect> */}
               </div>
 
               {this.state.country === 'United States' ? (
@@ -412,7 +413,6 @@ class MainPanel extends Component {
             </p> */}
           </div>
         </div>
-        {/* </form> */}
         {/* <SearchFiltersPrimary
           className={css.searchFiltersPrimary}
           sortByComponent={sortBy('desktop')}
