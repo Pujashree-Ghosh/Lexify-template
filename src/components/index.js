@@ -183,3 +183,4 @@ export { default as EditListingAreaOfLawPanel } from './EditListingAreaOfLawPane
 export { default as EditListingDurationPanel } from './EditListingDurationPanel/EditListingDurationPanel'
 export { default as EditListingClientIdPanel } from './EditListingClientIdPanel/EditListingClientIdPanel'
 export { default as EditListingDeadlinePanel } from './EditListingDeadlinePanel/EditListingDeadlinePanel'
+export { default as UserResultCard } from './UserResultCard/UserResultCard'

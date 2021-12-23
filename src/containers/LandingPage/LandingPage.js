@@ -24,6 +24,7 @@ import {
   LayoutWrapperFooter,
   Footer,
 } from '../../components';
+import SearchPage from '../../containers/SearchPage/SearchPage';
 
 import { TopbarContainer } from '../../containers';
 
@@ -151,7 +152,7 @@ export const LandingPageComponent = props => {
                   </select>
                 </div>
               </div>
-              <Button className={css.submitButton} type="submit">
+              <Button className={css.submitButton} type="submit" onClick={() => {}}>
                 <img src={searchiconbtn} /> Find Legal Advice
               </Button>
 
@@ -179,6 +180,7 @@ export const LandingPageComponent = props => {
               </div>
             </li>
           </ul> */}
+          {/* <SearchPage /> */}
         </LayoutWrapperMain>
 
         <LayoutWrapperFooter>
@@ -223,10 +225,6 @@ const mapStateToProps = state => {
 // lifecycle hook.
 //
 // See: https://github.com/ReactTraining/react-router/issues/4671
-const LandingPage = compose(
-  withRouter,
-  connect(mapStateToProps),
-  injectIntl
-)(LandingPageComponent);
+const LandingPage = compose(withRouter, connect(mapStateToProps), injectIntl)(LandingPageComponent);
 
 export default LandingPage;

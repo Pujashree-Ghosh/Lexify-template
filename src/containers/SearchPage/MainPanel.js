@@ -14,12 +14,17 @@ import {
   SearchFiltersPrimary,
   SearchFiltersSecondary,
   SortBy,
+  Button,
+  AvatarMedium,
 } from '../../components';
+import { Form as FinalForm, Field } from 'react-final-form';
+import searchiconbtn from '../../assets/Icon-awesome-search.svg';
 
 import FilterComponent from './FilterComponent';
 import { validFilterParams } from './SearchPage.helpers';
 
 import css from './SearchPage.module.css';
+import SectionAvatar from '../ListingPage/SectionAvatar';
 
 // Primary filters have their content in dropdown-popup.
 // With this offset we move the dropdown to the left a few pixels on desktop layout.
@@ -48,7 +53,17 @@ const cleanSearchFromConflictingParams = (searchParams, sortConfig, filterConfig
 class MainPanel extends Component {
   constructor(props) {
     super(props);
-    this.state = { isSecondaryFiltersOpen: false, currentQueryParams: props.urlQueryParams };
+    this.state = {
+      isSecondaryFiltersOpen: false,
+      currentQueryParams: props.urlQueryParams,
+      practiceArea: '',
+      country: '',
+      languages: '',
+      city: '',
+      industry: '',
+      state: '',
+      zip: '',
+    };
 
     this.applyFilters = this.applyFilters.bind(this);
     this.cancelFilters = this.cancelFilters.bind(this);
@@ -65,7 +80,14 @@ class MainPanel extends Component {
   applyFilters() {
     const { history, urlQueryParams, sortConfig, filterConfig } = this.props;
     const searchParams = { ...urlQueryParams, ...this.state.currentQueryParams };
+    // const searchParams=this.state.practiceArea?{ ...urlQueryParams,...{pub_practiceArea=this.state.practiceArea}}:urlQueryParams
     const search = cleanSearchFromConflictingParams(searchParams, sortConfig, filterConfig);
+
+    Object.keys(search).forEach(key => {
+      if (search[key] === '') {
+        delete search[key];
+      }
+    });
 
     history.push(createResourceLocatorString('SearchPage', routeConfiguration(), {}, search));
   }
@@ -168,7 +190,13 @@ class MainPanel extends Component {
       showAsModalMaxWidth,
       filterConfig,
       sortConfig,
+      liveEdit,
+      showAsPopup,
+      areaOfLawOptions,
+      countryLanguage,
     } = this.props;
+
+    const useHistoryPush = liveEdit || showAsPopup;
 
     const primaryFilters = filterConfig.filter(f => f.group === 'primary');
     const secondaryFilters = filterConfig.filter(f => f.group !== 'primary');
@@ -238,7 +266,154 @@ class MainPanel extends Component {
 
     return (
       <div className={classes}>
-        <SearchFiltersPrimary
+        {/* <form > */}
+        <div className={css.sectionContent}>
+          <div className={css.updthmform}>
+            <h2>Find Legal Advice Online</h2>
+            <p>Find experienced lawyers you need. Anytime. Anywhere.</p>
+
+            <div className={css.lformrow}>
+              <div className={css.lformcol}>
+                <label>Country</label>
+                <select
+                  className={css.formcontrol}
+                  onChange={e => {
+                    this.setState({ country: e.target.value });
+                    this.getHandleChangedValueFn()({
+                      ['pub_country']: e.target.value,
+                    });
+                  }}
+                >
+                  <option value="">Select Country</option>
+                  {countryLanguage.map(m => (
+                    <option value={m.country}>{m.country}</option>
+                  ))}
+                </select>
+                {/* <FieldTextInput className={css.firstName} type="text" />
+                  <FieldSelect
+                    // id="timeZone"
+                    name="timeZone"
+                  >
+                    <option value="">aa</option>
+                    <option value="first">bbb</option>
+                    <option value="second">ccc</option>
+                  </FieldSelect> */}
+              </div>
+
+              {this.state.country === 'United States' ? (
+                <>
+                  <div className={css.lformcol}>
+                    <label>State</label>
+                    <select className={css.formcontrol}>
+                      <option
+                        selected
+                        onChange={e => {
+                          this.setState({ state: e.target.value });
+                          this.getHandleChangedValueFn()({
+                            ['pub_state']: e.target.value,
+                          });
+                        }}
+                      >
+                        Select State
+                      </option>
+                      <option>adasd</option>
+                      <option>adasd</option>
+                    </select>
+                  </div>
+
+                  <div className={css.lformcol}>
+                    <label>ZIP</label>
+                    <input type="text" className={css.formcontrol} placeholder="Type ZIP Code" />
+                  </div>
+                </>
+              ) : (
+                <div className={css.lformcol}>
+                  <label>City</label>
+                  <input type="text" className={css.formcontrol} placeholder="Enter City Name" />
+                </div>
+              )}
+
+              <div className={css.lformcol}>
+                <label>Practice Area</label>
+                <select
+                  className={css.formcontrol}
+                  onChange={e => {
+                    this.setState({ practiceArea: e.target.value });
+                    this.getHandleChangedValueFn()({
+                      ['pub_practiceArea']: e.target.value,
+                    });
+                  }}
+                >
+                  <option value="">Select Practice Area</option>
+                  {areaOfLawOptions.map(m => (
+                    <option value={m.key}>{m.label}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            <div className={css.lformrow}>
+              <div className={css.lformcol}>
+                <label>Keyword</label>
+                <input type="text" className={css.formcontrol} placeholder="Type Keyword" />
+              </div>
+
+              <div className={css.lformcol}>
+                <label>Language</label>
+                <select
+                  className={css.formcontrol}
+                  onChange={e => {
+                    this.setState({ languages: e.target.value });
+                    this.getHandleChangedValueFn()({
+                      ['pub_languages']: e.target.value,
+                    });
+                  }}
+                >
+                  <option selected>Select Language</option>
+                  {countryLanguage
+                    .filter(c => c.country === this.state.country)[0]
+                    ?.languages?.map(l => (
+                      <option value={l}>{l}</option>
+                    ))}
+                </select>
+              </div>
+
+              <div className={css.lformcol}>
+                <label>Industry</label>
+                <select
+                  className={css.formcontrol}
+                  onChange={e => {
+                    this.setState({ industry: e.target.value });
+                    this.getHandleChangedValueFn()({
+                      ['pub_industry']: e.target.value,
+                    });
+                  }}
+                >
+                  <option value="" selected>
+                    Select Industry
+                  </option>
+                  <option>adasd</option>
+                  <option>adasd</option>
+                </select>
+              </div>
+            </div>
+            <Button
+              className={css.submitButton}
+              type="submit"
+              onClick={() => {
+                this.applyFilters();
+              }}
+            >
+              <img src={searchiconbtn} /> Find Legal Advice
+            </Button>
+
+            {/* <p className={css.aylbtntxt}>
+              Are you a lawyer?
+               <Link to="/">Join us now!</Link> 
+            </p> */}
+          </div>
+        </div>
+        {/* </form> */}
+        {/* <SearchFiltersPrimary
           className={css.searchFiltersPrimary}
           sortByComponent={sortBy('desktop')}
           listingsAreLoaded={listingsAreLoaded}
@@ -261,8 +436,8 @@ class MainPanel extends Component {
               />
             );
           })}
-        </SearchFiltersPrimary>
-        <SearchFiltersMobile
+        </SearchFiltersPrimary> */}
+        {/* <SearchFiltersMobile
           className={css.searchFiltersMobile}
           urlQueryParams={urlQueryParams}
           sortByComponent={sortBy('mobile')}
@@ -292,7 +467,7 @@ class MainPanel extends Component {
               />
             );
           })}
-        </SearchFiltersMobile>
+        </SearchFiltersMobile> */}
         {isSecondaryFiltersOpen ? (
           <div className={classNames(css.searchFiltersPanel)}>
             <SearchFiltersSecondary
@@ -352,6 +527,8 @@ MainPanel.defaultProps = {
   searchParamsForPagination: {},
   filterConfig: config.custom.filters,
   sortConfig: config.custom.sortConfig,
+  areaOfLawOptions: config.custom.areaOfLaw.options,
+  countryLanguage: config.custom.countryLanguage,
 };
 
 MainPanel.propTypes = {
@@ -373,6 +550,8 @@ MainPanel.propTypes = {
   showAsModalMaxWidth: number.isRequired,
   filterConfig: propTypes.filterConfig,
   sortConfig: propTypes.sortConfig,
+  areaOfLawOptions: propTypes.areaOfLawOptions,
+  countryLanguage: array,
 
   history: shape({
     push: func.isRequired,

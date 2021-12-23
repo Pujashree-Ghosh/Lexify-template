@@ -497,7 +497,7 @@
   "ModalMissingInformation.fixEmail": "Whoops, typo in your email? {fixEmailLink}",
   "ModalMissingInformation.fixEmailLinkText": "Fix it.",
   "ModalMissingInformation.gotoPaymentSettings": "Add payment details",
-  "ModalMissingInformation.missingStripeAccountText": "You have a teacher profile but your payment details are missing. Others can't book sessions with you until the details are saved.",
+  "ModalMissingInformation.missingStripeAccountText": "You have a lawyer profile but your payment details are missing. Others can't book sessions with you until the details are saved.",
   "ModalMissingInformation.missingStripeAccountTitle": "Payment details missing",
   "ModalMissingInformation.resendEmail": "Didn't get the email? {resendEmailLink}",
   "ModalMissingInformation.resendEmailLinkText": "Resend it.",
@@ -1258,5 +1258,11 @@
   "CreateListing.subHeading":"Select one of the following type of consultation/service",
   "CreateListing.oralInfo":"This consultation will be visible to all registered users",
   "CreateListing.customInfo":"For creating custom tailor-made consultation only visible to specific client",
-  "CreateListing.serviceInfo":"For creating custom tailor-made service only visible to specific client"
+  "CreateListing.serviceInfo":"For creating custom tailor-made service only visible to specific client",
+  "ProfileSettingsForm.descriptionLabel":"Description",
+  "SignupForm.clientTypeRequired":"This field is required",
+  "SignupForm.clientTypePlaceholder":"Choose account type",
+  "SignupForm.clientTypeLabel":"Register as",
+  "ProfileSettingsForm.descriptionPlaceholder":"Descriptopn",
+  "UserResultCard.ListingProfileLink":"Book online consultation now"
 }

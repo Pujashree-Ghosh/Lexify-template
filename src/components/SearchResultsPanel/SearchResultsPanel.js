@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import { propTypes } from '../../util/types';
 import { ListingCard, PaginationLinks } from '../../components';
 import css from './SearchResultsPanel.module.css';
+import UserResultCard from '../UserResultCard/UserResultCard';
 
 const SearchResultsPanel = props => {
   const { className, rootClassName, listings, pagination, search, setActiveListing } = props;
@@ -33,13 +34,15 @@ const SearchResultsPanel = props => {
     <div className={classes}>
       <div className={css.listingCards}>
         {listings.map(l => (
-          <ListingCard
-            className={css.listingCard}
-            key={l.id.uuid}
-            listing={l}
-            renderSizes={cardRenderSizes}
-            setActiveListing={setActiveListing}
-          />
+          // <ListingCard
+          //   className={css.listingCard}
+          //   key={l.id.uuid}
+          //   listing={l}
+          //   renderSizes={cardRenderSizes}
+          //   setActiveListing={setActiveListing}
+          // />
+
+          <UserResultCard listing={l} />
         ))}
         {props.children}
       </div>

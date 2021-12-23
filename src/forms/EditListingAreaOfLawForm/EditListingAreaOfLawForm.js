@@ -82,8 +82,6 @@ const EditListingAreaOfLawFormComponent = props => (
                     //   i
                     // );
 
-                    console.log(values);
-
                     return (
                       <div key={name}>
                         <div className={css.fromgroup}>

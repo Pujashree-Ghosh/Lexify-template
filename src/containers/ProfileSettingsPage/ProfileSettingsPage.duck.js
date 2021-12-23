@@ -1,6 +1,8 @@
 import { denormalisedResponseEntities } from '../../util/data';
 import { storableError } from '../../util/errors';
 import { currentUserShowSuccess } from '../../ducks/user.duck';
+import axios from 'axios';
+import { apiBaseUrl } from '../../util/api';
 
 // ================ Action types ================ //
 
@@ -133,10 +135,9 @@ export function uploadImage(actionPayload) {
   };
 }
 
-export const updateProfile = actionPayload => {
+export const updateProfile = (actionPayload, id) => {
   return (dispatch, getState, sdk) => {
     dispatch(updateProfileRequest());
-
     const queryParams = {
       expand: true,
       include: ['profileImage'],
@@ -155,6 +156,7 @@ export const updateProfile = actionPayload => {
         const currentUser = entities[0];
 
         // Update current user in state.user.currentUser through user.duck.js
+        axios.post(`${apiBaseUrl()}/api/updateProviderListing`, { id });
         dispatch(currentUserShowSuccess(currentUser));
       })
       .catch(e => dispatch(updateProfileError(storableError(e))));

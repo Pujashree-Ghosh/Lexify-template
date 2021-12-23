@@ -229,8 +229,8 @@ export class ProfilePageComponent extends Component {
         <LayoutWrapperTopbar>
           <TopbarContainer currentPage="ProfilePage" />
         </LayoutWrapperTopbar>
-        {/* <LayoutWrapperSideNav className={css.aside}>{asideContent}</LayoutWrapperSideNav>
-          <LayoutWrapperMain>{content}</LayoutWrapperMain> */}
+        {/* <LayoutWrapperSideNav className={css.aside}>{asideContent}</LayoutWrapperSideNav>*/}
+        {/* <LayoutWrapperMain>{content}</LayoutWrapperMain> */}
 
         <div className={css.sectionContent}>
           {publicData?.isLawyer ? (
@@ -483,7 +483,7 @@ export class ProfilePageComponent extends Component {
             <div className={css.legal}>
               <div className={css.ClientId}>
                 <span>#Client Id</span>
-                <span>{'12345678'}</span>
+                <span>{user?.id?.uuid}</span>
               </div>
 
               <div className={css.cdrowclnt}>
