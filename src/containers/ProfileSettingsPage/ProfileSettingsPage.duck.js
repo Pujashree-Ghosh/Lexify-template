@@ -147,7 +147,9 @@ export const updateProfile = (actionPayload, id) => {
     return sdk.currentUser
       .updateProfile(actionPayload, queryParams)
       .then(response => {
-        dispatch(updateProfileSuccess(response));
+        axios
+          .post(`${apiBaseUrl()}/api/updateProviderListing`, { id })
+          .then(() => dispatch(updateProfileSuccess(response)));
 
         const entities = denormalisedResponseEntities(response);
         if (entities.length !== 1) {
@@ -156,9 +158,11 @@ export const updateProfile = (actionPayload, id) => {
         const currentUser = entities[0];
 
         // Update current user in state.user.currentUser through user.duck.js
-        axios.post(`${apiBaseUrl()}/api/updateProviderListing`, { id });
         dispatch(currentUserShowSuccess(currentUser));
       })
-      .catch(e => dispatch(updateProfileError(storableError(e))));
+      .catch(e => {
+        console.log(e);
+        dispatch(updateProfileError(storableError(e)));
+      });
   };
 };

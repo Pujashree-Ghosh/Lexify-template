@@ -152,7 +152,7 @@ export class ProfileSettingsPageComponent extends Component {
             ? { ...profile, profileImageId: uploadedImage.imageId }
             : profile;
 
-        onUpdateProfile(updatedValues);
+        onUpdateProfile(updatedValues, uuid);
       }
     };
 

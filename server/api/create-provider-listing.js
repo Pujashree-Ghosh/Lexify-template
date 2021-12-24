@@ -38,7 +38,7 @@ module.exports = async (req, response) => {
                       },
                     })
                     .then(() => {
-                      console.log('profile updated');
+                      console.log('profile created');
                       response.send('success');
                       return resolve('success');
                     })
