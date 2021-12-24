@@ -8,36 +8,63 @@ import { FormattedMessage, intlShape, injectIntl } from '../../util/reactIntl';
 import css from './UserResultCard.module.css';
 import SectionAvatar from '../../containers/ListingPage/SectionAvatar';
 import { ensureUser } from '../../util/data';
+import routeConfiguration from '../../routeConfiguration';
 import { AvatarMedium, NamedLink } from '..';
+import biolocationIcon from '../../assets/material-location-on.svg';
+import config from '../../config';
+import { createResourceLocatorString } from '../../util/routes';
 
 function UserResultCardComponent(props) {
-  const { listing, currentUser, onShowUser } = props;
-  const [authorDetail, setAuthorDetail] = useState([]);
+  const { listing, currentUser, onShowUser, history, country } = props;
+  // const [authorDetail, setAuthorDetail] = useState([]);
+
   useEffect(() => {
-    const authorData = onShowUser(listing.author.id);
-    // authorData.then(data => {
-    //   setAuthorDetail(data.data);
-    // });
+    onShowUser(listing.author.id);
   }, []);
-  // console.log(authorDetail);
+
   const ensuredUser = ensureUser(listing.author);
-  console.log(ensuredUser);
 
   return (
-    <div className={css.cardContainer}>
+    <div className={css.cardContainer} key={listing.id.uuid}>
       <div className={css.SectionAvatarImg}>
         {/* <SectionAvatar user={listing.author} /> */}
         <AvatarMedium className={css.profileAvatar} user={ensuredUser} />
       </div>
-      <div>{listing.attributes.title}</div>
-      <div>
-        <NamedLink
-          // className={css.profileLink}
-          name="ProfilePage"
-          params={{ id: ensuredUser.id.uuid }}
+      <div className={css.userInfo}>
+        <div className={css.userName}>{listing.attributes.title}</div>
+        {/* <div className={css.userLisence}>{listing.attributes.title}</div> */}
+        <div className={css.userLocation}>
+          {listing?.attributes?.publicData?.country?.length ? (
+            <>
+              <span className={css.locationIconContainer}>
+                <img src={biolocationIcon} className={css.locationIcon} />
+              </span>
+              {country.filter(c => c.code === listing?.attributes?.publicData?.country[0])[0].name}
+            </>
+          ) : (
+            ''
+          )}
+        </div>
+      </div>
+      <div className={css.profileBtnContainer}>
+        {/* <NamedLink name="ProfilePage" params={{ id: ensuredUser.id.uuid }}>
+          <FormattedMessage id="UserResultCard.ListingProfileLink" />
+        </NamedLink> */}
+        <button
+          className={css.profileBtn}
+          onClick={() =>
+            history.push(
+              createResourceLocatorString(
+                'ProfilePage',
+                routeConfiguration(),
+                { id: ensuredUser.id.uuid },
+                {}
+              )
+            )
+          }
         >
           <FormattedMessage id="UserResultCard.ListingProfileLink" />
-        </NamedLink>
+        </button>
       </div>
     </div>
   );
@@ -48,6 +75,7 @@ UserResultCardComponent.defaultProps = {
   rootClassName: null,
   renderSizes: null,
   setActiveListing: () => null,
+  country: config.custom.country,
 };
 
 UserResultCardComponent.propTypes = {
@@ -59,6 +87,7 @@ UserResultCardComponent.propTypes = {
 
   // Responsive image sizes hint
   renderSizes: string,
+  country: array,
 
   setActiveListing: func,
 };

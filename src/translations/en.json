@@ -144,7 +144,7 @@
   "ContactDetailsForm.confirmChangesInfo": "To change your email address, please enter your current password.",
   "ContactDetailsForm.confirmChangesTitle": "Confirm your changes",
   "ContactDetailsForm.emailInvalid": "A valid email address is required",
-  "ContactDetailsForm.emailLabel": "Your email address",
+  "ContactDetailsForm.emailLabel": "Enter new email here",
   "ContactDetailsForm.emailRequired": "An email address is required",
   "ContactDetailsForm.emailSent": "Verification email sent!",
   "ContactDetailsForm.emailTakenError": "This email address is already in use.",
@@ -1264,5 +1264,6 @@
   "SignupForm.clientTypePlaceholder":"Choose account type",
   "SignupForm.clientTypeLabel":"Register as",
   "ProfileSettingsForm.descriptionPlaceholder":"Descriptopn",
-  "UserResultCard.ListingProfileLink":"Book online consultation now"
+  "UserResultCard.ListingProfileLink":"Book online consultation now",
+  "ContactDetailsForm.otpRequired":"This field is required"
 }

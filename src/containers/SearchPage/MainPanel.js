@@ -204,7 +204,9 @@ class MainPanel extends Component {
       liveEdit,
       showAsPopup,
       areaOfLawOptions,
-      countryLanguage,
+      country,
+      languages,
+      history,
     } = this.props;
 
     const useHistoryPush = liveEdit || showAsPopup;
@@ -295,13 +297,13 @@ class MainPanel extends Component {
                   }}
                 >
                   <option value="">Select Country</option>
-                  {countryLanguage.map(m => (
-                    <option value={m.country}>{m.country}</option>
+                  {country.map(m => (
+                    <option value={m.code}>{m.name}</option>
                   ))}
                 </select>
               </div>
 
-              {this.state.country === 'United States' ? (
+              {this.state.country === 'US' ? (
                 <>
                   <div className={css.lformcol}>
                     <label>State</label>
@@ -370,11 +372,9 @@ class MainPanel extends Component {
                   }}
                 >
                   <option selected>Select Language</option>
-                  {countryLanguage
-                    .filter(c => c.country === this.state.country)[0]
-                    ?.languages?.map(l => (
-                      <option value={l}>{l}</option>
-                    ))}
+                  {languages.map(l => (
+                    <option value={l.code}>{l.name}</option>
+                  ))}
                 </select>
               </div>
 
@@ -504,12 +504,15 @@ class MainPanel extends Component {
                 <FormattedMessage id="SearchPage.searchError" />
               </h2>
             ) : null}
+
             <SearchResultsPanel
               className={css.searchListingsPanel}
               listings={listings}
               pagination={listingsAreLoaded ? pagination : null}
               search={searchParamsForPagination}
               setActiveListing={onActivateListing}
+              history={history}
+              totalItems={totalItems}
             />
           </div>
         )}
@@ -528,7 +531,8 @@ MainPanel.defaultProps = {
   filterConfig: config.custom.filters,
   sortConfig: config.custom.sortConfig,
   areaOfLawOptions: config.custom.areaOfLaw.options,
-  countryLanguage: config.custom.countryLanguage,
+  country: config.custom.country,
+  languages: config.custom.languages,
 };
 
 MainPanel.propTypes = {
@@ -551,7 +555,8 @@ MainPanel.propTypes = {
   filterConfig: propTypes.filterConfig,
   sortConfig: propTypes.sortConfig,
   areaOfLawOptions: propTypes.areaOfLawOptions,
-  countryLanguage: array,
+  country: array,
+  languages: array,
 
   history: shape({
     push: func.isRequired,

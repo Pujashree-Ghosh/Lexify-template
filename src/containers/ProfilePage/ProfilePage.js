@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { REVIEW_TYPE_OF_PROVIDER, REVIEW_TYPE_OF_CUSTOMER, propTypes } from '../../util/types';
 import { ensureCurrentUser, ensureUser } from '../../util/data';
 import { withViewport } from '../../util/contextHelpers';
+import classNames from 'classnames';
 import { isScrollingDisabled } from '../../ducks/UI.duck';
 import { getMarketplaceEntities } from '../../ducks/marketplaceData.duck';
 import {
@@ -15,6 +16,7 @@ import {
   LayoutWrapperSideNav,
   LayoutWrapperTopbar,
   LayoutWrapperFooter,
+  ListingCard,
   Footer,
   AvatarLarge,
   NamedLink,
@@ -42,6 +44,7 @@ export class ProfilePageComponent extends Component {
     this.state = {
       // keep track of which reviews tab to show in desktop viewport
       showReviewsType: REVIEW_TYPE_OF_PROVIDER,
+      showProfileDetail: false,
     };
 
     this.showOfProviderReviews = this.showOfProviderReviews.bind(this);
@@ -70,8 +73,11 @@ export class ProfilePageComponent extends Component {
       queryReviewsError,
       viewport,
       intl,
+      listings,
+      areaOfLawOptions,
     } = this.props;
     // console.log(user);
+    console.log(listings);
 
     const ensuredCurrentUser = ensureCurrentUser(currentUser);
     const profileUser = ensureUser(user);
@@ -190,7 +196,9 @@ export class ProfilePageComponent extends Component {
         {isMobileLayout ? mobileReviews : desktopReviews}
       </div>
     );
-
+    const listingsContainerClasses = classNames(css.listingsContainer, {
+      [css.withBioMissingAbove]: !hasBio,
+    });
     let content;
 
     if (userShowError && userShowError.status === 404) {
@@ -238,11 +246,20 @@ export class ProfilePageComponent extends Component {
               <div className={css.profileCard}>
                 <div className={css.profileImage}>
                   <AvatarLarge className={css.avatar} user={user} disableProfileLink />
+                  <span
+                    className={css.profileViewLink}
+                    onClick={() =>
+                      this.setState({ showProfileDetail: !this.state.showProfileDetail })
+                    }
+                  >
+                    {this.state.showProfileDetail ? 'View Listings' : 'View Profile'}
+                  </span>
                 </div>
+
                 <div className={css.nameBio}>
                   <div className={css.profileName}>{user?.attributes?.profile?.displayName}</div>
                   <div className={css.locationBio}>
-                    <span>Licensed for 6 years</span>
+                    {/* <span>Licensed for 6 years</span> */}
                     <span>
                       <img src={locationIcon} /> New Jersey, USA
                     </span>
@@ -257,167 +274,183 @@ export class ProfilePageComponent extends Component {
                 </div>
               </div>
 
-              <div className={css.lawyerDetail}>
-                <hr />
-                <div className={css.sectionprofin}>
-                  <h3 className={css.sectionTitle}>
-                    <FormattedMessage id="ProfilePage.practiceAre" />
-                  </h3>
-                  <div className={css.practiceArea}>
-                    {publicData?.practice.map(m => (
-                      <span className={css.areaElement}>{m.area}</span>
-                    ))}
+              {this.state.showProfileDetail ? (
+                <div className={css.lawyerDetail}>
+                  <hr />
+                  <div className={css.sectionprofin}>
+                    <h3 className={css.sectionTitle}>
+                      <FormattedMessage id="ProfilePage.practiceAre" />
+                    </h3>
+                    <div className={css.practiceArea}>
+                      {publicData?.practice
+                        ? publicData.practice.map(m => (
+                            <span className={css.areaElement}>
+                              {areaOfLawOptions.filter(o => o.key === m)[0]?.label}
+                            </span>
+                          ))
+                        : '-'}
+                    </div>
                   </div>
-                </div>
-                <div className={css.sectionprofin}>
-                  <h3 className={css.sectionTitle}>
-                    <FormattedMessage id="ProfilePage.language" />
-                  </h3>
-                  <div className={css.language}>
-                    {/* {publicData?.language.map(m => (
-                <span className={css.areaElement}>{m.area}</span>
-              ))} */}
-                    {publicData &&
-                      publicData.languages &&
-                      JSON.parse(publicData?.languages).map(l => (
-                        <span className={css.areaElement}>{l.label}</span>
-                      ))}
+                  <div className={css.sectionprofin}>
+                    <h3 className={css.sectionTitle}>
+                      <FormattedMessage id="ProfilePage.language" />
+                    </h3>
+                    <div className={css.language}>
+                      {publicData &&
+                        publicData.languages &&
+                        JSON.parse(publicData?.languages).map(l => (
+                          <span className={css.areaElement}>{l.label}</span>
+                        ))}
+                    </div>
                   </div>
-                </div>
-                <div className={css.sectionprofin}>
-                  <h3 className={css.sectionTitle}>
-                    <FormattedMessage id="ProfilePage.contactInfo" />
-                  </h3>
-                  <div className={css.contact}>
-                    <div className={css.cncol1}>
-                      <div className={css.contacttag}>
-                        <p>Office address</p>
+                  <div className={css.sectionprofin}>
+                    <h3 className={css.sectionTitle}>
+                      <FormattedMessage id="ProfilePage.contactInfo" />
+                    </h3>
+                    <div className={css.contact}>
+                      <div className={css.cncol1}>
+                        <div className={css.contacttag}>
+                          <p>Office address</p>
+                        </div>
+                        <div className={css.contactinfo}>
+                          <img src={biolocationIcon} />
+                          <span>
+                            <p>33 N Main St,</p>
+                            <p>Law Office of Elliott J. Brown,</p>
+                            <p>Marlboro, NJ,</p>
+                            <p>USA 07746</p>
+                          </span>
+                        </div>
                       </div>
-                      <div className={css.contactinfo}>
-                        <img src={biolocationIcon} />
-                        <span>
-                          <p>33 N Main St,</p>
-                          <p>Law Office of Elliott J. Brown,</p>
-                          <p>Marlboro, NJ,</p>
-                          <p>USA 07746</p>
-                        </span>
+
+                      <div className={css.cncol1}>
+                        <div className={css.contacttag}>
+                          <p>Website</p>
+                        </div>
+                        <div className={css.contactinfo}>
+                          <img className={css.mdalign} src={biowebsite} />
+
+                          <span>
+                            <a href="">www.scottbrown.com</a>
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className={css.cncol1}>
+                        <div className={css.contacttag}>
+                          <p>Public phone number</p>
+                        </div>
+                        <div className={css.contactinfo}>
+                          <img src={biophone} />
+
+                          <span>
+                            <p>{publicData?.phoneNumber}</p>
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className={css.cncol1}>
+                        <div className={css.contacttag}>
+                          <p>Social</p>
+                        </div>
+                        <div className={css.contactinfo}>
+                          <span>
+                            <p>
+                              <img src={biolinkedin} />
+                              Linkedin
+                            </p>
+                            <p>
+                              <img src={biolinkedin} />
+                              Twitter
+                            </p>
+                          </span>
+                        </div>
                       </div>
                     </div>
-
-                    <div className={css.cncol1}>
-                      <div className={css.contacttag}>
-                        <p>Website</p>
-                      </div>
-                      <div className={css.contactinfo}>
-                        <img className={css.mdalign} src={biowebsite} />
-
-                        <span>
-                          <a href="">www.scottbrown.com</a>
-                        </span>
-                      </div>
+                  </div>
+                  <div className={css.sectionprofin}>
+                    <h3 className={css.sectionTitle}>
+                      <FormattedMessage id="ProfilePage.professionalDetail" />
+                    </h3>
+                    <label>Jurisdiction</label>
+                    <div className={css.profDetail}>
+                      <table>
+                        <th className={css.state}>State</th>
+                        <th className={css.status}>Status</th>
+                        <th className={css.ao}>Acquired on</th>
+                        {publicData?.jurisdictionPractice.map(m => (
+                          <tr>
+                            <td className={css.state}>{m.country}</td>
+                            <td className={css.status}>{m.status}</td>
+                            <td className={css.ao}>{m.date}</td>
+                          </tr>
+                        ))}
+                      </table>
                     </div>
+                  </div>
+                  <div className={css.sectionprofin}>
+                    <h3 className={css.sectionTitle}>
+                      <FormattedMessage id="ProfilePage.workExp" />
+                    </h3>
 
-                    <div className={css.cncol1}>
-                      <div className={css.contacttag}>
-                        <p>Public phone number</p>
-                      </div>
-                      <div className={css.contactinfo}>
-                        <img src={biophone} />
-
-                        <span>
-                          <p>{publicData?.phoneNumber}</p>
-                        </span>
-                      </div>
+                    <div className={`${css.profDetail} ${css.workexp}`}>
+                      <table>
+                        <th className={css.state}>Industry</th>
+                        <th className={css.status}>Recent Work</th>
+                        <th className={css.ao}>Year</th>
+                        {publicData?.jurisdictionPractice.map(m => (
+                          <tr>
+                            <td className={css.state}>Transportation</td>
+                            <td className={css.status}>
+                              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+                            </td>
+                            <td className={css.ao}>2020</td>
+                          </tr>
+                        ))}
+                      </table>
                     </div>
+                  </div>
+                  <div className={css.sectionprofin}>
+                    <h3 className={css.sectionTitle}>
+                      <FormattedMessage id="ProfilePage.education" />
+                    </h3>
 
-                    <div className={css.cncol1}>
-                      <div className={css.contacttag}>
-                        <p>Social</p>
-                      </div>
-                      <div className={css.contactinfo}>
-                        <span>
-                          <p>
-                            <img src={biolinkedin} />
-                            Linkedin
-                          </p>
-                          <p>
-                            <img src={biolinkedin} />
-                            Twitter
-                          </p>
-                        </span>
-                      </div>
+                    <div className={`${css.profDetail} ${css.education}`}>
+                      <table>
+                        <th className={css.state}>Institute</th>
+                        <th className={css.status}>Degree</th>
+                        <th className={css.ao}>Graduated</th>
+                        {publicData?.education.map(m => (
+                          <tr>
+                            <td className={css.state}>{m.instituteName}</td>
+                            <td className={css.status}>{m.degree}</td>
+                            <td className={css.ao}>{m.graduationYear}</td>
+                          </tr>
+                        ))}
+                      </table>
                     </div>
-                    {/* {publicData?.practice.map(m => (
-                <span className={css.areaElement}>{m.area}</span>
-              ))} */}
                   </div>
                 </div>
-                <div className={css.sectionprofin}>
-                  <h3 className={css.sectionTitle}>
-                    <FormattedMessage id="ProfilePage.professionalDetail" />
-                  </h3>
-                  <label>Jurisdiction</label>
-                  <div className={css.profDetail}>
-                    <table>
-                      <th className={css.state}>State</th>
-                      <th className={css.status}>Status</th>
-                      <th className={css.ao}>Acquired on</th>
-                      {publicData?.jurisdictionPractice.map(m => (
-                        <tr>
-                          <td className={css.state}>{m.country}</td>
-                          <td className={css.status}>{m.status}</td>
-                          <td className={css.ao}>{m.date}</td>
-                        </tr>
+              ) : (
+                <div className={listingsContainerClasses}>
+                  <h2 className={css.listingsTitle}>
+                    {/* <FormattedMessage
+                      id="ProfilePage.listingsTitle"
+                      values={{ count: listings.length }}
+                    /> */}
+                    Consultations provided by {user?.attributes?.profile?.displayName}
+                  </h2>
+                  <ul className={css.listings}>
+                    {listings
+                      .filter(li => li?.attributes?.publicData?.category === 'publicOral')
+                      ?.map(l => (
+                        <li className={css.listing} key={l.id.uuid}>
+                          <ListingCard listing={l} />
+                        </li>
                       ))}
-                    </table>
-                  </div>
+                  </ul>
                 </div>
-                <div className={css.sectionprofin}>
-                  <h3 className={css.sectionTitle}>
-                    <FormattedMessage id="ProfilePage.workExp" />
-                  </h3>
-
-                  <div className={`${css.profDetail} ${css.workexp}`}>
-                    <table>
-                      <th className={css.state}>Industry</th>
-                      <th className={css.status}>Recent Work</th>
-                      <th className={css.ao}>Year</th>
-                      {publicData?.jurisdictionPractice.map(m => (
-                        <tr>
-                          <td className={css.state}>Transportation</td>
-                          <td className={css.status}>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                          </td>
-                          <td className={css.ao}>2020</td>
-                        </tr>
-                      ))}
-                    </table>
-                    {/* {publicData?.practice.map(m => (
-                <span className={css.areaElement}>{m.area}</span>
-              ))} */}
-                  </div>
-                </div>
-                <div className={css.sectionprofin}>
-                  <h3 className={css.sectionTitle}>
-                    <FormattedMessage id="ProfilePage.education" />
-                  </h3>
-
-                  <div className={`${css.profDetail} ${css.education}`}>
-                    <table>
-                      <th className={css.state}>Institute</th>
-                      <th className={css.status}>Degree</th>
-                      <th className={css.ao}>Graduated</th>
-                      {publicData?.education.map(m => (
-                        <tr>
-                          <td className={css.state}>{m.instituteName}</td>
-                          <td className={css.status}>{m.degree}</td>
-                          <td className={css.ao}>{m.graduationYear}</td>
-                        </tr>
-                      ))}
-                    </table>
-                  </div>
-                </div>
-              </div>
+              )}
             </div>
           ) : publicData?.clientType === 'privateIndividual' ? (
             <div className={css.privateIndividual}>
@@ -571,6 +604,7 @@ ProfilePageComponent.defaultProps = {
   userShowError: null,
   reviews: [],
   queryReviewsError: null,
+  areaOfLawOptions: config.custom.areaOfLaw.options,
 };
 
 const { bool, arrayOf, number, shape } = PropTypes;
@@ -582,6 +616,7 @@ ProfilePageComponent.propTypes = {
   userShowError: propTypes.error,
   reviews: arrayOf(propTypes.review),
   queryReviewsError: propTypes.error,
+  areaOfLawOptions: propTypes.areaOfLawOptions,
 
   // form withViewport
   viewport: shape({
@@ -595,8 +630,9 @@ ProfilePageComponent.propTypes = {
 
 const mapStateToProps = state => {
   const { currentUser } = state.user;
-  const { userId, userShowError, reviews, queryReviewsError } = state.ProfilePage;
+  const { userId, userShowError, reviews, queryReviewsError, userListingRefs } = state.ProfilePage;
   const userMatches = getMarketplaceEntities(state, [{ type: 'user', id: userId }]);
+  const listings = getMarketplaceEntities(state, userListingRefs);
   const user = userMatches.length === 1 ? userMatches[0] : null;
   return {
     scrollingDisabled: isScrollingDisabled(state),
@@ -604,6 +640,7 @@ const mapStateToProps = state => {
     user,
     userShowError,
     reviews,
+    listings,
     queryReviewsError,
   };
 };

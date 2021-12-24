@@ -131,3 +131,43 @@
 .SectionAvatarImg {
   position: relative;
 }
+.cardContainer {
+  background: #f8f8f8;
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 20px;
+  height: 110px;
+  align-items: center;
+  padding-left: 20px;
+  border-radius: 10px;
+}
+.userInfo {
+  margin-left: 10px;
+}
+.profileBtnContainer {
+  margin-left: auto;
+  margin-right: 20px;
+}
+.profileBtn {
+  background-color: var(--marketplaceColorDark);
+  color: var(--matterColorLight);
+  max-width: 215px;
+  /* max-height: 61px; */
+  padding: 0 10px 0px 10px;
+  text-align: center;
+  display: block;
+  border-radius: 5px;
+  width: 100%;
+  font-size: 16px;
+  font-weight: 300;
+}
+.locationIconContainer {
+  margin-right: 10px;
+}
+.locationIcon {
+  max-height: 12px;
+  max-height: 12px;
+}
+.userLocation {
+  font-size: 13px;
+}

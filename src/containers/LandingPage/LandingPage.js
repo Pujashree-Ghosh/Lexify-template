@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { bool, object } from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
@@ -28,6 +28,8 @@ import SearchPage from '../../containers/SearchPage/SearchPage';
 
 import { TopbarContainer } from '../../containers';
 
+import routeConfiguration from '../../routeConfiguration';
+import { createResourceLocatorString } from '../../util/routes';
 import facebookImage from '../../assets/yogatimeFacebook-1200x630.jpg';
 import twitterImage from '../../assets/yogatimeTwitter-600x314.jpg';
 import css from './LandingPage.module.css';
@@ -51,6 +53,18 @@ export const LandingPageComponent = props => {
   const schemaTitle = intl.formatMessage({ id: 'LandingPage.schemaTitle' }, { siteTitle });
   const schemaDescription = intl.formatMessage({ id: 'LandingPage.schemaDescription' });
   const schemaImage = `${config.canonicalRootURL}${facebookImage}`;
+
+  useEffect(() => {
+    const { history } = props;
+    history.push(
+      createResourceLocatorString(
+        'SearchPage',
+        routeConfiguration(),
+        {},
+        { pub_isProviderType: true }
+      )
+    );
+  });
 
   return (
     <Page

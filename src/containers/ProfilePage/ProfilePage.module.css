@@ -474,3 +474,10 @@
   flex-basis: auto !important;
   margin: 0 10px 0 0;
 }
+.profileViewLink {
+  color: var(--marketplaceColor);
+  text-decoration: underline;
+  margin-left: 20px;
+  margin-right: 20px;
+  cursor: pointer;
+}

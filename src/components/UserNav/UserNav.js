@@ -1,5 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { compose } from 'redux';
+import { connect } from 'react-redux';
+import { injectIntl, intlShape } from '../../util/reactIntl';
 import { FormattedMessage } from '../../util/reactIntl';
 import classNames from 'classnames';
 import { ACCOUNT_SETTINGS_PAGES } from '../../routeConfiguration';
@@ -49,37 +52,58 @@ const listingTab = (listing, selectedPageName) => {
 };
 
 const UserNav = props => {
-  const { className, rootClassName, selectedPageName, listing } = props;
+  const { className, rootClassName, selectedPageName, listing, currentUser } = props;
   const classes = classNames(rootClassName || css.root, className);
-
-  const tabs = [
-    {
-      ...listingTab(listing, selectedPageName),
-    },
-    {
-      text: <FormattedMessage id="ManageListingsPage.yourListings" />,
-      selected: selectedPageName === 'ManageListingsPage',
-      linkProps: {
-        name: 'ManageListingsPage',
+  let tabs = [];
+  if (currentUser?.attributes?.profile?.protectedData?.isLawyer) {
+    tabs = [
+      {
+        ...listingTab(listing, selectedPageName),
       },
-    },
-    {
-      text: <FormattedMessage id="UserNav.profileSettingsPage" />,
-      selected: selectedPageName === 'ProfileSettingsPage',
-      disabled: false,
-      linkProps: {
-        name: 'ProfileSettingsPage',
+      {
+        text: <FormattedMessage id="ManageListingsPage.yourListings" />,
+        selected: selectedPageName === 'ManageListingsPage',
+        linkProps: {
+          name: 'ManageListingsPage',
+        },
       },
-    },
-    {
-      text: <FormattedMessage id="UserNav.contactDetailsPage" />,
-      selected: ACCOUNT_SETTINGS_PAGES.includes(selectedPageName),
-      disabled: false,
-      linkProps: {
-        name: 'ContactDetailsPage',
+      {
+        text: <FormattedMessage id="UserNav.profileSettingsPage" />,
+        selected: selectedPageName === 'ProfileSettingsPage',
+        disabled: false,
+        linkProps: {
+          name: 'ProfileSettingsPage',
+        },
       },
-    },
-  ];
+      {
+        text: <FormattedMessage id="UserNav.contactDetailsPage" />,
+        selected: ACCOUNT_SETTINGS_PAGES.includes(selectedPageName),
+        disabled: false,
+        linkProps: {
+          name: 'ContactDetailsPage',
+        },
+      },
+    ];
+  } else {
+    tabs = [
+      {
+        text: <FormattedMessage id="UserNav.profileSettingsPage" />,
+        selected: selectedPageName === 'ProfileSettingsPage',
+        disabled: false,
+        linkProps: {
+          name: 'ProfileSettingsPage',
+        },
+      },
+      {
+        text: <FormattedMessage id="UserNav.contactDetailsPage" />,
+        selected: ACCOUNT_SETTINGS_PAGES.includes(selectedPageName),
+        disabled: false,
+        linkProps: {
+          name: 'ContactDetailsPage',
+        },
+      },
+    ];
+  }
 
   return (
     <LinkTabNavHorizontal className={classes} tabRootClassName={css.tab} tabs={tabs} skin="dark" />
@@ -98,5 +122,11 @@ UserNav.propTypes = {
   rootClassName: string,
   selectedPageName: string.isRequired,
 };
+const mapStateToProps = state => {
+  const { currentUser } = state.user;
 
-export default UserNav;
+  return {
+    currentUser,
+  };
+};
+export default compose(connect(mapStateToProps, null), injectIntl)(UserNav);

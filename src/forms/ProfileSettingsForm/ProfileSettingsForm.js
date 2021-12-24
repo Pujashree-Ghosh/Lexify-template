@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { bool, string } from 'prop-types';
+import { array, bool, string } from 'prop-types';
 import { compose } from 'redux';
 import { FormattedMessage, injectIntl, intlShape } from '../../util/reactIntl';
 import { Field, Form as FinalForm } from 'react-final-form';
@@ -105,6 +105,8 @@ class ProfileSettingsFormComponent extends Component {
             values,
             initialValues,
             areaOfLawOptions,
+            country,
+            languages,
           } = fieldRenderProps;
           // let { values } = fieldRenderProps;
           // console.log(values);
@@ -384,6 +386,10 @@ class ProfileSettingsFormComponent extends Component {
             user?.attributes?.profile?.publicData?.clientType === 'privateIndividual'
               ? 'Private Individual'
               : 'Legal Entity';
+
+          const langOption = languages.map(l => {
+            return { label: l.name, value: l.code };
+          });
 
           const time = [
             '00:00',
@@ -804,9 +810,9 @@ class ProfileSettingsFormComponent extends Component {
                           validate={composeValidators(required(countryRequiredMessage))}
                         >
                           <option value="">{countryPlaceHolder}</option>
-                          <option value="USA">USA</option>
-                          <option value="India">India</option>
-                          <option value="UK">UK</option>
+                          {country.map(m => (
+                            <option value={m.code}>{m.name}</option>
+                          ))}
                         </FieldSelect>
                       </div>
                       <div className={css.fromgroup}>
@@ -866,9 +872,9 @@ class ProfileSettingsFormComponent extends Component {
                           // validate={required}
                         >
                           <option value="">{countryPlaceHolder}</option>
-                          <option value="USA">USA</option>
-                          <option value="India">India</option>
-                          <option value="UK">UK</option>
+                          {country.map(m => (
+                            <option value={m.code}>{m.name}</option>
+                          ))}
                         </FieldSelect>
                       </div>
                       <div className={css.fromgroup}>
@@ -969,11 +975,7 @@ class ProfileSettingsFormComponent extends Component {
                       onChange={onLanguageChangeHandler}
                       defaultValue={initialValues.languages && JSON.parse(initialValues.languages)}
                       isMulti
-                      options={[
-                        { label: 'Hindi', value: 'hindi' },
-                        { label: 'English', value: 'english' },
-                        { label: 'Bengali', value: 'bengali' },
-                      ]}
+                      options={langOption}
                       onBlur={onLanguageBlurHandler}
                     />
                     {this.state.languageError ? (
@@ -1004,9 +1006,9 @@ class ProfileSettingsFormComponent extends Component {
                                     validate={composeValidators(required(countryRequiredMessage))}
                                   >
                                     <option value="">{countryPlaceHolder}</option>
-                                    <option value="USA">USA</option>
-                                    <option value="India">India</option>
-                                    <option value="UK">UK</option>
+                                    {country.map(m => (
+                                      <option value={m.code}>{m.name}</option>
+                                    ))}
                                   </FieldSelect>
                                 </div>
 
@@ -1100,11 +1102,7 @@ class ProfileSettingsFormComponent extends Component {
                       onChange={onLanguageChangeHandler}
                       defaultValue={initialValues.languages && JSON.parse(initialValues.languages)}
                       isMulti
-                      options={[
-                        { label: 'Hindi', value: 'hindi' },
-                        { label: 'English', value: 'english' },
-                        { label: 'Bengali', value: 'bengali' },
-                      ]}
+                      options={langOption}
                       onBlur={onLanguageBlurHandler}
                     />
                     {this.state.languageError ? (
@@ -1508,6 +1506,8 @@ ProfileSettingsFormComponent.defaultProps = {
   uploadImageError: null,
   updateProfileError: null,
   areaOfLawOptions: config.custom.areaOfLaw.options,
+  country: config.custom.country,
+  languages: config.custom.languages,
   updateProfileReady: false,
 };
 
@@ -1521,6 +1521,8 @@ ProfileSettingsFormComponent.propTypes = {
   updateProfileError: propTypes.error,
   updateProfileReady: bool,
   areaOfLawOptions: propTypes.areaOfLawOptions,
+  country: array,
+  languages: array,
 
   // from injectIntl
   intl: intlShape.isRequired,

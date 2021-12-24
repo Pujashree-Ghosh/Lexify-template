@@ -13,16 +13,31 @@ import {
   isChangeEmailWrongPassword,
   isTooManyEmailVerificationRequestsError,
 } from '../../util/errors';
-import { FieldPhoneNumberInput, Form, PrimaryButton, FieldTextInput } from '../../components';
+import {
+  FieldPhoneNumberInput,
+  Form,
+  PrimaryButton,
+  FieldTextInput,
+  Button,
+} from '../../components';
 
 import css from './ContactDetailsForm.module.css';
+import axios from 'axios';
+import { apiBaseUrl } from '../../util/api';
 
 const SHOW_EMAIL_SENT_TIMEOUT = 2000;
 
 class ContactDetailsFormComponent extends Component {
   constructor(props) {
     super(props);
-    this.state = { showVerificationEmailSentMessage: false, showResetPasswordMessage: false };
+    this.state = {
+      showVerificationEmailSentMessage: false,
+      showResetPasswordMessage: false,
+      emailChange: false,
+      otpSend: false,
+      otpVerified: false,
+      otpError: false,
+    };
     this.emailSentTimeoutId = null;
     this.handleResendVerificationEmail = this.handleResendVerificationEmail.bind(this);
     this.handleResetPassword = this.handleResetPassword.bind(this);
@@ -70,6 +85,7 @@ class ContactDetailsFormComponent extends Component {
             sendVerificationEmailInProgress,
             resetPasswordInProgress,
             values,
+            form,
           } = fieldRenderProps;
           const { email, phoneNumber } = values;
 
@@ -297,6 +313,41 @@ class ContactDetailsFormComponent extends Component {
             pristineSinceLastSubmit ||
             inProgress ||
             !(emailChanged || phoneNumberChanged);
+          const otpRequiredMessage = intl.formatMessage({
+            id: 'ContactDetailsForm.otpRequired',
+          });
+          const otpRequired = validators.required(otpRequiredMessage);
+          const sendOtp = () => {
+            axios
+              .post(`${apiBaseUrl()}/api/user`, {
+                email: email,
+                mobile: currentPhoneNumber,
+              })
+              .then(resp => {
+                console.log(resp);
+                // this.setState({ otpSend: true });
+              })
+              .catch(err => console.log(err));
+          };
+
+          const verifyOtp = () => {
+            axios
+              .post(`${apiBaseUrl()}/api/user/verify`, {
+                otp: values.otp * 1,
+                mobile: currentPhoneNumber,
+              })
+              .then(resp => {
+                console.log(resp);
+                this.setState({ otpVerified: true });
+              })
+              .catch(err => {
+                if (err.response.status === 401) {
+                  this.setState({ otpError: true });
+                }
+
+                console.log(err.response.status);
+              });
+          };
 
           return (
             <Form
@@ -307,23 +358,74 @@ class ContactDetailsFormComponent extends Component {
               }}
             >
               <div className={css.contactDetailsSection}>
-                <FieldTextInput
-                  type="email"
-                  name="email"
-                  id={formId ? `${formId}.email` : 'email'}
-                  label={emailLabel}
-                  placeholder={emailPlaceholder}
-                  validate={validators.composeValidators(emailRequired, emailValid)}
-                  customErrorText={emailTouched ? null : emailTakenErrorText}
-                />
+                <label>Your email address is : {email} </label>
                 {emailVerifiedInfo}
-                <FieldPhoneNumberInput
+                {this.state.otpSend ? (
+                  ''
+                ) : (
+                  <Button
+                    type="button"
+                    className={css.otpButton}
+                    // inProgress={inProgress}
+                    //   ready={pristineSinceLastSubmit}
+                    //   disabled={submitDisabled}
+                    onClick={() => {
+                      this.setState({ emailChange: true, otpSend: true });
+                      sendOtp();
+                    }}
+                  >
+                    {/* <FormattedMessage id="ContactDetailsForm.saveChanges" /> */}
+                    Change Email
+                  </Button>
+                )}
+                {this.state.otpSend ? (
+                  <>
+                    <FieldTextInput
+                      className={css.otp}
+                      type="password"
+                      id={formId ? `${formId}.otp` : 'otp'}
+                      name="otp"
+                      label={'Enter the otp send to your mobile'}
+                      // placeholder={otpPlaceholder}
+                      validate={otpRequired}
+                    />
+                    <Button
+                      type="button"
+                      className={css.otpButton}
+                      // inProgress={inProgress}
+                      //   ready={pristineSinceLastSubmit}
+                      disabled={!values.otp}
+                      onClick={() => {
+                        verifyOtp();
+                      }}
+                    >
+                      {/* <FormattedMessage id="ContactDetailsForm.saveChanges" /> */}
+                      Verify otp
+                    </Button>
+                  </>
+                ) : (
+                  ''
+                )}
+                {this.state.otpVerified ? (
+                  <FieldTextInput
+                    type="email"
+                    name="email"
+                    id={formId ? `${formId}.email` : 'email'}
+                    label={emailLabel}
+                    placeholder={emailPlaceholder}
+                    validate={validators.composeValidators(emailRequired, emailValid)}
+                    customErrorText={emailTouched ? null : emailTakenErrorText}
+                  />
+                ) : (
+                  ''
+                )}
+                {/* <FieldPhoneNumberInput
                   className={css.phone}
                   name="phoneNumber"
                   id={formId ? `${formId}.phoneNumber` : 'phoneNumber'}
                   label={phoneLabel}
                   placeholder={phonePlaceholder}
-                />
+                /> */}
               </div>
 
               <div className={confirmClasses}>
