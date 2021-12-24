@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { bool, string } from 'prop-types';
+import { array, bool, string } from 'prop-types';
 import { compose } from 'redux';
 import { FormattedMessage, injectIntl, intlShape } from '../../util/reactIntl';
 import { Field, Form as FinalForm } from 'react-final-form';
@@ -10,6 +10,7 @@ import arrayMutators from 'final-form-arrays';
 import { propTypes } from '../../util/types';
 import * as validators from '../../util/validators';
 import { required, bookingDateRequired, composeValidators } from '../../util/validators';
+import config from '../../config';
 import { isUploadImageOverLimitError } from '../../util/errors';
 import {
   Form,
@@ -29,6 +30,7 @@ import moment from 'moment';
 import axios from 'axios';
 import { FieldArray } from 'react-final-form-arrays';
 import { apiBaseUrl } from '../../util/api';
+import cloneDeep from 'lodash.clonedeep';
 
 const ACCEPT_IMAGES = 'image/*';
 const UPLOAD_CHANGE_DELAY = 2000; // Show spinner so that browser has time to load img srcset
@@ -102,6 +104,9 @@ class ProfileSettingsFormComponent extends Component {
             form,
             values,
             initialValues,
+            areaOfLawOptions,
+            country,
+            languages,
           } = fieldRenderProps;
           // let { values } = fieldRenderProps;
           // console.log(values);
@@ -381,6 +386,10 @@ class ProfileSettingsFormComponent extends Component {
             user?.attributes?.profile?.publicData?.clientType === 'privateIndividual'
               ? 'Private Individual'
               : 'Legal Entity';
+
+          const langOption = languages.map(l => {
+            return { label: l.name, value: l.code };
+          });
 
           const time = [
             '00:00',
@@ -801,9 +810,9 @@ class ProfileSettingsFormComponent extends Component {
                           validate={composeValidators(required(countryRequiredMessage))}
                         >
                           <option value="">{countryPlaceHolder}</option>
-                          <option value="USA">USA</option>
-                          <option value="India">India</option>
-                          <option value="UK">UK</option>
+                          {country.map(m => (
+                            <option value={m.code}>{m.name}</option>
+                          ))}
                         </FieldSelect>
                       </div>
                       <div className={css.fromgroup}>
@@ -863,9 +872,9 @@ class ProfileSettingsFormComponent extends Component {
                           // validate={required}
                         >
                           <option value="">{countryPlaceHolder}</option>
-                          <option value="USA">USA</option>
-                          <option value="India">India</option>
-                          <option value="UK">UK</option>
+                          {country.map(m => (
+                            <option value={m.code}>{m.name}</option>
+                          ))}
                         </FieldSelect>
                       </div>
                       <div className={css.fromgroup}>
@@ -966,11 +975,7 @@ class ProfileSettingsFormComponent extends Component {
                       onChange={onLanguageChangeHandler}
                       defaultValue={initialValues.languages && JSON.parse(initialValues.languages)}
                       isMulti
-                      options={[
-                        { label: 'Hindi', value: 'hindi' },
-                        { label: 'English', value: 'english' },
-                        { label: 'Bengali', value: 'bengali' },
-                      ]}
+                      options={langOption}
                       onBlur={onLanguageBlurHandler}
                     />
                     {this.state.languageError ? (
@@ -1001,9 +1006,9 @@ class ProfileSettingsFormComponent extends Component {
                                     validate={composeValidators(required(countryRequiredMessage))}
                                   >
                                     <option value="">{countryPlaceHolder}</option>
-                                    <option value="USA">USA</option>
-                                    <option value="India">India</option>
-                                    <option value="UK">UK</option>
+                                    {country.map(m => (
+                                      <option value={m.code}>{m.name}</option>
+                                    ))}
                                   </FieldSelect>
                                 </div>
 
@@ -1097,11 +1102,7 @@ class ProfileSettingsFormComponent extends Component {
                       onChange={onLanguageChangeHandler}
                       defaultValue={initialValues.languages && JSON.parse(initialValues.languages)}
                       isMulti
-                      options={[
-                        { label: 'Hindi', value: 'hindi' },
-                        { label: 'English', value: 'english' },
-                        { label: 'Bengali', value: 'bengali' },
-                      ]}
+                      options={langOption}
                       onBlur={onLanguageBlurHandler}
                     />
                     {this.state.languageError ? (
@@ -1222,20 +1223,24 @@ class ProfileSettingsFormComponent extends Component {
                           </h3>
 
                           {fields.map((name, i) => {
+                            const options = cloneDeep(areaOfLawOptions).filter(
+                              ({ key }) =>
+                                !values.practice.filter((m, index) => index !== i).includes(key)
+                            );
                             return (
                               <div key={name}>
                                 <div className={css.fromgroup}>
                                   <FieldSelect
-                                    id={`${name}.area`}
-                                    name={`${name}.area`}
+                                    id={`${name}`}
+                                    name={`${name}`}
                                     validate={composeValidators(
                                       required(practiceAreaRequiredMessage)
                                     )}
                                   >
                                     <option value="">{practiceAreaPlaceholder}</option>
-                                    <option value="area1">Area 1</option>
-                                    <option value="area2">Area 2</option>
-                                    <option value="area3">Area 3</option>
+                                    {cloneDeep(options).map(m => (
+                                      <option value={m.key}>{m.label}</option>
+                                    ))}
                                   </FieldSelect>
                                 </div>
                               </div>
@@ -1249,7 +1254,7 @@ class ProfileSettingsFormComponent extends Component {
                               onClick={() => {
                                 fields.push();
                               }}
-                              disabled={!values.practice[values.practice?.length - 1]?.area}
+                              disabled={!values.practice[values.practice?.length - 1]}
                             >
                               <FormattedMessage id="ProfileSettingsForm.addMore" />
                             </Button>
@@ -1500,6 +1505,9 @@ ProfileSettingsFormComponent.defaultProps = {
   className: null,
   uploadImageError: null,
   updateProfileError: null,
+  areaOfLawOptions: config.custom.areaOfLaw.options,
+  country: config.custom.country,
+  languages: config.custom.languages,
   updateProfileReady: false,
 };
 
@@ -1512,6 +1520,9 @@ ProfileSettingsFormComponent.propTypes = {
   updateInProgress: bool.isRequired,
   updateProfileError: propTypes.error,
   updateProfileReady: bool,
+  areaOfLawOptions: propTypes.areaOfLawOptions,
+  country: array,
+  languages: array,
 
   // from injectIntl
   intl: intlShape.isRequired,

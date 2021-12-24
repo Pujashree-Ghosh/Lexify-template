@@ -22,6 +22,7 @@ const { authenticateFacebook, authenticateFacebookCallback } = require('./api/au
 const { authenticateGoogle, authenticateGoogleCallback } = require('./api/auth/google');
 const { sendOtp, verifyOtp } = require('./api/user');
 const createProviderListing = require('./api/create-provider-listing');
+const updateProviderListing = require('./api/update-provider-listing');
 
 const router = express.Router();
 
@@ -57,6 +58,7 @@ router.post('/user', sendOtp);
 router.post('/user/verify', verifyOtp);
 
 router.post('/createProviderListing', createProviderListing);
+router.post('/updateProviderListing', updateProviderListing);
 
 router.get('/initiate-login-as', initiateLoginAs);
 router.get('/login-as', loginAs);

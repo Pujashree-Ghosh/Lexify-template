@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { bool, object } from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
@@ -24,9 +24,12 @@ import {
   LayoutWrapperFooter,
   Footer,
 } from '../../components';
+import SearchPage from '../../containers/SearchPage/SearchPage';
 
 import { TopbarContainer } from '../../containers';
 
+import routeConfiguration from '../../routeConfiguration';
+import { createResourceLocatorString } from '../../util/routes';
 import facebookImage from '../../assets/yogatimeFacebook-1200x630.jpg';
 import twitterImage from '../../assets/yogatimeTwitter-600x314.jpg';
 import css from './LandingPage.module.css';
@@ -50,6 +53,18 @@ export const LandingPageComponent = props => {
   const schemaTitle = intl.formatMessage({ id: 'LandingPage.schemaTitle' }, { siteTitle });
   const schemaDescription = intl.formatMessage({ id: 'LandingPage.schemaDescription' });
   const schemaImage = `${config.canonicalRootURL}${facebookImage}`;
+
+  useEffect(() => {
+    const { history } = props;
+    history.push(
+      createResourceLocatorString(
+        'SearchPage',
+        routeConfiguration(),
+        {},
+        { pub_isProviderType: true }
+      )
+    );
+  });
 
   return (
     <Page
@@ -151,7 +166,7 @@ export const LandingPageComponent = props => {
                   </select>
                 </div>
               </div>
-              <Button className={css.submitButton} type="submit">
+              <Button className={css.submitButton} type="submit" onClick={() => {}}>
                 <img src={searchiconbtn} /> Find Legal Advice
               </Button>
 
@@ -179,6 +194,7 @@ export const LandingPageComponent = props => {
               </div>
             </li>
           </ul> */}
+          {/* <SearchPage /> */}
         </LayoutWrapperMain>
 
         <LayoutWrapperFooter>
@@ -223,10 +239,6 @@ const mapStateToProps = state => {
 // lifecycle hook.
 //
 // See: https://github.com/ReactTraining/react-router/issues/4671
-const LandingPage = compose(
-  withRouter,
-  connect(mapStateToProps),
-  injectIntl
-)(LandingPageComponent);
+const LandingPage = compose(withRouter, connect(mapStateToProps), injectIntl)(LandingPageComponent);
 
 export default LandingPage;

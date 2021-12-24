@@ -60,6 +60,8 @@ export class ProfileSettingsPageComponent extends Component {
     const profileImage = image || { imageId: profileImageId };
     const protectedData = user?.attributes?.profile?.protectedData;
     const publicData = user?.attributes?.profile?.publicData;
+    const uuid = user?.id?.uuid;
+    // console.log(user.id.uuid);
     const isLawyer = protectedData?.isLawyer;
     const handleSubmit = values => {
       if (isLawyer === true) {
@@ -90,7 +92,7 @@ export class ProfileSettingsPageComponent extends Component {
           uploadedImage && uploadedImage.imageId && uploadedImage.file
             ? { ...profile, profileImageId: uploadedImage.imageId }
             : profile;
-        onUpdateProfile(updatedValues);
+        onUpdateProfile(updatedValues, uuid);
       }
       if (isLawyer === false) {
         const {
@@ -172,7 +174,7 @@ export class ProfileSettingsPageComponent extends Component {
               languages: publicData.languages,
               timeZone: publicData.timeZone,
               education: publicData.education ? publicData.education : [{}],
-              practice: publicData.practice ? publicData.practice : [{}],
+              practice: publicData.practice ? publicData.practice : [],
               industry: publicData.industry ? publicData.industry : [{}],
               schedule: protectedData.schedule ? protectedData.schedule : [{}],
             }}
@@ -353,7 +355,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => ({
   onImageUpload: data => dispatch(uploadImage(data)),
-  onUpdateProfile: data => dispatch(updateProfile(data)),
+  onUpdateProfile: (data, uuid) => dispatch(updateProfile(data, uuid)),
 });
 
 const ProfileSettingsPage = compose(

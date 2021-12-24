@@ -4,9 +4,19 @@ import classNames from 'classnames';
 import { propTypes } from '../../util/types';
 import { ListingCard, PaginationLinks } from '../../components';
 import css from './SearchResultsPanel.module.css';
+import UserResultCard from '../UserResultCard/UserResultCard';
 
 const SearchResultsPanel = props => {
-  const { className, rootClassName, listings, pagination, search, setActiveListing } = props;
+  const {
+    className,
+    rootClassName,
+    listings,
+    pagination,
+    search,
+    setActiveListing,
+    history,
+    totalItems,
+  } = props;
   const classes = classNames(rootClassName || css.root, className);
 
   const paginationLinks =
@@ -32,16 +42,21 @@ const SearchResultsPanel = props => {
   return (
     <div className={classes}>
       <div className={css.listingCards}>
+        <span className={css.resultCount}>
+          {totalItems} result{totalItems > 1 ? 's' : ''}
+        </span>
         {listings.map(l => (
-          <ListingCard
-            className={css.listingCard}
-            key={l.id.uuid}
-            listing={l}
-            renderSizes={cardRenderSizes}
-            setActiveListing={setActiveListing}
-          />
+          // <ListingCard
+          //   className={css.listingCard}
+          //   key={l.id.uuid}
+          //   listing={l}
+          //   renderSizes={cardRenderSizes}
+          //   setActiveListing={setActiveListing}
+          // />
+
+          <UserResultCard listing={l} history={history} key={l.id.uuid} />
         ))}
-        {props.children}
+        {/* {props.children} */}
       </div>
       {paginationLinks}
     </div>
