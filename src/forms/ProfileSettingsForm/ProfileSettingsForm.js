@@ -52,6 +52,7 @@ class ProfileSettingsFormComponent extends Component {
       languageChange: false,
       description: '',
       descriptionError: false,
+      countryData: [],
     };
     this.submittedValues = {};
   }
@@ -63,6 +64,10 @@ class ProfileSettingsFormComponent extends Component {
           ? this.props.initialValues.languages
           : [],
     });
+    axios
+      .get('https://countriesnow.space/api/v0.1/countries/states')
+      .then(res => this.setState({ countryData: res.data.data }))
+      .catch(err => console.log('Error occurred', err));
   }
   componentDidUpdate(prevProps) {
     // Upload delay is additional time window where Avatar is added to the DOM,
@@ -172,6 +177,9 @@ class ProfileSettingsFormComponent extends Component {
           });
           const streetRequired = validators.required(streetRequiredMessage);
 
+          const cityLabel = intl.formatMessage({
+            id: 'ProfileSettingsForm.cityLabel',
+          });
           const cityPlaceholder = intl.formatMessage({
             id: 'ProfileSettingsForm.cityPlaceholder',
           });
@@ -363,6 +371,19 @@ class ProfileSettingsFormComponent extends Component {
           });
           const descriptionPlaceholder = intl.formatMessage({
             id: 'ProfileSettingsForm.descriptionPlaceholder',
+          });
+          const postalCodeLabel = intl.formatMessage({
+            id: 'ProfileSettingsForm.postalCodeLabel',
+          });
+          const postalCodePlaceholder = intl.formatMessage({
+            id: 'ProfileSettingsForm.postalCodePlaceholder',
+          });
+          const postalCodeRequiredMessage = intl.formatMessage({
+            id: 'ProfileSettingsForm.postalCodeRequiredMessage',
+          });
+
+          const stateLabel = intl.formatMessage({
+            id: 'ProfileSettingsForm.stateLabel',
           });
 
           const onLanguageChangeHandler = e => {
@@ -810,8 +831,10 @@ class ProfileSettingsFormComponent extends Component {
                           validate={composeValidators(required(countryRequiredMessage))}
                         >
                           <option value="">{countryPlaceHolder}</option>
-                          {country.map(m => (
-                            <option value={m.code}>{m.name}</option>
+                          {this.state.countryData.map(m => (
+                            <option value={m.iso3} key={m.iso3}>
+                              {m.name}
+                            </option>
                           ))}
                         </FieldSelect>
                       </div>
@@ -872,8 +895,10 @@ class ProfileSettingsFormComponent extends Component {
                           // validate={required}
                         >
                           <option value="">{countryPlaceHolder}</option>
-                          {country.map(m => (
-                            <option value={m.code}>{m.name}</option>
+                          {this.state.countryData.map(m => (
+                            <option value={m.iso3} key={m.iso3}>
+                              {m.name}
+                            </option>
                           ))}
                         </FieldSelect>
                       </div>
@@ -996,7 +1021,7 @@ class ProfileSettingsFormComponent extends Component {
                           </h3>
                           {fields.map((name, i) => {
                             return (
-                              <div key={name}>
+                              <div key={name + i}>
                                 <div className={css.fromgroup}>
                                   <FieldSelect
                                     id={`${name}.country`}
@@ -1004,13 +1029,71 @@ class ProfileSettingsFormComponent extends Component {
                                     // label="Choose an option:"
                                     // validate={countryPlaceHolder}
                                     validate={composeValidators(required(countryRequiredMessage))}
+                                    onChange={() => {
+                                      if (values?.jurisdictionPractice[i]?.state) {
+                                        delete values.jurisdictionPractice[i].state;
+                                      }
+                                      if (values?.jurisdictionPractice[i]?.city) {
+                                        delete values.jurisdictionPractice[i].city;
+                                      }
+                                      if (values?.jurisdictionPractice[i]?.zipCode) {
+                                        delete values.jurisdictionPractice[i].postalCode;
+                                      }
+                                    }}
                                   >
                                     <option value="">{countryPlaceHolder}</option>
-                                    {country.map(m => (
-                                      <option value={m.code}>{m.name}</option>
+                                    {this.state.countryData.map(m => (
+                                      <option value={m.iso3} key={m.iso3}>
+                                        {m.name}
+                                      </option>
                                     ))}
                                   </FieldSelect>
                                 </div>
+                                {values.jurisdictionPractice[i]?.country === 'USA' ? (
+                                  <>
+                                    <div className={css.fromgroup}>
+                                      <FieldSelect
+                                        id={`${name}.state`}
+                                        name={`${name}.state`}
+                                        // label="Choose an option:"
+                                        // validate={countryPlaceHolder}
+                                        validate={composeValidators(required(stateRequiredMessage))}
+                                      >
+                                        <option value="">{statePlaceholder}</option>
+                                        {this.state.countryData
+                                          .filter(c => c.iso3 === 'USA')[0]
+                                          ?.states?.map(s => (
+                                            <option value={s.state_code}>{s.name}</option>
+                                          ))}
+                                      </FieldSelect>
+                                    </div>
+                                    <div className={css.fromgroup}>
+                                      <FieldTextInput
+                                        className={css.postalCode}
+                                        type="text"
+                                        id={`${name}.postalCode`}
+                                        name={`${name}.postalCode`}
+                                        placeholder={postalCodePlaceholder}
+                                        validate={composeValidators(
+                                          required(postalCodeRequiredMessage)
+                                        )}
+                                        label={postalCodeLabel}
+                                      />
+                                    </div>
+                                  </>
+                                ) : (
+                                  <div className={css.fromgroup}>
+                                    <FieldTextInput
+                                      className={css.city}
+                                      type="text"
+                                      id={`${name}.city`}
+                                      name={`${name}.city`}
+                                      placeholder={cityPlaceholder}
+                                      validate={composeValidators(required(cityRequiredMessage))}
+                                      label={cityLabel}
+                                    />
+                                  </div>
+                                )}
 
                                 <div className={`${css.fromgroup} ${css.inlinefrom}`}>
                                   <FieldTextInput
@@ -1140,7 +1223,7 @@ class ProfileSettingsFormComponent extends Component {
                           </p>
                           {fields.map((name, i) => {
                             return (
-                              <div key={name}>
+                              <div key={name + i}>
                                 <div className={css.fromgroup}>
                                   <FieldTextInput
                                     className={css.institute}
@@ -1228,7 +1311,7 @@ class ProfileSettingsFormComponent extends Component {
                                 !values.practice.filter((m, index) => index !== i).includes(key)
                             );
                             return (
-                              <div key={name}>
+                              <div key={name + i}>
                                 <div className={css.fromgroup}>
                                   <FieldSelect
                                     id={`${name}`}
@@ -1239,7 +1322,9 @@ class ProfileSettingsFormComponent extends Component {
                                   >
                                     <option value="">{practiceAreaPlaceholder}</option>
                                     {cloneDeep(options).map(m => (
-                                      <option value={m.key}>{m.label}</option>
+                                      <option value={m.key} key={m.key}>
+                                        {m.label}
+                                      </option>
                                     ))}
                                   </FieldSelect>
                                 </div>
@@ -1286,7 +1371,7 @@ class ProfileSettingsFormComponent extends Component {
                           </p>
                           {fields.map((name, i) => {
                             return (
-                              <div key={name}>
+                              <div key={name + i}>
                                 <div className={css.fromgroup}>
                                   <FieldTextInput
                                     className={css.industry}
@@ -1377,6 +1462,18 @@ class ProfileSettingsFormComponent extends Component {
                       );
                     }}
                   </FieldArray>
+                  <div className={classNames(css.sectionContainer, css.lastSection)}>
+                    <h3 className={css.sectionTitle}>
+                      <FormattedMessage id="ProfileSettingsForm.bioHeading" />
+                    </h3>
+                    <FieldTextInput
+                      type="textarea"
+                      id="bio"
+                      name="bio"
+                      label={bioLabel}
+                      placeholder={bioPlaceholder}
+                    />
+                  </div>
                 </div>
               )}
               {user?.attributes?.profile?.protectedData?.isProfileVerified ? (
@@ -1393,7 +1490,7 @@ class ProfileSettingsFormComponent extends Component {
                           <p>Schedule a call for verification</p>
                           {fields.map((name, i) => {
                             return (
-                              <div key={name}>
+                              <div key={name + i}>
                                 <div className={`${css.fromgroup} ${css.inlinefrom}`}>
                                   <FieldTextInput
                                     className={`${css.street} ${css.thirdinput}`}

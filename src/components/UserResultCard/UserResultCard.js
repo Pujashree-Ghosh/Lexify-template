@@ -13,22 +13,35 @@ import { AvatarMedium, NamedLink } from '..';
 import biolocationIcon from '../../assets/material-location-on.svg';
 import config from '../../config';
 import { createResourceLocatorString } from '../../util/routes';
+import axios from 'axios';
 
 function UserResultCardComponent(props) {
-  const { listing, currentUser, onShowUser, history, country } = props;
+  const { listing, currentUser, onShowUser, history } = props;
   // const [authorDetail, setAuthorDetail] = useState([]);
+  const [countryData, setCountryData] = useState([]);
 
   useEffect(() => {
     onShowUser(listing.author.id);
+    axios
+      .get('https://countriesnow.space/api/v0.1/countries/states')
+      .then(res => setCountryData(res.data.data))
+      .catch(err => console.log('somer error occurred', err));
   }, []);
 
   const ensuredUser = ensureUser(listing.author);
+  const state = countryData
+    ?.filter(c => c.iso3 === 'USA')[0]
+    ?.states?.filter(s => s.state_code === listing?.attributes?.publicData?.state[0])[0]?.name;
+  const city = listing?.attributes?.publicData?.city && listing?.attributes?.publicData?.city[0];
+  const country = countryData.filter(c => c.iso3 === listing?.attributes?.publicData?.country[0])[0]
+    ?.name;
+  // console.log(country, countryData);
 
   return (
     <div className={css.cardContainer} key={listing.id.uuid}>
       <div className={css.SectionAvatarImg}>
         {/* <SectionAvatar user={listing.author} /> */}
-        <AvatarMedium className={css.profileAvatar} user={ensuredUser} />
+        <AvatarMedium className={css.profileAvatar} user={ensuredUser} disableProfileLink />
       </div>
       <div className={css.userInfo}>
         <div className={css.userName}>{listing.attributes.title}</div>
@@ -39,7 +52,8 @@ function UserResultCardComponent(props) {
               <span className={css.locationIconContainer}>
                 <img src={biolocationIcon} className={css.locationIcon} />
               </span>
-              {country.filter(c => c.code === listing?.attributes?.publicData?.country[0])[0].name}
+              {`${state ? state : city ? city : ''}, 
+              ${country}`}
             </>
           ) : (
             ''
@@ -75,7 +89,7 @@ UserResultCardComponent.defaultProps = {
   rootClassName: null,
   renderSizes: null,
   setActiveListing: () => null,
-  country: config.custom.country,
+  // country: config.custom.country,
 };
 
 UserResultCardComponent.propTypes = {
@@ -87,7 +101,7 @@ UserResultCardComponent.propTypes = {
 
   // Responsive image sizes hint
   renderSizes: string,
-  country: array,
+  // country: array,
 
   setActiveListing: func,
 };

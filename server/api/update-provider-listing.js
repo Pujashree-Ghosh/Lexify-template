@@ -19,14 +19,24 @@ module.exports = async (req, response) => {
           const country = res.data.data.attributes.profile.publicData.jurisdictionPractice.map(
             m => m.country
           );
+          const state = res.data.data.attributes.profile.publicData.jurisdictionPractice.map(
+            s => s.state
+          );
+          const city = res.data.data.attributes.profile.publicData.jurisdictionPractice.map(
+            m => m.city
+          );
+          const description = res.data.data.attributes.profile.bio;
           const practiceArea = res.data.data.attributes.profile.publicData.practice.map(m => m);
           integrationSdk.listings
             .update({
               id: res.data.data.attributes.profile.publicData.providerListing,
+              description,
               publicData: {
                 languages,
                 country,
                 practiceArea,
+                state,
+                city,
               },
             })
             .then(res => {

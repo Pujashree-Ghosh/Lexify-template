@@ -1265,5 +1265,10 @@
   "SignupForm.clientTypeLabel":"Register as",
   "ProfileSettingsForm.descriptionPlaceholder":"Descriptopn",
   "UserResultCard.ListingProfileLink":"Book online consultation now",
-  "ContactDetailsForm.otpRequired":"This field is required"
+  "ContactDetailsForm.otpRequired":"This field is required",
+  "ProfileSettingsForm.stateLabel":"State",
+  "ProfileSettingsForm.postalCodeLabel" :"Postal Code",
+  "ProfileSettingsForm.postalCodePlaceholder" :"Postal code",
+  "ProfileSettingsForm.postalCodeRequiredMessage":"This field is required",
+  "ProfileSettingsForm.cityLabel":"City"
 }

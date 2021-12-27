@@ -25,6 +25,7 @@ import { validFilterParams } from './SearchPage.helpers';
 
 import css from './SearchPage.module.css';
 import SectionAvatar from '../ListingPage/SectionAvatar';
+import axios from 'axios';
 
 // Primary filters have their content in dropdown-popup.
 // With this offset we move the dropdown to the left a few pixels on desktop layout.
@@ -62,7 +63,9 @@ class MainPanel extends Component {
       city: '',
       industry: '',
       state: '',
-      zip: '',
+      postalCode: '',
+      countryData: [],
+      keyword: '',
     };
 
     this.applyFilters = this.applyFilters.bind(this);
@@ -74,6 +77,14 @@ class MainPanel extends Component {
 
     // SortBy
     this.handleSortBy = this.handleSortBy.bind(this);
+  }
+  componentDidMount() {
+    axios
+      .get('https://countriesnow.space/api/v0.1/countries/states')
+      .then(res => {
+        this.setState({ countryData: res.data.data });
+      })
+      .catch(err => console.log('Error occurred', err));
   }
   componentDidUpdate() {
     const { history, urlQueryParams } = this.props;
@@ -204,7 +215,6 @@ class MainPanel extends Component {
       liveEdit,
       showAsPopup,
       areaOfLawOptions,
-      country,
       languages,
       history,
     } = this.props;
@@ -294,45 +304,71 @@ class MainPanel extends Component {
                     this.getHandleChangedValueFn()({
                       ['pub_country']: e.target.value,
                     });
+                    this.getHandleChangedValueFn()({
+                      ['pub_state']: null,
+                    });
                   }}
                 >
                   <option value="">Select Country</option>
-                  {country.map(m => (
-                    <option value={m.code}>{m.name}</option>
+                  {this.state.countryData.map(c => (
+                    <option value={c.iso3} key={c.iso3}>
+                      {c.name}
+                    </option>
                   ))}
                 </select>
               </div>
 
-              {this.state.country === 'US' ? (
+              {this.state.country === 'USA' ? (
                 <>
                   <div className={css.lformcol}>
                     <label>State</label>
-                    <select className={css.formcontrol}>
-                      <option
-                        selected
-                        onChange={e => {
-                          this.setState({ state: e.target.value });
-                          this.getHandleChangedValueFn()({
-                            ['pub_state']: e.target.value,
-                          });
-                        }}
-                      >
-                        Select State
-                      </option>
-                      <option>adasd</option>
-                      <option>adasd</option>
+                    <select
+                      className={css.formcontrol}
+                      onChange={e => {
+                        this.setState({ state: e.target.value });
+                        this.getHandleChangedValueFn()({
+                          ['pub_state']: e.target.value,
+                        });
+                      }}
+                    >
+                      <option>Select State</option>
+                      {this.state.countryData
+                        .filter(c => c.iso3 === 'USA')[0]
+                        ?.states.map(s => (
+                          <option value={s.state_code}>{s.name}</option>
+                        ))}
                     </select>
                   </div>
 
                   <div className={css.lformcol}>
                     <label>ZIP</label>
-                    <input type="text" className={css.formcontrol} placeholder="Type ZIP Code" />
+                    <input
+                      type="text"
+                      className={css.formcontrol}
+                      placeholder="Type ZIP Code"
+                      onChange={e => {
+                        this.setState({ postalCode: e.target.value });
+                        this.getHandleChangedValueFn()({
+                          ['pub_postalCode']: e.target.value,
+                        });
+                      }}
+                    />
                   </div>
                 </>
               ) : (
                 <div className={css.lformcol}>
                   <label>City</label>
-                  <input type="text" className={css.formcontrol} placeholder="Enter City Name" />
+                  <input
+                    type="text"
+                    className={css.formcontrol}
+                    placeholder="Enter City Name"
+                    onChange={e => {
+                      this.setState({ city: e.target.value });
+                      this.getHandleChangedValueFn()({
+                        ['pub_city']: e.target.value,
+                      });
+                    }}
+                  />
                 </div>
               )}
 
@@ -349,7 +385,9 @@ class MainPanel extends Component {
                 >
                   <option value="">Select Practice Area</option>
                   {areaOfLawOptions.map(m => (
-                    <option value={m.key}>{m.label}</option>
+                    <option value={m.key} key={m.key}>
+                      {m.label}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -357,7 +395,17 @@ class MainPanel extends Component {
             <div className={css.lformrow}>
               <div className={css.lformcol}>
                 <label>Keyword</label>
-                <input type="text" className={css.formcontrol} placeholder="Type Keyword" />
+                <input
+                  type="text"
+                  className={css.formcontrol}
+                  placeholder="Type Keyword"
+                  onChange={e => {
+                    this.setState({ keywords: e.target.value });
+                    this.getHandleChangedValueFn()({
+                      ['keywords']: e.target.value,
+                    });
+                  }}
+                />
               </div>
 
               <div className={css.lformcol}>
@@ -371,9 +419,11 @@ class MainPanel extends Component {
                     });
                   }}
                 >
-                  <option selected>Select Language</option>
+                  <option>Select Language</option>
                   {languages.map(l => (
-                    <option value={l.code}>{l.name}</option>
+                    <option value={l.code} key={l.code}>
+                      {l.name}
+                    </option>
                   ))}
                 </select>
               </div>
@@ -389,9 +439,7 @@ class MainPanel extends Component {
                     });
                   }}
                 >
-                  <option value="" selected>
-                    Select Industry
-                  </option>
+                  <option value="">Select Industry</option>
                   <option>adasd</option>
                   <option>adasd</option>
                 </select>
@@ -531,7 +579,6 @@ MainPanel.defaultProps = {
   filterConfig: config.custom.filters,
   sortConfig: config.custom.sortConfig,
   areaOfLawOptions: config.custom.areaOfLaw.options,
-  country: config.custom.country,
   languages: config.custom.languages,
 };
 
@@ -555,7 +602,6 @@ MainPanel.propTypes = {
   filterConfig: propTypes.filterConfig,
   sortConfig: propTypes.sortConfig,
   areaOfLawOptions: propTypes.areaOfLawOptions,
-  country: array,
   languages: array,
 
   history: shape({

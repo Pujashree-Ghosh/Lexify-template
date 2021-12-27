@@ -174,7 +174,7 @@ export class ProfileSettingsPageComponent extends Component {
               languages: publicData.languages,
               timeZone: publicData.timeZone,
               education: publicData.education ? publicData.education : [{}],
-              practice: publicData.practice ? publicData.practice : [],
+              practice: publicData.practice ? publicData.practice : [{}],
               industry: publicData.industry ? publicData.industry : [{}],
               schedule: protectedData.schedule ? protectedData.schedule : [{}],
             }}
