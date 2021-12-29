@@ -239,7 +239,8 @@
 }
 
 .profileSettingsLink,
-.yourListingsLink {
+.yourListingsLink,
+.promotionLink {
   @apply --marketplaceH4FontStyles;
   position: relative;
   display: block;

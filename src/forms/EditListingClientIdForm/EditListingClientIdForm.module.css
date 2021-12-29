@@ -38,3 +38,28 @@
     margin-top: 100px;
   }
 }
+.inlinefrom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+.fromgroup {
+  display: flex;
+  align-items: center;
+}
+.inlinefrom button {
+  min-height: 44px;
+  max-width: 48%;
+  font-weight: bolder;
+}
+.remove {
+  background: #8c8c8c;
+  color: #000;
+}
+.remove:hover {
+  color: #fff;
+}
+.inlinefrom button:disabled {
+  background-color: #eee;
+}

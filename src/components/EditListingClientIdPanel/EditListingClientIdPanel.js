@@ -45,6 +45,7 @@ const EditListingClientIdPanel = props => {
     <FormattedMessage id="EditListingClientIdPanel.listingTitle" />
   );
 
+  const type = publicData && publicData.type ? publicData.type : 'solicited';
   const clientId = publicData && publicData.clientId;
 
   return (
@@ -52,11 +53,11 @@ const EditListingClientIdPanel = props => {
       <h1 className={css.title}>{panelTitle}</h1>
       <EditListingClientIdForm
         className={css.form}
-        initialValues={{ clientId }}
+        initialValues={{ clientId, type }}
         onSubmit={values => {
-          const { clientId } = values;
+          const { clientId, type } = values;
           const updatedValues = {
-            publicData: { clientId },
+            publicData: { clientId, type },
           };
           onSubmit(updatedValues);
         }}

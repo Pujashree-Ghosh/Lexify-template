@@ -143,6 +143,7 @@
 }
 .userInfo {
   margin-left: 10px;
+  text-transform: capitalize;
 }
 .profileBtnContainer {
   margin-left: auto;
