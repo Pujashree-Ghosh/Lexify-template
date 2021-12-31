@@ -184,3 +184,4 @@ export { default as EditListingDurationPanel } from './EditListingDurationPanel/
 export { default as EditListingClientIdPanel } from './EditListingClientIdPanel/EditListingClientIdPanel'
 export { default as EditListingDeadlinePanel } from './EditListingDeadlinePanel/EditListingDeadlinePanel'
 export { default as UserResultCard } from './UserResultCard/UserResultCard'
+export { default as EditListingExpiryPanel } from './EditListingExpiryPanel/EditListingExpiryPanel'

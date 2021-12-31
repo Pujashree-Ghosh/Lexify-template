@@ -30,6 +30,7 @@ import EditListingWizardTab, {
   DURATION,
   PRICING,
   PHOTOS,
+  EXPIRY,
 } from './EditListingWizardTab';
 import css from './EditListingWizard.module.css';
 
@@ -84,6 +85,8 @@ const tabLabel = (intl, tab) => {
     key = 'EditListingWizard.tabLabelAvailability';
   } else if (tab === PHOTOS) {
     key = 'EditListingWizard.tabLabelPhotos';
+  } else if (tab === EXPIRY) {
+    key = 'EditListingWizard.tabLabelExpiry';
   }
 
   return intl.formatMessage({ id: key });
@@ -107,7 +110,6 @@ const tabCompleted = (tab, listing) => {
     publicData,
   } = listing.attributes;
   const images = listing.images;
-
   switch (tab) {
     case DESCRIPTION:
       return !!(description && title);
@@ -129,6 +131,8 @@ const tabCompleted = (tab, listing) => {
       return !!price;
     case AVAILABILITY:
       return !!availabilityPlan;
+    case EXPIRY:
+      return !!(publicData && publicData.expiry);
     case PHOTOS:
       return images && images.length > 0;
     default:
@@ -307,13 +311,14 @@ class EditListingWizard extends Component {
       category === 'publicOral'
         ? [DESCRIPTION, AREAOFLAW, DURATION, PRICING, ...availabilityMaybe, PHOTOS]
         : category === 'customOral'
-        ? [DESCRIPTION, CLIENT, DURATION, PRICING, ...availabilityMaybe, PHOTOS]
+        ? [DESCRIPTION, CLIENT, DURATION, PRICING, ...availabilityMaybe, EXPIRY, PHOTOS]
         : [
             DESCRIPTION,
             CLIENT,
             PRICING,
             // ...availabilityMaybe,
             DEADLINE,
+            EXPIRY,
             PHOTOS,
           ];
     const tabsActive = (isNew, listing) => {

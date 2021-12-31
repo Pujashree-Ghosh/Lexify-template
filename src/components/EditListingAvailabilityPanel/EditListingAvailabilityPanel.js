@@ -155,6 +155,11 @@ const EditListingAvailabilityPanel = props => {
     updateInProgress,
     errors,
   } = props;
+  const durationUnit = listing?.attributes?.publicData?.durationUnit;
+  const listingDuration = listing?.attributes?.publicData?.duration;
+  const duration = (durationUnit === 'hours' ? listingDuration * 60 : listingDuration) / 60;
+
+  // console.log(durationUnit === 'hours' ? listingDuration * 60 : listingDuration);
   // Hooks
   const [isEditPlanModalOpen, setIsEditPlanModalOpen] = useState(false);
   const [isEditExceptionsModalOpen, setIsEditExceptionsModalOpen] = useState(false);
@@ -376,6 +381,7 @@ const EditListingAvailabilityPanel = props => {
             initialValues={initialValues}
             inProgress={updateInProgress}
             fetchErrors={errors}
+            duration={duration}
           />
         </Modal>
       ) : null}

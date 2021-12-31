@@ -1252,8 +1252,9 @@
   "EditListingWizard.saveNewCustomOralPricing":"Next: Deadline",
   "EditListingDeadlineForm.subTitle":"Please select a date by which you can deliver this service",
   "EditListingDeadlinePanel.listingTitle":"Deadline",
+  "EditListingDeadlinePanel.title":"Deadline",
   "EditListingWizard.saveEditDeadline":"Save Deadline",
-  "EditListingWizard.saveNewDeadline":"Next: Photos",
+  "EditListingWizard.saveNewDeadline":"Next: Expiry",
   "CreateListing.heading":"Choose your consultation / service type",
   "CreateListing.subHeading":"Select one of the following type of consultation/service",
   "CreateListing.oralInfo":"This consultation will be visible to all registered users",
@@ -1274,5 +1275,16 @@
   "EditListingClientIdForm.addMoreClient":"+ Add More Client Id",
   "PromotionPage.title":"Promotion Page",
   "TopbarDesktop.promotionLink":"Promotion",
-  "UserNav.PromotionPage":"Promotion"
+  "UserNav.PromotionPage":"Promotion",
+  "EditListingExpiryPanel.title":"Expiry",
+  "EditListingWizard.tabLabelExpiry":"Expiry",
+  "EditListingExpiryForm.subTitle":"Enter the date by which the consultation will be auto cloesd",
+  "EditListingExpiryForm.expDateInvalid":"Date should not be after deadline",
+  "EditListingExpiryForm.expDateRequired":"Expiry date required",
+  "EditListingDeadlineForm.deadlineInvalid":"Previous date not allowed",
+  "EditListingDeadlineForm.deadlineRequired":"Deadline required",
+  "EditListingWizard.saveEditExpiry":"Save Expiry",
+  "EditListingWizard.saveNewExpiry":"Next: Photos",
+  "EditListingWizard.saveNewCustomOralAvailability":"Next: Expiry"
+
 }

@@ -17,17 +17,45 @@ import {
 
 import css from './EditListingAvailabilityPlanForm.module.css';
 
-const printHourStrings = h => (h > 9 ? `${h}:00` : `0${h}:00`);
+// const printHourStrings = h => (h > 9 ? `${h}:00` : `0${h}:00`);
 
-const HOURS = Array(24).fill();
-const ALL_START_HOURS = [...HOURS].map((v, i) => printHourStrings(i));
-const ALL_END_HOURS = [...HOURS].map((v, i) => printHourStrings(i + 1));
+// const HOURS = Array(24).fill();
+// const ALL_START_HOURS = [...HOURS].map((v, i) => printHourStrings(i));
+// const ALL_END_HOURS = [...HOURS].map((v, i) => printHourStrings(i + 1));
+
+const printTimeStrings = t => {
+  const m = t % 60;
+  const h = parseInt(t / 60);
+  if (h > 9) {
+    if (m > 9) {
+      return `${h}:${m}`;
+    } else {
+      return `${h}:0${m}`;
+    }
+  } else {
+    if (m > 9) {
+      return `0${h}:${m}`;
+    } else {
+      return `0${h}:0${m}`;
+    }
+  }
+};
+const hour = Array(288).fill();
+const ALL_START_HOURS = hour.map((v, i) => printTimeStrings(i * 5));
+
+const ALL_END_HOURS = hour.map((v, i) => printTimeStrings(i * 5 + 5));
 
 const sortEntries = (defaultCompareReturn = 0) => (a, b) => {
-  if (a.startTime && b.startTime) {
-    const aStart = Number.parseInt(a.startTime.split(':')[0]);
-    const bStart = Number.parseInt(b.startTime.split(':')[0]);
-    return aStart - bStart;
+  // if (a.startTime && b.startTime) {
+  //   const aStart = Number.parseInt(a.startTime.split(':')[0]);
+  //   const bStart = Number.parseInt(b.startTime.split(':')[0]);
+  //   return aStart - bStart;
+  // }
+  if (a.startTime < b.startTime) {
+    return -1;
+  }
+  if (a.startTime > b.startTime) {
+    return 1;
   }
   return defaultCompareReturn;
 };
@@ -62,7 +90,8 @@ const filterStartHours = (availableStartHours, values, dayOfWeek, index) => {
     : availableStartHours.filter(pickBetween(prevEntry.endTime, currentEntry.endTime));
 };
 
-const filterEndHours = (availableEndHours, values, dayOfWeek, index) => {
+const filterEndHours = (availableEndHours, values, dayOfWeek, index, duration = 1) => {
+  // console.log(duration);
   const entries = values[dayOfWeek];
   const currentEntry = entries[index];
 
@@ -85,9 +114,19 @@ const filterEndHours = (availableEndHours, values, dayOfWeek, index) => {
   const pickAfter = time => h => h > time;
   const pickBetween = (start, end) => h => h > start && h <= end;
 
-  return !nextEntry || !nextEntry.startTime
-    ? availableEndHours.filter(pickAfter(currentEntry.startTime))
-    : availableEndHours.filter(pickBetween(currentEntry.startTime, nextEntry.startTime));
+  const endHours =
+    !nextEntry || !nextEntry.startTime
+      ? availableEndHours.filter(pickAfter(currentEntry.startTime))
+      : ALL_START_HOURS.slice(
+          ALL_START_HOURS.indexOf(currentEntry.startTime) + 1,
+          ALL_START_HOURS.indexOf(nextEntry.startTime) + 1
+        );
+
+  return endHours.filter((x, i) => (i % (duration * 12)) + 1 === duration * 12);
+
+  // return !nextEntry || !nextEntry.startTime
+  //   ? availableEndHours.filter(pickAfter(currentEntry.startTime))
+  //   : availableEndHours.filter(pickBetween(currentEntry.startTime, nextEntry.startTime));
 };
 
 const getEntryBoundaries = (values, dayOfWeek, intl, findStartHours) => index => {
@@ -100,11 +139,37 @@ const getEntryBoundaries = (values, dayOfWeek, intl, findStartHours) => index =>
     if (i !== index && startTime && endTime) {
       const startHour = Number.parseInt(startTime.split(':')[0]);
       const endHour = Number.parseInt(endTime.split(':')[0]);
-      const hoursBetween = Array(endHour - startHour)
-        .fill()
-        .map((v, i) => printHourStrings(startHour + i + boundaryDiff));
+      // const hoursBetween = Array(endHour - startHour)
+      //   .fill()
+      //   .map((v, i) => printHourStrings(startHour + i + boundaryDiff));
 
-      return allHours.concat(hoursBetween);
+      const hoursBetween = ALL_START_HOURS.slice(
+        ALL_START_HOURS.indexOf(startTime),
+        endTime === '24:00' ? ALL_START_HOURS.length : ALL_START_HOURS.indexOf(endTime)
+      );
+
+      const hoursBetween2 = ALL_END_HOURS.slice(
+        ALL_END_HOURS.indexOf(startTime),
+        ALL_END_HOURS.indexOf(endTime)
+      );
+
+      // console.log(
+      //   123,
+      //   findStartHours,
+      //   findStartHours
+      //     ? hoursBetween.length
+      //       ? allHours.concat(hoursBetween)
+      //       : allHours.concat(['23:55'])
+      //     : allHours.concat(hoursBetween2)
+      // );
+
+      return findStartHours
+        ? hoursBetween.length
+          ? allHours.concat(hoursBetween)
+          : allHours.concat(['23:55'])
+        : allHours.concat(hoursBetween2);
+
+      // return allHours.concat(hoursBetween);
     }
 
     return allHours;
@@ -112,7 +177,7 @@ const getEntryBoundaries = (values, dayOfWeek, intl, findStartHours) => index =>
 };
 
 const DailyPlan = props => {
-  const { dayOfWeek, values, intl } = props;
+  const { dayOfWeek, values, intl, duration } = props;
   const getEntryStartTimes = getEntryBoundaries(values, dayOfWeek, intl, true);
   const getEntryEndTimes = getEntryBoundaries(values, dayOfWeek, intl, false);
 
@@ -175,7 +240,13 @@ const DailyPlan = props => {
                           <option disabled value="">
                             {endTimePlaceholder}
                           </option>
-                          {filterEndHours(availableEndHours, values, dayOfWeek, index).map(s => (
+                          {filterEndHours(
+                            availableEndHours,
+                            values,
+                            dayOfWeek,
+                            index,
+                            duration
+                          ).map(s => (
                             <option value={s} key={s}>
                               {s}
                             </option>
@@ -256,6 +327,7 @@ const EditListingAvailabilityPlanFormComponent = props => {
           weekdays,
           fetchErrors,
           values,
+          duration,
         } = fieldRenderProps;
 
         const classes = classNames(rootClassName || css.root, className);
@@ -290,7 +362,15 @@ const EditListingAvailabilityPlanFormComponent = props => {
             </h3> */}
             <div className={css.week}>
               {weekdays.map(w => {
-                return <DailyPlan dayOfWeek={w} key={w} values={values} intl={intl} />;
+                return (
+                  <DailyPlan
+                    dayOfWeek={w}
+                    key={w}
+                    values={values}
+                    intl={intl}
+                    duration={duration}
+                  />
+                );
               })}
             </div>
 

@@ -30,5 +30,5 @@ export { default as EditListingAreaOfLawForm } from './EditListingAreaOfLawForm/
 export { default as EditListingDurationForm } from './EditListingDurationForm/EditListingDurationForm';
 export { default as EditListingClientIdForm } from './EditListingClientIdForm/EditListingClientIdForm'
 export { default as EditListingDeadlineForm } from './EditListingDeadlineForm/EditListingDeadlineForm'
-
+export { default as EditListingExpiryForm } from './EditListingExpiryForm/EditListingExpiryForm'
 

@@ -19,11 +19,14 @@ import {
   EditListingPhotosPanel,
   EditListingPoliciesPanel,
   EditListingPricingPanel,
+  EditListingExpiryPanel,
+  EditListingAreaOfLawPanel,
+  EditListingClientIdPanel,
 } from '../../components';
 
 import css from './EditListingWizard.module.css';
-import EditListingAreOfLawPanel from '../EditListingAreaOfLawPanel/EditListingAreaOfLawPanel';
-import EditListingClientIdPanel from '../EditListingClientIdPanel/EditListingClientIdPanel';
+// import EditListingAreOfLawPanel from '../EditListingAreaOfLawPanel/EditListingAreaOfLawPanel';
+// import EditListingClientIdPanel from '../EditListingClientIdPanel/EditListingClientIdPanel';
 
 export const AVAILABILITY = 'availability';
 export const DESCRIPTION = 'description';
@@ -36,6 +39,7 @@ export const AREAOFLAW = 'areaoflaw';
 export const CLIENT = 'client';
 export const DURATION = 'duration';
 export const DEADLINE = 'DEADLINE';
+export const EXPIRY = 'expiry';
 
 // EditListingWizardTab component supports these tabs
 export const SUPPORTED_TABS = [
@@ -49,6 +53,7 @@ export const SUPPORTED_TABS = [
   // LOCATION,
   PRICING,
   AVAILABILITY,
+  EXPIRY,
   PHOTOS,
 ];
 
@@ -250,7 +255,7 @@ const EditListingWizardTab = props => {
         ? 'EditListingWizard.saveNewAreaOfLaw'
         : 'EditListingWizard.saveEditAreaOfLaw';
       return (
-        <EditListingAreOfLawPanel
+        <EditListingAreaOfLawPanel
           {...panelProps(AREAOFLAW)}
           submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
           onSubmit={values => {
@@ -327,9 +332,14 @@ const EditListingWizardTab = props => {
       );
     }
     case AVAILABILITY: {
-      const submitButtonTranslationKey = isNewListingFlow
-        ? 'EditListingWizard.saveNewAvailability'
-        : 'EditListingWizard.saveEditAvailability';
+      const submitButtonTranslationKey =
+        category === 'customOral'
+          ? isNewListingFlow
+            ? 'EditListingWizard.saveNewCustomOralAvailability'
+            : 'EditListingWizard.saveEditCustomOralAvailability'
+          : isNewListingFlow
+          ? 'EditListingWizard.saveNewAvailability'
+          : 'EditListingWizard.saveEditAvailability';
       return (
         <EditListingAvailabilityPanel
           {...panelProps(AVAILABILITY)}
@@ -346,6 +356,21 @@ const EditListingWizardTab = props => {
           onNextTab={() =>
             redirectAfterDraftUpdate(listing.id.uuid, params, tab, marketplaceTabs, history)
           }
+        />
+      );
+    }
+    case EXPIRY: {
+      const submitButtonTranslationKey = isNewListingFlow
+        ? 'EditListingWizard.saveNewExpiry'
+        : 'EditListingWizard.saveEditExpiry';
+      return (
+        <EditListingExpiryPanel
+          {...panelProps(EXPIRY)}
+          category={category}
+          submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
+          onSubmit={values => {
+            onCompleteEditListingWizardTab(tab, values);
+          }}
         />
       );
     }

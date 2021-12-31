@@ -110,6 +110,7 @@ export const EditListingPageComponent = props => {
     } else {
       setCategory(currentListing?.attributes?.publicData?.category);
     }
+    console.log(isNewURI, category);
   });
 
   if (shouldRedirect) {

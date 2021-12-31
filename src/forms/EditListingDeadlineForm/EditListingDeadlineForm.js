@@ -11,6 +11,7 @@ import { Button, FieldTextInput, Form } from '../../components';
 import { required, composeValidators } from '../../util/validators';
 
 import css from './EditListingDeadlineForm.module.css';
+import moment from 'moment';
 
 const EditListingDeadlineFormComponent = props => (
   <FinalForm
@@ -50,7 +51,23 @@ const EditListingDeadlineFormComponent = props => (
           <FormattedMessage id="EditListingDeadlineForm.showListingFailed" />
         </p>
       ) : null;
+      const VALID = undefined;
 
+      const deadlineValidator = message => value => {
+        if (
+          moment().isAfter(value) &&
+          !moment(moment().format('YYYY-MM-DD')).isSame(moment(value))
+        ) {
+          return message;
+        }
+        return VALID;
+      };
+      const deadlineRequiredMessage = intl.formatMessage({
+        id: 'EditListingDeadlineForm.deadlineRequired',
+      });
+      const deadlineInvalidMessage = intl.formatMessage({
+        id: 'EditListingDeadlineForm.deadlineInvalid',
+      });
       return (
         <Form className={classes} onSubmit={handleSubmit}>
           {errorMessage}
@@ -58,7 +75,16 @@ const EditListingDeadlineFormComponent = props => (
           <h3 className={css.sectionTitle}>
             <FormattedMessage id="EditListingDeadlineForm.subTitle" />
           </h3>
-          <FieldTextInput className={css.street} type="date" id="deadLineDate" name="Deadline" />
+          <FieldTextInput
+            className={css.street}
+            type="date"
+            id="deadLineDate"
+            name="Deadline"
+            validate={composeValidators(
+              deadlineValidator(deadlineInvalidMessage),
+              required(deadlineRequiredMessage)
+            )}
+          />
           <Button
             className={css.submitButton}
             type="submit"
