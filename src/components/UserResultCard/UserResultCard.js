@@ -29,12 +29,15 @@ function UserResultCardComponent(props) {
   }, []);
 
   const ensuredUser = ensureUser(listing.author);
-  const state = countryData
-    ?.filter(c => c.iso3 === 'USA')[0]
-    ?.states?.filter(s => s.state_code === listing?.attributes?.publicData?.state[0])[0]?.name;
-  const city = listing?.attributes?.publicData?.city && listing?.attributes?.publicData?.city[0];
-  const country = countryData.filter(c => c.iso3 === listing?.attributes?.publicData?.country[0])[0]
-    ?.name;
+  const state = [];
+  // countryData
+  //   ?.filter(c => c.iso3 === 'USA')[0]
+  //   ?.states?.filter(s => s.state_code === listing?.attributes?.publicData?.state[0])[0]?.name;
+  const city = [];
+  // listing?.attributes?.publicData?.city && listing?.attributes?.publicData?.city[0];
+  const country = [];
+  // countryData.filter(c => c.iso3 === listing?.attributes?.publicData?.country[0])[0]
+  //   ?.name;
   // console.log(country, countryData);
 
   return (
