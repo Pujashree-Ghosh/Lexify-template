@@ -29,16 +29,36 @@ function UserResultCardComponent(props) {
   }, []);
 
   const ensuredUser = ensureUser(listing.author);
-  const state = [];
-  // countryData
-  //   ?.filter(c => c.iso3 === 'USA')[0]
-  //   ?.states?.filter(s => s.state_code === listing?.attributes?.publicData?.state[0])[0]?.name;
-  const city = [];
-  // listing?.attributes?.publicData?.city && listing?.attributes?.publicData?.city[0];
-  const country = [];
-  // countryData.filter(c => c.iso3 === listing?.attributes?.publicData?.country[0])[0]
-  //   ?.name;
-  // console.log(country, countryData);
+  const state = countryData
+    ?.filter(c => c.iso3 === 'USA')[0]
+    ?.states?.filter(s =>
+      s.state_code === listing?.attributes?.publicData?.state?.length > 0
+        ? listing?.attributes?.publicData?.state[0]
+        : ''
+    )[0]?.name;
+  const city = listing?.attributes?.publicData?.city && listing?.attributes?.publicData?.city[0];
+  const country = countryData.filter(
+    c =>
+      c.iso3 ===
+      (listing?.attributes?.publicData?.country?.length > 0
+        ? listing?.attributes?.publicData?.country[0]
+        : '')
+  )[0]?.name;
+  // console.log(
+  //   666,
+  //   listing?.attributes?.publicData?.country?.length
+  //     ? listing?.attributes?.publicData?.country[0]
+  //     : '',
+  //   listing?.attributes?.publicData?.country,
+  //   // countryData.map(m => m),
+  //   countryData.filter(
+  //     c =>
+  //       c.iso3 ===
+  //       (listing?.attributes?.publicData?.country?.length
+  //         ? listing?.attributes?.publicData?.country[0]
+  //         : '')
+  //   )[0]?.name
+  // );
 
   return (
     <div className={css.cardContainer} key={listing.id.uuid}>
