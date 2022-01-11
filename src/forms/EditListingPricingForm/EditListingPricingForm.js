@@ -95,17 +95,19 @@ export const EditListingPricingFormComponent = props => (
             </p>
           ) : null}
 
-          {category !== 'publicOral' ? (
-            <FieldSelect id="vat" name="vat" label={vatLabel} validate={required}>
-              <option value="">Select VAT</option>
-              <option value="5">5%</option>
-              <option value="10">10%</option>
-              <option value="15">15%</option>
-              <option value="20">20%</option>
-            </FieldSelect>
-          ) : (
-            ''
-          )}
+          <div className={css.selectform}>
+            {category !== 'publicOral' ? (
+              <FieldSelect id="vat" name="vat" label={vatLabel} validate={required}>
+                <option value="">Select VAT</option>
+                <option value="5">5%</option>
+                <option value="10">10%</option>
+                <option value="15">15%</option>
+                <option value="20">20%</option>
+              </FieldSelect>
+            ) : (
+              ''
+            )}
+          </div>
           <FieldCurrencyInput
             id="price"
             name="price"
@@ -116,7 +118,7 @@ export const EditListingPricingFormComponent = props => (
             currencyConfig={config.currencyConfig}
             validate={priceValidators}
           />
-          <div className="css.priceInfoText">Minimum price is 30 USD</div>
+          <div className={css.priceInfoText}>Minimum price is 30 USD</div>
 
           <Button
             className={css.submitButton}

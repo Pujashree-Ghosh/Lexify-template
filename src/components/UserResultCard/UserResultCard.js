@@ -52,11 +52,12 @@ function UserResultCardComponent(props) {
         <div className={css.userLocation}>
           {listing?.attributes?.publicData?.country?.length ? (
             <>
-              <span className={css.locationIconContainer}>
-                <img src={biolocationIcon} className={css.locationIcon} />
-              </span>
-              {`${state ? state : city ? city : ''}, 
+              <img src={biolocationIcon} className={css.locationIcon} />
+
+              <span>
+                {`${state ? state : city ? city : ''}, 
               ${country}`}
+              </span>
             </>
           ) : (
             ''
