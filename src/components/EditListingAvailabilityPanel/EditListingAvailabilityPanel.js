@@ -161,7 +161,7 @@ const EditListingAvailabilityPanel = props => {
   const listingDuration = listing?.attributes?.publicData?.duration;
   // const duration = (durationUnit === 'hours' ? listingDuration * 60 : listingDuration) / 60;
   const duration = (Number(durationHour) * 60 + Number(durationMinute)) / 60;
-  console.log(duration, durationMinute, durationHour, durationHour * 60 + durationMinute);
+  // console.log(duration, durationMinute, durationHour, durationHour * 60 + durationMinute);
 
   // console.log(durationUnit === 'hours' ? listingDuration * 60 : listingDuration);
   // Hooks
