@@ -68,6 +68,7 @@ function PromotionPageComponent(props) {
     const clientId = validQueryParams && validQueryParams.pub_clientId;
     const uuid = ensuredCurrentUser && ensuredCurrentUser.id && ensuredCurrentUser.id.uuid;
     if (type !== 'unsolicited' || clientId !== uuid) {
+      // setLoading(true);
       setTimeout(() => {
         history.push(
           createResourceLocatorString(
@@ -81,11 +82,11 @@ function PromotionPageComponent(props) {
       }, 2000);
     }
   });
-  useEffect(() => {
-    setTimeout(() => {
-      setLoading(false);
-    }, 3000);
-  }, []);
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     setLoading(false);
+  //   }, 3000);
+  // }, []);
   return (
     <Page className={css.root} title={title} scrollingDisabled={scrollingDisabled}>
       <LayoutSingleColumn>
