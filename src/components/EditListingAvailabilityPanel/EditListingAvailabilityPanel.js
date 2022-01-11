@@ -20,7 +20,7 @@ import { FaRegEdit } from 'react-icons/fa';
 
 import css from './EditListingAvailabilityPanel.module.css';
 
-const WEEKDAYS = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+const WEEKDAYS = ['mon', 'tue', 'wed', 'thu', 'fri'];
 
 // We want to sort exceptions on the client-side, maximum pagination page size is 100,
 // so we need to restrict the amount of exceptions to that.
@@ -156,8 +156,12 @@ const EditListingAvailabilityPanel = props => {
     errors,
   } = props;
   const durationUnit = listing?.attributes?.publicData?.durationUnit;
+  const durationMinute = listing?.attributes?.publicData?.durationMinute;
+  const durationHour = listing?.attributes?.publicData?.durationHour;
   const listingDuration = listing?.attributes?.publicData?.duration;
-  const duration = (durationUnit === 'hours' ? listingDuration * 60 : listingDuration) / 60;
+  // const duration = (durationUnit === 'hours' ? listingDuration * 60 : listingDuration) / 60;
+  const duration = (Number(durationHour) * 60 + Number(durationMinute)) / 60;
+  console.log(duration, durationMinute, durationHour, durationHour * 60 + durationMinute);
 
   // console.log(durationUnit === 'hours' ? listingDuration * 60 : listingDuration);
   // Hooks

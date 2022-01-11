@@ -48,8 +48,8 @@ const EditListingDurationPanel = props => {
     <FormattedMessage id="EditListingDurationPanel.listingTitle" />
   );
 
-  const duration = publicData && publicData.duration;
-  const durationUnit = publicData && publicData.durationUnit;
+  const durationHour = publicData && publicData.durationHour;
+  const durationMinute = publicData && publicData.durationMinute;
 
   //   const initialValues = areaOfLaw ? areaOfLaw : [{}];
 
@@ -58,11 +58,11 @@ const EditListingDurationPanel = props => {
       <h1 className={css.title}>{panelTitle}</h1>
       <EditListingDurationForm
         className={css.form}
-        initialValues={{ duration, durationUnit }}
+        initialValues={{ durationHour, durationMinute }}
         onSubmit={values => {
-          const { duration, durationUnit } = values;
+          const { durationHour, durationMinute } = values;
           const updatedValues = {
-            publicData: { duration, durationUnit },
+            publicData: { durationHour, durationMinute },
           };
           onSubmit(updatedValues);
         }}

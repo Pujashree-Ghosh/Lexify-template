@@ -40,10 +40,10 @@ const printTimeStrings = t => {
     }
   }
 };
-const hour = Array(288).fill();
-const ALL_START_HOURS = hour.map((v, i) => printTimeStrings(i * 5));
+const hour = Array(96).fill();
+const ALL_START_HOURS = hour.map((v, i) => printTimeStrings(i * 15));
 
-const ALL_END_HOURS = hour.map((v, i) => printTimeStrings(i * 5 + 5));
+const ALL_END_HOURS = hour.map((v, i) => printTimeStrings(i * 15 + 15));
 
 const sortEntries = (defaultCompareReturn = 0) => (a, b) => {
   // if (a.startTime && b.startTime) {
@@ -122,7 +122,7 @@ const filterEndHours = (availableEndHours, values, dayOfWeek, index, duration = 
           ALL_START_HOURS.indexOf(nextEntry.startTime) + 1
         );
 
-  return endHours.filter((x, i) => (i % (duration * 12)) + 1 === duration * 12);
+  return endHours.filter((x, i) => (i % (duration * 4)) + 1 === duration * 4);
 
   // return !nextEntry || !nextEntry.startTime
   //   ? availableEndHours.filter(pickAfter(currentEntry.startTime))
