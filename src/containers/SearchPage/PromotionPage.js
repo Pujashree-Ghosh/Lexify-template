@@ -43,6 +43,7 @@ function PromotionPageComponent(props) {
     filterConfig,
     listings,
     onActivateListing,
+    location,
   } = props;
   const ensuredCurrentUser = ensureCurrentUser(currentUser);
   const panelMediumWidth = 50;
