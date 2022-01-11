@@ -150,7 +150,7 @@
   margin-right: 20px;
 }
 .profileBtn {
-  background-color: var(--marketplaceColorDark);
+  background-color: var(--marketplaceColor);
   color: var(--matterColorLight);
   max-width: 215px;
   /* max-height: 61px; */
@@ -162,6 +162,9 @@
   font-size: 16px;
   font-weight: 300;
   cursor: pointer;
+}
+.profileBtn:hover {
+  background-color: var(--marketplaceColorDark);
 }
 .locationIconContainer {
   margin-right: 10px;

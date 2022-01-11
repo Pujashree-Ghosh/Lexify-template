@@ -83,11 +83,11 @@ function PromotionPageComponent(props) {
       }, 2000);
     }
   });
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     setLoading(false);
-  //   }, 3000);
-  // }, []);
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 3000);
+  }, []);
   return (
     <Page className={css.root} title={title} scrollingDisabled={scrollingDisabled}>
       <LayoutSingleColumn>
@@ -116,6 +116,7 @@ function PromotionPageComponent(props) {
                 ))}
               </div>
             )}
+          {!loading && !listings.length && <div>No result found</div>}
         </LayoutWrapperMain>
         <LayoutWrapperFooter>
           <Footer />
