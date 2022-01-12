@@ -88,13 +88,16 @@ class MainPanel extends Component {
   }
   componentDidUpdate() {
     const { history, urlQueryParams } = this.props;
-    if (urlQueryParams?.pub_isProviderType !== true) {
+    if (
+      urlQueryParams?.pub_isProviderType !== true ||
+      urlQueryParams?.pub_hasPublicListing !== true
+    ) {
       history.push(
         createResourceLocatorString(
           'SearchPage',
           routeConfiguration(),
           {},
-          { pub_isProviderType: true }
+          { pub_isProviderType: true, pub_hasPublicListing: true }
         )
       );
     }

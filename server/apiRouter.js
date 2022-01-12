@@ -23,6 +23,7 @@ const { authenticateGoogle, authenticateGoogleCallback } = require('./api/auth/g
 const { sendOtp, verifyOtp } = require('./api/user');
 const createProviderListing = require('./api/create-provider-listing');
 const updateProviderListing = require('./api/update-provider-listing');
+const publishPublicListing = require('./api/publish-public-listing');
 
 const router = express.Router();
 
@@ -59,6 +60,7 @@ router.post('/user/verify', verifyOtp);
 
 router.post('/createProviderListing', createProviderListing);
 router.post('/updateProviderListing', updateProviderListing);
+router.post('/publishPublicListing', publishPublicListing);
 
 router.get('/initiate-login-as', initiateLoginAs);
 router.get('/login-as', loginAs);

@@ -33,6 +33,8 @@ import EditListingWizardTab, {
   EXPIRY,
 } from './EditListingWizardTab';
 import css from './EditListingWizard.module.css';
+import axios from 'axios';
+import { apiBaseUrl } from '../../util/api';
 
 // Show availability calendar only if environment variable availabilityEnabled is true
 const availabilityMaybe = config.enableAvailability ? [AVAILABILITY] : [];
@@ -124,7 +126,7 @@ const tabCompleted = (tab, listing) => {
     case CLIENT:
       return !!(publicData && publicData.clientId);
     case DURATION:
-      return !!(publicData && publicData.duration && publicData.durationUnit);
+      return !!(publicData && publicData.durationHour && publicData.durationHour);
     case DEADLINE:
       return !!(publicData && publicData.Deadline);
     case PRICING:
@@ -255,7 +257,15 @@ class EditListingWizard extends Component {
         hasRequirements(stripeAccountData, 'currently_due'));
 
     if (stripeConnected && !requirementsMissing) {
-      onPublishListingDraft(id);
+      const uuid = this.props.currentUser?.id?.uuid;
+      onPublishListingDraft(id).then(resp => {
+        if (this.props.category === 'publicOral') {
+          axios
+            .post(`${apiBaseUrl()}/api/publishPublicListing`, { id: uuid })
+            .then(() => console.log('updated'))
+            .catch(err => console.log(err));
+        }
+      });
     } else {
       this.setState({
         draftId: id,
