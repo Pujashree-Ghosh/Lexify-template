@@ -38,3 +38,19 @@
     margin-top: 100px;
   }
 }
+.selecthm {
+  display: flex;
+  & .hrtime {
+    flex-basis: 20%;
+    margin: 0 20px 0 0;
+    @media (max-width: 767px) {
+      flex-basis: 50%;
+    }
+  }
+  & .minime {
+    flex-basis: 20%;
+    @media (max-width: 767px) {
+      flex-basis: 50%;
+    }
+  }
+}

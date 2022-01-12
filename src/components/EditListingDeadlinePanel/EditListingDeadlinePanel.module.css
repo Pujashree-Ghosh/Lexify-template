@@ -9,6 +9,15 @@
 
 .form {
   flex-grow: 1;
+  & input {
+    max-width: 30%;
+    @media (max-width: 767px) {
+      max-width: 60%;
+    }
+    @media (max-width: 575px) {
+      max-width: 100%;
+    }
+  }
 }
 
 .title {

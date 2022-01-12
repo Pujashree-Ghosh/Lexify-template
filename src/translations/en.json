@@ -1229,7 +1229,7 @@
   "EditListingAreaOfLawPanel.listingTitle": "Area of Law",
   "EditListingAreaOfLawPanel.title": "Edit {listingTitle}",
   "EditListingAreaOfLawForm.title" : "Select appropriate area(s) of law for this topic",
-  "EditlistingAreaOfLawForm.addMore":"Add More",
+  "EditlistingAreaOfLawForm.addMore":"+ Add More",
   "EditListingWizard.saveNewAreaOfLaw":"Next: Duration",
   "EditListingWizard.saveEditAreaOfLaw": "Save Area Of Law",
   "EditListingWizard.saveNewDuration":"Next: Pricing",
