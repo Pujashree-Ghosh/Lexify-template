@@ -84,9 +84,10 @@ class ModalMissingInformation extends Component {
       // Show reminder
       if (emailVerificationNeeded) {
         this.setState({ showMissingInformationReminder: EMAIL_VERIFICATION });
-      } else if (stripeAccountNeeded) {
-        this.setState({ showMissingInformationReminder: STRIPE_ACCOUNT });
       }
+      // else if (stripeAccountNeeded) {
+      //   this.setState({ showMissingInformationReminder: STRIPE_ACCOUNT });
+      // }
     }
   }
 

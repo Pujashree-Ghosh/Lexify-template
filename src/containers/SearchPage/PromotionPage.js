@@ -43,6 +43,7 @@ function PromotionPageComponent(props) {
     filterConfig,
     listings,
     onActivateListing,
+    location,
   } = props;
   const ensuredCurrentUser = ensureCurrentUser(currentUser);
   const panelMediumWidth = 50;
@@ -60,21 +61,24 @@ function PromotionPageComponent(props) {
   const validQueryParams = validURLParamsForExtendedData(searchInURL, filterConfig);
   const [loading, setLoading] = useState(true);
 
-  console.log(listings);
+  // console.log(listings);
   const routes = routeConfiguration();
   const title = intl.formatMessage({ id: 'PromotionPage.title' });
   useEffect(() => {
     const type = validQueryParams && validQueryParams?.pub_type;
     const clientId = validQueryParams && validQueryParams.pub_clientId;
-    const uuid = ensuredCurrentUser && ensuredCurrentUser.id && ensuredCurrentUser.id.uuid;
-    if (type !== 'unsolicited' || clientId !== uuid) {
+    const email =
+      ensuredCurrentUser && ensuredCurrentUser.attributes && ensuredCurrentUser.attributes.email;
+    // console.log(ensuredCurrentUser);
+    if (type !== 'unsolicited' || clientId !== email) {
+      // setLoading(true);
       setTimeout(() => {
         history.push(
           createResourceLocatorString(
             'PromotionPage',
             routes,
             {},
-            { pub_type: 'unsolicited', pub_clientId: uuid }
+            { pub_type: 'unsolicited', pub_clientId: `${email}` }
           )
         );
         setLoading(false);
@@ -100,7 +104,7 @@ function PromotionPageComponent(props) {
             ensuredCurrentUser &&
             ensuredCurrentUser.id &&
             ensuredCurrentUser.id.uuid &&
-            validQueryParams.pub_clientId === ensuredCurrentUser.id.uuid &&
+            validQueryParams.pub_clientId === ensuredCurrentUser.attributes.email &&
             validQueryParams.pub_type === 'unsolicited' && (
               <div className={css.content}>
                 {listings.map(l => (
@@ -114,6 +118,7 @@ function PromotionPageComponent(props) {
                 ))}
               </div>
             )}
+          {!loading && !listings.length && <div>No result found</div>}
         </LayoutWrapperMain>
         <LayoutWrapperFooter>
           <Footer />

@@ -50,6 +50,11 @@ export class ManageListingsPageComponent extends Component {
       intl,
     } = this.props;
 
+    console.log(
+      listings,
+      listings.filter(f => f?.attributes?.publicData?.isProvider !== true)
+    );
+
     const hasPaginationInfo = !!pagination && pagination.totalItems != null;
     const listingsAreLoaded = !queryInProgress && hasPaginationInfo;
 
@@ -66,18 +71,18 @@ export class ManageListingsPageComponent extends Component {
     );
 
     const noResults =
-      listingsAreLoaded && pagination.totalItems === 0 ? (
+      listingsAreLoaded && pagination.totalItems <= 1 ? (
         <h1 className={css.title}>
           <FormattedMessage id="ManageListingsPage.noResults" />
         </h1>
       ) : null;
 
     const heading =
-      listingsAreLoaded && pagination.totalItems > 0 ? (
+      listingsAreLoaded && pagination.totalItems > 1 ? (
         <h1 className={css.title}>
           <FormattedMessage
             id="ManageListingsPage.youHaveListings"
-            values={{ count: pagination.totalItems }}
+            values={{ count: pagination.totalItems - 1 }}
           />
         </h1>
       ) : (
@@ -122,21 +127,23 @@ export class ManageListingsPageComponent extends Component {
             <div className={css.listingPanel}>
               {heading}
               <div className={css.listingCards}>
-                {listings.map(l => (
-                  <ManageListingCard
-                    className={css.listingCard}
-                    key={l.id.uuid}
-                    listing={l}
-                    isMenuOpen={!!listingMenuOpen && listingMenuOpen.id.uuid === l.id.uuid}
-                    actionsInProgressListingId={openingListing || closingListing}
-                    onToggleMenu={this.onToggleMenu}
-                    onCloseListing={onCloseListing}
-                    onOpenListing={onOpenListing}
-                    hasOpeningError={openingErrorListingId.uuid === l.id.uuid}
-                    hasClosingError={closingErrorListingId.uuid === l.id.uuid}
-                    renderSizes={renderSizes}
-                  />
-                ))}
+                {listings
+                  .filter(f => f?.attributes?.publicData?.isProviderType !== true)
+                  .map(l => (
+                    <ManageListingCard
+                      className={css.listingCard}
+                      key={l.id.uuid}
+                      listing={l}
+                      isMenuOpen={!!listingMenuOpen && listingMenuOpen.id.uuid === l.id.uuid}
+                      actionsInProgressListingId={openingListing || closingListing}
+                      onToggleMenu={this.onToggleMenu}
+                      onCloseListing={onCloseListing}
+                      onOpenListing={onOpenListing}
+                      hasOpeningError={openingErrorListingId.uuid === l.id.uuid}
+                      hasClosingError={closingErrorListingId.uuid === l.id.uuid}
+                      renderSizes={renderSizes}
+                    />
+                  ))}
               </div>
               {paginationLinks}
             </div>
@@ -200,6 +207,7 @@ const mapStateToProps = state => {
     closingListingError,
   } = state.ManageListingsPage;
   const listings = getOwnListingsById(state, currentPageResultIds);
+  console.log(listings);
   return {
     currentPageResultIds,
     listings,
@@ -221,10 +229,7 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const ManageListingsPage = compose(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  ),
+  connect(mapStateToProps, mapDispatchToProps),
   injectIntl
 )(ManageListingsPageComponent);
 

@@ -179,6 +179,9 @@
   max-width: 200px;
   line-height: 20px;
 }
+.profileBtn:hover {
+  background-color: var(--marketplaceColorDark);
+}
 .locationIconContainer {
   margin-right: 10px;
 }

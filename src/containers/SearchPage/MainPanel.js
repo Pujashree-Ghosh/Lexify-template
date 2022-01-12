@@ -419,7 +419,7 @@ class MainPanel extends Component {
                     });
                   }}
                 >
-                  <option>Select Language</option>
+                  <option value="">Select Language</option>
                   {languages.map(l => (
                     <option value={l.code} key={l.code}>
                       {l.name}

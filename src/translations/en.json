@@ -212,11 +212,11 @@
   "EditListingAvailabilityPlanForm.dayOfWeek.thu": "Thursday",
   "EditListingAvailabilityPlanForm.dayOfWeek.tue": "Tuesday",
   "EditListingAvailabilityPlanForm.dayOfWeek.wed": "Wednesday",
-  "EditListingAvailabilityPlanForm.endTimePlaceholder": "17:00",
+  "EditListingAvailabilityPlanForm.endTimePlaceholder": "hh:mm",
   "EditListingAvailabilityPlanForm.hoursOfOperationTitle": "Hours of operation",
   "EditListingAvailabilityPlanForm.saveSchedule": "Save schedule",
   "EditListingAvailabilityPlanForm.setHours": "Set hours",
-  "EditListingAvailabilityPlanForm.startTimePlaceholder": "8:00",
+  "EditListingAvailabilityPlanForm.startTimePlaceholder": "hh:mm",
   "EditListingAvailabilityPlanForm.timezonePickerTitle": "Choose a time zone",
   "EditListingAvailabilityPlanForm.title": "When you are available?",
   "EditListingAvailabilityPlanForm.updateFailed": "Failed to update. Please try again.",
@@ -295,6 +295,7 @@
   "EditListingPricingPanel.listingPriceCurrencyInvalid": "Currency in teacher profile is different from the marketplace currency. You cannot edit the price.",
   "EditListingPricingPanel.listingTitle": "your sessions",
   "EditListingPricingPanel.title": "Edit the pricing of {listingTitle}",
+  "EditListingClientIdPanel.title":"Client Id",
   "EditListingWizard.payoutModalInfo": "Almost done! In order to send you money, we need to know a bit more about you. Next, we will guide you through verifying your account. The details can also be edited from Account Setting page on Payout details tab. ",
   "EditListingWizard.payoutModalTitleOneMoreThing": "One more thing:",
   "EditListingWizard.payoutModalTitlePayoutPreferences": "Payout preferences",
@@ -484,7 +485,7 @@
   "ManageListingCard.viewListing": "View teacher profile",
   "ManageListingsPage.accountSettings": "Account settings",
   "ManageListingsPage.loadingOwnListings": "Loading teacher profiles",
-  "ManageListingsPage.noResults": "You don't have a teacher profile.",
+  "ManageListingsPage.noResults": "You don't have any listing.",
   "ManageListingsPage.profileSettings": "User profile",
   "ManageListingsPage.queryError": "Query failed. Please try again.",
   "ManageListingsPage.title": "Manage your teacher profile",
@@ -1285,6 +1286,7 @@
   "EditListingDeadlineForm.deadlineRequired":"Deadline required",
   "EditListingWizard.saveEditExpiry":"Save Expiry",
   "EditListingWizard.saveNewExpiry":"Next: Photos",
-  "EditListingWizard.saveNewCustomOralAvailability":"Next: Expiry"
+  "EditListingWizard.saveNewCustomOralAvailability":"Next: Expiry",
+  "EditListingDurationPanel.title":"Duration"
 
 }

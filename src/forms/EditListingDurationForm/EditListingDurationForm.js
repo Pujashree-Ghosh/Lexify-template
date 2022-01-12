@@ -71,6 +71,8 @@ const EditListingDurationFormComponent = props => (
       const durationValid = validators.numberValid(durationInvalidMessage);
 
       const required = validators.required('This field is required');
+      const hour = Array(24).fill();
+      const minute = Array(4).fill();
 
       return (
         <Form className={classes} onSubmit={handleSubmit}>
@@ -78,16 +80,18 @@ const EditListingDurationFormComponent = props => (
           {errorMessageShowListing}
 
           <div className={css.sectionContainer}>
-            <FieldTextInput
+            <label>{durationLabel}</label>
+
+            {/* <FieldTextInput
               id="duration"
               name="duration"
               className={css.duration}
               type="text"
-              label={durationLabel}
+              // label={durationLabel}
               placeholder={durationPlaceholder}
               validate={validators.composeValidators(durationRequired, durationValid)}
-            />
-            <FieldSelect id="durationUnit" name="durationUnit" validate={required}>
+            /> */}
+            {/* <FieldSelect id="durationUnit" name="durationUnit" validate={required}>
               <option value="">Select one</option>
               <option key="hour" value="hours">
                 Hours
@@ -95,7 +99,27 @@ const EditListingDurationFormComponent = props => (
               <option key="minutes" value="minutes">
                 Minutes
               </option>
+            </FieldSelect> */}
+
+            <FieldSelect id="durationHour" name="durationHour" validate={required} label="Hour">
+              <option value="">hh</option>
+              {hour.map((m, i) => (
+                <option value={i}>{i > 9 ? i : `0${i}`}</option>
+              ))}
             </FieldSelect>
+
+            <FieldSelect
+              id="durationMinute"
+              name="durationMinute"
+              validate={required}
+              label="Minute"
+            >
+              <option value="">mm</option>
+              {minute.map((m, i) => (
+                <option value={i * 15}>{i * 15 > 9 ? i * 15 : `0${i * 15}`}</option>
+              ))}
+            </FieldSelect>
+
             <div className="css.infoText">Enter duration for this consultation</div>
           </div>
 

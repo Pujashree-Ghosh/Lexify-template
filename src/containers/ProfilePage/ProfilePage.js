@@ -77,7 +77,7 @@ export class ProfilePageComponent extends Component {
       areaOfLawOptions,
     } = this.props;
     // console.log(user);
-    console.log(listings);
+    // console.log(listings);
 
     const ensuredCurrentUser = ensureCurrentUser(currentUser);
     const profileUser = ensureUser(user);
@@ -378,7 +378,7 @@ export class ProfilePageComponent extends Component {
                         <th className={css.state}>State</th>
                         <th className={css.status}>Status</th>
                         <th className={css.ao}>Acquired on</th>
-                        {publicData?.jurisdictionPractice.map(m => (
+                        {publicData?.jurisdictionPractice?.map(m => (
                           <tr>
                             <td className={css.state}>{m.country}</td>
                             <td className={css.status}>{m.status}</td>
@@ -398,7 +398,7 @@ export class ProfilePageComponent extends Component {
                         <th className={css.state}>Industry</th>
                         <th className={css.status}>Recent Work</th>
                         <th className={css.ao}>Year</th>
-                        {publicData?.jurisdictionPractice.map(m => (
+                        {publicData?.jurisdictionPractice?.map(m => (
                           <tr>
                             <td className={css.state}>Transportation</td>
                             <td className={css.status}>
@@ -420,7 +420,7 @@ export class ProfilePageComponent extends Component {
                         <th className={css.state}>Institute</th>
                         <th className={css.status}>Degree</th>
                         <th className={css.ao}>Graduated</th>
-                        {publicData?.education.map(m => (
+                        {publicData?.education?.map(m => (
                           <tr>
                             <td className={css.state}>{m.instituteName}</td>
                             <td className={css.status}>{m.degree}</td>
