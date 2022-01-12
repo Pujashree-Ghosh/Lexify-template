@@ -46,7 +46,7 @@
 }
 .fromgroup {
   display: flex;
-  align-items: center;
+  /* align-items: center; */
 }
 .inlinefrom button {
   min-height: 44px;
@@ -62,4 +62,32 @@
 }
 .inlinefrom button:disabled {
   background-color: #eee;
+}
+.typeContainer {
+  display: flex;
+  margin-bottom: 20px;
+  & span {
+    margin-right: 30px;
+    & span {
+      margin-right: 5px;
+    }
+  }
+}
+.sectionContainer {
+  & h3 {
+    margin-top: 0;
+  }
+  & .fromgroup {
+    margin-bottom: 20px;
+    position: relative;
+    & .clientId {
+      width: 100%;
+    }
+    & svg {
+      position: absolute;
+      right: 0;
+      top: 10px;
+      cursor: pointer;
+    }
+  }
 }

@@ -20,7 +20,9 @@
   flex-shrink: 0;
   width: 100%;
 }
-
+.selectform {
+  margin: 0 0 20px;
+}
 .submitButton {
   margin-top: auto;
   margin-bottom: 24px;
@@ -30,4 +32,8 @@
     width: 241px;
     margin-top: 100px;
   }
+}
+.priceInfoText {
+  font-size: 14px;
+  color: #7a7a7a;
 }

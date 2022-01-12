@@ -34,17 +34,16 @@ function CreateListingPageComponent(props) {
         <LayoutWrapperMain>
           <div className={css.content}>
             <div className={css.headingContainer}>
-              <h3 className={css.heading}>
+              <h3>
                 <FormattedMessage id="CreateListing.heading" />
+                <span>
+                  <FormattedMessage id="CreateListing.subHeading" />
+                </span>
               </h3>
             </div>
-            <div className={css.subHeadingContainer}>
-              <h4 className={css.subHeading}>
-                <FormattedMessage id="CreateListing.subHeading" />
-              </h4>
-            </div>
+
             <div className={css.typeContainer}>
-              <div className={css.oral}>
+              <div className={css.consultationrow}>
                 <button
                   onClick={() => {
                     history.push(pathByRouteName('NewListingPublicOralPage', routes, {}));
@@ -56,7 +55,7 @@ function CreateListingPageComponent(props) {
                   <FormattedMessage id="CreateListing.oralInfo" />
                 </div>
               </div>
-              <div className={css.custom}>
+              <div className={css.consultationrow}>
                 <button
                   onClick={() => {
                     history.push(pathByRouteName('NewListingCustomOralPage', routes, {}));
@@ -68,7 +67,7 @@ function CreateListingPageComponent(props) {
                   <FormattedMessage id="CreateListing.customInfo" />
                 </div>
               </div>
-              <div className={css.service}>
+              <div className={css.consultationrow}>
                 <button
                   onClick={() => {
                     history.push(pathByRouteName('NewListingCustomServicePage', routes, {}));

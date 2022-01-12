@@ -51,6 +51,11 @@
     border-bottom-width: 4px;
     padding: 16px 10px 14px 10px;
   }
+
+  @media (max-width: 991px) {
+    padding: 13px 5px 14px 6px;
+    line-height: 14px;
+  }
 }
 
 .button {
