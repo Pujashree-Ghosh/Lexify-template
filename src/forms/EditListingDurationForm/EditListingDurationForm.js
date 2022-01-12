@@ -101,24 +101,33 @@ const EditListingDurationFormComponent = props => (
               </option>
             </FieldSelect> */}
 
-            <FieldSelect id="durationHour" name="durationHour" validate={required} label="Hour">
-              <option value="">hh</option>
-              {hour.map((m, i) => (
-                <option value={i}>{i > 9 ? i : `0${i}`}</option>
-              ))}
-            </FieldSelect>
+            <div className={css.selecthm}>
+              <FieldSelect
+                id="durationHour"
+                name="durationHour"
+                validate={required}
+                label="Hour"
+                className={css.hrtime}
+              >
+                <option value="">hh</option>
+                {hour.map((m, i) => (
+                  <option value={i}>{i > 9 ? i : `0${i}`}</option>
+                ))}
+              </FieldSelect>
 
-            <FieldSelect
-              id="durationMinute"
-              name="durationMinute"
-              validate={required}
-              label="Minute"
-            >
-              <option value="">mm</option>
-              {minute.map((m, i) => (
-                <option value={i * 15}>{i * 15 > 9 ? i * 15 : `0${i * 15}`}</option>
-              ))}
-            </FieldSelect>
+              <FieldSelect
+                id="durationMinute"
+                name="durationMinute"
+                validate={required}
+                label="Minute"
+                className={css.minime}
+              >
+                <option value="">mm</option>
+                {minute.map((m, i) => (
+                  <option value={i * 15}>{i * 15 > 9 ? i * 15 : `0${i * 15}`}</option>
+                ))}
+              </FieldSelect>
+            </div>
 
             <div className="css.infoText">Enter duration for this consultation</div>
           </div>

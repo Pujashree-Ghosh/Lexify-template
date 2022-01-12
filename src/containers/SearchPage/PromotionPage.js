@@ -118,7 +118,7 @@ function PromotionPageComponent(props) {
                 ))}
               </div>
             )}
-          {!loading && !listings.length && <div>No result found</div>}
+          {!loading && !listings.length && <div className={css.nrftxt}>No result found</div>}
         </LayoutWrapperMain>
         <LayoutWrapperFooter>
           <Footer />

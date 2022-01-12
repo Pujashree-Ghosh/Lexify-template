@@ -38,3 +38,40 @@
     margin-top: 100px;
   }
 }
+.fromgroup {
+  position: relative;
+  display: flex;
+  width: 100%;
+  margin-bottom: 20px;
+  & .fgselect {
+    width: 95%;
+  }
+  & svg {
+    position: absolute;
+    right: 0;
+    cursor: pointer;
+    top: 9px;
+  }
+}
+.inlineaddbtn {
+  margin: 30px 0 0;
+  float: left;
+  & button {
+    background: none;
+    color: var(--marketplaceColor);
+    text-align: left;
+    min-height: auto;
+    &:disabled {
+      opacity: 0.5;
+      background-color: transparent;
+      color: var(--marketplaceColor);
+    }
+    &:hover,
+    &:focus {
+      box-shadow: none;
+      background: none;
+      text-decoration: underline;
+      color: var(--marketplaceColor);
+    }
+  }
+}

@@ -85,7 +85,12 @@ const EditListingAreaOfLawFormComponent = props => (
                     return (
                       <div key={name}>
                         <div className={css.fromgroup}>
-                          <FieldSelect id={`${name}`} name={`${name}`} validate={required}>
+                          <FieldSelect
+                            id={`${name}`}
+                            name={`${name}`}
+                            validate={required}
+                            className={css.fgselect}
+                          >
                             <option value="">Choose an option</option>
                             {cloneDeep(options).map(m => (
                               <option value={m.key}>{m.label}</option>
@@ -103,7 +108,7 @@ const EditListingAreaOfLawFormComponent = props => (
                       </div>
                     );
                   })}
-                  <div className={css.inlinefrom}>
+                  <div className={css.inlineaddbtn}>
                     <Button
                       className={css.addMore}
                       type="button"

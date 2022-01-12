@@ -30,8 +30,28 @@
 
 .editPlanButton {
   @apply --marketplaceH5FontStyles;
-  margin: 0;
-  padding-top: 5px;
+  margin: 20px 0;
+  text-align: center;
+  width: 100%;
+  display: block;
+  & svg {
+    width: 32px;
+    height: 24px;
+    margin: -3px 2px 0 0;
+    vertical-align: middle;
+    @media (max-width: 575px) {
+      height: 18px;
+      width: 27px;
+    }
+  }
+  & span {
+    color: #4e4e4e;
+    font-size: 18px;
+    font-weight: 400;
+    @media (max-width: 575px) {
+      font-size: 14px;
+    }
+  }
 }
 
 .editPlanIcon {
@@ -283,5 +303,16 @@
     display: inline-block;
     width: 241px;
     margin-top: 62px;
+  }
+}
+.headSec {
+  & .subTitle {
+    & span {
+      color: #7a7a7a;
+
+      font-weight: 400;
+      line-height: 24px;
+      margin: 0 0 20px;
+    }
   }
 }
