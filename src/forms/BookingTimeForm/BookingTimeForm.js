@@ -98,7 +98,6 @@ export class BookingTimeFormComponent extends Component {
             fetchLineItemsInProgress,
             fetchLineItemsError,
           } = fieldRenderProps;
-
           const startTime = values && values.bookingStartTime ? values.bookingStartTime : null;
           const endTime = values && values.bookingEndTime ? values.bookingEndTime : null;
 
@@ -202,11 +201,13 @@ export class BookingTimeFormComponent extends Component {
                   }
                 />
               </p>
-              <div className={submitButtonClasses}>
-                <PrimaryButton type="submit">
-                  <FormattedMessage id="BookingTimeForm.requestToBook" />
-                </PrimaryButton>
-              </div>
+              {!isOwnListing && (
+                <div className={submitButtonClasses}>
+                  <PrimaryButton type="submit">
+                    <FormattedMessage id="BookingTimeForm.requestToBook" />
+                  </PrimaryButton>
+                </div>
+              )}
             </Form>
           );
         }}
