@@ -12,6 +12,10 @@ import { createSlug } from '../../util/urlHelpers';
 import config from '../../config';
 import { NamedLink, ResponsiveImage } from '../../components';
 
+import PublicOral from '../../assets/PublicOral.png';
+import CustomOral from '../../assets/CustomOral.png';
+import CustomService from '../../assets/CustomService.png';
+
 import css from './ListingCard.module.css';
 
 const MIN_LENGTH_FOR_LONG_WORDS = 10;
@@ -79,6 +83,23 @@ export const ListingCardComponent = props => {
     : isDaily
     ? 'ListingCard.perDay'
     : 'ListingCard.perUnit';
+  const displayImage =
+    currentListing?.attributes?.publicData?.category === 'publicOral'
+      ? PublicOral
+      : currentListing?.attributes?.publicData?.category === 'customOral'
+      ? CustomOral
+      : currentListing?.attributes?.publicData?.category === 'customService'
+      ? CustomService
+      : '';
+  const imgProps = {
+    // className: classes,
+    // className:css.roo
+    srcSet: displayImage,
+    sizes: renderSizes,
+    // ...rest,
+  };
+
+  // console.log(currentListing?.attributes?.publicData?.category);
 
   return (
     <NamedLink className={classes} name="ListingPage" params={{ id, slug }}>
@@ -88,13 +109,14 @@ export const ListingCardComponent = props => {
         onMouseLeave={() => setActiveListing(null)}
       >
         <div className={css.aspectWrapper}>
-          <LazyImage
+          {/* <LazyImage
             rootClassName={css.rootForImage}
             alt={title}
             image={firstImage}
             variants={['landscape-crop', 'landscape-crop2x']}
             sizes={renderSizes}
-          />
+          /> */}
+          <img className={css.rootForImage} {...imgProps} />
         </div>
       </div>
       <div className={css.info}>

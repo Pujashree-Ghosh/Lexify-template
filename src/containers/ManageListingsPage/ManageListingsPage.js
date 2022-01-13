@@ -50,10 +50,10 @@ export class ManageListingsPageComponent extends Component {
       intl,
     } = this.props;
 
-    console.log(
-      listings,
-      listings.filter(f => f?.attributes?.publicData?.isProvider !== true)
-    );
+    // console.log(
+    //   listings,
+    //   listings.filter(f => f?.attributes?.publicData?.isProvider !== true)
+    // );
 
     const hasPaginationInfo = !!pagination && pagination.totalItems != null;
     const listingsAreLoaded = !queryInProgress && hasPaginationInfo;
@@ -207,7 +207,6 @@ const mapStateToProps = state => {
     closingListingError,
   } = state.ManageListingsPage;
   const listings = getOwnListingsById(state, currentPageResultIds);
-  console.log(listings);
   return {
     currentPageResultIds,
     listings,

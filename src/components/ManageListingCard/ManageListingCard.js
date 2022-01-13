@@ -38,6 +38,9 @@ import {
 import MenuIcon from './MenuIcon';
 import Overlay from './Overlay';
 import css from './ManageListingCard.module.css';
+import PublicOral from '../../assets/PublicOral.png';
+import CustomOral from '../../assets/CustomOral.png';
+import CustomService from '../../assets/CustomService.png';
 
 // Menu content needs the same padding
 const MENU_CONTENT_OFFSET = -12;
@@ -133,8 +136,17 @@ export const ManageListingCardComponent = props => {
   const isPendingApproval = state === LISTING_STATE_PENDING_APPROVAL;
   const isClosed = state === LISTING_STATE_CLOSED;
   const isDraft = state === LISTING_STATE_DRAFT;
-  const firstImage =
-    currentListing.images && currentListing.images.length > 0 ? currentListing.images[0] : null;
+  const displayImage =
+    currentListing?.attributes?.publicData?.category === 'publicOral'
+      ? PublicOral
+      : currentListing?.attributes?.publicData?.category === 'customOral'
+      ? CustomOral
+      : currentListing?.attributes?.publicData?.category === 'customService'
+      ? CustomService
+      : '';
+  // currentListing.images && currentListing.images.length > 0 ? currentListing.images[0] : null;
+
+  // console.log(currentListing);
 
   const menuItemClasses = classNames(css.menuItem, {
     [css.menuItemDisabled]: !!actionsInProgressListingId,
@@ -174,6 +186,14 @@ export const ManageListingCardComponent = props => {
     ? 'ManageListingCard.perDay'
     : 'ManageListingCard.perUnit';
 
+  const imgProps = {
+    // className: classes,
+    // className:css.roo
+    srcSet: displayImage,
+    sizes: renderSizes,
+    // ...rest,
+  };
+
   return (
     <div className={classes}>
       <div
@@ -194,13 +214,16 @@ export const ManageListingCardComponent = props => {
         onTouchStart={onOverListingLink}
       >
         <div className={css.aspectWrapper}>
-          <ResponsiveImage
+          {/* <ResponsiveImage
             rootClassName={css.rootForImage}
             alt={title}
             image={firstImage}
-            variants={['landscape-crop', 'landscape-crop2x']}
+            variants={[]}
+            // variants={['landscape-crop', 'landscape-crop2x']}
             sizes={renderSizes}
-          />
+          /> */}
+          {/* <img src={firstImage} /> */}
+          <img className={css.rootForImage} {...imgProps} />
         </div>
         <div className={classNames(css.menuOverlayWrapper, { [css.menuOverlayOpen]: isMenuOpen })}>
           <div className={classNames(css.menuOverlay)} />
@@ -249,7 +272,7 @@ export const ManageListingCardComponent = props => {
         </div>
         {isDraft ? (
           <React.Fragment>
-            <div className={classNames({ [css.draftNoImage]: !firstImage })} />
+            <div className={classNames({ [css.draftNoImage]: !displayImage })} />
             <Overlay
               message={intl.formatMessage(
                 { id: 'ManageListingCard.draftOverlayText' },
@@ -399,7 +422,4 @@ ManageListingCardComponent.propTypes = {
   }).isRequired,
 };
 
-export default compose(
-  withRouter,
-  injectIntl
-)(ManageListingCardComponent);
+export default compose(withRouter, injectIntl)(ManageListingCardComponent);

@@ -222,6 +222,13 @@ export class ProfilePageComponent extends Component {
         siteTitle: config.siteTitle,
       }
     );
+    const panelWidth = 62.5;
+
+    const renderSizes = [
+      `(max-width: 767px) 100vw`,
+      `(max-width: 1920px) ${panelWidth / 2}vw`,
+      `${panelWidth / 3}vw`,
+    ].join(', ');
 
     return (
       <Page
@@ -445,7 +452,7 @@ export class ProfilePageComponent extends Component {
                       .filter(li => li?.attributes?.publicData?.category === 'publicOral')
                       ?.map(l => (
                         <li className={css.listing} key={l.id.uuid}>
-                          <ListingCard listing={l} />
+                          <ListingCard listing={l} renderSizes={renderSizes} />
                         </li>
                       ))}
                   </ul>

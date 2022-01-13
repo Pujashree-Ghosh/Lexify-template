@@ -48,6 +48,8 @@ function PromotionPageComponent(props) {
   const ensuredCurrentUser = ensureCurrentUser(currentUser);
   const panelMediumWidth = 50;
   const panelLargeWidth = 62.5;
+  const panelWidth = 62.5;
+
   const cardRenderSizes = [
     '(max-width: 767px) 100vw',
     `(max-width: 1023px) ${panelMediumWidth}vw`,
