@@ -16,7 +16,7 @@ import {
   EditListingDurationPanel,
   EditListingDeadlinePanel,
   EditListingLocationPanel,
-  EditListingPhotosPanel,
+  // EditListingPhotosPanel,
   EditListingPoliciesPanel,
   EditListingPricingPanel,
   EditListingExpiryPanel,
@@ -34,7 +34,7 @@ export const FEATURES = 'features';
 export const POLICY = 'policy';
 export const LOCATION = 'location';
 export const PRICING = 'pricing';
-export const PHOTOS = 'photos';
+// export const PHOTOS = 'photos';
 export const AREAOFLAW = 'areaoflaw';
 export const CLIENT = 'client';
 export const DURATION = 'duration';
@@ -54,7 +54,7 @@ export const SUPPORTED_TABS = [
   PRICING,
   AVAILABILITY,
   EXPIRY,
-  PHOTOS,
+  // PHOTOS,
 ];
 
 const pathParamsToNextTab = (params, tab, marketplaceTabs) => {
@@ -374,25 +374,25 @@ const EditListingWizardTab = props => {
         />
       );
     }
-    case PHOTOS: {
-      const submitButtonTranslationKey = isNewListingFlow
-        ? 'EditListingWizard.saveNewPhotos'
-        : 'EditListingWizard.saveEditPhotos';
+    // case PHOTOS: {
+    //   const submitButtonTranslationKey = isNewListingFlow
+    //     ? 'EditListingWizard.saveNewPhotos'
+    //     : 'EditListingWizard.saveEditPhotos';
 
-      return (
-        <EditListingPhotosPanel
-          {...panelProps(PHOTOS)}
-          submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
-          images={images}
-          onImageUpload={onImageUpload}
-          onRemoveImage={onRemoveImage}
-          onSubmit={values => {
-            onCompleteEditListingWizardTab(tab, values);
-          }}
-          onUpdateImageOrder={onUpdateImageOrder}
-        />
-      );
-    }
+    //   return (
+    //     <EditListingPhotosPanel
+    //       {...panelProps(PHOTOS)}
+    //       submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
+    //       images={images}
+    //       onImageUpload={onImageUpload}
+    //       onRemoveImage={onRemoveImage}
+    //       onSubmit={values => {
+    //         onCompleteEditListingWizardTab(tab, values);
+    //       }}
+    //       onUpdateImageOrder={onUpdateImageOrder}
+    //     />
+    //   );
+    // }
     default:
       return null;
   }

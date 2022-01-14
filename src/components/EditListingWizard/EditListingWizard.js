@@ -29,7 +29,7 @@ import EditListingWizardTab, {
   DEADLINE,
   DURATION,
   PRICING,
-  PHOTOS,
+  // PHOTOS,
   EXPIRY,
 } from './EditListingWizardTab';
 import css from './EditListingWizard.module.css';
@@ -85,9 +85,11 @@ const tabLabel = (intl, tab) => {
     key = 'EditListingWizard.tabLabelPricing';
   } else if (tab === AVAILABILITY) {
     key = 'EditListingWizard.tabLabelAvailability';
-  } else if (tab === PHOTOS) {
-    key = 'EditListingWizard.tabLabelPhotos';
-  } else if (tab === EXPIRY) {
+  }
+  // else if (tab === PHOTOS) {
+  //   key = 'EditListingWizard.tabLabelPhotos';
+  // }
+  else if (tab === EXPIRY) {
     key = 'EditListingWizard.tabLabelExpiry';
   }
 
@@ -135,8 +137,8 @@ const tabCompleted = (tab, listing) => {
       return !!availabilityPlan;
     case EXPIRY:
       return !!(publicData && publicData.expiry);
-    case PHOTOS:
-      return images && images.length > 0;
+    // case PHOTOS:
+    //   return images && images.length > 0;
     default:
       return false;
   }
@@ -319,9 +321,9 @@ class EditListingWizard extends Component {
     } = this.props;
     let TABS =
       category === 'publicOral'
-        ? [DESCRIPTION, AREAOFLAW, DURATION, PRICING, ...availabilityMaybe, PHOTOS]
+        ? [DESCRIPTION, AREAOFLAW, DURATION, PRICING, ...availabilityMaybe]
         : category === 'customOral'
-        ? [DESCRIPTION, CLIENT, DURATION, PRICING, ...availabilityMaybe, EXPIRY, PHOTOS]
+        ? [DESCRIPTION, CLIENT, DURATION, PRICING, ...availabilityMaybe, EXPIRY]
         : [
             DESCRIPTION,
             CLIENT,
@@ -329,7 +331,7 @@ class EditListingWizard extends Component {
             // ...availabilityMaybe,
             DEADLINE,
             EXPIRY,
-            PHOTOS,
+            // PHOTOS,
           ];
     const tabsActive = (isNew, listing) => {
       return TABS.reduce((acc, tab) => {
