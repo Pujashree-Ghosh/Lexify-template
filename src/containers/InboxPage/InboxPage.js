@@ -54,6 +54,7 @@ const formatDate = (intl, date) => {
 // Translated name of the state of the given transaction
 export const txState = (intl, tx, type) => {
   const isOrder = type === 'order';
+  console.log(txIsAccepted(tx), txIsRequested(tx));
 
   if (txIsEnquired(tx)) {
     return {
@@ -471,9 +472,6 @@ const mapStateToProps = state => {
   };
 };
 
-const InboxPage = compose(
-  connect(mapStateToProps),
-  injectIntl
-)(InboxPageComponent);
+const InboxPage = compose(connect(mapStateToProps), injectIntl)(InboxPageComponent);
 
 export default InboxPage;

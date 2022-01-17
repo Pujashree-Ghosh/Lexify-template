@@ -231,8 +231,10 @@ export const txIsPaymentExpired = tx =>
 
 // Note: state name used in Marketplace API docs (and here) is actually preauthorized
 // However, word "requested" is used in many places so that we decided to keep it.
-export const txIsRequested = tx =>
-  getTransitionsToState(STATE_PREAUTHORIZED).includes(txLastTransition(tx));
+export const txIsRequested = tx => {
+  console.log(getTransitionsToState(STATE_PREAUTHORIZED), getTransitionsToState(STATE_ACCEPTED));
+  return getTransitionsToState(STATE_PREAUTHORIZED).includes(txLastTransition(tx));
+};
 
 export const txIsAccepted = tx =>
   getTransitionsToState(STATE_ACCEPTED).includes(txLastTransition(tx));

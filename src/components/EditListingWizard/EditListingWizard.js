@@ -81,10 +81,10 @@ const tabLabel = (intl, tab) => {
     key = 'EditListingWizard.tabLabelDuration';
   } else if (tab === DEADLINE) {
     key = 'EditListingWizard.tabLabelDeadline';
-  } else if (tab === PRICING) {
-    key = 'EditListingWizard.tabLabelPricing';
   } else if (tab === AVAILABILITY) {
     key = 'EditListingWizard.tabLabelAvailability';
+  } else if (tab === PRICING) {
+    key = 'EditListingWizard.tabLabelPricing';
   }
   // else if (tab === PHOTOS) {
   //   key = 'EditListingWizard.tabLabelPhotos';
@@ -131,10 +131,10 @@ const tabCompleted = (tab, listing) => {
       return !!(publicData && publicData.durationHour && publicData.durationHour);
     case DEADLINE:
       return !!(publicData && publicData.Deadline);
-    case PRICING:
-      return !!price;
     case AVAILABILITY:
       return !!availabilityPlan;
+    case PRICING:
+      return !!price;
     case EXPIRY:
       return !!(publicData && publicData.expiry);
     // case PHOTOS:
@@ -321,7 +321,7 @@ class EditListingWizard extends Component {
     } = this.props;
     let TABS =
       category === 'publicOral'
-        ? [DESCRIPTION, AREAOFLAW, DURATION, PRICING, ...availabilityMaybe]
+        ? [DESCRIPTION, AREAOFLAW, DURATION, ...availabilityMaybe, PRICING]
         : category === 'customOral'
         ? [DESCRIPTION, CLIENT, DURATION, PRICING, ...availabilityMaybe, EXPIRY]
         : [

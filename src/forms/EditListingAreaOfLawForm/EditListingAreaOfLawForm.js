@@ -98,10 +98,15 @@ const EditListingAreaOfLawFormComponent = props => (
                           </FieldSelect>
                           <MdOutlineClose
                             onClick={() => {
-                              form.change(
-                                'areaOfLaw',
-                                values.areaOfLaw.filter(f => f !== values.areaOfLaw[i])
-                              );
+                              if (values.areaOfLaw.length !== 1) {
+                                form.change(
+                                  'areaOfLaw',
+                                  values.areaOfLaw.filter(f => f !== values.areaOfLaw[i])
+                                );
+                              }
+                              // if (values.areaOfLaw.length <= 0) {
+                              //   form.change('areaOfLaw', [{}]);
+                              // }
                             }}
                           />
                         </div>
