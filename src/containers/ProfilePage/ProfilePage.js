@@ -252,6 +252,12 @@ export class ProfilePageComponent extends Component {
       `(max-width: 1920px) ${panelWidth / 2}vw`,
       `${panelWidth / 3}vw`,
     ].join(', ');
+    console.log(
+      '99999',
+      this.state.countryData,
+      publicData?.legalEntity?.country,
+      this.state.countryData.filter(c => c.iso3 === publicData?.legalEntity?.country)[0]?.name
+    );
 
     return (
       <Page
@@ -571,11 +577,10 @@ export class ProfilePageComponent extends Component {
 
                       <span>
                         {
-                          publicData?.legalEntity?.country
-
-                          /*this.state.countryData.filter(
+                          /*publicData?.legalEntity?.country*/
+                          this.state.countryData.filter(
                             c => c.iso3 === publicData?.legalEntity?.country
-                          )[0].name*/
+                          )[0]?.name
                         }
                       </span>
                       {console.log('hi', publicData)}
@@ -681,6 +686,7 @@ const mapStateToProps = state => {
   const userMatches = getMarketplaceEntities(state, [{ type: 'user', id: userId }]);
   const listings = getMarketplaceEntities(state, userListingRefs);
   const user = userMatches.length === 1 ? userMatches[0] : null;
+
   return {
     scrollingDisabled: isScrollingDisabled(state),
     currentUser,
