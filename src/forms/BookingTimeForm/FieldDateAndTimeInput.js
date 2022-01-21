@@ -53,7 +53,6 @@ const getAvailableStartTimes = (
   timeSlotsOnSelectedDate,
   duration
 ) => {
-  console.log(972, timeSlotsOnSelectedDate, bookingStart);
   if (timeSlotsOnSelectedDate.length === 0 || !timeSlotsOnSelectedDate[0] || !bookingStart) {
     return [];
   }
@@ -73,7 +72,6 @@ const getAvailableStartTimes = (
     const endLimit = dateIsAfter(endDate, nextDate) ? nextDate : endDate;
 
     const hours = getStartHours(intl, timeZone, startLimit, endLimit, duration);
-    console.log(225, hours);
     return availableHours.concat(hours);
   }, []);
   return allHours;
@@ -89,8 +87,6 @@ const getAvailableEndTimes = (
 ) => {
   const m = duration && parseInt(duration.split('.')[1]);
   const min = duration ? parseInt(duration.split('.')[0]) * 60 + m : 0;
-
-  console.log(121212, selectedTimeSlot, bookingEndDate, bookingStartTime);
 
   if (!selectedTimeSlot || !selectedTimeSlot.attributes || !bookingEndDate || !bookingStartTime) {
     return [];
@@ -122,7 +118,6 @@ const getAvailableEndTimes = (
       ? endDate
       : dayAfterBookingEnd;
   }
-  console.log(1212, startLimit, endLimit, duration);
   return getEndHours(intl, timeZone, startLimit, endLimit, duration);
 };
 
@@ -180,8 +175,6 @@ const getAllTimeValues = (
   const selectedTimeSlot = timeSlots.find(t =>
     isInRange(startTimeAsDate, t.attributes.start, t.attributes.end)
   );
-
-  console.log(632, selectedTimeSlot, timeSlots);
 
   const endTimes = getAvailableEndTimes(
     intl,
@@ -268,7 +261,6 @@ class FieldDateAndTimeInput extends Component {
 
   onMonthClose(date) {
     const { onMonthChanged, timeZone } = this.props;
-    console.log(97258, date);
 
     this.setState(
       {
@@ -332,7 +324,6 @@ class FieldDateAndTimeInput extends Component {
 
   onBookingStartDateChange = value => {
     const { monthlyTimeSlots, timeZone, intl, form, duration } = this.props;
-    console.log(97225, monthlyTimeSlots);
     if (!value || !value.date) {
       form.batch(() => {
         form.change('bookingStartTime', null);
@@ -555,7 +546,6 @@ class FieldDateAndTimeInput extends Component {
               onNextMonthClick={() => this.onMonthClick(nextMonthFn)}
               onClose={e => {
                 this.onMonthClose(e.date || moment());
-                console.log(e);
               }}
               navNext={<Next currentMonth={this.state.currentMonth} timeZone={timeZone} />}
               navPrev={<Prev currentMonth={this.state.currentMonth} timeZone={timeZone} />}

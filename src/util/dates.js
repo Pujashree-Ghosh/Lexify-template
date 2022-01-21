@@ -288,7 +288,6 @@ export const getSharpHours = (intl, timeZone, startTime, endTime, duration) => {
   const millisecondBeforeStartTime = moment(millisecondRounded)
     .subtract(min, 'm')
     .toDate();
-  console.log(1111, millisecondBeforeStartTime);
   // const millisecondBeforeStartTime = new Date(startTime.getTime() - 1);
   // console.log(1, moment(millisecondRounded).toDate());
   // console.log(2, moment(millisecondBeforeStartTime).toDate());
@@ -346,7 +345,6 @@ export const roundDateTime = date => {
  */
 export const getStartHours = (intl, timeZone, startTime, endTime, duration) => {
   const hours = getSharpHours(intl, timeZone, startTime, endTime, duration);
-  console.log(111, hours);
   return hours.length < 2 ? hours : hours.slice(0, -1);
 };
 
@@ -379,7 +377,6 @@ export const getStartHours = (intl, timeZone, startTime, endTime, duration) => {
  */
 export const getEndHours = (intl, timeZone, startTime, endTime, duration) => {
   const hours = getSharpHours(intl, timeZone, startTime, endTime, duration);
-  console.log(222, hours);
   return hours.length < 2 ? [] : hours.slice(1);
   // return hours;
 };
