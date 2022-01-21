@@ -106,6 +106,7 @@ const TopbarDesktop = props => {
             </NamedLink>
           </MenuItem>
           <MenuItem key="ProfileSettingsPage">
+     
             <NamedLink
               className={classNames(
                 css.profileSettingsLink,

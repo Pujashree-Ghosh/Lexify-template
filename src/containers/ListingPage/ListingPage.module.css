@@ -119,6 +119,10 @@
   left: 0;
   right: 0;
   width: 100%;
+  /*top: 266px;
+  left: 77px;
+  width: 684px;
+  height: 248px;*/
 
   transition: var(--transitionStyleButton);
 
@@ -240,6 +244,10 @@
     flex-shrink: 0;
   }
 }
+.authorcontainer {
+  display: flex;
+  justify-content: space-between;
+}
 
 .sectionAvatar {
   /* Position (over the listing image)*/
@@ -272,8 +280,13 @@
 
 .avatarDesktop {
   display: none; /* Hide the large avatar from the smaller screens */
-  width: 152px;
-  height: 152px;
+  /*top: 539px;
+  left: 77px;
+  width: 73px;
+  height: 73px;*/
+  width: 100px;
+  height: 100px;
+  /*margin-top: 50px;*/
 
   @media (--viewportMedium) {
     display: flex;
@@ -350,6 +363,10 @@
   width: 100%;
   margin-top: 0;
   margin-bottom: 0;
+  /*top: 637px;
+  left: 77px;
+  width: 484px;
+  height: 35px;*/
   @media (--viewportMedium) {
     margin-top: 0;
     margin-bottom: 2px;
@@ -404,7 +421,7 @@
 .descriptionTitle {
   /* Font */
   @apply --marketplaceH3FontStyles;
-  color: var(--matterColorAnti);
+  color: var(--matterColor);
 
   margin-top: 0;
   margin-bottom: 13px;

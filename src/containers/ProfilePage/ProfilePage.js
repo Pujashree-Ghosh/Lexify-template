@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { FormattedMessage, injectIntl, intlShape } from '../../util/reactIntl';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
+import axios from 'axios';
 import { REVIEW_TYPE_OF_PROVIDER, REVIEW_TYPE_OF_CUSTOMER, propTypes } from '../../util/types';
 import { ensureCurrentUser, ensureUser } from '../../util/data';
 import { withViewport } from '../../util/contextHelpers';
@@ -45,6 +46,7 @@ export class ProfilePageComponent extends Component {
       // keep track of which reviews tab to show in desktop viewport
       showReviewsType: REVIEW_TYPE_OF_PROVIDER,
       showProfileDetail: false,
+      countryData: [],
     };
 
     this.showOfProviderReviews = this.showOfProviderReviews.bind(this);
@@ -63,6 +65,26 @@ export class ProfilePageComponent extends Component {
     });
   }
 
+  componentDidMount() {
+    /*axios
+      .get('https://countriesnow.space/api/v0.1/countries/states')
+      .then(resp =>
+        console.log(
+          'iso2',
+          resp.data.data
+            .filter(c => c.iso2 === 'IN')[0]
+            .states.filter(s => s.state_code === 'WB')[0].name
+        )
+      );*/
+
+    axios
+      .get('https://countriesnow.space/api/v0.1/countries/states')
+      .then(res => {
+        this.setState({ countryData: res.data.data });
+      })
+      .catch(err => console.log('Error occurred', err));
+  }
+
   render() {
     const {
       scrollingDisabled,
@@ -76,8 +98,8 @@ export class ProfilePageComponent extends Component {
       listings,
       areaOfLawOptions,
     } = this.props;
-    // console.log(user);
-    // console.log(listings);
+    //console.log(user);
+    //console.log(listings);
 
     const ensuredCurrentUser = ensureCurrentUser(currentUser);
     const profileUser = ensureUser(user);
@@ -88,6 +110,7 @@ export class ProfilePageComponent extends Component {
     const hasBio = !!bio;
     const isMobileLayout = viewport.width < MAX_MOBILE_SCREEN_WIDTH;
     const publicData = user?.attributes?.profile?.publicData;
+    console.log(publicData);
 
     // console.log(profileUser, currentUser);
 
@@ -285,6 +308,10 @@ export class ProfilePageComponent extends Component {
                 <div className={css.lawyerDetail}>
                   <hr />
                   <div className={css.sectionprofin}>
+                    <div className={css.ClientId}>
+                      <span>Lawyer ID</span>
+                      <span>{user?.attributes?.profile?.publicData?.email}</span>
+                    </div>
                     <h3 className={css.sectionTitle}>
                       <FormattedMessage id="ProfilePage.practiceAre" />
                     </h3>
@@ -382,12 +409,14 @@ export class ProfilePageComponent extends Component {
                     <label>Jurisdiction</label>
                     <div className={css.profDetail}>
                       <table>
-                        <th className={css.state}>State</th>
+                        <th className={css.state}>Country</th>
                         <th className={css.status}>Status</th>
                         <th className={css.ao}>Acquired on</th>
                         {publicData?.jurisdictionPractice?.map(m => (
                           <tr>
-                            <td className={css.state}>{m.country}</td>
+                            <td className={css.state}>
+                              {this.state.countryData.filter(c => c.iso3 === m.country)[0].name}
+                            </td>
                             <td className={css.status}>{m.status}</td>
                             <td className={css.ao}>{m.date}</td>
                           </tr>
@@ -462,8 +491,8 @@ export class ProfilePageComponent extends Component {
           ) : publicData?.clientType === 'privateIndividual' ? (
             <div className={css.privateIndividual}>
               <div className={css.ClientId}>
-                <span>#Client Id</span>
-                <span>{'12345678'}</span>
+                <span>#Client email</span>
+                <span>{user?.attributes?.profile?.publicData?.email}</span>
               </div>
               <div className={css.cdrowclnt}>
                 <div className={css.coDetail}>Client Details</div>
@@ -522,8 +551,9 @@ export class ProfilePageComponent extends Component {
           ) : (
             <div className={css.legal}>
               <div className={css.ClientId}>
-                <span>#Client Id</span>
-                <span>{user?.id?.uuid}</span>
+                <span>#Client email</span>
+                <span>{user?.attributes?.profile?.publicData?.email}</span>
+                {/*<span>{user?.id?.uuid}</span>*/}
               </div>
 
               <div className={css.cdrowclnt}>
@@ -538,7 +568,17 @@ export class ProfilePageComponent extends Component {
                     </div>
                     <div className={css.infoclnrow}>
                       <span className={css.coleftrow}>Country </span>
-                      <span>{publicData?.legalEntity?.country}</span>
+
+                      <span>
+                        {
+                          publicData?.legalEntity?.country
+
+                          /*this.state.countryData.filter(
+                            c => c.iso3 === publicData?.legalEntity?.country
+                          )[0].name*/
+                        }
+                      </span>
+                      {console.log('hi', publicData)}
                     </div>
                     <div className={css.infoclnrow}>
                       <span className={css.coleftrow}>Street </span>

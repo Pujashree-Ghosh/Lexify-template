@@ -54,6 +54,7 @@ import SectionImages from './SectionImages';
 import SectionAvatar from './SectionAvatar';
 import SectionHeading from './SectionHeading';
 import SectionDescriptionMaybe from './SectionDescriptionMaybe';
+import SectionDisclaimer from './SectionDisclaimer';
 import SectionFeaturesMaybe from './SectionFeaturesMaybe';
 import SectionReviews from './SectionReviews';
 import SectionMapMaybe from './SectionMapMaybe';
@@ -213,6 +214,7 @@ export class ListingPageComponent extends Component {
       isPendingApprovalVariant || isDraftVariant
         ? ensureOwnListing(getOwnListing(listingId))
         : ensureListing(getListing(listingId));
+    console.log(currentListing);
 
     const listingSlug = rawParams.slug || createSlug(currentListing.attributes.title || '');
     const params = { slug: listingSlug, ...rawParams };
@@ -327,7 +329,7 @@ export class ListingPageComponent extends Component {
     const userAndListingAuthorAvailable = !!(currentUser && authorAvailable);
     const isOwnListing =
       userAndListingAuthorAvailable && currentListing.author.id.uuid === currentUser.id.uuid;
-    const showContactUser = authorAvailable && (!currentUser || (currentUser && !isOwnListing));
+    //const showContactUser = authorAvailable && (!currentUser || (currentUser && !isOwnListing));
 
     const currentAuthor = authorAvailable ? currentListing.author : null;
     const ensuredAuthor = ensureUser(currentAuthor);
@@ -423,7 +425,37 @@ export class ListingPageComponent extends Component {
                 onManageDisableScrolling={onManageDisableScrolling}
               />
               <div className={css.contentContainer}>
-                <SectionAvatar user={currentAuthor} params={params} />
+                <div className={css.authorcontainer}>
+                  <SectionAvatar user={currentAuthor} params={params} />
+                  <div>{currentListing.author.attributes.profile.displayName}</div>
+                </div>
+                <NamedLink
+                  className={css.profileViewLink}
+                  name="ProfilePage"
+                  params={{ id: currentUser.id.uuid }}
+                >
+                  <span className={css.profileViewLink}>
+                    <FormattedMessage id="ListingPage.ProfileLink" />
+                  </span>
+                </NamedLink>
+                {/*<span
+                  className={css.profileViewLink}
+                  onClick={() =>
+                    this.setState({ showProfileDetail: !this.state.showProfileDetail })
+                  }
+                >
+                  {this.state.showProfileDetail ? 'View listing' : 'View profile'}
+                  {this.state.showProfileDetail
+                    ? history.push(
+                        createResourceLocatorString(
+                          'ProfilePage',
+                          routeConfiguration(),
+                          { id: currentListing.id.uuid },
+                          {}
+                        )
+                      )
+                    : null}
+                </span>*/}
                 <div className={css.mainContent}>
                   <SectionHeading
                     priceTitle={priceTitle}
@@ -432,17 +464,18 @@ export class ListingPageComponent extends Component {
                     listingCertificate={publicData ? publicData.certificate : null}
                     certificateOptions={certificateOptions}
                     hostLink={hostLink}
-                    showContactUser={showContactUser}
-                    onContactUser={this.onContactUser}
+                    //showContactUser={showContactUser}
+                    //onContactUser={this.onContactUser}
                   />
                   <SectionDescriptionMaybe description={description} />
-                  <SectionFeaturesMaybe options={yogaStylesOptions} publicData={publicData} />
-                  <SectionMapMaybe
+                  <SectionDisclaimer publicData={publicData} />
+                  {/*<SectionFeaturesMaybe options={yogaStylesOptions} publicData={publicData} />*/}
+                  {/*<SectionMapMaybe
                     geolocation={geolocation}
                     publicData={publicData}
                     listingId={currentListing.id}
-                  />
-                  <SectionReviews reviews={reviews} fetchReviewsError={fetchReviewsError} />
+                  />*/}
+                  {/*<SectionReviews reviews={reviews} fetchReviewsError={fetchReviewsError} />*/}
                 </div>
                 <BookingPanel
                   className={css.bookingPanel}
@@ -621,10 +654,7 @@ const mapDispatchToProps = dispatch => ({
 // See: https://github.com/ReactTraining/react-router/issues/4671
 const ListingPage = compose(
   withRouter,
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  ),
+  connect(mapStateToProps, mapDispatchToProps),
   injectIntl
 )(ListingPageComponent);
 
