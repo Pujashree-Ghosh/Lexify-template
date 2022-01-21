@@ -71,6 +71,7 @@ const BookingPanel = props => {
     lineItems,
     fetchLineItemsInProgress,
     fetchLineItemsError,
+    duration,
   } = props;
 
   const price = listing.attributes.price;
@@ -100,6 +101,7 @@ const BookingPanel = props => {
 
   const classes = classNames(rootClassName || css.root, className);
   const titleClasses = classNames(titleClassName || css.bookingTitle);
+  const publicData = listing.attributes.publicData ? listing.attributes.publicData : 0;
 
   return (
     <div className={classes}>
@@ -148,6 +150,8 @@ const BookingPanel = props => {
             lineItems={lineItems}
             fetchLineItemsInProgress={fetchLineItemsInProgress}
             fetchLineItemsError={fetchLineItemsError}
+            duration={duration}
+            vat={publicData && publicData.vat}
           />
         ) : null}
       </ModalInMobile>
@@ -221,7 +225,4 @@ BookingPanel.propTypes = {
   intl: intlShape.isRequired,
 };
 
-export default compose(
-  withRouter,
-  injectIntl
-)(BookingPanel);
+export default compose(withRouter, injectIntl)(BookingPanel);

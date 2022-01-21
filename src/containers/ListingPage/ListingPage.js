@@ -251,6 +251,9 @@ export class ListingPageComponent extends Component {
       title = '',
       publicData,
     } = currentListing.attributes;
+    const { durationHour, durationMinute } = publicData;
+    const duration = durationHour && durationMinute ? `${durationHour}.${durationMinute}` : '1';
+    // console.log(999, durationHour, durationMinute, `${durationHour}.${durationMinute}`);
 
     const richTitle = (
       <span>
@@ -492,6 +495,7 @@ export class ListingPageComponent extends Component {
                   lineItems={lineItems}
                   fetchLineItemsInProgress={fetchLineItemsInProgress}
                   fetchLineItemsError={fetchLineItemsError}
+                  duration={duration}
                 />
               </div>
             </div>
