@@ -25,6 +25,7 @@ import LineItemTotalPrice from './LineItemTotalPrice';
 import LineItemUnknownItemsMaybe from './LineItemUnknownItemsMaybe';
 
 import css from './BookingBreakdown.module.css';
+import LineItemTaxMaybe from './LineItemTaxMaybe';
 
 export const BookingBreakdownComponent = props => {
   const {
@@ -38,7 +39,7 @@ export const BookingBreakdownComponent = props => {
     dateType,
     timeZone,
   } = props;
-
+  // console.log(666, transaction);
   const isCustomer = userRole === 'customer';
   const isProvider = userRole === 'provider';
 
@@ -96,9 +97,9 @@ export const BookingBreakdownComponent = props => {
         dateType={dateType}
         timeZone={timeZone}
       />
-      <LineItemUnitPriceMaybe transaction={transaction} unitType={unitType} intl={intl} />
+      {/* <LineItemUnitPriceMaybe transaction={transaction} unitType={unitType} intl={intl} /> */}
 
-      <LineItemBasePriceMaybe transaction={transaction} unitType={unitType} intl={intl} />
+      {/* <LineItemBasePriceMaybe transaction={transaction} unitType={unitType} intl={intl} /> */}
       <LineItemUnknownItemsMaybe transaction={transaction} isProvider={isProvider} intl={intl} />
 
       <LineItemSubTotalMaybe
@@ -130,6 +131,9 @@ export const BookingBreakdownComponent = props => {
         isProvider={isProvider}
         intl={intl}
       />
+
+      {/* <LineItemTaxMaybe transaction={transaction} unitType={unitType} intl={intl} /> */}
+      {/* <LineItemTaxMaybe transaction={transaction} unitType={unitType} intl={intl} /> */}
 
       <LineItemTotalPrice transaction={transaction} isProvider={isProvider} intl={intl} />
 

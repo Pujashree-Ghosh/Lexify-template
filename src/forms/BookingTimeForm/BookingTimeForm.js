@@ -97,6 +97,8 @@ export class BookingTimeFormComponent extends Component {
             lineItems,
             fetchLineItemsInProgress,
             fetchLineItemsError,
+            duration,
+            vat,
           } = fieldRenderProps;
           const startTime = values && values.bookingStartTime ? values.bookingStartTime : null;
           const endTime = values && values.bookingEndTime ? values.bookingEndTime : null;
@@ -121,6 +123,8 @@ export class BookingTimeFormComponent extends Component {
                   startDate,
                   endDate,
                   timeZone,
+                  quantity: 1,
+                  vat,
                 }
               : null;
 
@@ -185,6 +189,7 @@ export class BookingTimeFormComponent extends Component {
                   form={form}
                   pristine={pristine}
                   timeZone={timeZone}
+                  duration={duration}
                 />
               ) : null}
 
