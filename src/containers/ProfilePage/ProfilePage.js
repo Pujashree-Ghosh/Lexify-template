@@ -66,17 +66,6 @@ export class ProfilePageComponent extends Component {
   }
 
   componentDidMount() {
-    /*axios
-      .get('https://countriesnow.space/api/v0.1/countries/states')
-      .then(resp =>
-        console.log(
-          'iso2',
-          resp.data.data
-            .filter(c => c.iso2 === 'IN')[0]
-            .states.filter(s => s.state_code === 'WB')[0].name
-        )
-      );*/
-
     axios
       .get('https://countriesnow.space/api/v0.1/countries/states')
       .then(res => {
@@ -99,7 +88,6 @@ export class ProfilePageComponent extends Component {
       areaOfLawOptions,
     } = this.props;
     //console.log(user);
-    //console.log(listings);
 
     const ensuredCurrentUser = ensureCurrentUser(currentUser);
     const profileUser = ensureUser(user);
@@ -110,7 +98,6 @@ export class ProfilePageComponent extends Component {
     const hasBio = !!bio;
     const isMobileLayout = viewport.width < MAX_MOBILE_SCREEN_WIDTH;
     const publicData = user?.attributes?.profile?.publicData;
-    console.log(publicData);
 
     // console.log(profileUser, currentUser);
 
@@ -252,13 +239,6 @@ export class ProfilePageComponent extends Component {
       `(max-width: 1920px) ${panelWidth / 2}vw`,
       `${panelWidth / 3}vw`,
     ].join(', ');
-    console.log(
-      '99999',
-      this.state.countryData,
-      publicData?.legalEntity?.country,
-      this.state.countryData.filter(c => c.iso3 === publicData?.legalEntity?.country)[0]?.name
-    );
-
     return (
       <Page
         scrollingDisabled={scrollingDisabled}
@@ -583,7 +563,6 @@ export class ProfilePageComponent extends Component {
                           )[0]?.name
                         }
                       </span>
-                      {console.log('hi', publicData)}
                     </div>
                     <div className={css.infoclnrow}>
                       <span className={css.coleftrow}>Street </span>

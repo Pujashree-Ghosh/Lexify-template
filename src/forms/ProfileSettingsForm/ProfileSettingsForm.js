@@ -67,10 +67,9 @@ class ProfileSettingsFormComponent extends Component {
     axios
       .get('https://countriesnow.space/api/v0.1/countries/states')
       .then(res => this.setState({ countryData: res.data.data }))
-      .catch(err => console.log('Error occurred', err))
-       //console.log("he",this.state);
+      .catch(err => console.log('Error occurred', err));
   }
-  
+
   componentDidUpdate(prevProps) {
     // Upload delay is additional time window where Avatar is added to the DOM,
     // but not yet visible (time to load image URL from srcset)
@@ -116,7 +115,6 @@ class ProfileSettingsFormComponent extends Component {
             languages,
           } = fieldRenderProps;
           // let { values } = fieldRenderProps;
-          //console.log(values);
 
           // console.log(this.state.languages, initialValues.languages)
           const user = ensureCurrentUser(currentUser);
@@ -837,7 +835,6 @@ class ProfileSettingsFormComponent extends Component {
                             <option value={m.iso3} key={m.iso3}>
                               {m.name}
                             </option>
-                          
                           ))}
                         </FieldSelect>
                       </div>
@@ -1066,7 +1063,7 @@ class ProfileSettingsFormComponent extends Component {
                                         {this.state.countryData
                                           .filter(c => c.iso3 === 'USA')[0]
                                           ?.states?.map(s => (
-                                            <option value={s.name}>{s.state_code}</option>
+                                            <option value={s.state_code}>{s.name}</option>
                                           ))}
                                       </FieldSelect>
                                     </div>
