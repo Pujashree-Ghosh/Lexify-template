@@ -294,7 +294,7 @@
   "EditListingPricingPanel.createListingTitle": "Pricing",
   "EditListingPricingPanel.listingPriceCurrencyInvalid": "Currency in teacher profile is different from the marketplace currency. You cannot edit the price.",
   "EditListingPricingPanel.listingTitle": "your sessions",
-  "EditListingPricingPanel.title": "Edit the pricing of {listingTitle}",
+  "EditListingPricingPanel.title": "Pricing",
   "EditListingClientIdPanel.title": "Client Id",
   "EditListingWizard.payoutModalInfo": "Almost done! In order to send you money, we need to know a bit more about you. Next, we will guide you through verifying your account. The details can also be edited from Account Setting page on Payout details tab. ",
   "EditListingWizard.payoutModalTitleOneMoreThing": "One more thing:",

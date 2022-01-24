@@ -9,7 +9,7 @@ import { LINE_ITEM_NIGHT, LINE_ITEM_DAY, propTypes } from '../../util/types';
 import * as validators from '../../util/validators';
 import { formatMoney } from '../../util/currency';
 import { types as sdkTypes } from '../../util/sdkLoader';
-import { Button, Form, FieldCurrencyInput, FieldSelect } from '../../components';
+import { Button, Form, FieldCurrencyInput, FieldTextInput } from '../../components';
 import css from './EditListingPricingForm.module.css';
 
 const { Money } = sdkTypes;
@@ -97,13 +97,19 @@ export const EditListingPricingFormComponent = props => (
 
           <div className={css.selectform}>
             {category !== 'publicOral' ? (
-              <FieldSelect id="vat" name="vat" label={vatLabel} validate={required}>
-                <option value="">Select VAT</option>
+              <FieldTextInput
+                id="vat"
+                name="vat"
+                label={vatLabel}
+                validate={required}
+                type="textarea"
+              >
+                {/*<option value="">Select VAT</option>
                 <option value="5">5%</option>
                 <option value="10">10%</option>
                 <option value="15">15%</option>
-                <option value="20">20%</option>
-              </FieldSelect>
+            <option value="20">20%</option>*/}
+              </FieldTextInput>
             ) : (
               ''
             )}
