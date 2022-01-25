@@ -80,12 +80,16 @@ const routeConfiguration = () => {
     {
       path: '/promotion',
       name: 'PromotionPage',
+      auth: true,
+      authPage: 'LoginPage',
       component: PromotionPage,
       loadData: pageDataLoadingAPI.SearchPage.loadData,
     },
     {
       path: '/Services',
       name: 'ServicesPage',
+      auth: true,
+      authPage: 'LoginPage',
       component: ServicesPage,
       loadData: pageDataLoadingAPI.SearchPage.loadData,
     },

@@ -250,7 +250,7 @@ const TopbarDesktop = props => {
           alt={intl.formatMessage({ id: 'TopbarDesktop.logo' })}
         />
       </NamedLink>
-      {search}
+      {/*search*/}
       {/* {currentUser?.attributes?.profile?.protectedData?.isLawyer ? listingLink : ''} */}
       {currentUser?.attributes?.profile?.protectedData?.isLawyer ? createListingLink : ''}
       {inboxLink}
