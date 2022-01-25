@@ -35,7 +35,7 @@ const EditListingClientIdFormComponent = props => (
         values,
         form,
       } = formRenderProps;
-      console.log(values);
+      // console.log(values);
       const classes = classNames(rootClassName || css.root, className);
       const submitReady = (updated && pristine) || ready;
       const submitInProgress = updateInProgress;
@@ -79,7 +79,7 @@ const EditListingClientIdFormComponent = props => (
               label="Solicited"
               value="solicited"
               // showAsRequired={showAsRequired}
-              onClick={() => form.change('clientId', null)}
+              onClick={() => form.change('clientId', [''])}
             />
             <FieldRadioButton
               className={css.type}
@@ -92,15 +92,79 @@ const EditListingClientIdFormComponent = props => (
             />
           </div>
           {values.type === 'solicited' ? (
-            <FieldTextInput
-              id="clientId"
-              name="clientId"
-              className={css.clientId}
-              type="text"
-              label={clientIdMessage}
-              placeholder={clientIdPlaceholderMessage}
-              validate={composeValidators(required(clientIdRequiredMessage))}
-            />
+            // <FieldTextInput
+            //   id="clientId"
+            //   name="clientId"
+            //   className={css.clientId}
+            //   type="text"
+            //   label={clientIdMessage}
+            //   placeholder={clientIdPlaceholderMessage}
+            //   validate={composeValidators(required(clientIdRequiredMessage))}
+            // />
+            <FieldArray name="clientId">
+              {({ fields }) => {
+                return (
+                  <div className={css.sectionContainer}>
+                    <h3 className={css.sectionTitle}>
+                      <FormattedMessage id="EditListingClientIdForm.clientIdLabel" />
+                      {/* Practice area */}
+                    </h3>
+
+                    {fields.map((name, i) => {
+                      return (
+                        <div key={name + i}>
+                          <div className={css.fromgroup}>
+                            <FieldTextInput
+                              id={name}
+                              name={name}
+                              className={css.clientId}
+                              type="text"
+                              // label={clientIdMessage}
+                              placeholder={clientIdPlaceholderMessage}
+                              validate={composeValidators(required(clientIdRequiredMessage))}
+                            />
+                            {/* <MdOutlineClose
+                              onClick={() => {
+                                form.change(
+                                  'clientId',
+                                  values.clientId.filter(f => f !== values.clientId[i])
+                                );
+                                if (values.clientId.length === 1) {
+                                  form.change('clientId', ['']);
+                                }
+                              }}
+                            /> */}
+                          </div>
+                        </div>
+                      );
+                    })}
+
+                    <div className={css.inlinefrom}>
+                      {/* <InlineTextButton
+                        className={css.addMore}
+                        type="button"
+                        onClick={() => {
+                          fields.push();
+                        }}
+                        // disabled={!values.practice[values.practice?.length - 1]}
+                      >
+                        <FormattedMessage id="EditListingClientIdForm.addMoreClient" />
+                      </InlineTextButton> */}
+                      {/* <Button
+                        className={css.remove}
+                        type="button"
+                        onClick={() => {
+                          fields.pop();
+                        }}
+                        // disabled={values.practice?.length < 2}
+                      >
+                        <FormattedMessage id="ProfileSettingsForm.remove" />
+                      </Button> */}
+                    </div>
+                  </div>
+                );
+              }}
+            </FieldArray>
           ) : (
             <FieldArray name="clientId">
               {({ fields }) => {

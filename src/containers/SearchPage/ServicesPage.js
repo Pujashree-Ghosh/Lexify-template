@@ -45,7 +45,7 @@ function ServicesPageComponent(props) {
     onActivateListing,
     location,
   } = props;
-  console.log(listings);
+  // console.log(listings);
   const ensuredCurrentUser = ensureCurrentUser(currentUser);
   const panelMediumWidth = 50;
   const panelLargeWidth = 62.5;
