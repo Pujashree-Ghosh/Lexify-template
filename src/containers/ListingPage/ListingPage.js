@@ -410,55 +410,25 @@ export class ListingPageComponent extends Component {
         <LayoutSingleColumn className={css.pageRoot}>
           <LayoutWrapperTopbar>{topbar}</LayoutWrapperTopbar>
           <LayoutWrapperMain>
-            <div>
-              <SectionImages
-                title={title}
-                listing={currentListing}
-                isOwnListing={isOwnListing}
-                editParams={{
-                  id: listingId.uuid,
-                  slug: listingSlug,
-                  type: listingType,
-                  tab: listingTab,
-                }}
-                imageCarouselOpen={this.state.imageCarouselOpen}
-                onImageCarouselClose={() => this.setState({ imageCarouselOpen: false })}
-                handleViewPhotosClick={handleViewPhotosClick}
-                onManageDisableScrolling={onManageDisableScrolling}
-              />
+            <div className={css.listingpagecon}>
               <div className={css.contentContainer}>
-                <div className={css.authorcontainer}>
-                  <SectionAvatar user={currentAuthor} params={params} />
-                  <div>{currentListing.author.attributes.profile.displayName}</div>
-                </div>
-                <NamedLink
-                  className={css.profileViewLink}
-                  name="ProfilePage"
-                  params={{ id: currentUser.id.uuid }}
-                >
-                  <span className={css.profileViewLink}>
-                    <FormattedMessage id="ListingPage.ProfileLink" />
-                  </span>
-                </NamedLink>
-                {/*<span
-                  className={css.profileViewLink}
-                  onClick={() =>
-                    this.setState({ showProfileDetail: !this.state.showProfileDetail })
-                  }
-                >
-                  {this.state.showProfileDetail ? 'View listing' : 'View profile'}
-                  {this.state.showProfileDetail
-                    ? history.push(
-                        createResourceLocatorString(
-                          'ProfilePage',
-                          routeConfiguration(),
-                          { id: currentListing.id.uuid },
-                          {}
-                        )
-                      )
-                    : null}
-                </span>*/}
                 <div className={css.mainContent}>
+                  <SectionImages
+                    title={title}
+                    listing={currentListing}
+                    isOwnListing={isOwnListing}
+                    editParams={{
+                      id: listingId.uuid,
+                      slug: listingSlug,
+                      type: listingType,
+                      tab: listingTab,
+                    }}
+                    imageCarouselOpen={this.state.imageCarouselOpen}
+                    onImageCarouselClose={() => this.setState({ imageCarouselOpen: false })}
+                    handleViewPhotosClick={handleViewPhotosClick}
+                    onManageDisableScrolling={onManageDisableScrolling}
+                  />
+                  <SectionAvatar user={currentAuthor} params={params} />
                   <SectionHeading
                     priceTitle={priceTitle}
                     formattedPrice={formattedPrice}

@@ -231,16 +231,21 @@
 .bookingPanel {
   @media (--viewportLarge) {
     display: block;
-    margin-top: 79px;
+    margin-top: 50px;
     margin-left: 60px;
-    border-left-style: solid;
-    border-left-width: 1px;
-    border-left-color: var(--matterColorNegative);
+    /* border-left-style: solid;
+    border-left-width: 0;
+    border-left-color: var(--matterColorNegative); */
+    background: #fff;
+    padding: 30px;
+    border: 1px solid #e3e3e3;
+    border-radius: 10px;
+    max-height: 540px;
 
-    padding-left: 60px;
+    /* padding-left: 60px; */
 
     /* The calendar needs 312px */
-    flex-basis: 312px;
+    flex-basis: 400px;
     flex-shrink: 0;
   }
 }
@@ -251,27 +256,29 @@
 
 .sectionAvatar {
   /* Position (over the listing image)*/
-  margin-left: 24px;
-  margin-top: -72px;
+  /* margin-left: 24px;
+  margin-top: -72px; */
 
   /* Rendering context to the same lavel as listing image */
   position: relative;
 
   /* Flex would give too much width by default. */
   width: 60px;
+  margin: 30px 0 20px;
 
-  @media (--viewportMedium) {
+  /* @media (--viewportMedium) {
     position: absolute;
     top: -112px;
     margin-left: 0;
     margin-top: 0;
-  }
+  } */
 }
 
 .avatarMobile {
   display: flex;
-  width: 96px;
-  height: 96px;
+  width: 75px;
+  height: 75px;
+  margin: 0 20px;
 
   @media (--viewportMedium) {
     display: none; /* Hide the medium avatar from the bigger screens */
@@ -280,13 +287,8 @@
 
 .avatarDesktop {
   display: none; /* Hide the large avatar from the smaller screens */
-  /*top: 539px;
-  left: 77px;
-  width: 73px;
-  height: 73px;*/
-  width: 100px;
-  height: 100px;
-  /*margin-top: 50px;*/
+  width: 75px;
+  height: 75px;
 
   @media (--viewportMedium) {
     display: flex;
@@ -300,8 +302,7 @@
 }
 
 .sectionHeading {
-  margin-top: 22px;
-  margin-bottom: 34px;
+  margin: 0 0 20px;
 
   @media (--viewportMedium) {
     display: flex;
@@ -357,7 +358,10 @@
 .title {
   /* Font */
   @apply --marketplaceModalTitleStyles;
-  color: var(--matterColor);
+  color: #000;
+  font-size: 20px;
+  letter-spacing: 0;
+  line-height: 25px;
 
   /* Layout */
   width: 100%;
@@ -603,4 +607,7 @@
   /* use break-word if available */
   word-break: break-word;
   hyphens: auto;
+}
+.listingpagecon {
+  background: #f8f8f8;
 }
