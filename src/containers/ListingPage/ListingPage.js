@@ -252,7 +252,8 @@ export class ListingPageComponent extends Component {
     } = currentListing.attributes;
     const { durationHour, durationMinute } = publicData;
     const duration = durationHour && durationMinute ? `${durationHour}.${durationMinute}` : '1';
-    // console.log(999, durationHour, durationMinute, `${durationHour}.${durationMinute}`);
+    //
+    999, durationHour, durationMinute, `${durationHour}.${durationMinute}`;
 
     const richTitle = (
       <span>

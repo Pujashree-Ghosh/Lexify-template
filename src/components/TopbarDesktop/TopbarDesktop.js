@@ -252,12 +252,14 @@ const TopbarDesktop = props => {
       </NamedLink>
       {/*search*/}
       {/* {currentUser?.attributes?.profile?.protectedData?.isLawyer ? listingLink : ''} */}
-      {currentUser?.attributes?.profile?.protectedData?.isLawyer ? createListingLink : ''}
-      {inboxLink}
-      {profileMenu}
-      {signupLawyer}
-      {signupLink}
-      {loginLink}
+      <div className={css.rightdiv}>
+        {currentUser?.attributes?.profile?.protectedData?.isLawyer ? createListingLink : ''}
+        {inboxLink}
+        {profileMenu}
+        {signupLawyer}
+        {signupLink}
+        {loginLink}
+      </div>
     </nav>
   );
 };

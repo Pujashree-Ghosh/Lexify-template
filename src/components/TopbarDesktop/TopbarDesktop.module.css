@@ -49,6 +49,11 @@
   object-fit: contain;
   object-position: left center;
 }
+/*without searchbar*/
+.rightdiv {
+  display: flex;
+  justify-content: space-between;
+}
 
 /* Search */
 .searchLink {
