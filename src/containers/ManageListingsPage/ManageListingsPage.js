@@ -1,25 +1,57 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
+import config from '../../config';
 import { FormattedMessage, injectIntl, intlShape } from '../../util/reactIntl';
-import { propTypes } from '../../util/types';
+import { propTypes, LISTING_STATE_DRAFT } from '../../util/types';
+import { ensureListing } from '../../util/data';
 import { isScrollingDisabled } from '../../ducks/UI.duck';
 import {
   ManageListingCard,
   Page,
   PaginationLinks,
   UserNav,
+  NamedLink,
   LayoutSingleColumn,
   LayoutWrapperTopbar,
   LayoutWrapperMain,
   LayoutWrapperFooter,
   Footer,
 } from '../../components';
+import Overlay from '../../components/ManageListingCard/Overlay';
 import { TopbarContainer } from '../../containers';
+import { formatMoney } from '../../util/currency';
+import {
+  LISTING_PAGE_PENDING_APPROVAL_VARIANT,
+  LISTING_PAGE_DRAFT_VARIANT,
+  LISTING_PAGE_PARAM_TYPE_DRAFT,
+  LISTING_PAGE_PARAM_TYPE_EDIT,
+  createSlug,
+} from '../../util/urlHelpers';
 
 import { closeListing, openListing, getOwnListingsById } from './ManageListingsPage.duck';
 import css from './ManageListingsPage.module.css';
+
+const priceData = (price, intl) => {
+  if (price && price.currency === config.currency) {
+    const formattedPrice = formatMoney(intl, price);
+    return { formattedPrice, priceTitle: formattedPrice };
+  } else if (price) {
+    return {
+      formattedPrice: intl.formatMessage(
+        { id: 'ListingCard.unsupportedPrice' },
+        { currency: price.currency }
+      ),
+      priceTitle: intl.formatMessage(
+        { id: 'ListingCard.unsupportedPriceTitle' },
+        { currency: price.currency }
+      ),
+    };
+  }
+  return {};
+};
 
 export class ManageListingsPageComponent extends Component {
   constructor(props) {
@@ -50,10 +82,7 @@ export class ManageListingsPageComponent extends Component {
       intl,
     } = this.props;
 
-    // console.log(
-    //   listings,
-    //   listings.filter(f => f?.attributes?.publicData?.isProvider !== true)
-    // );
+    // console.log(listings);
 
     const hasPaginationInfo = !!pagination && pagination.totalItems != null;
     const listingsAreLoaded = !queryInProgress && hasPaginationInfo;
@@ -124,9 +153,11 @@ export class ManageListingsPageComponent extends Component {
           <LayoutWrapperMain>
             {queryInProgress ? loadingResults : null}
             {queryListingsError ? queryError : null}
+
             <div className={css.listingPanel}>
-              {heading}
-              <div className={css.listingCards}>
+              <div className={css.heading}>Manage Your User</div>
+              {/* {heading} */}
+              {/* <div className={css.listingCards}>
                 {listings
                   .filter(f => f?.attributes?.publicData?.isProviderType !== true)
                   .map(l => (
@@ -144,6 +175,114 @@ export class ManageListingsPageComponent extends Component {
                       renderSizes={renderSizes}
                     />
                   ))}
+              </div> */}
+              <div className={css.tablesclmob}>
+                <table className={css.table}>
+                  {/* <th>Name</th>
+                  <th>Description</th>
+                  <th>Category</th>
+                  <th>Price</th>
+                  <th>Edit</th>
+                  <th>draft</th> */}
+                  {listings.map((m, i) => {
+                    const { price, state } = m.attributes;
+                    const isDraft = state === LISTING_STATE_DRAFT;
+                    const editListingLinkType = isDraft
+                      ? LISTING_PAGE_PARAM_TYPE_DRAFT
+                      : LISTING_PAGE_PARAM_TYPE_EDIT;
+
+                    const { formattedPrice } = priceData(price, intl);
+                    const id = m.id.uuid;
+                    const slug = createSlug(m?.attributes?.title);
+
+                    return (
+                      <tr>
+                        <td>
+                          <NamedLink
+                            className={css.manageLink}
+                            name="ListingPage"
+                            params={{ id, slug }}
+                          >
+                            {m?.attributes?.title}
+                          </NamedLink>
+                          <div>{m?.attributes?.publicData?.category}</div>
+                        </td>
+
+                        <td>
+                          <a
+                            // class="btn btn-primary"
+                            data-bs-toggle="collapse"
+                            href={`#descriptionExample${i}`}
+                            role="button"
+                            aria-expanded="false"
+                            aria-controls="collapseExample"
+                          >
+                            Description
+                          </a>
+                          <div class="collapse" id={`descriptionExample${i}`}>
+                            <div class="card card-body">{m?.attributes?.description}</div>
+                          </div>
+                        </td>
+
+                        <td>
+                          {' '}
+                          <a
+                            // class="btn btn-primary"
+                            data-bs-toggle="collapse"
+                            href={`#disclaimerExample${i}`}
+                            role="button"
+                            aria-expanded="false"
+                            aria-controls="collapseExample"
+                          >
+                            Disclaimer
+                          </a>
+                          <div class="collapse" id={`disclaimerExample${i}`}>
+                            <div class="card card-body">
+                              {m?.attributes?.publicData?.disclaimer}
+                            </div>
+                          </div>
+                        </td>
+
+                        <td>{formattedPrice}</td>
+                        <td>
+                          <NamedLink
+                            className={css.manageLink}
+                            name="EditListingPage"
+                            params={{ id, slug, type: editListingLinkType, tab: 'description' }}
+                          >
+                            <FormattedMessage id="ManageListingCard.editListing" />
+                          </NamedLink>
+                        </td>
+                        <td>
+                          {isDraft ? (
+                            <React.Fragment>
+                              {/* <div className={classNames({ [css.draftNoImage]: !displayImage })} /> */}
+                              {/* <Overlay
+                                message={intl.formatMessage(
+                                  { id: 'ManageListingCard.draftOverlayText' },
+                                  { listingTitle: m?.attributes?.title }
+                                )}
+                              > */}
+                              <NamedLink
+                                className={css.finishListingDraftLink}
+                                name="EditListingPage"
+                                params={{
+                                  id,
+                                  slug,
+                                  type: LISTING_PAGE_PARAM_TYPE_DRAFT,
+                                  tab: 'photos',
+                                }}
+                              >
+                                <FormattedMessage id="ManageListingCard.finishListingDraft" />
+                              </NamedLink>
+                              {/* </Overlay> */}
+                            </React.Fragment>
+                          ) : null}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </table>
               </div>
               {paginationLinks}
             </div>
