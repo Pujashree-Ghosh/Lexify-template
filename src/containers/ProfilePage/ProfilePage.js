@@ -88,7 +88,7 @@ export class ProfilePageComponent extends Component {
       areaOfLawOptions,
     } = this.props;
     //console.log(user);
-
+    console.log(currentUser);
     const ensuredCurrentUser = ensureCurrentUser(currentUser);
     const profileUser = ensureUser(user);
     const isCurrentUser =

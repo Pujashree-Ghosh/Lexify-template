@@ -58,6 +58,7 @@ const EditListingAreaOfLawPanel = props => {
         initialValues={{ areaOfLaw: initialValues }}
         onSubmit={values => {
           const { areaOfLaw } = values;
+          console.log(typeof(areaOfLaw));
           const updatedValues = {
             publicData: { areaOfLaw },
           };

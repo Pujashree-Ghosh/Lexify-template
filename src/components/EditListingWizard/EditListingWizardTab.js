@@ -260,6 +260,7 @@ const EditListingWizardTab = props => {
           submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
           onSubmit={values => {
             onCompleteEditListingWizardTab(tab, values);
+            console.log(111,values);
           }}
         />
       );
@@ -434,7 +435,9 @@ EditListingWizardTab.propTypes = {
   // We cannot use propTypes.listing since the listing might be a draft.
   listing: shape({
     attributes: shape({
-      publicData: object,
+      
+      
+      ata: object,
       description: string,
       geolocation: object,
       pricing: object,

@@ -65,7 +65,7 @@ class MainPanel extends Component {
       state: '',
       postalCode: '',
       countryData: [],
-      keyword: '',
+      keywords: '',
     };
 
     this.applyFilters = this.applyFilters.bind(this);
@@ -87,19 +87,27 @@ class MainPanel extends Component {
       .catch(err => console.log('Error occurred', err));
   }
   componentDidUpdate() {
-    const { history, urlQueryParams } = this.props;
+    
+    const { history, urlQueryParams, sortConfig, filterConfig } = this.props;
+    const searchParams = { ...urlQueryParams, ...this.state.currentQueryParams };
+    const search = cleanSearchFromConflictingParams(searchParams, sortConfig, filterConfig);
+    console.log(urlQueryParams);
     if (
       urlQueryParams?.pub_isProviderType !== true ||
       urlQueryParams?.pub_hasPublicListing !== true
     ) {
-      history.push(
-        createResourceLocatorString(
-          'SearchPage',
-          routeConfiguration(),
-          {},
-          { pub_isProviderType: true, pub_hasPublicListing: true }
-        )
-      );
+      if(this.state.keywords === ''){
+        history.push(
+          createResourceLocatorString(
+            'SearchPage',
+            routeConfiguration(),
+            {},
+            { pub_isProviderType: true, pub_hasPublicListing: true, ...search}
+          )
+        );
+      }
+      
+      
     }
   }
   // Apply the filters by redirecting to SearchPage with new filters.
@@ -107,13 +115,15 @@ class MainPanel extends Component {
     const { history, urlQueryParams, sortConfig, filterConfig } = this.props;
     const searchParams = { ...urlQueryParams, ...this.state.currentQueryParams };
     const search = cleanSearchFromConflictingParams(searchParams, sortConfig, filterConfig);
-
+    if(this.state.keywords !== ''){
+      delete search.pub_isProviderType;
+      delete search.pub_hasPublicListing;
+    }
     Object.keys(search).forEach(key => {
       if (search[key] === '') {
         delete search[key];
       }
     });
-
     history.push(createResourceLocatorString('SearchPage', routeConfiguration(), {}, search));
   }
 
@@ -545,6 +555,7 @@ class MainPanel extends Component {
             </SearchFiltersSecondary>
           </div>
         ) : (
+          
           <div
             className={classNames(css.listings, {
               [css.newSearchInProgress]: !listingsAreLoaded,
@@ -555,7 +566,7 @@ class MainPanel extends Component {
                 <FormattedMessage id="SearchPage.searchError" />
               </h2>
             ) : null}
-
+            
             <SearchResultsPanel
               className={css.searchListingsPanel}
               listings={listings}
