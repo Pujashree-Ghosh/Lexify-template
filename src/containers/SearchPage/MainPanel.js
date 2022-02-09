@@ -97,30 +97,63 @@ class MainPanelComponent extends Component {
   componentDidUpdate() {
 
     
-    const { history, urlQueryParams, sortConfig, filterConfig } = this.props;
-    const searchParams = { ...urlQueryParams,...this.state.currentQueryParams };
-    const search = cleanSearchFromConflictingParams(searchParams, sortConfig, filterConfig);
-    console.log(Object.keys(urlQueryParams).length);
+    const { history, urlQueryParams } = this.props;
+    
     if (
       urlQueryParams?.pub_isProviderType !== true ||
       urlQueryParams?.pub_hasPublicListing !== true
-    ) {
-      if(this.state.keywords === ''){
+    ){
+      // history.push(
+      //   createResourceLocatorString(
+      //     'SearchPage',
+      //     routeConfiguration(),
+      //     {},
+      //     {pub_hasPublicListing:true, pub_isProviderType:true}
+      //   )
+      // );
+      if(this.state.keywords === '' && urlQueryParams?.pub_hasPublicListing === true){ 
+        let currParams = this.state.currentQueryParams;
+        delete currParams?.pub_hasPublicListing;
+        delete currParams?.pub_isProviderType;
         history.push(
           createResourceLocatorString(
             'SearchPage',
             routeConfiguration(),
             {},
-            {pub_hasPublicListing :true , pub_isProviderType : true}
+            {pub_hasPublicListing:true, pub_isProviderType:true}
           )
         );
       }
-      
-      
+      if(this.state.currentQueryParams.hasOwnProperty('keywords') && urlQueryParams?.pub_hasPublicListing === true && urlQueryParams?.pub_isProviderType === true){
+        let currParams = this.state.currentQueryParams;
+        delete currParams?.pub_hasPublicListing;
+        delete currParams?.pub_isProviderType;
+        history.push(
+          createResourceLocatorString(
+            'SearchPage',
+            routeConfiguration(),
+            {},
+            {...currParams}
+          )
+        );
+      }
+      // else{
+      //   history.push(
+      //     createResourceLocatorString(
+      //       'SearchPage',
+      //       routeConfiguration(),
+      //       {},
+      //       {pub_hasPublicListing:true, pub_isProviderType:true}
+      //     )
+      //   );
+      // }
     }
   }
   // Apply the filters by redirecting to SearchPage with new filters.
   applyFilters() {
+    const { history, urlQueryParams, sortConfig, filterConfig } = this.props;
+    const searchParams = { ...urlQueryParams, ...this.state.currentQueryParams };
+    const search = cleanSearchFromConflictingParams(searchParams, sortConfig, filterConfig);
     if(this.state.country === '' && 
       this.state.city  === '' && 
       this.state.practiceArea  === '' && 
@@ -129,10 +162,6 @@ class MainPanelComponent extends Component {
       this.state.industry  === ''){
         console.log("first");
       }else{
-        
-        const { history, urlQueryParams, sortConfig, filterConfig } = this.props;
-        const searchParams = { ...urlQueryParams, ...this.state.currentQueryParams };
-        const search = cleanSearchFromConflictingParams(searchParams, sortConfig, filterConfig);
         if(this.state.keywords !== ''){
           delete search.pub_isProviderType;
           delete search.pub_hasPublicListing;
@@ -144,10 +173,6 @@ class MainPanelComponent extends Component {
         });
         history.push(createResourceLocatorString('SearchPage', routeConfiguration(), {}, search));
       }
-    
-    const { history, urlQueryParams, sortConfig, filterConfig } = this.props;
-    const searchParams = { ...urlQueryParams, ...this.state.currentQueryParams };
-    const search = cleanSearchFromConflictingParams(searchParams, sortConfig, filterConfig);
     if(this.state.keywords !== ''){
       delete search.pub_isProviderType;
       delete search.pub_hasPublicListing;
@@ -265,7 +290,8 @@ class MainPanelComponent extends Component {
       history,
       currentUser
     } = this.props;
-    console.log(urlQueryParams);
+    console.log("url",urlQueryParams);
+    console.log("currurl",this.state.currentQueryParams);
     const useHistoryPush = liveEdit || showAsPopup;
     const dummyOption = {value:'select', label:'Select'}
     const practiceAreaOptions = areaOfLawOptions.map(c=>(
@@ -283,7 +309,12 @@ class MainPanelComponent extends Component {
       { value:'industryC', label:'Industry C' },
       { value:'industryD', label:'Industry D' },
       { value:'industryE', label:'Industry E' }
-    ]
+    ];
+    const stateOptions = this.state.countryData
+    .filter(c => c.iso3 === 'USA')[0]
+    ?.states.map(s => (
+      {value:s.state_code, label: s.name, key:s.value}
+    ));
     const primaryFilters = filterConfig.filter(f => f.group === 'primary');
     const secondaryFilters = filterConfig.filter(f => f.group !== 'primary');
     const hasSecondaryFilters = !!(secondaryFilters && secondaryFilters.length > 0);
@@ -373,7 +404,6 @@ class MainPanelComponent extends Component {
                   onChange={e => {
                     e === null? this.setState({ country: '' }):
                     this.setState({ country: e.value });
-
                     this.getHandleChangedValueFn()({
                       ['pub_country']: e?.value,
                     });
@@ -395,22 +425,22 @@ class MainPanelComponent extends Component {
                 <>
                   <div className={css.lformcol}>
                     <label>State</label>
-                    <select
-                      className={css.formcontrol}
+                    <Select
+                      options={stateOptions}
+                      isClearable={this.state.isClearable}
+                      // className={css.formcontrol}
                       onChange={e => {
-                        this.setState({ state: e.target.value });
+                        e === null?setState({state:''}):
+                        this.setState({ state: e.value });
                         this.getHandleChangedValueFn()({
-                          ['pub_state']: e.target.value,
+                          ['pub_state']: e?.value,
+                        });
+                        this.getHandleChangedValueFn()({
+                          ['pub_state']:null,
                         });
                       }}
                     >
-                      <option>Select State</option>
-                      {this.state.countryData
-                        .filter(c => c.iso3 === 'USA')[0]
-                        ?.states.map(s => (
-                          <option value={s.state_code}>{s.name}</option>
-                        ))}
-                    </select>
+                    </Select>
                   </div>
 
                   <div className={css.lformcol}>
@@ -636,15 +666,18 @@ class MainPanelComponent extends Component {
                 <FormattedMessage id="SearchPage.searchError" />
               </h2>
             ) : null}
-            {urlQueryParams.pub_isProviderType === true && urlQueryParams.pub_hasPublicListing === true && Object.keys(urlQueryParams).length === 2?null:<SearchResultsPanel
-              className={css.searchListingsPanel}
-              listings={listings}
-              pagination={listingsAreLoaded ? pagination : null}
-              search={searchParamsForPagination}
-              setActiveListing={onActivateListing}
-              history={history}
-              totalItems={totalItems}
-            />}
+            {urlQueryParams.pub_isProviderType === true && 
+              urlQueryParams.pub_hasPublicListing === true && 
+              Object.keys(urlQueryParams).length === 2?null:
+                <SearchResultsPanel
+                  className={css.searchListingsPanel}
+                  listings={listings}
+                  pagination={listingsAreLoaded ? pagination : null}
+                  search={searchParamsForPagination}
+                  setActiveListing={onActivateListing}
+                  history={history}
+                  totalItems={totalItems}
+                />}
             {/* <SearchResultsPanel
               className={css.searchListingsPanel}
               listings={listings}
