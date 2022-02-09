@@ -14,6 +14,7 @@ import biolocationIcon from '../../assets/material-location-on.svg';
 import config from '../../config';
 import { createResourceLocatorString } from '../../util/routes';
 import axios from 'axios';
+import { createSlug } from '../../util/urlHelpers';
 
 function UserResultCardComponent(props) {
   const { listing, currentUser, onShowUser, history } = props;
@@ -59,7 +60,7 @@ function UserResultCardComponent(props) {
   //         : '')
   //   )[0]?.name
   // );
-
+  const slug = createSlug(listing?.attributes?.title);
   return (
     <div className={css.cardContainer} key={listing.id.uuid}>
       <div className={css.SectionAvatarImg}>
@@ -91,14 +92,28 @@ function UserResultCardComponent(props) {
         <button
           className={css.profileBtn}
           onClick={() =>
-            history.push(
-              createResourceLocatorString(
-                'ProfilePage',
-                routeConfiguration(),
-                { id: ensuredUser.id.uuid },
-                {}
-              )
-            )
+            {
+              if(listing?.attributes?.publicData?.isProviderType){
+                history.push(
+                  createResourceLocatorString(
+                    'ProfilePage',
+                    routeConfiguration(),
+                    { id: ensuredUser.id.uuid },
+                    {}
+                  )
+                )
+              }else{
+                history.push(
+                  createResourceLocatorString(
+                    'ListingPage',
+                    routeConfiguration(),
+                    { id: listing.id.uuid,slug },
+                    {}
+                  )
+                )
+              }
+              
+            }
           }
         >
           <FormattedMessage id="UserResultCard.ListingProfileLink" />

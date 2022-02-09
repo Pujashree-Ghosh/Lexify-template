@@ -169,7 +169,6 @@ export const LandingPageComponent = props => {
               <Button className={css.submitButton} type="submit" onClick={() => {}}>
                 <img src={searchiconbtn} /> Find Legal Advice
               </Button>
-
               <p className={css.aylbtntxt}>
                 Are you a lawyer?
                 <Link to="/">Join us now!</Link>

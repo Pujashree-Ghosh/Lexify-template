@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import { array, bool, func, number, object, shape, string } from 'prop-types';
 import classNames from 'classnames';
 import omit from 'lodash/omit';
@@ -26,6 +27,10 @@ import { validFilterParams } from './SearchPage.helpers';
 import css from './SearchPage.module.css';
 import SectionAvatar from '../ListingPage/SectionAvatar';
 import axios from 'axios';
+import Select from 'react-select';
+import { connect } from 'react-redux';
+import {compose} from 'redux';
+import { withViewport } from '../../util/contextHelpers';
 
 // Primary filters have their content in dropdown-popup.
 // With this offset we move the dropdown to the left a few pixels on desktop layout.
@@ -51,7 +56,7 @@ const cleanSearchFromConflictingParams = (searchParams, sortConfig, filterConfig
  * SearchfiltersMobile, SearchFiltersPrimary, and SearchFiltersSecondary.
  * The last 2 are for desktop layout.
  */
-class MainPanel extends Component {
+class MainPanelComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -66,6 +71,8 @@ class MainPanel extends Component {
       postalCode: '',
       countryData: [],
       keywords: '',
+      isSearched: false,
+      isClearable: true
     };
 
     this.applyFilters = this.applyFilters.bind(this);
@@ -86,12 +93,14 @@ class MainPanel extends Component {
       })
       .catch(err => console.log('Error occurred', err));
   }
+  
   componentDidUpdate() {
+
     
     const { history, urlQueryParams, sortConfig, filterConfig } = this.props;
-    const searchParams = { ...urlQueryParams, ...this.state.currentQueryParams };
+    const searchParams = { ...urlQueryParams,...this.state.currentQueryParams };
     const search = cleanSearchFromConflictingParams(searchParams, sortConfig, filterConfig);
-    console.log(urlQueryParams);
+    console.log(Object.keys(urlQueryParams).length);
     if (
       urlQueryParams?.pub_isProviderType !== true ||
       urlQueryParams?.pub_hasPublicListing !== true
@@ -102,7 +111,7 @@ class MainPanel extends Component {
             'SearchPage',
             routeConfiguration(),
             {},
-            { pub_isProviderType: true, pub_hasPublicListing: true, ...search}
+            {pub_hasPublicListing :true , pub_isProviderType : true}
           )
         );
       }
@@ -112,6 +121,30 @@ class MainPanel extends Component {
   }
   // Apply the filters by redirecting to SearchPage with new filters.
   applyFilters() {
+    if(this.state.country === '' && 
+      this.state.city  === '' && 
+      this.state.practiceArea  === '' && 
+      this.state.keywords === '' && 
+      this.state.languages  === '' && 
+      this.state.industry  === ''){
+        console.log("first");
+      }else{
+        
+        const { history, urlQueryParams, sortConfig, filterConfig } = this.props;
+        const searchParams = { ...urlQueryParams, ...this.state.currentQueryParams };
+        const search = cleanSearchFromConflictingParams(searchParams, sortConfig, filterConfig);
+        if(this.state.keywords !== ''){
+          delete search.pub_isProviderType;
+          delete search.pub_hasPublicListing;
+        }
+        Object.keys(search).forEach(key => {
+          if (search[key] === '') {
+            delete search[key];
+          }
+        });
+        history.push(createResourceLocatorString('SearchPage', routeConfiguration(), {}, search));
+      }
+    
     const { history, urlQueryParams, sortConfig, filterConfig } = this.props;
     const searchParams = { ...urlQueryParams, ...this.state.currentQueryParams };
     const search = cleanSearchFromConflictingParams(searchParams, sortConfig, filterConfig);
@@ -230,10 +263,27 @@ class MainPanel extends Component {
       areaOfLawOptions,
       languages,
       history,
+      currentUser
     } = this.props;
-
+    console.log(urlQueryParams);
     const useHistoryPush = liveEdit || showAsPopup;
-
+    const dummyOption = {value:'select', label:'Select'}
+    const practiceAreaOptions = areaOfLawOptions.map(c=>(
+      {value: c.key, label: c.label, key:c.key }
+    ));
+    const countryOptions = this.state.countryData.map(c=>(
+      {value: c.iso3, label:c.name, key:c.iso3}
+    ));
+    const languageOptions = languages.map(l=>(
+      {value:l.code , key:l.code, label:l.name}
+    ));
+    const industryOptions = [
+      { value:'industryA', label:'Industry A' },
+      { value:'industryB', label:'Industry B' },
+      { value:'industryC', label:'Industry C' },
+      { value:'industryD', label:'Industry D' },
+      { value:'industryE', label:'Industry E' }
+    ]
     const primaryFilters = filterConfig.filter(f => f.group === 'primary');
     const secondaryFilters = filterConfig.filter(f => f.group !== 'primary');
     const hasSecondaryFilters = !!(secondaryFilters && secondaryFilters.length > 0);
@@ -271,7 +321,15 @@ class MainPanel extends Component {
       searchParamsAreInSync && hasPaginationInfo ? pagination.totalItems : listingsLength;
 
     const listingsAreLoaded = !searchInProgress && searchParamsAreInSync;
-
+    
+    // const signupLawyer = isAuthenticatedOrJustHydrated ? null : (
+    //   <NamedLink name="SignupLawyerPage" className={css.signupLink}>
+    //     <span className={css.signup}>
+    //       <FormattedMessage id="TopbarDesktop.signupLawyer" />
+    //     </span>
+    //   </NamedLink>
+    // );
+    // console.log(signupLawyer)
     const sortBy = mode => {
       const conflictingFilterActive = isAnyFilterActive(
         sortConfig.conflictingFilters,
@@ -299,7 +357,6 @@ class MainPanel extends Component {
     };
 
     const classes = classNames(rootClassName || css.searchResultContainer, className);
-
     return (
       <div className={classes}>
         <div className={css.sectionContent}>
@@ -310,25 +367,28 @@ class MainPanel extends Component {
             <div className={css.lformrow}>
               <div className={css.lformcol}>
                 <label>Country</label>
-                <select
-                  className={css.formcontrol}
+                <Select
+                  isClearable = {this.state.isClearable}
+                  options={countryOptions}
                   onChange={e => {
-                    this.setState({ country: e.target.value });
+                    e === null? this.setState({ country: '' }):
+                    this.setState({ country: e.value });
+
                     this.getHandleChangedValueFn()({
-                      ['pub_country']: e.target.value,
+                      ['pub_country']: e?.value,
                     });
                     this.getHandleChangedValueFn()({
                       ['pub_state']: null,
                     });
                   }}
                 >
-                  <option value="">Select Country</option>
+                  {/* <option value="">Select Country</option>
                   {this.state.countryData.map(c => (
                     <option value={c.iso3} key={c.iso3}>
                       {c.name}
                     </option>
-                  ))}
-                </select>
+                  ))} */}
+                </Select>
               </div>
 
               {this.state.country === 'USA' ? (
@@ -387,22 +447,26 @@ class MainPanel extends Component {
 
               <div className={css.lformcol}>
                 <label>Practice Area</label>
-                <select
-                  className={css.formcontrol}
+                <Select
+                
+                  isClearable = {this.state.isClearable}
+                  options={practiceAreaOptions}
+                  // className={css.formcontrol}
                   onChange={e => {
-                    this.setState({ practiceArea: e.target.value });
+                    e === null? this.setState({ practiceArea: '' }):
+                    this.setState({ practiceArea: e.value });
                     this.getHandleChangedValueFn()({
-                      ['pub_practiceArea']: e.target.value,
+                      ['pub_practiceArea']: e?.value,
                     });
                   }}
                 >
-                  <option value="">Select Practice Area</option>
+                  {/* <option value="">Select Practice Area</option>
                   {areaOfLawOptions.map(m => (
                     <option value={m.key} key={m.key}>
                       {m.label}
                     </option>
-                  ))}
-                </select>
+                  ))} */}
+                </Select>
               </div>
             </div>
             <div className={css.lformrow}>
@@ -423,39 +487,45 @@ class MainPanel extends Component {
 
               <div className={css.lformcol}>
                 <label>Language</label>
-                <select
-                  className={css.formcontrol}
+                <Select
+                  isClearable = {this.state.isClearable}
+                  options={languageOptions}
+                  // className={css.formcontrol}
                   onChange={e => {
-                    this.setState({ languages: e.target.value });
+                    e === null? this.setState({ languages: '' }):
+                    this.setState({ languages: e.value });
                     this.getHandleChangedValueFn()({
-                      ['pub_languages']: e.target.value,
+                      ['pub_languages']: e?.value,
                     });
                   }}
                 >
-                  <option value="">Select Language</option>
+                  {/* <option value="">Select Language</option>
                   {languages.map(l => (
                     <option value={l.code} key={l.code}>
                       {l.name}
                     </option>
-                  ))}
-                </select>
+                  ))} */}
+                </Select>
               </div>
 
               <div className={css.lformcol}>
                 <label>Industry</label>
-                <select
-                  className={css.formcontrol}
+                <Select
+                  isClearable = {this.state.isClearable}
+                  options={industryOptions}
+                  // className={css.formcontrol}
                   onChange={e => {
-                    this.setState({ industry: e.target.value });
+                    e === null? this.setState({ industry: '' }):
+                    this.setState({ industry: e.value });
                     this.getHandleChangedValueFn()({
-                      ['pub_industry']: e.target.value,
+                      ['pub_industry']: e?.value,
                     });
                   }}
                 >
-                  <option value="">Select Industry</option>
+                  {/* <option value="">Select Industry</option>
                   <option>adasd</option>
-                  <option>adasd</option>
-                </select>
+                  <option>adasd</option> */}
+                </Select>
               </div>
             </div>
             <Button
@@ -467,11 +537,11 @@ class MainPanel extends Component {
             >
               <img src={searchiconbtn} /> Find Legal Advice
             </Button>
-
-            {/* <p className={css.aylbtntxt}>
+            {(currentUser === null || typeof(currentUser) === undefined)?(<p className={css.aylbtntxt}>
               Are you a lawyer?
-               <Link to="/">Join us now!</Link> 
-            </p> */}
+               <Link to="signup-lawyer">Join us now!</Link> 
+            </p>):''}
+            
           </div>
         </div>
         {/* <SearchFiltersPrimary
@@ -566,8 +636,7 @@ class MainPanel extends Component {
                 <FormattedMessage id="SearchPage.searchError" />
               </h2>
             ) : null}
-            
-            <SearchResultsPanel
+            {urlQueryParams.pub_isProviderType === true && urlQueryParams.pub_hasPublicListing === true && Object.keys(urlQueryParams).length === 2?null:<SearchResultsPanel
               className={css.searchListingsPanel}
               listings={listings}
               pagination={listingsAreLoaded ? pagination : null}
@@ -575,7 +644,16 @@ class MainPanel extends Component {
               setActiveListing={onActivateListing}
               history={history}
               totalItems={totalItems}
-            />
+            />}
+            {/* <SearchResultsPanel
+              className={css.searchListingsPanel}
+              listings={listings}
+              pagination={listingsAreLoaded ? pagination : null}
+              search={searchParamsForPagination}
+              setActiveListing={onActivateListing}
+              history={history}
+              totalItems={totalItems}
+            /> */}
           </div>
         )}
       </div>
@@ -583,7 +661,8 @@ class MainPanel extends Component {
   }
 }
 
-MainPanel.defaultProps = {
+
+MainPanelComponent.defaultProps = {
   className: null,
   rootClassName: null,
   listings: [],
@@ -596,10 +675,10 @@ MainPanel.defaultProps = {
   languages: config.custom.languages,
 };
 
-MainPanel.propTypes = {
+MainPanelComponent.propTypes = {
   className: string,
   rootClassName: string,
-
+  currentUser: propTypes.currentUser,
   urlQueryParams: object.isRequired,
   listings: array,
   searchInProgress: bool.isRequired,
@@ -622,5 +701,15 @@ MainPanel.propTypes = {
     push: func.isRequired,
   }).isRequired,
 };
+const mapStateToProps = state => {
+  const { currentUser } = state.user;
+
+  return {currentUser};
+};
+
+const MainPanel = compose(
+  connect(mapStateToProps)
+)(MainPanelComponent);
+
 
 export default MainPanel;
