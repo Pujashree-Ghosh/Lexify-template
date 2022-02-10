@@ -1,14 +1,22 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import classNames from 'classnames';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
+import { MdModeEditOutline } from 'react-icons/md';
+import { IoMdClose } from 'react-icons/io';
+
 import config from '../../config';
 import { FormattedMessage, injectIntl, intlShape } from '../../util/reactIntl';
-import { propTypes, LISTING_STATE_DRAFT } from '../../util/types';
+import { propTypes, LISTING_STATE_DRAFT, LISTING_STATE_CLOSED } from '../../util/types';
 import { ensureListing } from '../../util/data';
 import { isScrollingDisabled } from '../../ducks/UI.duck';
 import {
+  InlineTextButton,
+  Menu,
+  MenuLabel,
+  MenuContent,
+  MenuItem,
   ManageListingCard,
   Page,
   PaginationLinks,
@@ -20,6 +28,7 @@ import {
   LayoutWrapperFooter,
   Footer,
 } from '../../components';
+import MenuIcon from '../../components/ManageListingCard/MenuIcon';
 import Overlay from '../../components/ManageListingCard/Overlay';
 import { TopbarContainer } from '../../containers';
 import { formatMoney } from '../../util/currency';
@@ -33,6 +42,8 @@ import {
 
 import { closeListing, openListing, getOwnListingsById } from './ManageListingsPage.duck';
 import css from './ManageListingsPage.module.css';
+import ReadmoreButton from '../ReadmoreButton/ReadmoreButton';
+const MENU_CONTENT_OFFSET = -12;
 
 const priceData = (price, intl) => {
   if (price && price.currency === config.currency) {
@@ -52,6 +63,9 @@ const priceData = (price, intl) => {
   }
   return {};
 };
+// const isControlledMenu = (isOpenProp, onToggleActiveProp) => {
+//   return isOpenProp !== null && onToggleActiveProp !== null;
+// };
 
 export class ManageListingsPageComponent extends Component {
   constructor(props) {
@@ -70,6 +84,8 @@ export class ManageListingsPageComponent extends Component {
       closingListing,
       closingListingError,
       listings,
+      isMenuOpen,
+      actionsInProgressListingId,
       onCloseListing,
       onOpenListing,
       openingListing,
@@ -142,6 +158,9 @@ export class ManageListingsPageComponent extends Component {
       `(max-width: 1920px) ${panelWidth / 2}vw`,
       `${panelWidth / 3}vw`,
     ].join(', ');
+    const menuItemClasses = classNames(css.menuItem, {
+      [css.menuItemDisabled]: !!actionsInProgressListingId,
+    });
 
     return (
       <Page title={title} scrollingDisabled={scrollingDisabled}>
@@ -155,8 +174,8 @@ export class ManageListingsPageComponent extends Component {
             {queryListingsError ? queryError : null}
 
             <div className={css.listingPanel}>
-              <div className={css.heading}>Manage Your User</div>
-              {/* {heading} */}
+              <div className={css.heading}>{heading}</div>
+              {/*  */}
               {/* <div className={css.listingCards}>
                 {listings
                   .filter(f => f?.attributes?.publicData?.isProviderType !== true)
@@ -176,17 +195,13 @@ export class ManageListingsPageComponent extends Component {
                     />
                   ))}
               </div> */}
-              <div className={css.tablesclmob}>
-                <table className={css.table}>
-                  {/* <th>Name</th>
-                  <th>Description</th>
-                  <th>Category</th>
-                  <th>Price</th>
-                  <th>Edit</th>
-                  <th>draft</th> */}
+
+              <div>
+                <div>
                   {listings.map((m, i) => {
                     const { price, state } = m.attributes;
                     const isDraft = state === LISTING_STATE_DRAFT;
+                    const isClosed = state === LISTING_STATE_CLOSED;
                     const editListingLinkType = isDraft
                       ? LISTING_PAGE_PARAM_TYPE_DRAFT
                       : LISTING_PAGE_PARAM_TYPE_EDIT;
@@ -194,95 +209,124 @@ export class ManageListingsPageComponent extends Component {
                     const { formattedPrice } = priceData(price, intl);
                     const id = m.id.uuid;
                     const slug = createSlug(m?.attributes?.title);
+                    let listingOpen = null;
 
                     return (
-                      <tr>
-                        <td>
-                          <NamedLink
-                            className={css.manageLink}
-                            name="ListingPage"
-                            params={{ id, slug }}
-                          >
-                            {m?.attributes?.title}
-                          </NamedLink>
-                          <div>{m?.attributes?.publicData?.category}</div>
-                        </td>
-
-                        <td>
-                          <a
-                            // class="btn btn-primary"
-                            data-bs-toggle="collapse"
-                            href={`#descriptionExample${i}`}
-                            role="button"
-                            aria-expanded="false"
-                            aria-controls="collapseExample"
-                          >
-                            Description
-                          </a>
-                          <div class="collapse" id={`descriptionExample${i}`}>
-                            <div class="card card-body">{m?.attributes?.description}</div>
-                          </div>
-                        </td>
-
-                        <td>
-                          {' '}
-                          <a
-                            // class="btn btn-primary"
-                            data-bs-toggle="collapse"
-                            href={`#disclaimerExample${i}`}
-                            role="button"
-                            aria-expanded="false"
-                            aria-controls="collapseExample"
-                          >
-                            Disclaimer
-                          </a>
-                          <div class="collapse" id={`disclaimerExample${i}`}>
-                            <div class="card card-body">
-                              {m?.attributes?.publicData?.disclaimer}
-                            </div>
-                          </div>
-                        </td>
-
-                        <td>{formattedPrice}</td>
-                        <td>
-                          <NamedLink
-                            className={css.manageLink}
-                            name="EditListingPage"
-                            params={{ id, slug, type: editListingLinkType, tab: 'description' }}
-                          >
-                            <FormattedMessage id="ManageListingCard.editListing" />
-                          </NamedLink>
-                        </td>
-                        <td>
+                      <div className={css.horizontalcard}>
+                        {/* leftdiv */}
+                        <div className={css.lefthorizontal}>
                           {isDraft ? (
-                            <React.Fragment>
-                              {/* <div className={classNames({ [css.draftNoImage]: !displayImage })} /> */}
-                              {/* <Overlay
-                                message={intl.formatMessage(
-                                  { id: 'ManageListingCard.draftOverlayText' },
-                                  { listingTitle: m?.attributes?.title }
-                                )}
-                              > */}
-                              <NamedLink
-                                className={css.finishListingDraftLink}
-                                name="EditListingPage"
-                                params={{
-                                  id,
-                                  slug,
-                                  type: LISTING_PAGE_PARAM_TYPE_DRAFT,
-                                  tab: 'photos',
-                                }}
-                              >
-                                <FormattedMessage id="ManageListingCard.finishListingDraft" />
-                              </NamedLink>
-                              {/* </Overlay> */}
-                            </React.Fragment>
-                          ) : null}
-                        </td>
-                      </tr>
+                            <h2 className={css.lefttitle}>{m?.attributes?.title}</h2>
+                          ) : (
+                            <NamedLink
+                              className={css.manageLink}
+                              name="ListingPage"
+                              params={{ id, slug }}
+                            >
+                              <h2 className={css.lefttitle}> {m?.attributes?.title}</h2>
+                            </NamedLink>
+                          )}
+
+                          <ReadmoreButton description={m?.attributes?.description} />
+                        </div>
+                        {/* rightdiv */}
+                        <div className={css.righthorizontal}>
+                          {/* rightlowerdiv */}
+
+                          <div>
+                            {isDraft ? (
+                              <span className={css.span}>UNPUBLISHED</span>
+                            ) : (
+                              <span className={css.span}> PUBLISHED</span>
+                            )}
+                          </div>
+                          <span className={css.price}> {formattedPrice} </span>
+                          <button className={css.editbutton}>
+                            <NamedLink
+                              // className={css.manageLink}
+                              className={css.linkcolor}
+                              name="EditListingPage"
+                              params={{ id, slug, type: editListingLinkType, tab: 'description' }}
+                            >
+                              <MdModeEditOutline />{' '}
+                              <FormattedMessage id="ManageListingCard.editListing" />
+                            </NamedLink>
+                          </button>
+                        </div>
+                        {!isDraft ? (
+                          <Menu
+                            className={classNames(css.menu, css.togglemenu, {
+                              [css.cardIsOpen]: !isClosed,
+                            })}
+                            contentPlacementOffset={MENU_CONTENT_OFFSET}
+                            contentPosition="left"
+                            useArrow={false}
+                            onToggleActive={isOpen => {
+                              listingOpen = isOpen ? m : null;
+                              console.log(listingOpen);
+                              this.onToggleMenu(listingOpen);
+                            }}
+                            // isMenuOpen={!!listingMenuOpen && listingMenuOpen.id.uuid === l.id.uuid}
+                            // onToggleMenu={listingOpen}
+                            isOpen={!!listingMenuOpen && listingMenuOpen.id.uuid === m.id.uuid}
+                          >
+                            <MenuLabel
+                              className={css.menuLabel}
+                              isOpenClassName={css.listingMenuIsOpen}
+                            >
+                              <div className={css.iconWrapper}>
+                                <MenuIcon className={css.menuIcon} isActive={isMenuOpen} />
+                              </div>
+                            </MenuLabel>
+                            <MenuContent rootClassName={css.menuContent}>
+                              <MenuItem key="close-listing">
+                                <div className={css.inlinebutton}>
+                                  <IoMdClose />
+                                  <InlineTextButton
+                                    className={css.buttontext}
+                                    // rootClassName={menuItemClasses}
+                                    onClick={event => {
+                                      event.preventDefault();
+                                      event.stopPropagation();
+                                      if (!actionsInProgressListingId) {
+                                        this.onToggleMenu(null);
+                                        onCloseListing(m.id);
+                                      }
+                                    }}
+                                  >
+                                    <FormattedMessage id="ManageListingCard.closeListing" />
+                                  </InlineTextButton>
+                                </div>
+                              </MenuItem>
+                            </MenuContent>
+                          </Menu>
+                        ) : null}
+                        {isClosed ? (
+                          <Overlay
+                            message={intl.formatMessage(
+                              { id: 'ManageListingCard.closedListing' },
+                              { listingTitle: title }
+                            )}
+                          >
+                            <button
+                              className={css.openListingButton}
+                              disabled={!!actionsInProgressListingId}
+                              onClick={event => {
+                                event.preventDefault();
+                                event.stopPropagation();
+                                if (!actionsInProgressListingId) {
+                                  onOpenListing(m.id);
+                                }
+                              }}
+                            >
+                              <FormattedMessage id="ManageListingCard.openListing" />
+                            </button>
+                          </Overlay>
+                        ) : null}
+                      </div>
                     );
                   })}
-                </table>
+                </div>
               </div>
               {paginationLinks}
             </div>
