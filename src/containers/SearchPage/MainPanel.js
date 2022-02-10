@@ -92,13 +92,23 @@ class MainPanelComponent extends Component {
         this.setState({ countryData: res.data.data });
       })
       .catch(err => console.log('Error occurred', err));
+    this.setState({
+      practiceArea: this.state.currentQueryParams.hasOwnProperty('pub_practiceArea')?this.state.currentQueryParams?.pub_practiceArea:'',
+      country:this.state.currentQueryParams.hasOwnProperty('pub_country')?this.state.currentQueryParams?.pub_country:'',
+      languages: this.state.currentQueryParams.hasOwnProperty('pub_languages')?this.state.currentQueryParams?.pub_languages:'',
+      city: this.state.currentQueryParams.hasOwnProperty('pub_city')?this.state.currentQueryParams?.pub_city:'',
+      industry: this.state.currentQueryParams.hasOwnProperty('pub_industry')?this.state.currentQueryParams?.pub_industry:'',
+      state: this.state.currentQueryParams.hasOwnProperty('pub_state')?this.state.currentQueryParams?.pub_state:'',
+      postalCode: this.state.currentQueryParams.hasOwnProperty('pub_postalCode')?this.state.currentQueryParams?.pub_postalCode:'',
+      keywords: this.state.currentQueryParams.hasOwnProperty('keywords')?this.state.currentQueryParams?.keywords:'',
+    })
   }
   
   componentDidUpdate() {
 
     
     const { history, urlQueryParams } = this.props;
-    
+    console.log('state',this.state)
     if (
       urlQueryParams?.pub_isProviderType !== true ||
       urlQueryParams?.pub_hasPublicListing !== true
@@ -111,10 +121,7 @@ class MainPanelComponent extends Component {
       //     {pub_hasPublicListing:true, pub_isProviderType:true}
       //   )
       // );
-      if(this.state.keywords === '' && urlQueryParams?.pub_hasPublicListing === true){ 
-        let currParams = this.state.currentQueryParams;
-        delete currParams?.pub_hasPublicListing;
-        delete currParams?.pub_isProviderType;
+      if(this.state.keywords === '' && urlQueryParams?.pub_hasPublicListing === true){
         history.push(
           createResourceLocatorString(
             'SearchPage',
@@ -132,35 +139,29 @@ class MainPanelComponent extends Component {
           createResourceLocatorString(
             'SearchPage',
             routeConfiguration(),
-            {},
+            {}, 
             {...currParams}
           )
         );
       }
-      // else{
-      //   history.push(
-      //     createResourceLocatorString(
-      //       'SearchPage',
-      //       routeConfiguration(),
-      //       {},
-      //       {pub_hasPublicListing:true, pub_isProviderType:true}
-      //     )
-      //   );
-      // }
+
     }
   }
   // Apply the filters by redirecting to SearchPage with new filters.
+    
+  
   applyFilters() {
     const { history, urlQueryParams, sortConfig, filterConfig } = this.props;
     const searchParams = { ...urlQueryParams, ...this.state.currentQueryParams };
     const search = cleanSearchFromConflictingParams(searchParams, sortConfig, filterConfig);
     if(this.state.country === '' && 
+      this.state.state === '' && 
+      this.state.postalCode === '' && 
       this.state.city  === '' && 
       this.state.practiceArea  === '' && 
       this.state.keywords === '' && 
       this.state.languages  === '' && 
       this.state.industry  === ''){
-        console.log("first");
       }else{
         if(this.state.keywords !== ''){
           delete search.pub_isProviderType;
@@ -290,10 +291,8 @@ class MainPanelComponent extends Component {
       history,
       currentUser
     } = this.props;
-    console.log("url",urlQueryParams);
-    console.log("currurl",this.state.currentQueryParams);
     const useHistoryPush = liveEdit || showAsPopup;
-    const dummyOption = {value:'select', label:'Select'}
+    //creating options for react-select component
     const practiceAreaOptions = areaOfLawOptions.map(c=>(
       {value: c.key, label: c.label, key:c.key }
     ));
@@ -313,8 +312,20 @@ class MainPanelComponent extends Component {
     const stateOptions = this.state.countryData
     .filter(c => c.iso3 === 'USA')[0]
     ?.states.map(s => (
-      {value:s.state_code, label: s.name, key:s.value}
+      {value:s.state_code, label: s.name, key:s.state_code}
     ));
+    console.log(urlQueryParams)
+    // //constructing initial values
+    const initialCountryValue = this.state.currentQueryParams.hasOwnProperty('pub_country')?countryOptions.filter(c => c.value===this.state.currentQueryParams?.pub_country):'';
+    const initialCityValue = this.state.currentQueryParams.hasOwnProperty('pub_city')?this.state.currentQueryParams?.pub_city:'';
+    const initialStateValue = this.state.currentQueryParams.hasOwnProperty('pub_state')?stateOptions?.filter(c => c?.value === this.state.currentQueryParams?.pub_state):'';
+    const initialPostalCodeValue = this.state.currentQueryParams.hasOwnProperty('pub_postalCode')?this.state.currentQueryParams?.pub_postalCode:'';
+    const initialPracticeAreaValue = this.state.currentQueryParams.hasOwnProperty('pub_practiceArea')?practiceAreaOptions.filter(c => c.value===this.state.currentQueryParams?.pub_practiceArea):'';
+    const initialKeywordsValue = this.state.currentQueryParams.hasOwnProperty('keywords')?this.state.currentQueryParams?.keywords:'';
+    const initialLanguagesValue = this.state.currentQueryParams.hasOwnProperty('pub_languages')?languageOptions.filter(c => c.value===this.state.currentQueryParams?.pub_languages):'';
+    const initialIndustryValue = this.state.currentQueryParams.hasOwnProperty('pub_industry')?industryOptions.filter(c => c.value===this.state.currentQueryParams?.pub_industry):'';
+
+
     const primaryFilters = filterConfig.filter(f => f.group === 'primary');
     const secondaryFilters = filterConfig.filter(f => f.group !== 'primary');
     const hasSecondaryFilters = !!(secondaryFilters && secondaryFilters.length > 0);
@@ -401,14 +412,12 @@ class MainPanelComponent extends Component {
                 <Select
                   isClearable = {this.state.isClearable}
                   options={countryOptions}
+                  value={initialCountryValue}
                   onChange={e => {
                     e === null? this.setState({ country: '' }):
                     this.setState({ country: e.value });
                     this.getHandleChangedValueFn()({
                       ['pub_country']: e?.value,
-                    });
-                    this.getHandleChangedValueFn()({
-                      ['pub_state']: null,
                     });
                   }}
                 >
@@ -421,23 +430,22 @@ class MainPanelComponent extends Component {
                 </Select>
               </div>
 
-              {this.state.country === 'USA' ? (
+              {this.state.country === 'USA'? (
                 <>
                   <div className={css.lformcol}>
                     <label>State</label>
                     <Select
+                      value={initialStateValue}
                       options={stateOptions}
                       isClearable={this.state.isClearable}
                       // className={css.formcontrol}
                       onChange={e => {
-                        e === null?setState({state:''}):
+                        e === null?this.setState({state:''}):
                         this.setState({ state: e.value });
                         this.getHandleChangedValueFn()({
                           ['pub_state']: e?.value,
                         });
-                        this.getHandleChangedValueFn()({
-                          ['pub_state']:null,
-                        });
+                        
                       }}
                     >
                     </Select>
@@ -447,6 +455,7 @@ class MainPanelComponent extends Component {
                     <label>ZIP</label>
                     <input
                       type="text"
+                      value={initialPostalCodeValue}
                       className={css.formcontrol}
                       placeholder="Type ZIP Code"
                       onChange={e => {
@@ -462,6 +471,7 @@ class MainPanelComponent extends Component {
                 <div className={css.lformcol}>
                   <label>City</label>
                   <input
+                    value={initialCityValue}
                     type="text"
                     className={css.formcontrol}
                     placeholder="Enter City Name"
@@ -478,7 +488,7 @@ class MainPanelComponent extends Component {
               <div className={css.lformcol}>
                 <label>Practice Area</label>
                 <Select
-                
+                  value={initialPracticeAreaValue}
                   isClearable = {this.state.isClearable}
                   options={practiceAreaOptions}
                   // className={css.formcontrol}
@@ -503,6 +513,7 @@ class MainPanelComponent extends Component {
               <div className={css.lformcol}>
                 <label>Keyword</label>
                 <input
+                  value={initialKeywordsValue}
                   type="text"
                   className={css.formcontrol}
                   placeholder="Type Keyword"
@@ -518,6 +529,7 @@ class MainPanelComponent extends Component {
               <div className={css.lformcol}>
                 <label>Language</label>
                 <Select
+                  value={initialLanguagesValue}
                   isClearable = {this.state.isClearable}
                   options={languageOptions}
                   // className={css.formcontrol}
@@ -541,6 +553,7 @@ class MainPanelComponent extends Component {
               <div className={css.lformcol}>
                 <label>Industry</label>
                 <Select
+                  value={initialIndustryValue}
                   isClearable = {this.state.isClearable}
                   options={industryOptions}
                   // className={css.formcontrol}
