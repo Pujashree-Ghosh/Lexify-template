@@ -49,7 +49,8 @@ const cleanSearchFromConflictingParams = (searchParams, sortConfig, filterConfig
     ? { ...searchParams, [sortConfig.queryParamName]: null }
     : searchParams;
 };
-
+    //creating options for react-select component
+    
 /**
  * MainPanel contains search results and filters.
  * There are 3 presentational container-components that show filters:
@@ -62,12 +63,12 @@ class MainPanelComponent extends Component {
     this.state = {
       isSecondaryFiltersOpen: false,
       currentQueryParams: props.urlQueryParams,
-      practiceArea: '',
-      country: '',
-      languages: '',
+      practiceArea: [],
+      country: [],
+      languages: [],
       city: '',
-      industry: '',
-      state: '',
+      industry: [],
+      state: [],
       postalCode: '',
       countryData: [],
       keywords: '',
@@ -92,23 +93,97 @@ class MainPanelComponent extends Component {
         this.setState({ countryData: res.data.data });
       })
       .catch(err => console.log('Error occurred', err));
+
+      //creating options for react-select component
+    const practiceAreaOptions = this.props.areaOfLawOptions.map(c=>(
+      {value: c.key, label: c.label, key:c.key }
+    ));
+    const countryOptions = this.state.countryData.map(c=>(
+      {value: c.iso3, label:c.name, key:c.iso3}
+    ));
+    const languageOptions = this.props.languages.map(l=>(
+      {value:l.code , key:l.code, label:l.name}
+    ));
+    const industryOptions = [
+      { value:'industryA', label:'Industry A' },
+      { value:'industryB', label:'Industry B' },
+      { value:'industryC', label:'Industry C' },
+      { value:'industryD', label:'Industry D' },
+      { value:'industryE', label:'Industry E' }
+    ];
+    const stateOptions = this.state.countryData
+    .filter(c => c.iso3 === 'USA')[0]
+    ?.states.map(s => (
+      {value:s.state_code, label: s.name, key:s.state_code}
+    ));
+
+
     this.setState({
-      practiceArea: this.state.currentQueryParams.hasOwnProperty('pub_practiceArea')?this.state.currentQueryParams?.pub_practiceArea:'',
-      country:this.state.currentQueryParams.hasOwnProperty('pub_country')?this.state.currentQueryParams?.pub_country:'',
-      languages: this.state.currentQueryParams.hasOwnProperty('pub_languages')?this.state.currentQueryParams?.pub_languages:'',
+      practiceArea: this.state.currentQueryParams.hasOwnProperty('pub_practiceArea')?practiceAreaOptions.filter(c => c.value===this.state.currentQueryParams?.pub_practiceArea):[],
+      country:this.state.currentQueryParams.hasOwnProperty('pub_country')?countryOptions.filter(c => c.value===this.state.currentQueryParams?.pub_country):[],
+      languages: this.state.currentQueryParams.hasOwnProperty('pub_languages')?languageOptions.filter(c => c.value===this.state.currentQueryParams?.pub_languages):[],
       city: this.state.currentQueryParams.hasOwnProperty('pub_city')?this.state.currentQueryParams?.pub_city:'',
-      industry: this.state.currentQueryParams.hasOwnProperty('pub_industry')?this.state.currentQueryParams?.pub_industry:'',
-      state: this.state.currentQueryParams.hasOwnProperty('pub_state')?this.state.currentQueryParams?.pub_state:'',
+      industry: this.state.currentQueryParams.hasOwnProperty('pub_industry')?industryOptions.filter(c => c.value===this.state.currentQueryParams?.pub_industry):[],
+      state: this.state.currentQueryParams.hasOwnProperty('pub_state')?stateOptions?.filter(c => c?.value === this.state.currentQueryParams?.pub_state):[],
       postalCode: this.state.currentQueryParams.hasOwnProperty('pub_postalCode')?this.state.currentQueryParams?.pub_postalCode:'',
       keywords: this.state.currentQueryParams.hasOwnProperty('keywords')?this.state.currentQueryParams?.keywords:'',
     })
   }
   
-  componentDidUpdate() {
+  componentDidUpdate(prevProps,prevState) {
+    console.log(this.props.listings)
+    const practiceAreaOptions = this.props.areaOfLawOptions.map(c=>(
+      {value: c.key, label: c.label, key:c.key }
+    ));
+    const countryOptions = this.state.countryData.map(c=>(
+      {value: c.iso3, label:c.name, key:c.iso3}
+    ));
+    const languageOptions = this.props.languages.map(l=>(
+      {value:l.code , key:l.code, label:l.name}
+    ));
+    const industryOptions = [
+      { value:'industryA', label:'Industry A' },
+      { value:'industryB', label:'Industry B' },
+      { value:'industryC', label:'Industry C' },
+      { value:'industryD', label:'Industry D' },
+      { value:'industryE', label:'Industry E' }
+    ];
+    const stateOptions = this.state.countryData
+    .filter(c => c.iso3 === 'USA')[0]
+    ?.states.map(s => (
+      {value:s.state_code, label: s.name, key:s.state_code}
+    ));
 
-    
+
+    if(JSON.stringify(prevState.practiceArea) !== JSON.stringify(this.state.practiceArea)){
+      this.setState({
+        practiceArea: this.state.currentQueryParams.hasOwnProperty('pub_practiceArea')?practiceAreaOptions.filter(c => c.value===this.state.currentQueryParams?.pub_practiceArea):[],
+      })
+    }
+    if(prevState.country.length !== this.state.country.length || this.state.countryData.length !== prevState.countryData.length){
+      // console.log(this.state.currentQueryParams.hasOwnProperty('pub_country')?countryOptions.filter(c => c.value===this.state.currentQueryParams?.pub_country):[])
+      this.setState({
+        country:this.state.currentQueryParams.hasOwnProperty('pub_country')?countryOptions.filter(c => c.value===this.state.currentQueryParams?.pub_country):[],
+      })
+    }
+    if(JSON.stringify(prevState.state) !== JSON.stringify(this.state.state) || this.state.countryData.length !== prevState.countryData.length){
+      this.setState({
+        state: this.state.currentQueryParams.hasOwnProperty('pub_state')?stateOptions?.filter(c => c?.value === this.state.currentQueryParams?.pub_state):[],
+      })
+    }
+    if(JSON.stringify(prevState.industry) !== JSON.stringify(this.state.industry)){
+      this.setState({
+        industry: this.state.currentQueryParams.hasOwnProperty('pub_industry')?industryOptions.filter(c => c.value===this.state.currentQueryParams?.pub_industry):[],
+      })
+    }
+    if(JSON.stringify(prevState.languages) !== JSON.stringify(this.state.languages)){
+      this.setState({
+        languages: this.state.currentQueryParams.hasOwnProperty('pub_languages')?languageOptions.filter(c => c.value===this.state.currentQueryParams?.pub_languages):[],
+      })
+    }
+
+
     const { history, urlQueryParams } = this.props;
-    console.log('state',this.state)
     if (
       urlQueryParams?.pub_isProviderType !== true ||
       urlQueryParams?.pub_hasPublicListing !== true
@@ -121,7 +196,7 @@ class MainPanelComponent extends Component {
       //     {pub_hasPublicListing:true, pub_isProviderType:true}
       //   )
       // );
-      if(this.state.keywords === '' && urlQueryParams?.pub_hasPublicListing === true){
+      if(this.state.keywords === '' && urlQueryParams?.pub_hasPublicListing === true && urlQueryParams?.pub_isProviderType === true){
         history.push(
           createResourceLocatorString(
             'SearchPage',
@@ -154,14 +229,14 @@ class MainPanelComponent extends Component {
     const { history, urlQueryParams, sortConfig, filterConfig } = this.props;
     const searchParams = { ...urlQueryParams, ...this.state.currentQueryParams };
     const search = cleanSearchFromConflictingParams(searchParams, sortConfig, filterConfig);
-    if(this.state.country === '' && 
-      this.state.state === '' && 
+    if(this.state.country.value === '' && 
+      this.state.state.value === '' && 
       this.state.postalCode === '' && 
       this.state.city  === '' && 
-      this.state.practiceArea  === '' && 
+      this.state.practiceArea.value  === '' && 
       this.state.keywords === '' && 
-      this.state.languages  === '' && 
-      this.state.industry  === ''){
+      this.state.languages.value  === '' && 
+      this.state.industry.value  === ''){
       }else{
         if(this.state.keywords !== ''){
           delete search.pub_isProviderType;
@@ -291,6 +366,7 @@ class MainPanelComponent extends Component {
       history,
       currentUser
     } = this.props;
+    console.log(66,this.state.country[0]?.value)
     const useHistoryPush = liveEdit || showAsPopup;
     //creating options for react-select component
     const practiceAreaOptions = areaOfLawOptions.map(c=>(
@@ -314,16 +390,16 @@ class MainPanelComponent extends Component {
     ?.states.map(s => (
       {value:s.state_code, label: s.name, key:s.state_code}
     ));
-    console.log(urlQueryParams)
-    // //constructing initial values
-    const initialCountryValue = this.state.currentQueryParams.hasOwnProperty('pub_country')?countryOptions.filter(c => c.value===this.state.currentQueryParams?.pub_country):'';
-    const initialCityValue = this.state.currentQueryParams.hasOwnProperty('pub_city')?this.state.currentQueryParams?.pub_city:'';
-    const initialStateValue = this.state.currentQueryParams.hasOwnProperty('pub_state')?stateOptions?.filter(c => c?.value === this.state.currentQueryParams?.pub_state):'';
-    const initialPostalCodeValue = this.state.currentQueryParams.hasOwnProperty('pub_postalCode')?this.state.currentQueryParams?.pub_postalCode:'';
-    const initialPracticeAreaValue = this.state.currentQueryParams.hasOwnProperty('pub_practiceArea')?practiceAreaOptions.filter(c => c.value===this.state.currentQueryParams?.pub_practiceArea):'';
-    const initialKeywordsValue = this.state.currentQueryParams.hasOwnProperty('keywords')?this.state.currentQueryParams?.keywords:'';
-    const initialLanguagesValue = this.state.currentQueryParams.hasOwnProperty('pub_languages')?languageOptions.filter(c => c.value===this.state.currentQueryParams?.pub_languages):'';
-    const initialIndustryValue = this.state.currentQueryParams.hasOwnProperty('pub_industry')?industryOptions.filter(c => c.value===this.state.currentQueryParams?.pub_industry):'';
+    // console.log(urlQueryParams)
+    // // //constructing initial values
+    // const initialCountryValue = this.state.currentQueryParams.hasOwnProperty('pub_country')?countryOptions.filter(c => c.value===this.state.currentQueryParams?.pub_country):'';
+    // const initialCityValue = this.state.currentQueryParams.hasOwnProperty('pub_city')?this.state.currentQueryParams?.pub_city:'';
+    // const initialStateValue = this.state.currentQueryParams.hasOwnProperty('pub_state')?stateOptions?.filter(c => c?.value === this.state.currentQueryParams?.pub_state):'';
+    // const initialPostalCodeValue = this.state.currentQueryParams.hasOwnProperty('pub_postalCode')?this.state.currentQueryParams?.pub_postalCode:'';
+    // const initialPracticeAreaValue = this.state.currentQueryParams.hasOwnProperty('pub_practiceArea')?practiceAreaOptions.filter(c => c.value===this.state.currentQueryParams?.pub_practiceArea):'';
+    // const initialKeywordsValue = this.state.currentQueryParams.hasOwnProperty('keywords')?this.state.currentQueryParams?.keywords:'';
+    // const initialLanguagesValue = this.state.currentQueryParams.hasOwnProperty('pub_languages')?languageOptions.filter(c => c.value===this.state.currentQueryParams?.pub_languages):'';
+    // const initialIndustryValue = this.state.currentQueryParams.hasOwnProperty('pub_industry')?industryOptions.filter(c => c.value===this.state.currentQueryParams?.pub_industry):'';
 
 
     const primaryFilters = filterConfig.filter(f => f.group === 'primary');
@@ -412,10 +488,10 @@ class MainPanelComponent extends Component {
                 <Select
                   isClearable = {this.state.isClearable}
                   options={countryOptions}
-                  value={initialCountryValue}
+                  value={this.state.country}
                   onChange={e => {
-                    e === null? this.setState({ country: '' }):
-                    this.setState({ country: e.value });
+                    e === null? this.setState({ country: [] }):
+                    this.setState({ country: e });
                     this.getHandleChangedValueFn()({
                       ['pub_country']: e?.value,
                     });
@@ -430,18 +506,18 @@ class MainPanelComponent extends Component {
                 </Select>
               </div>
 
-              {this.state.country === 'USA'? (
+              {this.state.country[0]?.value === 'USA'? (
                 <>
                   <div className={css.lformcol}>
                     <label>State</label>
                     <Select
-                      value={initialStateValue}
+                      value={this.state.state}
                       options={stateOptions}
                       isClearable={this.state.isClearable}
                       // className={css.formcontrol}
                       onChange={e => {
-                        e === null?this.setState({state:''}):
-                        this.setState({ state: e.value });
+                        e === null?this.setState({state:[]}):
+                        this.setState({ state: e });
                         this.getHandleChangedValueFn()({
                           ['pub_state']: e?.value,
                         });
@@ -455,7 +531,7 @@ class MainPanelComponent extends Component {
                     <label>ZIP</label>
                     <input
                       type="text"
-                      value={initialPostalCodeValue}
+                      value={this.state.postalCode}
                       className={css.formcontrol}
                       placeholder="Type ZIP Code"
                       onChange={e => {
@@ -471,7 +547,7 @@ class MainPanelComponent extends Component {
                 <div className={css.lformcol}>
                   <label>City</label>
                   <input
-                    value={initialCityValue}
+                    value={this.state.city}
                     type="text"
                     className={css.formcontrol}
                     placeholder="Enter City Name"
@@ -488,13 +564,13 @@ class MainPanelComponent extends Component {
               <div className={css.lformcol}>
                 <label>Practice Area</label>
                 <Select
-                  value={initialPracticeAreaValue}
+                  value={this.state.practiceArea}
                   isClearable = {this.state.isClearable}
                   options={practiceAreaOptions}
                   // className={css.formcontrol}
                   onChange={e => {
-                    e === null? this.setState({ practiceArea: '' }):
-                    this.setState({ practiceArea: e.value });
+                    e === null? this.setState({ practiceArea: [] }):
+                    this.setState({ practiceArea: e });
                     this.getHandleChangedValueFn()({
                       ['pub_practiceArea']: e?.value,
                     });
@@ -513,7 +589,7 @@ class MainPanelComponent extends Component {
               <div className={css.lformcol}>
                 <label>Keyword</label>
                 <input
-                  value={initialKeywordsValue}
+                  value={this.state.keywords}
                   type="text"
                   className={css.formcontrol}
                   placeholder="Type Keyword"
@@ -529,13 +605,13 @@ class MainPanelComponent extends Component {
               <div className={css.lformcol}>
                 <label>Language</label>
                 <Select
-                  value={initialLanguagesValue}
+                  value={this.state.languages}
                   isClearable = {this.state.isClearable}
                   options={languageOptions}
                   // className={css.formcontrol}
                   onChange={e => {
-                    e === null? this.setState({ languages: '' }):
-                    this.setState({ languages: e.value });
+                    e === null? this.setState({ languages: [] }):
+                    this.setState({ languages: e });
                     this.getHandleChangedValueFn()({
                       ['pub_languages']: e?.value,
                     });
@@ -553,13 +629,13 @@ class MainPanelComponent extends Component {
               <div className={css.lformcol}>
                 <label>Industry</label>
                 <Select
-                  value={initialIndustryValue}
+                  value={this.state.industry}
                   isClearable = {this.state.isClearable}
                   options={industryOptions}
                   // className={css.formcontrol}
                   onChange={e => {
-                    e === null? this.setState({ industry: '' }):
-                    this.setState({ industry: e.value });
+                    e === null? this.setState({ industry: [] }):
+                    this.setState({ industry: e });
                     this.getHandleChangedValueFn()({
                       ['pub_industry']: e?.value,
                     });
