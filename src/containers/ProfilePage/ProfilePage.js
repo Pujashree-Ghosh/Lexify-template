@@ -4,6 +4,7 @@ import { FormattedMessage, injectIntl, intlShape } from '../../util/reactIntl';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import ReadmoreButton from '../ReadmoreButton/ReadmoreButton';
+import ReactPaginate from 'react-paginate';
 
 import { MdModeEditOutline } from 'react-icons/md';
 import axios from 'axios';
@@ -53,6 +54,8 @@ import biophone from '../../assets/zocial-call.svg';
 import biolinkedin from '../../assets/awesome-linkedin-in.svg';
 
 import css from './ProfilePage.module.css';
+// import CustomPaginate from '../CustomPaginate/CustomPaginate';
+
 // import CustomPagination from '../Pagination/Pagination';
 
 const priceData = (price, intl) => {
@@ -85,6 +88,7 @@ export class ProfilePageComponent extends Component {
       showReviewsType: REVIEW_TYPE_OF_PROVIDER,
       showProfileDetail: false,
       countryData: [],
+      pageNumber: 0,
     };
 
     this.showOfProviderReviews = this.showOfProviderReviews.bind(this);
@@ -266,6 +270,15 @@ export class ProfilePageComponent extends Component {
         {isMobileLayout ? mobileReviews : desktopReviews}
       </div>
     );
+    const num = listings.filter(li => li?.attributes?.publicData?.category === 'publicOral').length;
+    // console.log(num);
+    const usersPerPage = 3;
+    const pagesVisited = this.state.pageNumber * usersPerPage;
+    const pageCount = Math.ceil(num / usersPerPage);
+    const changePage = ({ selected }) => {
+      this.setState({ pageNumber: selected });
+    };
+
     const listingsContainerClasses = classNames(css.listingsContainer, {
       [css.withBioMissingAbove]: !hasBio,
     });
@@ -529,7 +542,7 @@ export class ProfilePageComponent extends Component {
                   <div>
                     {listings
                       .filter(li => li?.attributes?.publicData?.category === 'publicOral')
-
+                      ?.slice(pagesVisited, pagesVisited + usersPerPage)
                       ?.map(l => {
                         const { price, state } = l.attributes;
                         const { formattedPrice } = priceData(price, intl);
@@ -540,8 +553,7 @@ export class ProfilePageComponent extends Component {
                           : LISTING_PAGE_PARAM_TYPE_EDIT;
                         const id = l.id.uuid;
                         const slug = createSlug(l?.attributes?.title);
-                        // console.log('a', l?.attributes?.title, l?.id?.uuid);
-                        // count++;
+
                         return (
                           <div className={css.horizontalcard}>
                             {/* {console.log(count, l?.attributes?.title)};leftdiv */}
@@ -578,6 +590,24 @@ export class ProfilePageComponent extends Component {
                           </div>
                         );
                       })}
+                  </div>
+                  {/* <div>
+                 
+                    <CustomPaginate listings={listings} />
+                  </div> */}
+                  <div>
+                    <ReactPaginate
+                      className={css.pagination}
+                      previousLabel={'Prev'}
+                      nextLabel={'Next'}
+                      pageCount={pageCount}
+                      onPageChange={changePage}
+                      containerClassName={'paginationBttns'}
+                      previousLinkClassName={'previousBttn'}
+                      nextLinkClassName={'nextBttn'}
+                      disabledClassName={'paginationDisabled'}
+                      activeClassName={'paginationActive'}
+                    />
                   </div>
 
                   {/* <ul className={css.listings}>

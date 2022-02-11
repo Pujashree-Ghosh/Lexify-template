@@ -544,3 +544,17 @@
 .readmore {
   color: #a91722;
 }
+.pagination {
+  display: flex;
+  justify-content: center;
+}
+.pagination a {
+  padding: 10px;
+  margin: 8px;
+}
+.pagination a:hover {
+  border: 1px solid #a91722;
+  border-radius: 50%;
+  background-color: #a91722;
+  color: white;
+}
