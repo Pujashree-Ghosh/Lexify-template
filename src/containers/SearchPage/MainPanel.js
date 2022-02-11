@@ -165,6 +165,7 @@ class MainPanel extends Component {
     return updatedURLParams => {
       const updater = prevState => {
         const { address, bounds } = urlQueryParams;
+        
         const mergedQueryParams = { ...urlQueryParams, ...prevState.currentQueryParams };
 
         // Address and bounds are handled outside of MainPanel.

@@ -54,6 +54,7 @@ import SectionImages from './SectionImages';
 import SectionAvatar from './SectionAvatar';
 import SectionHeading from './SectionHeading';
 import SectionDescriptionMaybe from './SectionDescriptionMaybe';
+import SectionDisclaimer from './SectionDisclaimer';
 import SectionFeaturesMaybe from './SectionFeaturesMaybe';
 import SectionReviews from './SectionReviews';
 import SectionMapMaybe from './SectionMapMaybe';
@@ -251,7 +252,6 @@ export class ListingPageComponent extends Component {
     } = currentListing.attributes;
     const { durationHour, durationMinute } = publicData;
     const duration = durationHour && durationMinute ? `${durationHour}.${durationMinute}` : '1';
-    // console.log(999, durationHour, durationMinute, `${durationHour}.${durationMinute}`);
 
     const richTitle = (
       <span>
@@ -330,7 +330,7 @@ export class ListingPageComponent extends Component {
     const userAndListingAuthorAvailable = !!(currentUser && authorAvailable);
     const isOwnListing =
       userAndListingAuthorAvailable && currentListing.author.id.uuid === currentUser.id.uuid;
-    const showContactUser = authorAvailable && (!currentUser || (currentUser && !isOwnListing));
+    //const showContactUser = authorAvailable && (!currentUser || (currentUser && !isOwnListing));
 
     const currentAuthor = authorAvailable ? currentListing.author : null;
     const ensuredAuthor = ensureUser(currentAuthor);
@@ -409,25 +409,25 @@ export class ListingPageComponent extends Component {
         <LayoutSingleColumn className={css.pageRoot}>
           <LayoutWrapperTopbar>{topbar}</LayoutWrapperTopbar>
           <LayoutWrapperMain>
-            <div>
-              <SectionImages
-                title={title}
-                listing={currentListing}
-                isOwnListing={isOwnListing}
-                editParams={{
-                  id: listingId.uuid,
-                  slug: listingSlug,
-                  type: listingType,
-                  tab: listingTab,
-                }}
-                imageCarouselOpen={this.state.imageCarouselOpen}
-                onImageCarouselClose={() => this.setState({ imageCarouselOpen: false })}
-                handleViewPhotosClick={handleViewPhotosClick}
-                onManageDisableScrolling={onManageDisableScrolling}
-              />
+            <div className={css.listingpagecon}>
               <div className={css.contentContainer}>
-                <SectionAvatar user={currentAuthor} params={params} />
                 <div className={css.mainContent}>
+                  <SectionImages
+                    title={title}
+                    listing={currentListing}
+                    isOwnListing={isOwnListing}
+                    editParams={{
+                      id: listingId.uuid,
+                      slug: listingSlug,
+                      type: listingType,
+                      tab: listingTab,
+                    }}
+                    imageCarouselOpen={this.state.imageCarouselOpen}
+                    onImageCarouselClose={() => this.setState({ imageCarouselOpen: false })}
+                    handleViewPhotosClick={handleViewPhotosClick}
+                    onManageDisableScrolling={onManageDisableScrolling}
+                  />
+                  <SectionAvatar user={currentAuthor} params={params} />
                   <SectionHeading
                     priceTitle={priceTitle}
                     formattedPrice={formattedPrice}
@@ -435,17 +435,18 @@ export class ListingPageComponent extends Component {
                     listingCertificate={publicData ? publicData.certificate : null}
                     certificateOptions={certificateOptions}
                     hostLink={hostLink}
-                    showContactUser={showContactUser}
-                    onContactUser={this.onContactUser}
+                    //showContactUser={showContactUser}
+                    //onContactUser={this.onContactUser}
                   />
                   <SectionDescriptionMaybe description={description} />
-                  <SectionFeaturesMaybe options={yogaStylesOptions} publicData={publicData} />
-                  <SectionMapMaybe
+                  <SectionDisclaimer publicData={publicData} />
+                  {/*<SectionFeaturesMaybe options={yogaStylesOptions} publicData={publicData} />*/}
+                  {/*<SectionMapMaybe
                     geolocation={geolocation}
                     publicData={publicData}
                     listingId={currentListing.id}
-                  />
-                  <SectionReviews reviews={reviews} fetchReviewsError={fetchReviewsError} />
+                  />*/}
+                  {/*<SectionReviews reviews={reviews} fetchReviewsError={fetchReviewsError} />*/}
                 </div>
                 <BookingPanel
                   className={css.bookingPanel}

@@ -105,6 +105,16 @@ const TopbarDesktop = props => {
               <FormattedMessage id="TopbarDesktop.promotionLink" />
             </NamedLink>
           </MenuItem>
+          <MenuItem key="ServicesPage">
+            <NamedLink
+              className={classNames(css.promotionLink, currentPageClass('ServicesPage'))}
+              name="ServicesPage"
+            >
+              <span className={css.menuItemBorder} />
+              <FormattedMessage id="TopbarDesktop.ServicesLink" />
+            </NamedLink>
+          </MenuItem>
+
           <MenuItem key="ProfileSettingsPage">
             <NamedLink
               className={classNames(
@@ -142,6 +152,15 @@ const TopbarDesktop = props => {
             >
               <span className={css.menuItemBorder} />
               <FormattedMessage id="TopbarDesktop.promotionLink" />
+            </NamedLink>
+          </MenuItem>
+          <MenuItem key="ServicesPage">
+            <NamedLink
+              className={classNames(css.promotionLink, currentPageClass('ServicesPage'))}
+              name="ServicesPage"
+            >
+              <span className={css.menuItemBorder} />
+              <FormattedMessage id="TopbarDesktop.ServicesLink" />
             </NamedLink>
           </MenuItem>
           <MenuItem key="ProfileSettingsPage">
@@ -231,14 +250,16 @@ const TopbarDesktop = props => {
           alt={intl.formatMessage({ id: 'TopbarDesktop.logo' })}
         />
       </NamedLink>
-      {search}
+      {/*search*/}
       {/* {currentUser?.attributes?.profile?.protectedData?.isLawyer ? listingLink : ''} */}
-      {currentUser?.attributes?.profile?.protectedData?.isLawyer ? createListingLink : ''}
-      {inboxLink}
-      {profileMenu}
-      {signupLawyer}
-      {signupLink}
-      {loginLink}
+      <div className={css.rightdiv}>
+        {currentUser?.attributes?.profile?.protectedData?.isLawyer ? createListingLink : ''}
+        {inboxLink}
+        {profileMenu}
+        {signupLawyer}
+        {signupLink}
+        {loginLink}
+      </div>
     </nav>
   );
 };

@@ -5,6 +5,7 @@ import css from './ListingPage.module.css';
 
 const SectionAvatar = props => {
   const { user } = props;
+
   return (
     <div className={css.sectionAvatar}>
       <AvatarLarge
@@ -13,7 +14,6 @@ const SectionAvatar = props => {
         initialsClassName={css.initialsDesktop}
         disableProfileLink
       />
-
       <AvatarMedium user={user} className={css.avatarMobile} disableProfileLink />
     </div>
   );

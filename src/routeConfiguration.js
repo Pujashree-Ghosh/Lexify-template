@@ -30,6 +30,7 @@ const ProfilePage = loadable(() => import(/* webpackChunkName: "ProfilePage" */ 
 const ProfileSettingsPage = loadable(() => import(/* webpackChunkName: "ProfileSettingsPage" */ './containers/ProfileSettingsPage/ProfileSettingsPage'));
 const SearchPage = loadable(() => import(/* webpackChunkName: "SearchPage" */ /* webpackPrefetch: true */  './containers/SearchPage/SearchPage'));
 const PromotionPage = loadable(() => import(/* webpackChunkName: "PromotionPage" */ /* webpackPrefetch: true */  './containers/SearchPage/PromotionPage'));
+const ServicesPage = loadable(() => import(/* webpackChunkName: "ServicesPage" */ /* webpackPrefetch: true */  './containers/SearchPage/ServicesPage'));
 const StripePayoutPage = loadable(() => import(/* webpackChunkName: "StripePayoutPage" */ './containers/StripePayoutPage/StripePayoutPage'));
 const TermsOfServicePage = loadable(() => import(/* webpackChunkName: "TermsOfServicePage" */ './containers/TermsOfServicePage/TermsOfServicePage'));
 const TransactionPage = loadable(() => import(/* webpackChunkName: "TransactionPage" */ './containers/TransactionPage/TransactionPage'));
@@ -79,7 +80,17 @@ const routeConfiguration = () => {
     {
       path: '/promotion',
       name: 'PromotionPage',
+      auth: true,
+      authPage: 'LoginPage',
       component: PromotionPage,
+      loadData: pageDataLoadingAPI.SearchPage.loadData,
+    },
+    {
+      path: '/Services',
+      name: 'ServicesPage',
+      auth: true,
+      authPage: 'LoginPage',
+      component: ServicesPage,
       loadData: pageDataLoadingAPI.SearchPage.loadData,
     },
     {

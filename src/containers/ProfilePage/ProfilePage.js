@@ -3,12 +3,30 @@ import PropTypes from 'prop-types';
 import { FormattedMessage, injectIntl, intlShape } from '../../util/reactIntl';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { REVIEW_TYPE_OF_PROVIDER, REVIEW_TYPE_OF_CUSTOMER, propTypes } from '../../util/types';
+import ReadmoreButton from '../ReadmoreButton/ReadmoreButton';
+
+import { MdModeEditOutline } from 'react-icons/md';
+import axios from 'axios';
+import {
+  REVIEW_TYPE_OF_PROVIDER,
+  REVIEW_TYPE_OF_CUSTOMER,
+  propTypes,
+  LISTING_STATE_DRAFT,
+  LISTING_STATE_CLOSED,
+} from '../../util/types';
 import { ensureCurrentUser, ensureUser } from '../../util/data';
 import { withViewport } from '../../util/contextHelpers';
 import classNames from 'classnames';
 import { isScrollingDisabled } from '../../ducks/UI.duck';
 import { getMarketplaceEntities } from '../../ducks/marketplaceData.duck';
+import { formatMoney } from '../../util/currency';
+import {
+  LISTING_PAGE_PENDING_APPROVAL_VARIANT,
+  LISTING_PAGE_DRAFT_VARIANT,
+  LISTING_PAGE_PARAM_TYPE_DRAFT,
+  LISTING_PAGE_PARAM_TYPE_EDIT,
+  createSlug,
+} from '../../util/urlHelpers';
 import {
   Page,
   LayoutSideNavigation,
@@ -16,6 +34,7 @@ import {
   LayoutWrapperSideNav,
   LayoutWrapperTopbar,
   LayoutWrapperFooter,
+  PaginationLinks,
   ListingCard,
   Footer,
   AvatarLarge,
@@ -34,6 +53,26 @@ import biophone from '../../assets/zocial-call.svg';
 import biolinkedin from '../../assets/awesome-linkedin-in.svg';
 
 import css from './ProfilePage.module.css';
+// import CustomPagination from '../Pagination/Pagination';
+
+const priceData = (price, intl) => {
+  if (price && price.currency === config.currency) {
+    const formattedPrice = formatMoney(intl, price);
+    return { formattedPrice, priceTitle: formattedPrice };
+  } else if (price) {
+    return {
+      formattedPrice: intl.formatMessage(
+        { id: 'ListingCard.unsupportedPrice' },
+        { currency: price.currency }
+      ),
+      priceTitle: intl.formatMessage(
+        { id: 'ListingCard.unsupportedPriceTitle' },
+        { currency: price.currency }
+      ),
+    };
+  }
+  return {};
+};
 
 const MAX_MOBILE_SCREEN_WIDTH = 768;
 
@@ -45,6 +84,7 @@ export class ProfilePageComponent extends Component {
       // keep track of which reviews tab to show in desktop viewport
       showReviewsType: REVIEW_TYPE_OF_PROVIDER,
       showProfileDetail: false,
+      countryData: [],
     };
 
     this.showOfProviderReviews = this.showOfProviderReviews.bind(this);
@@ -63,6 +103,15 @@ export class ProfilePageComponent extends Component {
     });
   }
 
+  componentDidMount() {
+    axios
+      .get('https://countriesnow.space/api/v0.1/countries/states')
+      .then(res => {
+        this.setState({ countryData: res.data.data });
+      })
+      .catch(err => console.log('Error occurred', err));
+  }
+
   render() {
     const {
       scrollingDisabled,
@@ -70,14 +119,17 @@ export class ProfilePageComponent extends Component {
       user,
       userShowError,
       reviews,
+      pagination,
       queryReviewsError,
       viewport,
       intl,
+      queryInProgress,
+      queryListingsError,
+      queryParams,
       listings,
       areaOfLawOptions,
     } = this.props;
-    // console.log(user);
-    // console.log(listings);
+    //console.log(user);
 
     const ensuredCurrentUser = ensureCurrentUser(currentUser);
     const profileUser = ensureUser(user);
@@ -91,6 +143,24 @@ export class ProfilePageComponent extends Component {
 
     // console.log(profileUser, currentUser);
 
+    const page = queryParams ? queryParams.page : 1;
+    const hasPaginationInfo = !!pagination && pagination.totalItems != null;
+    const listingsAreLoaded = !queryInProgress && hasPaginationInfo;
+    const noResults =
+      listingsAreLoaded && pagination.totalItems <= 1 ? (
+        <h1 className={css.title}>
+          <FormattedMessage id="ManageListingsPage.noResults" />
+        </h1>
+      ) : null;
+    const paginationLinks =
+      listingsAreLoaded && pagination && pagination.totalPages > 1 ? (
+        <PaginationLinks
+          className={css.pagination}
+          pageName="ManageListingsPage"
+          pageSearchParams={{ page }}
+          pagination={pagination}
+        />
+      ) : null;
     const editLinkMobile = isCurrentUser ? (
       <NamedLink className={css.editLinkMobile} name="ProfileSettingsPage">
         <FormattedMessage id="ProfilePage.editProfileLinkMobile" />
@@ -229,7 +299,6 @@ export class ProfilePageComponent extends Component {
       `(max-width: 1920px) ${panelWidth / 2}vw`,
       `${panelWidth / 3}vw`,
     ].join(', ');
-
     return (
       <Page
         scrollingDisabled={scrollingDisabled}
@@ -271,11 +340,12 @@ export class ProfilePageComponent extends Component {
                       <img src={locationIcon} /> New Jersey, USA
                     </span>
                     <p className={css.infotxtp}>
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                      {/*Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
                       incididunt ut labore et dolore magna aliqua. Bibendum est ultricies integer
                       quis. Iaculis urna id volutpat lacus laoreet. Mauris vitae ultricies leo
                       integer malesuada. Ac odio tempor orci dapibus ultrices in. Egestas diam in
-                      arcu cursus euismod. Dictum fusce ut
+                      arcu cursus euismod. Dictum fusce ut*/}
+                      {user?.attributes?.profile?.bio}
                     </p>
                   </div>
                 </div>
@@ -285,6 +355,10 @@ export class ProfilePageComponent extends Component {
                 <div className={css.lawyerDetail}>
                   <hr />
                   <div className={css.sectionprofin}>
+                    <div className={css.ClientId}>
+                      <span>Lawyer ID</span>
+                      <span>{user?.attributes?.profile?.publicData?.email}</span>
+                    </div>
                     <h3 className={css.sectionTitle}>
                       <FormattedMessage id="ProfilePage.practiceAre" />
                     </h3>
@@ -382,12 +456,14 @@ export class ProfilePageComponent extends Component {
                     <label>Jurisdiction</label>
                     <div className={css.profDetail}>
                       <table>
-                        <th className={css.state}>State</th>
+                        <th className={css.state}>Country</th>
                         <th className={css.status}>Status</th>
                         <th className={css.ao}>Acquired on</th>
                         {publicData?.jurisdictionPractice?.map(m => (
                           <tr>
-                            <td className={css.state}>{m.country}</td>
+                            <td className={css.state}>
+                              {this.state.countryData.filter(c => c.iso3 === m.country)[0].name}
+                            </td>
                             <td className={css.status}>{m.status}</td>
                             <td className={css.ao}>{m.date}</td>
                           </tr>
@@ -447,7 +523,64 @@ export class ProfilePageComponent extends Component {
                     /> */}
                     Consultations provided by {user?.attributes?.profile?.displayName}
                   </h2>
-                  <ul className={css.listings}>
+                  {/* {queryInProgress ? loadingResults : null}
+                  {queryListingsError ? queryError : null} */}
+
+                  <div>
+                    {listings
+                      .filter(li => li?.attributes?.publicData?.category === 'publicOral')
+
+                      ?.map(l => {
+                        const { price, state } = l.attributes;
+                        const { formattedPrice } = priceData(price, intl);
+                        const isDraft = state === LISTING_STATE_DRAFT;
+                        const isClosed = state === LISTING_STATE_CLOSED;
+                        const editListingLinkType = isDraft
+                          ? LISTING_PAGE_PARAM_TYPE_DRAFT
+                          : LISTING_PAGE_PARAM_TYPE_EDIT;
+                        const id = l.id.uuid;
+                        const slug = createSlug(l?.attributes?.title);
+                        // console.log('a', l?.attributes?.title, l?.id?.uuid);
+                        // count++;
+                        return (
+                          <div className={css.horizontalcard}>
+                            {/* {console.log(count, l?.attributes?.title)};leftdiv */}
+                            <div className={css.lefthorizontal}>
+                              {isDraft ? (
+                                <h2 className={css.lefttitle}>{l?.attributes?.title}</h2>
+                              ) : (
+                                <NamedLink
+                                  className={css.manageLink}
+                                  name="ListingPage"
+                                  params={{ id, slug }}
+                                >
+                                  <h2 className={css.lefttitle}> {l?.attributes?.title}</h2>
+                                </NamedLink>
+                              )}
+
+                              <ReadmoreButton description={l?.attributes?.description} />
+                            </div>
+                            {/* rightdiv */}
+                            <div className={css.righthorizontal}>
+                              {/* rightlowerdiv */}
+                              <span className={css.price}> {formattedPrice} </span>
+                              <button className={css.editbutton}>
+                                <NamedLink
+                                  // className={css.manageLink}
+                                  className={css.linkcolor}
+                                  name="ListingPage"
+                                  params={{ id, slug }}
+                                >
+                                  <FormattedMessage id="Profilepage.Booknow" />
+                                </NamedLink>
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      })}
+                  </div>
+
+                  {/* <ul className={css.listings}>
                     {listings
                       .filter(li => li?.attributes?.publicData?.category === 'publicOral')
                       ?.map(l => (
@@ -455,15 +588,15 @@ export class ProfilePageComponent extends Component {
                           <ListingCard listing={l} renderSizes={renderSizes} />
                         </li>
                       ))}
-                  </ul>
+                  </ul> */}
                 </div>
               )}
             </div>
           ) : publicData?.clientType === 'privateIndividual' ? (
             <div className={css.privateIndividual}>
               <div className={css.ClientId}>
-                <span>#Client Id</span>
-                <span>{'12345678'}</span>
+                <span>#Client email</span>
+                <span>{user?.attributes?.profile?.publicData?.email}</span>
               </div>
               <div className={css.cdrowclnt}>
                 <div className={css.coDetail}>Client Details</div>
@@ -522,8 +655,9 @@ export class ProfilePageComponent extends Component {
           ) : (
             <div className={css.legal}>
               <div className={css.ClientId}>
-                <span>#Client Id</span>
-                <span>{user?.id?.uuid}</span>
+                <span>#Client email</span>
+                <span>{user?.attributes?.profile?.publicData?.email}</span>
+                {/*<span>{user?.id?.uuid}</span>*/}
               </div>
 
               <div className={css.cdrowclnt}>
@@ -538,7 +672,15 @@ export class ProfilePageComponent extends Component {
                     </div>
                     <div className={css.infoclnrow}>
                       <span className={css.coleftrow}>Country </span>
-                      <span>{publicData?.legalEntity?.country}</span>
+
+                      <span>
+                        {
+                          /*publicData?.legalEntity?.country*/
+                          this.state.countryData.filter(
+                            c => c.iso3 === publicData?.legalEntity?.country
+                          )[0]?.name
+                        }
+                      </span>
                     </div>
                     <div className={css.infoclnrow}>
                       <span className={css.coleftrow}>Street </span>
@@ -607,6 +749,9 @@ export class ProfilePageComponent extends Component {
 
 ProfilePageComponent.defaultProps = {
   currentUser: null,
+  pagination: null,
+  queryListingsError: null,
+  queryParams: null,
   user: null,
   userShowError: null,
   reviews: [],
@@ -614,9 +759,13 @@ ProfilePageComponent.defaultProps = {
   areaOfLawOptions: config.custom.areaOfLaw.options,
 };
 
-const { bool, arrayOf, number, shape } = PropTypes;
+const { bool, arrayOf, number, object, shape } = PropTypes;
 
 ProfilePageComponent.propTypes = {
+  pagination: propTypes.pagination,
+  queryInProgress: bool.isRequired,
+  queryListingsError: propTypes.error,
+  queryParams: object,
   scrollingDisabled: bool.isRequired,
   currentUser: propTypes.currentUser,
   user: propTypes.user,
@@ -637,10 +786,21 @@ ProfilePageComponent.propTypes = {
 
 const mapStateToProps = state => {
   const { currentUser } = state.user;
-  const { userId, userShowError, reviews, queryReviewsError, userListingRefs } = state.ProfilePage;
+  const {
+    userId,
+    userShowError,
+    reviews,
+    queryReviewsError,
+    pagination,
+    queryInProgress,
+    queryListingsError,
+    userListingRefs,
+    queryParams,
+  } = state.ProfilePage;
   const userMatches = getMarketplaceEntities(state, [{ type: 'user', id: userId }]);
   const listings = getMarketplaceEntities(state, userListingRefs);
   const user = userMatches.length === 1 ? userMatches[0] : null;
+
   return {
     scrollingDisabled: isScrollingDisabled(state),
     currentUser,
@@ -649,6 +809,10 @@ const mapStateToProps = state => {
     reviews,
     listings,
     queryReviewsError,
+    pagination,
+    queryInProgress,
+    queryListingsError,
+    queryParams,
   };
 };
 

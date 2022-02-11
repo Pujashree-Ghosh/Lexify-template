@@ -69,6 +69,7 @@ class ProfileSettingsFormComponent extends Component {
       .then(res => this.setState({ countryData: res.data.data }))
       .catch(err => console.log('Error occurred', err));
   }
+
   componentDidUpdate(prevProps) {
     // Upload delay is additional time window where Avatar is added to the DOM,
     // but not yet visible (time to load image URL from srcset)
@@ -114,7 +115,6 @@ class ProfileSettingsFormComponent extends Component {
             languages,
           } = fieldRenderProps;
           // let { values } = fieldRenderProps;
-          // console.log(values);
 
           // console.log(this.state.languages, initialValues.languages)
           const user = ensureCurrentUser(currentUser);

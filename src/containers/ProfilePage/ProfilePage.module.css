@@ -481,3 +481,66 @@
   margin-right: 20px;
   cursor: pointer;
 }
+/* horizontaldesign */
+.horizontalcard {
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  border-left: brown 5px solid;
+  display: flex;
+  flex-direction: row;
+  margin: 20px 0px;
+}
+.lefthorizontal {
+  width: 80%;
+  padding-left: 10px;
+}
+.righthorizontal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 20%;
+  padding-bottom: 20px;
+  /* box-shadow: -3px 0px 2px 0px #aaaaaa; */
+  border-left: rgb(179, 172, 172) 1px solid;
+  padding-top: 10px;
+  margin: 20px 0px;
+}
+.rightlowerdiv {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: -3px 0px 2px 0px #aaaaaa;
+  width: 100%;
+  height: 100%;
+}
+.span {
+  background-color: #ebffef;
+  padding: 2px 2px;
+  padding-right: 15px;
+  padding-left: 15px;
+  color: #2db10b;
+}
+.editbutton {
+  background-color: #a91722;
+  padding: 2px 2px;
+  border-radius: 5px;
+  padding-right: 20px;
+  padding-left: 18px;
+  align-items: center;
+  border: none;
+}
+.price {
+  padding: 20px;
+  color: #a91722;
+  font-size: 25px;
+  font-weight: bold;
+  font-family: poppins;
+}
+.togglemenu {
+  display: inline;
+}
+.linkcolor {
+  color: #ebffef;
+}
+.readmore {
+  color: #a91722;
+}
