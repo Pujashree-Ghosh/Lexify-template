@@ -1,0 +1,239 @@
+@import '../../styles/propertySets.css';
+
+.root {
+  /* Layout */
+  display: flex;
+  flex-direction: column;
+
+  /* Remove link's hover effect */
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+.threeToTwoWrapper {
+  /* Layout */
+  display: block;
+  width: 100%;
+  position: relative;
+  transition: var(--transitionStyleButton);
+
+  &:hover {
+    transform: scale(1.02);
+    box-shadow: var(--boxShadowListingCard);
+  }
+}
+
+/* Firefox doesn't support image aspect ratio inside flexbox */
+.aspectWrapper {
+  padding-bottom: 66.6667%; /* 3:2 Aspect Ratio */
+  background: var(--matterColorNegative); /* Loading BG color */
+}
+
+.rootForImage {
+  /* Layout - image will take space defined by aspect ratio wrapper */
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  border-radius: var(--borderRadius);
+}
+
+.info {
+  /* Layout */
+  display: flex;
+  flex-direction: row;
+  padding: 16px 0 2px 0;
+}
+
+.price {
+  /* Layout */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  margin-right: 18px;
+}
+
+.priceValue {
+  /* Font */
+  @apply --marketplaceH3FontStyles;
+
+  /* Remove default margins from font */
+  margin-top: 0;
+  margin-bottom: 0;
+
+  @media (--viewportMedium) {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
+.perUnit {
+  /* Font */
+  @apply --marketplaceTinyFontStyles;
+  color: var(--matterColor);
+
+  /* Remove default margins from font */
+  margin-top: 0;
+  margin-bottom: 0;
+
+  @media (--viewportMedium) {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
+.mainInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  /* Font */
+  @apply --marketplaceH3FontStyles;
+  color: var(--matterColor);
+
+  /* Remove default margins from font */
+  margin-top: 0;
+  margin-bottom: 0;
+
+  @media (--viewportMedium) {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
+.certificateInfo {
+  /* Font */
+  @apply --marketplaceTinyFontStyles;
+  color: var(--matterColor);
+
+  /* Remove default margins from font */
+  margin-top: 0;
+  margin-bottom: 0;
+
+  @media (--viewportMedium) {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
+.longWord {
+  /* fallback option */
+  word-break: break-all;
+  /* use break-word if available */
+  word-break: break-word;
+  hyphens: auto;
+}
+.SectionAvatarImg {
+  position: relative;
+}
+
+.cardContainer {
+  background: #fff;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  border-left: 10px solid #A91722;
+  align-items: center;
+  padding: 15px;
+  border-radius: 10px;
+  @media (max-width: 575px) {
+    flex-direction: column;
+  }
+}
+.listingInfo{
+    padding-left: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-right: 20px;
+    display: flex;
+    flex-direction: column;
+    
+}
+.listingTitle{
+    margin: 0px;
+}
+.listingDescription{
+    margin: 0px
+}
+.price{
+    padding: 10px;
+    margin: 0px;
+    align-items: center;
+    color: #A91722;
+    
+}
+.bookingContent{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 10px;
+    border-left: 2px solid rgb(201, 198, 198);
+}
+.userContent{
+    display: flex;
+    flex-direction: row;
+    padding-left: 10px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-right: 20px;
+    border-right: 2px solid rgb(201, 198, 198);
+}
+.userInfo {
+  margin-left: 10px;
+  justify-items: center;
+  text-transform: capitalize;
+  @media (max-width: 575px) {
+    text-align: center;
+    margin: 10px 0;
+  }
+  & .userName {
+    font-size: 14px;
+    color: #38394e;
+    line-height: 18px;
+    margin: 0 0 5px;
+  }
+}
+.profileBtnContainer {
+  margin-left: auto;
+  /* margin-right: 20px; */
+  @media (max-width: 575px) {
+    margin-right: auto;
+  }
+}
+.profileBtn {
+  background-color: var(--marketplaceColor);
+  color: var(--matterColorLight);
+  padding: 7px 15px;
+  text-align: center;
+  display: block;
+  border-radius: 5px;
+  width: 100%;
+  font-size: 15px;
+  font-weight: 300;
+  cursor: pointer;
+  border: 0;
+  max-width: 200px;
+  line-height: 20px;
+}
+.profileBtn:hover {
+  background-color: var(--marketplaceColorDark);
+}
+.locationIconContainer {
+  margin-right: 10px;
+}
+.locationIcon {
+  max-height: 12px;
+  margin: 0 6px 0 0;
+  opacity: 0.5;
+}
+.userLocation {
+  font-size: 13px;
+  color: #a3a3a3;
+  line-height: 18px;
+}

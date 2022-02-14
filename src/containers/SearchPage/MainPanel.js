@@ -119,19 +119,59 @@ class MainPanelComponent extends Component {
 
 
     this.setState({
-      practiceArea: this.state.currentQueryParams.hasOwnProperty('pub_practiceArea')?practiceAreaOptions.filter(c => c.value===this.state.currentQueryParams?.pub_practiceArea):[],
-      country:this.state.currentQueryParams.hasOwnProperty('pub_country')?countryOptions.filter(c => c.value===this.state.currentQueryParams?.pub_country):[],
-      languages: this.state.currentQueryParams.hasOwnProperty('pub_languages')?languageOptions.filter(c => c.value===this.state.currentQueryParams?.pub_languages):[],
-      city: this.state.currentQueryParams.hasOwnProperty('pub_city')?this.state.currentQueryParams?.pub_city:'',
-      industry: this.state.currentQueryParams.hasOwnProperty('pub_industry')?industryOptions.filter(c => c.value===this.state.currentQueryParams?.pub_industry):[],
-      state: this.state.currentQueryParams.hasOwnProperty('pub_state')?stateOptions?.filter(c => c?.value === this.state.currentQueryParams?.pub_state):[],
-      postalCode: this.state.currentQueryParams.hasOwnProperty('pub_postalCode')?this.state.currentQueryParams?.pub_postalCode:'',
-      keywords: this.state.currentQueryParams.hasOwnProperty('keywords')?this.state.currentQueryParams?.keywords:'',
+      practiceArea: this.state.currentQueryParams?.hasOwnProperty('pub_practiceArea')?practiceAreaOptions.filter(c => c.value===this.state.currentQueryParams?.pub_practiceArea):[],
+      country:this.state.currentQueryParams?.hasOwnProperty('pub_country')?countryOptions.filter(c => c.value===this.state.currentQueryParams?.pub_country):[],
+      languages: this.state.currentQueryParams?.hasOwnProperty('pub_languages')?languageOptions.filter(c => c.value===this.state.currentQueryParams?.pub_languages):[],
+      city: this.state.currentQueryParams?.hasOwnProperty('pub_city')?this.state.currentQueryParams?.pub_city:'',
+      industry: this.state.currentQueryParams?.hasOwnProperty('pub_industry')?industryOptions.filter(c => c.value===this.state.currentQueryParams?.pub_industry):[],
+      state: this.state.currentQueryParams?.hasOwnProperty('pub_state')?stateOptions?.filter(c => c?.value === this.state.currentQueryParams?.pub_state):[],
+      postalCode: this.state.currentQueryParams?.hasOwnProperty('pub_postalCode')?this.state.currentQueryParams?.pub_postalCode:'',
+      keywords: this.state.currentQueryParams?.hasOwnProperty('keywords')?this.state.currentQueryParams?.keywords:'',
     })
   }
-  
+  componentDidUpdate(){
+    const { history, urlQueryParams } = this.props;
+    console.log('UQP',urlQueryParams)
+    if (
+      urlQueryParams?.pub_isProviderType !== true ||
+      urlQueryParams?.pub_hasPublicListing !== true
+    ){
+      // history.push(
+      //   createResourceLocatorString(
+      //     'SearchPage',
+      //     routeConfiguration(),
+      //     {},
+      //     {pub_hasPublicListing:true, pub_isProviderType:true}
+      //   )
+      // );
+      if(this.state.keywords === '' && urlQueryParams?.pub_hasPublicListing === true && urlQueryParams?.pub_isProviderType === true){
+        history.push(
+          createResourceLocatorString(
+            'SearchPage',
+            routeConfiguration(),
+            {},
+            {pub_hasPublicListing:true, pub_isProviderType:true}
+          )
+        );
+      }
+      
+      // if(this.state.currentQueryParams.hasOwnProperty('keywords') && urlQueryParams?.pub_hasPublicListing === true && urlQueryParams?.pub_isProviderType === true){
+      //   let currParams = this.state.currentQueryParams;
+      //   delete currParams?.pub_hasPublicListing;
+      //   delete currParams?.pub_isProviderType;
+      //   history.push(
+      //     createResourceLocatorString(
+      //       'SearchPage',
+      //       routeConfiguration(),
+      //       {}, 
+      //       {...currParams}
+      //     )
+      //   );
+      // }
+
+    }
+  }
   componentDidUpdate(prevProps,prevState) {
-    console.log(this.props.listings)
     const practiceAreaOptions = this.props.areaOfLawOptions.map(c=>(
       {value: c.key, label: c.label, key:c.key }
     ));
@@ -161,7 +201,6 @@ class MainPanelComponent extends Component {
       })
     }
     if(prevState.country.length !== this.state.country.length || this.state.countryData.length !== prevState.countryData.length){
-      // console.log(this.state.currentQueryParams.hasOwnProperty('pub_country')?countryOptions.filter(c => c.value===this.state.currentQueryParams?.pub_country):[])
       this.setState({
         country:this.state.currentQueryParams.hasOwnProperty('pub_country')?countryOptions.filter(c => c.value===this.state.currentQueryParams?.pub_country):[],
       })
@@ -206,19 +245,20 @@ class MainPanelComponent extends Component {
           )
         );
       }
-      if(this.state.currentQueryParams.hasOwnProperty('keywords') && urlQueryParams?.pub_hasPublicListing === true && urlQueryParams?.pub_isProviderType === true){
-        let currParams = this.state.currentQueryParams;
-        delete currParams?.pub_hasPublicListing;
-        delete currParams?.pub_isProviderType;
-        history.push(
-          createResourceLocatorString(
-            'SearchPage',
-            routeConfiguration(),
-            {}, 
-            {...currParams}
-          )
-        );
-      }
+      
+      // if(this.state.currentQueryParams.hasOwnProperty('keywords') && urlQueryParams?.pub_hasPublicListing === true && urlQueryParams?.pub_isProviderType === true){
+      //   let currParams = this.state.currentQueryParams;
+      //   delete currParams?.pub_hasPublicListing;
+      //   delete currParams?.pub_isProviderType;
+      //   history.push(
+      //     createResourceLocatorString(
+      //       'SearchPage',
+      //       routeConfiguration(),
+      //       {}, 
+      //       {...currParams}
+      //     )
+      //   );
+      // }
 
     }
   }
@@ -229,14 +269,14 @@ class MainPanelComponent extends Component {
     const { history, urlQueryParams, sortConfig, filterConfig } = this.props;
     const searchParams = { ...urlQueryParams, ...this.state.currentQueryParams };
     const search = cleanSearchFromConflictingParams(searchParams, sortConfig, filterConfig);
-    if(this.state.country.value === '' && 
-      this.state.state.value === '' && 
+    if(this.state.country[0]?.value === '' && 
+      this.state.state[0]?.value === '' && 
       this.state.postalCode === '' && 
       this.state.city  === '' && 
-      this.state.practiceArea.value  === '' && 
+      this.state.practiceArea[0]?.value  === '' && 
       this.state.keywords === '' && 
-      this.state.languages.value  === '' && 
-      this.state.industry.value  === ''){
+      this.state.languages[0]?.value  === '' && 
+      this.state.industry[0]?.value  === ''){
       }else{
         if(this.state.keywords !== ''){
           delete search.pub_isProviderType;
@@ -366,7 +406,7 @@ class MainPanelComponent extends Component {
       history,
       currentUser
     } = this.props;
-    console.log(66,this.state.country[0]?.value)
+    console.log("listing",listings)
     const useHistoryPush = liveEdit || showAsPopup;
     //creating options for react-select component
     const practiceAreaOptions = areaOfLawOptions.map(c=>(
@@ -390,18 +430,6 @@ class MainPanelComponent extends Component {
     ?.states.map(s => (
       {value:s.state_code, label: s.name, key:s.state_code}
     ));
-    // console.log(urlQueryParams)
-    // // //constructing initial values
-    // const initialCountryValue = this.state.currentQueryParams.hasOwnProperty('pub_country')?countryOptions.filter(c => c.value===this.state.currentQueryParams?.pub_country):'';
-    // const initialCityValue = this.state.currentQueryParams.hasOwnProperty('pub_city')?this.state.currentQueryParams?.pub_city:'';
-    // const initialStateValue = this.state.currentQueryParams.hasOwnProperty('pub_state')?stateOptions?.filter(c => c?.value === this.state.currentQueryParams?.pub_state):'';
-    // const initialPostalCodeValue = this.state.currentQueryParams.hasOwnProperty('pub_postalCode')?this.state.currentQueryParams?.pub_postalCode:'';
-    // const initialPracticeAreaValue = this.state.currentQueryParams.hasOwnProperty('pub_practiceArea')?practiceAreaOptions.filter(c => c.value===this.state.currentQueryParams?.pub_practiceArea):'';
-    // const initialKeywordsValue = this.state.currentQueryParams.hasOwnProperty('keywords')?this.state.currentQueryParams?.keywords:'';
-    // const initialLanguagesValue = this.state.currentQueryParams.hasOwnProperty('pub_languages')?languageOptions.filter(c => c.value===this.state.currentQueryParams?.pub_languages):'';
-    // const initialIndustryValue = this.state.currentQueryParams.hasOwnProperty('pub_industry')?industryOptions.filter(c => c.value===this.state.currentQueryParams?.pub_industry):'';
-
-
     const primaryFilters = filterConfig.filter(f => f.group === 'primary');
     const secondaryFilters = filterConfig.filter(f => f.group !== 'primary');
     const hasSecondaryFilters = !!(secondaryFilters && secondaryFilters.length > 0);
@@ -473,7 +501,7 @@ class MainPanelComponent extends Component {
         />
       ) : null;
     };
-
+    console.log('state',this.state.currentQueryParams)
     const classes = classNames(rootClassName || css.searchResultContainer, className);
     return (
       <div className={classes}>
@@ -757,7 +785,7 @@ class MainPanelComponent extends Component {
             ) : null}
             {urlQueryParams.pub_isProviderType === true && 
               urlQueryParams.pub_hasPublicListing === true && 
-              Object.keys(urlQueryParams).length === 2?null:
+              Object.keys(urlQueryParams).length === 2?'':
                 <SearchResultsPanel
                   className={css.searchListingsPanel}
                   listings={listings}
