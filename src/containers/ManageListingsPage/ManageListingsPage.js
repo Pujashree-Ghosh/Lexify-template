@@ -5,11 +5,15 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { MdModeEditOutline } from 'react-icons/md';
 import { IoMdClose } from 'react-icons/io';
+import { withRouter } from 'react-router-dom';
 
 import config from '../../config';
 import { FormattedMessage, injectIntl, intlShape } from '../../util/reactIntl';
 import { propTypes, LISTING_STATE_DRAFT, LISTING_STATE_CLOSED } from '../../util/types';
 import { ensureListing } from '../../util/data';
+import { createResourceLocatorString } from '../../util/routes';
+import { ensureUser } from '../../util/data';
+import routeConfiguration from '../../routeConfiguration';
 import { isScrollingDisabled } from '../../ducks/UI.duck';
 import {
   InlineTextButton,
@@ -43,6 +47,7 @@ import {
 import { closeListing, openListing, getOwnListingsById } from './ManageListingsPage.duck';
 import css from './ManageListingsPage.module.css';
 import ReadmoreButton from '../ReadmoreButton/ReadmoreButton';
+
 const MENU_CONTENT_OFFSET = -12;
 
 const priceData = (price, intl) => {
@@ -91,13 +96,14 @@ export class ManageListingsPageComponent extends Component {
       openingListing,
       openingListingError,
       pagination,
+      history,
       queryInProgress,
       queryListingsError,
       queryParams,
       scrollingDisabled,
       intl,
     } = this.props;
-
+    // console.log(history);
     // console.log(listings);
 
     const hasPaginationInfo = !!pagination && pagination.totalItems != null;
@@ -210,24 +216,28 @@ export class ManageListingsPageComponent extends Component {
                     const id = m.id.uuid;
                     const slug = createSlug(m?.attributes?.title);
                     let listingOpen = null;
+                    const ensuredUser = ensureUser(m.author);
 
                     return (
-                      <div className={css.horizontalcard}>
+                      <div className={css.horizontalcard} key={id}>
                         {/* leftdiv */}
                         <div className={css.lefthorizontal}>
                           {isDraft ? (
-                            <h2 className={css.lefttitle}>{m?.attributes?.title}</h2>
+                            <div className={css.lefttitle}>{m?.attributes?.title}</div>
                           ) : (
                             <NamedLink
                               className={css.manageLink}
                               name="ListingPage"
                               params={{ id, slug }}
                             >
-                              <h2 className={css.lefttitle}> {m?.attributes?.title}</h2>
+                              <div className={css.lefttitle}> {m?.attributes?.title}</div>
                             </NamedLink>
                           )}
 
-                          <ReadmoreButton description={m?.attributes?.description} />
+                          <ReadmoreButton
+                            // className={css.description}
+                            description={m?.attributes?.description}
+                          />
                         </div>
                         {/* rightdiv */}
                         <div className={css.righthorizontal}>
@@ -241,8 +251,22 @@ export class ManageListingsPageComponent extends Component {
                             )}
                           </div>
                           <span className={css.price}> {formattedPrice} </span>
-                          <button className={css.editbutton}>
-                            <NamedLink
+                          <button
+                            className={css.editbutton}
+                            onClick={() =>
+                              history.push(
+                                createResourceLocatorString(
+                                  'EditListingPage',
+                                  routeConfiguration(),
+                                  { id, slug, type: editListingLinkType, tab: 'description' },
+                                  {}
+                                )
+                              )
+                            }
+                          >
+                            <MdModeEditOutline />{' '}
+                            <FormattedMessage id="ManageListingCard.editListing" />
+                            {/* <NamedLink
                               // className={css.manageLink}
                               className={css.linkcolor}
                               name="EditListingPage"
@@ -250,7 +274,7 @@ export class ManageListingsPageComponent extends Component {
                             >
                               <MdModeEditOutline />{' '}
                               <FormattedMessage id="ManageListingCard.editListing" />
-                            </NamedLink>
+                            </NamedLink> */}
                           </button>
                         </div>
                         {!isDraft ? (
@@ -411,6 +435,7 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const ManageListingsPage = compose(
+  withRouter,
   connect(mapStateToProps, mapDispatchToProps),
   injectIntl
 )(ManageListingsPageComponent);

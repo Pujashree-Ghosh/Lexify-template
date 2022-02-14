@@ -167,6 +167,15 @@
   width: 80%;
   padding-left: 10px;
 }
+.lefttitle {
+  font-size: 20px;
+  font-weight: bold;
+  padding-top: 50px;
+  color: black;
+}
+.description {
+  padding-top: 10px;
+}
 .righthorizontal {
   display: flex;
   flex-direction: column;
@@ -201,6 +210,8 @@
   padding-left: 18px;
   align-items: center;
   border: none;
+  color: #ffffff;
+  font-weight: 500;
 }
 .price {
   padding: 20px;
@@ -228,4 +239,8 @@
 }
 .buttontext {
   color: #f30d0d;
+}
+.toggleicon {
+  position: absolute;
+  right: 0px;
 }

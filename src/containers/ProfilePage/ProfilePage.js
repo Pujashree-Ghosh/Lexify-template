@@ -5,6 +5,9 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import ReadmoreButton from '../ReadmoreButton/ReadmoreButton';
 import ReactPaginate from 'react-paginate';
+import { createResourceLocatorString } from '../../util/routes';
+import routeConfiguration from '../../routeConfiguration';
+import { withRouter } from 'react-router-dom';
 
 import { MdModeEditOutline } from 'react-icons/md';
 import axios from 'axios';
@@ -127,6 +130,7 @@ export class ProfilePageComponent extends Component {
       queryReviewsError,
       viewport,
       intl,
+      history,
       queryInProgress,
       queryListingsError,
       queryParams,
@@ -555,18 +559,18 @@ export class ProfilePageComponent extends Component {
                         const slug = createSlug(l?.attributes?.title);
 
                         return (
-                          <div className={css.horizontalcard}>
+                          <div className={css.horizontalcard} key={id}>
                             {/* {console.log(count, l?.attributes?.title)};leftdiv */}
                             <div className={css.lefthorizontal}>
                               {isDraft ? (
-                                <h2 className={css.lefttitle}>{l?.attributes?.title}</h2>
+                                <div className={css.lefttitle}>{l?.attributes?.title}</div>
                               ) : (
                                 <NamedLink
                                   className={css.manageLink}
                                   name="ListingPage"
                                   params={{ id, slug }}
                                 >
-                                  <h2 className={css.lefttitle}> {l?.attributes?.title}</h2>
+                                  <div className={css.lefttitle}>{l?.attributes?.title}</div>
                                 </NamedLink>
                               )}
 
@@ -576,15 +580,27 @@ export class ProfilePageComponent extends Component {
                             <div className={css.righthorizontal}>
                               {/* rightlowerdiv */}
                               <span className={css.price}> {formattedPrice} </span>
-                              <button className={css.editbutton}>
-                                <NamedLink
+                              <button
+                                className={css.editbutton}
+                                onClick={() =>
+                                  history.push(
+                                    createResourceLocatorString(
+                                      'ListingPage',
+                                      routeConfiguration(),
+                                      { id, slug },
+                                      {}
+                                    )
+                                  )
+                                }
+                              >
+                                {/* <NamedLink
                                   // className={css.manageLink}
                                   className={css.linkcolor}
                                   name="ListingPage"
                                   params={{ id, slug }}
-                                >
-                                  <FormattedMessage id="Profilepage.Booknow" />
-                                </NamedLink>
+                                > */}
+                                <FormattedMessage id="Profilepage.Booknow" />
+                                {/* </NamedLink> */}
                               </button>
                             </div>
                           </div>
@@ -793,7 +809,7 @@ const { bool, arrayOf, number, object, shape } = PropTypes;
 
 ProfilePageComponent.propTypes = {
   pagination: propTypes.pagination,
-  queryInProgress: bool.isRequired,
+  // queryInProgress: bool.isRequired,
   queryListingsError: propTypes.error,
   queryParams: object,
   scrollingDisabled: bool.isRequired,
@@ -847,6 +863,7 @@ const mapStateToProps = state => {
 };
 
 const ProfilePage = compose(
+  withRouter,
   connect(mapStateToProps),
   withViewport,
   injectIntl

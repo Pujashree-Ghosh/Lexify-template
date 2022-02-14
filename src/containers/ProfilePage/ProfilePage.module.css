@@ -493,6 +493,11 @@
   width: 80%;
   padding-left: 10px;
 }
+.lefttitle {
+  font-size: 20px;
+  font-weight: bold;
+  padding-top: 45px;
+}
 .righthorizontal {
   display: flex;
   flex-direction: column;
@@ -527,6 +532,8 @@
   padding-left: 18px;
   align-items: center;
   border: none;
+  color: #ffffff;
+  font-weight: 500;
 }
 .price {
   padding: 20px;
