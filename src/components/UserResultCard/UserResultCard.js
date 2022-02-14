@@ -69,7 +69,7 @@ function UserResultCardComponent(props) {
       </div>
       <div className={css.userInfo}>
         <div className={css.userName}>{listing.attributes.title}</div>
-        {/* <div className={css.userLisence}>{listing.attributes.title}</div> */}
+        <div className={css.userVerified}>{currentUser?.attributes?.profile?.protectedData?.isProfileVerified?'Attorney of law':null}</div>
         <div className={css.userLocation}>
           {listing?.attributes?.publicData?.country?.length ? (
             <>

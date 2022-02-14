@@ -143,6 +143,7 @@
     flex-direction: column;
   }
 }
+
 .userInfo {
   margin-left: 10px;
   text-transform: capitalize;
@@ -153,6 +154,12 @@
   & .userName {
     font-size: 14px;
     color: #38394e;
+    line-height: 18px;
+    margin: 0 0 5px;
+  }
+  & .userVerified{
+    font-size: 13px;
+    color: #a3a3a3;
     line-height: 18px;
     margin: 0 0 5px;
   }
