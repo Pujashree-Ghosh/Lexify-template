@@ -3,13 +3,30 @@ import PropTypes from 'prop-types';
 import { FormattedMessage, injectIntl, intlShape } from '../../util/reactIntl';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
+import ReadmoreButton from '../ReadmoreButton/ReadmoreButton';
+
+import { MdModeEditOutline } from 'react-icons/md';
 import axios from 'axios';
-import { REVIEW_TYPE_OF_PROVIDER, REVIEW_TYPE_OF_CUSTOMER, propTypes } from '../../util/types';
+import {
+  REVIEW_TYPE_OF_PROVIDER,
+  REVIEW_TYPE_OF_CUSTOMER,
+  propTypes,
+  LISTING_STATE_DRAFT,
+  LISTING_STATE_CLOSED,
+} from '../../util/types';
 import { ensureCurrentUser, ensureUser } from '../../util/data';
 import { withViewport } from '../../util/contextHelpers';
 import classNames from 'classnames';
 import { isScrollingDisabled } from '../../ducks/UI.duck';
 import { getMarketplaceEntities } from '../../ducks/marketplaceData.duck';
+import { formatMoney } from '../../util/currency';
+import {
+  LISTING_PAGE_PENDING_APPROVAL_VARIANT,
+  LISTING_PAGE_DRAFT_VARIANT,
+  LISTING_PAGE_PARAM_TYPE_DRAFT,
+  LISTING_PAGE_PARAM_TYPE_EDIT,
+  createSlug,
+} from '../../util/urlHelpers';
 import {
   Page,
   LayoutSideNavigation,
@@ -17,6 +34,7 @@ import {
   LayoutWrapperSideNav,
   LayoutWrapperTopbar,
   LayoutWrapperFooter,
+  PaginationLinks,
   ListingCard,
   Footer,
   AvatarLarge,
@@ -35,6 +53,26 @@ import biophone from '../../assets/zocial-call.svg';
 import biolinkedin from '../../assets/awesome-linkedin-in.svg';
 
 import css from './ProfilePage.module.css';
+// import CustomPagination from '../Pagination/Pagination';
+
+const priceData = (price, intl) => {
+  if (price && price.currency === config.currency) {
+    const formattedPrice = formatMoney(intl, price);
+    return { formattedPrice, priceTitle: formattedPrice };
+  } else if (price) {
+    return {
+      formattedPrice: intl.formatMessage(
+        { id: 'ListingCard.unsupportedPrice' },
+        { currency: price.currency }
+      ),
+      priceTitle: intl.formatMessage(
+        { id: 'ListingCard.unsupportedPriceTitle' },
+        { currency: price.currency }
+      ),
+    };
+  }
+  return {};
+};
 
 const MAX_MOBILE_SCREEN_WIDTH = 768;
 
@@ -81,9 +119,13 @@ export class ProfilePageComponent extends Component {
       user,
       userShowError,
       reviews,
+      pagination,
       queryReviewsError,
       viewport,
       intl,
+      queryInProgress,
+      queryListingsError,
+      queryParams,
       listings,
       areaOfLawOptions,
     } = this.props;
@@ -100,6 +142,24 @@ export class ProfilePageComponent extends Component {
 
     // console.log(profileUser, currentUser);
 
+    const page = queryParams ? queryParams.page : 1;
+    const hasPaginationInfo = !!pagination && pagination.totalItems != null;
+    const listingsAreLoaded = !queryInProgress && hasPaginationInfo;
+    const noResults =
+      listingsAreLoaded && pagination.totalItems <= 1 ? (
+        <h1 className={css.title}>
+          <FormattedMessage id="ManageListingsPage.noResults" />
+        </h1>
+      ) : null;
+    const paginationLinks =
+      listingsAreLoaded && pagination && pagination.totalPages > 1 ? (
+        <PaginationLinks
+          className={css.pagination}
+          pageName="ManageListingsPage"
+          pageSearchParams={{ page }}
+          pagination={pagination}
+        />
+      ) : null;
     const editLinkMobile = isCurrentUser ? (
       <NamedLink className={css.editLinkMobile} name="ProfileSettingsPage">
         <FormattedMessage id="ProfilePage.editProfileLinkMobile" />
@@ -462,7 +522,64 @@ export class ProfilePageComponent extends Component {
                     /> */}
                     Consultations provided by {user?.attributes?.profile?.displayName}
                   </h2>
-                  <ul className={css.listings}>
+                  {/* {queryInProgress ? loadingResults : null}
+                  {queryListingsError ? queryError : null} */}
+
+                  <div>
+                    {listings
+                      .filter(li => li?.attributes?.publicData?.category === 'publicOral')
+
+                      ?.map(l => {
+                        const { price, state } = l.attributes;
+                        const { formattedPrice } = priceData(price, intl);
+                        const isDraft = state === LISTING_STATE_DRAFT;
+                        const isClosed = state === LISTING_STATE_CLOSED;
+                        const editListingLinkType = isDraft
+                          ? LISTING_PAGE_PARAM_TYPE_DRAFT
+                          : LISTING_PAGE_PARAM_TYPE_EDIT;
+                        const id = l.id.uuid;
+                        const slug = createSlug(l?.attributes?.title);
+                        // console.log('a', l?.attributes?.title, l?.id?.uuid);
+                        // count++;
+                        return (
+                          <div className={css.horizontalcard}>
+                            {/* {console.log(count, l?.attributes?.title)};leftdiv */}
+                            <div className={css.lefthorizontal}>
+                              {isDraft ? (
+                                <h2 className={css.lefttitle}>{l?.attributes?.title}</h2>
+                              ) : (
+                                <NamedLink
+                                  className={css.manageLink}
+                                  name="ListingPage"
+                                  params={{ id, slug }}
+                                >
+                                  <h2 className={css.lefttitle}> {l?.attributes?.title}</h2>
+                                </NamedLink>
+                              )}
+
+                              <ReadmoreButton description={l?.attributes?.description} />
+                            </div>
+                            {/* rightdiv */}
+                            <div className={css.righthorizontal}>
+                              {/* rightlowerdiv */}
+                              <span className={css.price}> {formattedPrice} </span>
+                              <button className={css.editbutton}>
+                                <NamedLink
+                                  // className={css.manageLink}
+                                  className={css.linkcolor}
+                                  name="ListingPage"
+                                  params={{ id, slug }}
+                                >
+                                  <FormattedMessage id="Profilepage.Booknow" />
+                                </NamedLink>
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      })}
+                  </div>
+
+                  {/* <ul className={css.listings}>
                     {listings
                       .filter(li => li?.attributes?.publicData?.category === 'publicOral')
                       ?.map(l => (
@@ -470,7 +587,7 @@ export class ProfilePageComponent extends Component {
                           <ListingCard listing={l} renderSizes={renderSizes} />
                         </li>
                       ))}
-                  </ul>
+                  </ul> */}
                 </div>
               )}
             </div>
@@ -631,6 +748,9 @@ export class ProfilePageComponent extends Component {
 
 ProfilePageComponent.defaultProps = {
   currentUser: null,
+  pagination: null,
+  queryListingsError: null,
+  queryParams: null,
   user: null,
   userShowError: null,
   reviews: [],
@@ -638,9 +758,13 @@ ProfilePageComponent.defaultProps = {
   areaOfLawOptions: config.custom.areaOfLaw.options,
 };
 
-const { bool, arrayOf, number, shape } = PropTypes;
+const { bool, arrayOf, number, object, shape } = PropTypes;
 
 ProfilePageComponent.propTypes = {
+  pagination: propTypes.pagination,
+  queryInProgress: bool.isRequired,
+  queryListingsError: propTypes.error,
+  queryParams: object,
   scrollingDisabled: bool.isRequired,
   currentUser: propTypes.currentUser,
   user: propTypes.user,
@@ -661,7 +785,17 @@ ProfilePageComponent.propTypes = {
 
 const mapStateToProps = state => {
   const { currentUser } = state.user;
-  const { userId, userShowError, reviews, queryReviewsError, userListingRefs } = state.ProfilePage;
+  const {
+    userId,
+    userShowError,
+    reviews,
+    queryReviewsError,
+    pagination,
+    queryInProgress,
+    queryListingsError,
+    userListingRefs,
+    queryParams,
+  } = state.ProfilePage;
   const userMatches = getMarketplaceEntities(state, [{ type: 'user', id: userId }]);
   const listings = getMarketplaceEntities(state, userListingRefs);
   const user = userMatches.length === 1 ? userMatches[0] : null;
@@ -674,6 +808,10 @@ const mapStateToProps = state => {
     reviews,
     listings,
     queryReviewsError,
+    pagination,
+    queryInProgress,
+    queryListingsError,
+    queryParams,
   };
 };
 
