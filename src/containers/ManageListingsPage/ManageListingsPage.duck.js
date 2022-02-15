@@ -5,7 +5,7 @@ import { parse } from '../../util/urlHelpers';
 // Pagination page size might need to be dynamic on responsive page layouts
 // Current design has max 3 columns 42 is divisible by 2 and 3
 // So, there's enough cards to fill all columns on full pagination pages
-const RESULT_PAGE_SIZE = 42;
+const RESULT_PAGE_SIZE = 10;
 
 // ================ Action types ================ //
 

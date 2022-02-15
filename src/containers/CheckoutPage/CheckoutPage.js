@@ -55,6 +55,8 @@ import {
 } from './CheckoutPage.duck';
 import { storeData, storedData, clearData } from './CheckoutPageSessionHelpers';
 import css from './CheckoutPage.module.css';
+import moment from 'moment';
+const jwt = require('jsonwebtoken');
 
 const STORAGE_KEY = 'CheckoutPage';
 
@@ -185,6 +187,54 @@ export class CheckoutPageComponent extends Component {
       const transactionId = tx ? tx.id : null;
       const { bookingStart, bookingEnd } = pageData.bookingDates;
 
+      const l_author =
+        pageData &&
+        pageData.listing &&
+        pageData.listing.author &&
+        pageData.listing.author.attributes &&
+        pageData.listing.author.attributes.profile &&
+        pageData.listing.author.attributes.profile.displayName;
+      const l_title = pageData.listing.attributes.title.replace(/\s/g, '-');
+
+      const customerToken =
+        config.canonicalRootURL +
+        '/videoconference/' +
+        l_title +
+        '?jwt=' +
+        jwt.sign(
+          {
+            room: pageData.listing.id.uuid,
+            name: pageData.listing.attributes.title,
+            created_at: moment(),
+            author: l_author,
+            role: 'customer',
+            start: moment(pageData.bookingDates.bookingStart).clone(),
+            end: moment(pageData.bookingDates.bookingEnd).clone(),
+            listingName: pageData.listing.attributes.title,
+            userName: this.props.currentUser?.attributes?.profile?.displayName,
+          },
+          config.secretCode
+        );
+
+      const providerToken =
+        config.canonicalRootURL +
+        '/videoconference/' +
+        l_title +
+        '?jwt=' +
+        jwt.sign(
+          {
+            room: pageData.listing.id.uuid,
+            name: pageData.listing.attributes.title,
+            created_at: moment(),
+            author: l_author,
+            role: 'provider',
+            start: moment(pageData.bookingDates.bookingStart).clone(),
+            end: moment(pageData.bookingDates.bookingEnd).clone(),
+            listingName: pageData.listing.attributes.title,
+          },
+          config.secretCode
+        );
+
       // Fetch speculated transaction for showing price in booking breakdown
       // NOTE: if unit type is line-item/units, quantity needs to be added.
       // The way to pass it to checkout page is through pageData.bookingData
@@ -193,6 +243,10 @@ export class CheckoutPageComponent extends Component {
           listingId,
           bookingStart,
           bookingEnd,
+          protectedData: {
+            customerToken,
+            providerToken,
+          },
         },
         transactionId
       );
@@ -375,6 +429,7 @@ export class CheckoutPageComponent extends Component {
       listingId: pageData.listing.id,
       bookingStart: tx.booking.attributes.start,
       bookingEnd: tx.booking.attributes.end,
+      protectedData: tx.attributes.protectedData,
       quantity: pageData.bookingData ? pageData.bookingData.quantity : null,
       ...optionalPaymentParams,
     };
@@ -951,10 +1006,7 @@ const mapDispatchToProps = dispatch => ({
 
 const CheckoutPage = compose(
   withRouter,
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  ),
+  connect(mapStateToProps, mapDispatchToProps),
   injectIntl
 )(CheckoutPageComponent);
 
