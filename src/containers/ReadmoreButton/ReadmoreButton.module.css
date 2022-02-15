@@ -1,0 +1,6 @@
+@import '../../styles/customMediaQueries.css';
+@import '../../styles/propertySets.css';
+
+.one {
+  color: '#a91722';
+}

@@ -4,6 +4,10 @@ import { FormattedMessage, injectIntl, intlShape } from '../../util/reactIntl';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import ReadmoreButton from '../ReadmoreButton/ReadmoreButton';
+import ReactPaginate from 'react-paginate';
+import { createResourceLocatorString } from '../../util/routes';
+import routeConfiguration from '../../routeConfiguration';
+import { withRouter } from 'react-router-dom';
 
 import { MdModeEditOutline } from 'react-icons/md';
 import axios from 'axios';
@@ -53,6 +57,8 @@ import biophone from '../../assets/zocial-call.svg';
 import biolinkedin from '../../assets/awesome-linkedin-in.svg';
 
 import css from './ProfilePage.module.css';
+// import CustomPaginate from '../CustomPaginate/CustomPaginate';
+
 // import CustomPagination from '../Pagination/Pagination';
 
 const priceData = (price, intl) => {
@@ -85,6 +91,7 @@ export class ProfilePageComponent extends Component {
       showReviewsType: REVIEW_TYPE_OF_PROVIDER,
       showProfileDetail: false,
       countryData: [],
+      pageNumber: 0,
     };
 
     this.showOfProviderReviews = this.showOfProviderReviews.bind(this);
@@ -123,6 +130,7 @@ export class ProfilePageComponent extends Component {
       queryReviewsError,
       viewport,
       intl,
+      history,
       queryInProgress,
       queryListingsError,
       queryParams,
@@ -265,6 +273,15 @@ export class ProfilePageComponent extends Component {
         {isMobileLayout ? mobileReviews : desktopReviews}
       </div>
     );
+    const num = listings.filter(li => li?.attributes?.publicData?.category === 'publicOral').length;
+    // console.log(num);
+    const usersPerPage = 3;
+    const pagesVisited = this.state.pageNumber * usersPerPage;
+    const pageCount = Math.ceil(num / usersPerPage);
+    const changePage = ({ selected }) => {
+      this.setState({ pageNumber: selected });
+    };
+
     const listingsContainerClasses = classNames(css.listingsContainer, {
       [css.withBioMissingAbove]: !hasBio,
     });
@@ -528,7 +545,7 @@ export class ProfilePageComponent extends Component {
                   <div>
                     {listings
                       .filter(li => li?.attributes?.publicData?.category === 'publicOral')
-
+                      ?.slice(pagesVisited, pagesVisited + usersPerPage)
                       ?.map(l => {
                         const { price, state } = l.attributes;
                         const { formattedPrice } = priceData(price, intl);
@@ -539,21 +556,20 @@ export class ProfilePageComponent extends Component {
                           : LISTING_PAGE_PARAM_TYPE_EDIT;
                         const id = l.id.uuid;
                         const slug = createSlug(l?.attributes?.title);
-                        // console.log('a', l?.attributes?.title, l?.id?.uuid);
-                        // count++;
+
                         return (
-                          <div className={css.horizontalcard}>
+                          <div className={css.horizontalcard} key={id}>
                             {/* {console.log(count, l?.attributes?.title)};leftdiv */}
                             <div className={css.lefthorizontal}>
                               {isDraft ? (
-                                <h2 className={css.lefttitle}>{l?.attributes?.title}</h2>
+                                <div className={css.lefttitle}>{l?.attributes?.title}</div>
                               ) : (
                                 <NamedLink
                                   className={css.manageLink}
                                   name="ListingPage"
                                   params={{ id, slug }}
                                 >
-                                  <h2 className={css.lefttitle}> {l?.attributes?.title}</h2>
+                                  <div className={css.lefttitle}>{l?.attributes?.title}</div>
                                 </NamedLink>
                               )}
 
@@ -563,20 +579,50 @@ export class ProfilePageComponent extends Component {
                             <div className={css.righthorizontal}>
                               {/* rightlowerdiv */}
                               <span className={css.price}> {formattedPrice} </span>
-                              <button className={css.editbutton}>
-                                <NamedLink
+                              <button
+                                className={css.editbutton}
+                                onClick={() =>
+                                  history.push(
+                                    createResourceLocatorString(
+                                      'ListingPage',
+                                      routeConfiguration(),
+                                      { id, slug },
+                                      {}
+                                    )
+                                  )
+                                }
+                              >
+                                {/* <NamedLink
                                   // className={css.manageLink}
                                   className={css.linkcolor}
                                   name="ListingPage"
                                   params={{ id, slug }}
-                                >
-                                  <FormattedMessage id="Profilepage.Booknow" />
-                                </NamedLink>
+                                > */}
+                                <FormattedMessage id="Profilepage.Booknow" />
+                                {/* </NamedLink> */}
                               </button>
                             </div>
                           </div>
                         );
                       })}
+                  </div>
+                  {/* <div>
+                 
+                    <CustomPaginate listings={listings} />
+                  </div> */}
+                  <div>
+                    <ReactPaginate
+                      className={css.pagination}
+                      previousLabel={'Prev'}
+                      nextLabel={'Next'}
+                      pageCount={pageCount}
+                      onPageChange={changePage}
+                      containerClassName={'paginationBttns'}
+                      previousLinkClassName={'previousBttn'}
+                      nextLinkClassName={'nextBttn'}
+                      disabledClassName={'paginationDisabled'}
+                      activeClassName={'paginationActive'}
+                    />
                   </div>
 
                   {/* <ul className={css.listings}>
@@ -762,7 +808,7 @@ const { bool, arrayOf, number, object, shape } = PropTypes;
 
 ProfilePageComponent.propTypes = {
   pagination: propTypes.pagination,
-  queryInProgress: bool.isRequired,
+  // queryInProgress: bool.isRequired,
   queryListingsError: propTypes.error,
   queryParams: object,
   scrollingDisabled: bool.isRequired,
@@ -816,6 +862,7 @@ const mapStateToProps = state => {
 };
 
 const ProfilePage = compose(
+  withRouter,
   connect(mapStateToProps),
   withViewport,
   injectIntl

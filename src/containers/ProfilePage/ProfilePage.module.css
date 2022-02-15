@@ -493,6 +493,11 @@
   width: 80%;
   padding-left: 10px;
 }
+.lefttitle {
+  font-size: 20px;
+  font-weight: bold;
+  padding-top: 45px;
+}
 .righthorizontal {
   display: flex;
   flex-direction: column;
@@ -527,6 +532,8 @@
   padding-left: 18px;
   align-items: center;
   border: none;
+  color: #ffffff;
+  font-weight: 500;
 }
 .price {
   padding: 20px;
@@ -543,4 +550,18 @@
 }
 .readmore {
   color: #a91722;
+}
+.pagination {
+  display: flex;
+  justify-content: center;
+}
+.pagination a {
+  padding: 10px;
+  margin: 8px;
+}
+.pagination a:hover {
+  border: 1px solid #a91722;
+  border-radius: 50%;
+  background-color: #a91722;
+  color: white;
 }

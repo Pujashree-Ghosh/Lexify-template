@@ -18,6 +18,7 @@ import { createSlug } from '../../util/urlHelpers';
 
 function UserResultCardComponent(props) {
   const { listing, currentUser, onShowUser, history } = props;
+  // console.log(history);
   // const [authorDetail, setAuthorDetail] = useState([]);
   const [countryData, setCountryData] = useState([]);
 
