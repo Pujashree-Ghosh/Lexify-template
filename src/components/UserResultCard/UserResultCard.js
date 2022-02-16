@@ -62,7 +62,7 @@ function UserResultCardComponent(props) {
   //   )[0]?.name
   // );
   const slug = createSlug(listing?.attributes?.title);
-  console.log(1,listing?.attributes?.description)
+  console.log(1,listing)
   return (
     <div className={css.cardContainer} key={listing.id.uuid}>
       <div className={css.userContent}>
