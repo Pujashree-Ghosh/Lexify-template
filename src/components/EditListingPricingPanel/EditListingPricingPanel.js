@@ -33,6 +33,8 @@ const EditListingPricingPanel = props => {
   const currentListing = ensureOwnListing(listing);
   const { price } = currentListing.attributes;
   const vat = currentListing?.attributes?.publicData?.vat;
+  const vattype = currentListing?.attributes?.publicData?.vattype;
+  // console.log(currentListing);
 
   const isPublished = currentListing.id && currentListing.attributes.state !== LISTING_STATE_DRAFT;
   const panelTitle = isPublished ? (
@@ -54,11 +56,11 @@ const EditListingPricingPanel = props => {
   const form = priceCurrencyValid ? (
     <EditListingPricingForm
       className={css.form}
-      initialValues={{ price, vat }}
+      initialValues={{ price, vat, vattype }}
       onSubmit={values => {
-        const { vat, price } = values;
+        const { vat, price, vattype } = values;
         const updatedValues = {
-          publicData: { vat },
+          publicData: { vat, vattype },
           price: price,
         };
 

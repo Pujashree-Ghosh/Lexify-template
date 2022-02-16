@@ -80,6 +80,7 @@ class FieldTextInputComponent extends Component {
       : { className: inputClasses, id, type, ...refMaybe, ...input, ...rest };
 
     const classes = classNames(rootClassName || css.root, className);
+    console.log(inputProps);
     return (
       <div className={classes}>
         {label ? <label htmlFor={id}>{label}</label> : null}
