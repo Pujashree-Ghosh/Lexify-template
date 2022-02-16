@@ -18,7 +18,7 @@ function ReadmoreButton(props) {
         {expand ? collapsed(desc) : desc}
       </div>
       <div>
-        {desc.length >= BIO_COLLAPSED_LENGTH ? (
+        {desc?.length >= BIO_COLLAPSED_LENGTH ? (
           <div
             // className={css.one}
             style={{
