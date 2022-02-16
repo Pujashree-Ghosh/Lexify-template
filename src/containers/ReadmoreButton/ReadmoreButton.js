@@ -6,7 +6,7 @@ import css from './ReadmoreButton.module.css';
 const BIO_COLLAPSED_LENGTH = 170;
 
 const collapsed = s => {
-  return s.length > BIO_COLLAPSED_LENGTH ? s.substring(0, BIO_COLLAPSED_LENGTH) + '...' : s;
+  return s?.length > BIO_COLLAPSED_LENGTH ? s.substring(0, BIO_COLLAPSED_LENGTH) + '...' : s;
 };
 
 function ReadmoreButton(props) {
