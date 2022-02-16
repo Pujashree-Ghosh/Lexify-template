@@ -37,6 +37,7 @@
     "js-money": "^0.6.3",
     "jstimezonedetect": "^1.0.7",
     "lodash": "^4.17.21",
+    "lodash.clonedeep": "^4.5.0",
     "mapbox-gl-multitouch": "^1.0.3",
     "moment": "^2.22.2",
     "moment-timezone": "^0.5.26",
