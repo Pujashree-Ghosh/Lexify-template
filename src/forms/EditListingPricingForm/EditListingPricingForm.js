@@ -80,7 +80,12 @@ export const EditListingPricingFormComponent = props => (
       const { updateListingError, showListingsError } = fetchErrors || {};
       const required = validators.required('This field is required');
       const vatLabel = intl.formatMessage({ id: 'EditListingPricingForm.vatLabel' });
+      const vattypeLabel = intl.formatMessage({ id: 'EditListingPriceForm.vattype' });
       const pricingLabel = intl.formatMessage({ id: 'EditListingPriceForm.pricingLabel' });
+      const vatInvalidMessage = intl.formatMessage({
+        id: 'EditListingPricingForm.vatinvalid',
+      });
+      const vatValid = validators.numberValid(vatInvalidMessage);
 
       return (
         <Form onSubmit={handleSubmit} className={classes}>
@@ -96,13 +101,29 @@ export const EditListingPricingFormComponent = props => (
           ) : null}
 
           <div className={css.selectform}>
+            <FieldTextInput
+              id="vattype"
+              name="vattype"
+              label={vattypeLabel}
+              validate={required}
+              type="textarea"
+            >
+              {/*<option value="">Select VAT</option>
+                <option value="5">5%</option>
+                <option value="10">10%</option>
+                <option value="15">15%</option>
+            <option value="20">20%</option>*/}
+            </FieldTextInput>
             {category !== 'publicOral' ? (
               <FieldTextInput
                 id="vat"
                 name="vat"
+                type="text"
                 label={vatLabel}
-                validate={required}
-                type="textarea"
+                validate={validators.composeValidators(required, vatValid)}
+                // validate={required}
+
+                // pattern={'/^[0-9\b]+$/'}
               >
                 {/*<option value="">Select VAT</option>
                 <option value="5">5%</option>
