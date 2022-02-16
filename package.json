@@ -138,7 +138,7 @@
     ]
   },
   "engines": {
-    "node": "17.4.0"
+    "node": "17.4.x"
   },
   "prettier": {
     "singleQuote": true,
