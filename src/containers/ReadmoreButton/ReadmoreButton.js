@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { IoIosArrowDown } from 'react-icons/io';
 import { IoIosArrowUp } from 'react-icons/io';
-import css from './ReadmoreButton.module.css';
+// import css from './ReadmoreButton.module.css';
 
 const BIO_COLLAPSED_LENGTH = 170;
 
