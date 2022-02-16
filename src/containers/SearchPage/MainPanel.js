@@ -180,19 +180,19 @@ class MainPanelComponent extends Component {
         );
       }
 
-      // if(this.state.currentQueryParams.hasOwnProperty('keywords') && urlQueryParams?.pub_hasPublicListing === true && urlQueryParams?.pub_isProviderType === true){
-      //   let currParams = this.state.currentQueryParams;
-      //   delete currParams?.pub_hasPublicListing;
-      //   delete currParams?.pub_isProviderType;
-      //   history.push(
-      //     createResourceLocatorString(
-      //       'SearchPage',
-      //       routeConfiguration(),
-      //       {},
-      //       {...currParams}
-      //     )
-      //   );
-      // }
+      if(this.state.currentQueryParams.hasOwnProperty('keywords') && urlQueryParams?.pub_hasPublicListing === true && urlQueryParams?.pub_isProviderType === true){
+        let currParams = this.state.currentQueryParams;
+        delete currParams?.pub_hasPublicListing;
+        delete currParams?.pub_isProviderType;
+        history.push(
+          createResourceLocatorString(
+            'SearchPage',
+            routeConfiguration(),
+            {},
+            {...currParams}
+          )
+        );
+      }
     }
   }
   componentDidUpdate(prevProps, prevState) {
