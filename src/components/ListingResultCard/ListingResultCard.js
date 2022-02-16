@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { LINE_ITEM_DAY, LINE_ITEM_NIGHT, propTypes } from '../../util/types';
 import { showUser } from '../../containers/ProfilePage/ProfilePage.duck';
 import { FormattedMessage, intlShape, injectIntl } from '../../util/reactIntl';
-import css from './UserResultCard.module.css';
+import css from './ListingResultCard.module.css';
 import SectionAvatar from '../../containers/ListingPage/SectionAvatar';
 import { ensureUser } from '../../util/data';
 import routeConfiguration from '../../routeConfiguration';
@@ -16,9 +16,8 @@ import { createResourceLocatorString } from '../../util/routes';
 import axios from 'axios';
 import { createSlug } from '../../util/urlHelpers';
 
-function UserResultCardComponent(props) {
+function ListingResultCardComponent(props) {
   const { listing, currentUser, onShowUser, history } = props;
-  // console.log(history);
   // const [authorDetail, setAuthorDetail] = useState([]);
   const [countryData, setCountryData] = useState([]);
 
@@ -64,67 +63,75 @@ function UserResultCardComponent(props) {
   const slug = createSlug(listing?.attributes?.title);
   return (
     <div className={css.cardContainer} key={listing.id.uuid}>
-      <div className={css.SectionAvatarImg}>
-        {/* <SectionAvatar user={listing.author} /> */}
-        <AvatarMedium className={css.profileAvatar} user={ensuredUser} disableProfileLink />
-      </div>
-      <div className={css.userInfo}>
-        <div className={css.userName}>{listing.attributes.title}</div>
-        <div className={css.userVerified}>{currentUser?.attributes?.profile?.protectedData?.isProfileVerified?'Attorney of law':null}</div>
-        <div className={css.userLocation}>
-          {listing?.attributes?.publicData?.country?.length ? (
-            <>
-              <img src={biolocationIcon} className={css.locationIcon} />
+      <div className={css.userContent}>
+        <div className={css.SectionAvatarImg}>
+            {/* <SectionAvatar user={listing.author} /> */}
+            <AvatarMedium className={css.profileAvatar} user={ensuredUser} disableProfileLink />
+        </div>
+        <div className={css.userInfo}>
+            <div className={css.userName}>{listing.attributes.title}</div>
+            {/* <div className={css.userLisence}>{listing.attributes.title}</div> */}
+            <div className={css.userLocation}>
+            {listing?.attributes?.publicData?.country?.length ? (
+                <>
+                <img src={biolocationIcon} className={css.locationIcon} />
 
-              <span>
-                {`${state ? state : city ? city : ''}, 
-              ${country}`}
-              </span>
-            </>
-          ) : (
-            ''
-          )}
+                <span>
+                    {`${state ? state : city ? city : ''}, 
+                ${country}`}
+                </span>
+                </>
+            ) : (
+                ''
+            )}
+            </div>
         </div>
       </div>
-      <div className={css.profileBtnContainer}>
-        {/* <NamedLink name="ProfilePage" params={{ id: ensuredUser.id.uuid }}>
-          <FormattedMessage id="UserResultCard.ListingProfileLink" />
-        </NamedLink> */}
-        <button
-          className={css.profileBtn}
-          onClick={() =>
-            {
-              if(listing?.attributes?.publicData?.isProviderType){
-                history.push(
-                  createResourceLocatorString(
-                    'ProfilePage',
-                    routeConfiguration(),
-                    { id: ensuredUser.id.uuid },
-                    {}
-                  )
-                )
-              }else{
-                history.push(
-                  createResourceLocatorString(
-                    'ListingPage',
-                    routeConfiguration(),
-                    { id: listing.id.uuid,slug },
-                    {}
-                  )
-                )
-              }
-              
+      <div className={css.listingInfo}>
+          <p className={css.listingTitle}>{listing.attributes.title}</p><p className={css.listingDescription}>{listing.attributes.description}</p>
+      </div>
+      <div className={css.bookingContent}>
+          <div className={css.price}>${(listing.attributes?.price?.amount/100)}.00</div>
+        <div className={css.profileBtnContainer}>
+            {/* <NamedLink name="ProfilePage" params={{ id: ensuredUser.id.uuid }}>
+            <FormattedMessage id="UserResultCard.ListingProfileLink" />
+            </NamedLink> */}
+            <button
+            className={css.profileBtn}
+            onClick={() =>
+                {
+                if(listing?.attributes?.publicData?.isProviderType){
+                    history.push(
+                    createResourceLocatorString(
+                        'ProfilePage',
+                        routeConfiguration(),
+                        { id: ensuredUser.id.uuid },
+                        {}
+                    )
+                    )
+                }else{
+                    history.push(
+                    createResourceLocatorString(
+                        'ListingPage',
+                        routeConfiguration(),
+                        { id: listing.id.uuid,slug },
+                        {}
+                    )
+                    )
+                }
+                
+                }
             }
-          }
-        >
-          <FormattedMessage id="UserResultCard.ListingProfileLink" />
-        </button>
+            >
+            <FormattedMessage id="UserResultCard.ListingProfileLink" />
+            </button>
+        </div>
       </div>
     </div>
   );
 }
 
-UserResultCardComponent.defaultProps = {
+ListingResultCardComponent.defaultProps = {
   className: null,
   rootClassName: null,
   renderSizes: null,
@@ -132,7 +139,7 @@ UserResultCardComponent.defaultProps = {
   // country: config.custom.country,
 };
 
-UserResultCardComponent.propTypes = {
+ListingResultCardComponent.propTypes = {
   className: string,
   rootClassName: string,
   certificateConfig: array,
@@ -162,9 +169,9 @@ const mapDispatchToProps = dispatch => ({
 });
 
 // export default injectIntl(UserResultCardComponent);
-const UserResultCard = compose(
+const ListingResultCard = compose(
   connect(mapStateToProps, mapDispatchToProps),
   injectIntl
-)(UserResultCardComponent);
-export default UserResultCard;
+)(ListingResultCardComponent);
+export default ListingResultCard;
 // export default UserResultCardComponent;

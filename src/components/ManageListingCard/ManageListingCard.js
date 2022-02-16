@@ -234,6 +234,9 @@ export const ManageListingCardComponent = props => {
         <div className={css.menubarWrapper}>
           <div className={css.menubarGradient} />
           <div className={css.menubar}>
+            {/* <div>
+          <div />
+          <div> */}
             <Menu
               className={classNames(css.menu, { [css.cardIsOpen]: !isClosed })}
               contentPlacementOffset={MENU_CONTENT_OFFSET}
@@ -253,7 +256,7 @@ export const ManageListingCardComponent = props => {
               <MenuContent rootClassName={css.menuContent}>
                 <MenuItem key="close-listing">
                   <InlineTextButton
-                    rootClassName={menuItemClasses}
+                    // rootClassName={menuItemClasses}
                     onClick={event => {
                       event.preventDefault();
                       event.stopPropagation();

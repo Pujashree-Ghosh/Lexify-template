@@ -5,6 +5,7 @@ import { propTypes } from '../../util/types';
 import { ListingCard, PaginationLinks } from '../../components';
 import css from './SearchResultsPanel.module.css';
 import UserResultCard from '../UserResultCard/UserResultCard';
+import ListingResultCard from '../ListingResultCard/ListingResultCard';
 
 const SearchResultsPanel = props => {
   const {
@@ -38,14 +39,15 @@ const SearchResultsPanel = props => {
     `(max-width: 1920px) ${panelLargeWidth / 2}vw`,
     `${panelLargeWidth / 3}vw`,
   ].join(', ');
-
   return (
     <div className={classes}>
       <div className={css.listingCards}>
         <span className={css.resultCount}>
           {totalItems} result{totalItems > 1 ? 's' : ''}
         </span>
-        {listings.map(l => (
+        {listings.map(l => (l.attributes?.publicData?.isProviderType?<UserResultCard listing={l} history={history} key={l.id.uuid} />:<ListingResultCard listing={l} history={history} key={l.id.uuid} /> ))}
+        {
+          
           // <ListingCard
           //   className={css.listingCard}
           //   key={l.id.uuid}
@@ -54,8 +56,8 @@ const SearchResultsPanel = props => {
           //   setActiveListing={setActiveListing}
           // />
 
-          <UserResultCard listing={l} history={history} key={l.id.uuid} />
-        ))}
+          
+        }
         {/* {props.children} */}
       </div>
       {paginationLinks}

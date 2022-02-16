@@ -29,7 +29,7 @@ import SectionAvatar from '../ListingPage/SectionAvatar';
 import axios from 'axios';
 import Select from 'react-select';
 import { connect } from 'react-redux';
-import {compose} from 'redux';
+import { compose } from 'redux';
 import { withViewport } from '../../util/contextHelpers';
 
 // Primary filters have their content in dropdown-popup.
@@ -49,6 +49,7 @@ const cleanSearchFromConflictingParams = (searchParams, sortConfig, filterConfig
     ? { ...searchParams, [sortConfig.queryParamName]: null }
     : searchParams;
 };
+//creating options for react-select component
 
 /**
  * MainPanel contains search results and filters.
@@ -62,17 +63,17 @@ class MainPanelComponent extends Component {
     this.state = {
       isSecondaryFiltersOpen: false,
       currentQueryParams: props.urlQueryParams,
-      practiceArea: '',
-      country: '',
-      languages: '',
+      practiceArea: [],
+      country: [],
+      languages: [],
       city: '',
-      industry: '',
-      state: '',
+      industry: [],
+      state: [],
       postalCode: '',
       countryData: [],
       keywords: '',
       isSearched: false,
-      isClearable: true
+      isClearable: true,
     };
 
     this.applyFilters = this.applyFilters.bind(this);
@@ -92,17 +93,70 @@ class MainPanelComponent extends Component {
         this.setState({ countryData: res.data.data });
       })
       .catch(err => console.log('Error occurred', err));
-  }
-  
-  componentDidUpdate() {
 
-    
+    //creating options for react-select component
+    const practiceAreaOptions = this.props.areaOfLawOptions.map(c => ({
+      value: c.key,
+      label: c.label,
+      key: c.key,
+    }));
+    const countryOptions = this.state.countryData.map(c => ({
+      value: c.iso3,
+      label: c.name,
+      key: c.iso3,
+    }));
+    const languageOptions = this.props.languages.map(l => ({
+      value: l.code,
+      key: l.code,
+      label: l.name,
+    }));
+    const industryOptions = [
+      { value: 'industryA', label: 'Industry A' },
+      { value: 'industryB', label: 'Industry B' },
+      { value: 'industryC', label: 'Industry C' },
+      { value: 'industryD', label: 'Industry D' },
+      { value: 'industryE', label: 'Industry E' },
+    ];
+    const stateOptions = this.state.countryData
+      .filter(c => c.iso3 === 'USA')[0]
+      ?.states.map(s => ({ value: s.state_code, label: s.name, key: s.state_code }));
+
+    this.setState({
+      practiceArea: this.state.currentQueryParams?.hasOwnProperty('pub_practiceArea')
+        ? practiceAreaOptions.filter(
+            c => c.value === this.state.currentQueryParams?.pub_practiceArea
+          )
+        : [],
+      country: this.state.currentQueryParams?.hasOwnProperty('pub_country')
+        ? countryOptions.filter(c => c.value === this.state.currentQueryParams?.pub_country)
+        : [],
+      languages: this.state.currentQueryParams?.hasOwnProperty('pub_languages')
+        ? languageOptions.filter(c => c.value === this.state.currentQueryParams?.pub_languages)
+        : [],
+      city: this.state.currentQueryParams?.hasOwnProperty('pub_city')
+        ? this.state.currentQueryParams?.pub_city
+        : '',
+      industry: this.state.currentQueryParams?.hasOwnProperty('pub_industry')
+        ? industryOptions.filter(c => c.value === this.state.currentQueryParams?.pub_industry)
+        : [],
+      state: this.state.currentQueryParams?.hasOwnProperty('pub_state')
+        ? stateOptions?.filter(c => c?.value === this.state.currentQueryParams?.pub_state)
+        : [],
+      postalCode: this.state.currentQueryParams?.hasOwnProperty('pub_postalCode')
+        ? this.state.currentQueryParams?.pub_postalCode
+        : '',
+      keywords: this.state.currentQueryParams?.hasOwnProperty('keywords')
+        ? this.state.currentQueryParams?.keywords
+        : '',
+    });
+  }
+  componentDidUpdate() {
     const { history, urlQueryParams } = this.props;
-    
+    // console.log('UQP',urlQueryParams)
     if (
       urlQueryParams?.pub_isProviderType !== true ||
       urlQueryParams?.pub_hasPublicListing !== true
-    ){
+    ) {
       // history.push(
       //   createResourceLocatorString(
       //     'SearchPage',
@@ -111,69 +165,179 @@ class MainPanelComponent extends Component {
       //     {pub_hasPublicListing:true, pub_isProviderType:true}
       //   )
       // );
-      if(this.state.keywords === '' && urlQueryParams?.pub_hasPublicListing === true){ 
-        let currParams = this.state.currentQueryParams;
-        delete currParams?.pub_hasPublicListing;
-        delete currParams?.pub_isProviderType;
+      if (
+        this.state.keywords === '' &&
+        urlQueryParams?.pub_hasPublicListing === true &&
+        urlQueryParams?.pub_isProviderType === true
+      ) {
         history.push(
           createResourceLocatorString(
             'SearchPage',
             routeConfiguration(),
             {},
-            {pub_hasPublicListing:true, pub_isProviderType:true}
+            { pub_hasPublicListing: true, pub_isProviderType: true }
           )
         );
       }
-      if(this.state.currentQueryParams.hasOwnProperty('keywords') && urlQueryParams?.pub_hasPublicListing === true && urlQueryParams?.pub_isProviderType === true){
-        let currParams = this.state.currentQueryParams;
-        delete currParams?.pub_hasPublicListing;
-        delete currParams?.pub_isProviderType;
-        history.push(
-          createResourceLocatorString(
-            'SearchPage',
-            routeConfiguration(),
-            {},
-            {...currParams}
-          )
-        );
-      }
-      // else{
+
+      // if(this.state.currentQueryParams.hasOwnProperty('keywords') && urlQueryParams?.pub_hasPublicListing === true && urlQueryParams?.pub_isProviderType === true){
+      //   let currParams = this.state.currentQueryParams;
+      //   delete currParams?.pub_hasPublicListing;
+      //   delete currParams?.pub_isProviderType;
       //   history.push(
       //     createResourceLocatorString(
       //       'SearchPage',
       //       routeConfiguration(),
       //       {},
-      //       {pub_hasPublicListing:true, pub_isProviderType:true}
+      //       {...currParams}
+      //     )
+      //   );
+      // }
+    }
+  }
+  componentDidUpdate(prevProps, prevState) {
+    const practiceAreaOptions = this.props.areaOfLawOptions.map(c => ({
+      value: c.key,
+      label: c.label,
+      key: c.key,
+    }));
+    const countryOptions = this.state.countryData.map(c => ({
+      value: c.iso3,
+      label: c.name,
+      key: c.iso3,
+    }));
+    const languageOptions = this.props.languages.map(l => ({
+      value: l.code,
+      key: l.code,
+      label: l.name,
+    }));
+    const industryOptions = [
+      { value: 'industryA', label: 'Industry A' },
+      { value: 'industryB', label: 'Industry B' },
+      { value: 'industryC', label: 'Industry C' },
+      { value: 'industryD', label: 'Industry D' },
+      { value: 'industryE', label: 'Industry E' },
+    ];
+    const stateOptions = this.state.countryData
+      .filter(c => c.iso3 === 'USA')[0]
+      ?.states.map(s => ({ value: s.state_code, label: s.name, key: s.state_code }));
+
+    if (JSON.stringify(prevState.practiceArea) !== JSON.stringify(this.state.practiceArea)) {
+      this.setState({
+        practiceArea: this.state.currentQueryParams.hasOwnProperty('pub_practiceArea')
+          ? practiceAreaOptions.filter(
+              c => c.value === this.state.currentQueryParams?.pub_practiceArea
+            )
+          : [],
+      });
+    }
+    if (
+      prevState.country.length !== this.state.country.length ||
+      this.state.countryData.length !== prevState.countryData.length
+    ) {
+      this.setState({
+        country: this.state.currentQueryParams.hasOwnProperty('pub_country')
+          ? countryOptions.filter(c => c.value === this.state.currentQueryParams?.pub_country)
+          : [],
+      });
+    }
+    if (
+      JSON.stringify(prevState.state) !== JSON.stringify(this.state.state) ||
+      this.state.countryData.length !== prevState.countryData.length
+    ) {
+      this.setState({
+        state: this.state.currentQueryParams.hasOwnProperty('pub_state')
+          ? stateOptions?.filter(c => c?.value === this.state.currentQueryParams?.pub_state)
+          : [],
+      });
+    }
+    if (JSON.stringify(prevState.industry) !== JSON.stringify(this.state.industry)) {
+      this.setState({
+        industry: this.state.currentQueryParams.hasOwnProperty('pub_industry')
+          ? industryOptions.filter(c => c.value === this.state.currentQueryParams?.pub_industry)
+          : [],
+      });
+    }
+    if (JSON.stringify(prevState.languages) !== JSON.stringify(this.state.languages)) {
+      this.setState({
+        languages: this.state.currentQueryParams.hasOwnProperty('pub_languages')
+          ? languageOptions.filter(c => c.value === this.state.currentQueryParams?.pub_languages)
+          : [],
+      });
+    }
+
+    const { history, urlQueryParams } = this.props;
+    if (
+      urlQueryParams?.pub_isProviderType !== true ||
+      urlQueryParams?.pub_hasPublicListing !== true
+    ) {
+      // history.push(
+      //   createResourceLocatorString(
+      //     'SearchPage',
+      //     routeConfiguration(),
+      //     {},
+      //     {pub_hasPublicListing:true, pub_isProviderType:true}
+      //   )
+      // );
+      if (
+        this.state.keywords === '' &&
+        urlQueryParams?.pub_hasPublicListing === true &&
+        urlQueryParams?.pub_isProviderType === true
+      ) {
+        history.push(
+          createResourceLocatorString(
+            'SearchPage',
+            routeConfiguration(),
+            {},
+            { pub_hasPublicListing: true, pub_isProviderType: true }
+          )
+        );
+      }
+
+      // if(this.state.currentQueryParams.hasOwnProperty('keywords') && urlQueryParams?.pub_hasPublicListing === true && urlQueryParams?.pub_isProviderType === true){
+      //   let currParams = this.state.currentQueryParams;
+      //   delete currParams?.pub_hasPublicListing;
+      //   delete currParams?.pub_isProviderType;
+      //   history.push(
+      //     createResourceLocatorString(
+      //       'SearchPage',
+      //       routeConfiguration(),
+      //       {},
+      //       {...currParams}
       //     )
       //   );
       // }
     }
   }
   // Apply the filters by redirecting to SearchPage with new filters.
+
   applyFilters() {
     const { history, urlQueryParams, sortConfig, filterConfig } = this.props;
     const searchParams = { ...urlQueryParams, ...this.state.currentQueryParams };
     const search = cleanSearchFromConflictingParams(searchParams, sortConfig, filterConfig);
-    if(this.state.country === '' && 
-      this.state.city  === '' && 
-      this.state.practiceArea  === '' && 
-      this.state.keywords === '' && 
-      this.state.languages  === '' && 
-      this.state.industry  === ''){
-        console.log("first");
-      }else{
-        if(this.state.keywords !== ''){
-          delete search.pub_isProviderType;
-          delete search.pub_hasPublicListing;
-        }
-        Object.keys(search).forEach(key => {
-          if (search[key] === '') {
-            delete search[key];
-          }
-        });
-        history.push(createResourceLocatorString('SearchPage', routeConfiguration(), {}, search));
+    if (
+      this.state.country[0]?.value === '' &&
+      this.state.state[0]?.value === '' &&
+      this.state.postalCode === '' &&
+      this.state.city === '' &&
+      this.state.practiceArea[0]?.value === '' &&
+      this.state.keywords === '' &&
+      this.state.languages[0]?.value === '' &&
+      this.state.industry[0]?.value === ''
+    ) {
+    } else {
+      if (this.state.keywords !== '') {
+        delete search.pub_isProviderType;
+        delete search.pub_hasPublicListing;
       }
-    if(this.state.keywords !== ''){
+      Object.keys(search).forEach(key => {
+        if (search[key] === '') {
+          delete search[key];
+        }
+      });
+      history.push(createResourceLocatorString('SearchPage', routeConfiguration(), {}, search));
+    }
+    if (this.state.keywords !== '') {
       delete search.pub_isProviderType;
       delete search.pub_hasPublicListing;
     }
@@ -233,6 +397,7 @@ class MainPanelComponent extends Component {
     return updatedURLParams => {
       const updater = prevState => {
         const { address, bounds } = urlQueryParams;
+
         const mergedQueryParams = { ...urlQueryParams, ...prevState.currentQueryParams };
 
         // Address and bounds are handled outside of MainPanel.
@@ -288,33 +453,32 @@ class MainPanelComponent extends Component {
       areaOfLawOptions,
       languages,
       history,
-      currentUser
+      currentUser,
     } = this.props;
-    console.log("url",urlQueryParams);
-    console.log("currurl",this.state.currentQueryParams);
+    // console.log("listing",listings)
     const useHistoryPush = liveEdit || showAsPopup;
-    const dummyOption = {value:'select', label:'Select'}
-    const practiceAreaOptions = areaOfLawOptions.map(c=>(
-      {value: c.key, label: c.label, key:c.key }
-    ));
-    const countryOptions = this.state.countryData.map(c=>(
-      {value: c.iso3, label:c.name, key:c.iso3}
-    ));
-    const languageOptions = languages.map(l=>(
-      {value:l.code , key:l.code, label:l.name}
-    ));
+    //creating options for react-select component
+    const practiceAreaOptions = areaOfLawOptions.map(c => ({
+      value: c.key,
+      label: c.label,
+      key: c.key,
+    }));
+    const countryOptions = this.state.countryData.map(c => ({
+      value: c.iso3,
+      label: c.name,
+      key: c.iso3,
+    }));
+    const languageOptions = languages.map(l => ({ value: l.code, key: l.code, label: l.name }));
     const industryOptions = [
-      { value:'industryA', label:'Industry A' },
-      { value:'industryB', label:'Industry B' },
-      { value:'industryC', label:'Industry C' },
-      { value:'industryD', label:'Industry D' },
-      { value:'industryE', label:'Industry E' }
+      { value: 'industryA', label: 'Industry A' },
+      { value: 'industryB', label: 'Industry B' },
+      { value: 'industryC', label: 'Industry C' },
+      { value: 'industryD', label: 'Industry D' },
+      { value: 'industryE', label: 'Industry E' },
     ];
     const stateOptions = this.state.countryData
-    .filter(c => c.iso3 === 'USA')[0]
-    ?.states.map(s => (
-      {value:s.state_code, label: s.name, key:s.value}
-    ));
+      .filter(c => c.iso3 === 'USA')[0]
+      ?.states.map(s => ({ value: s.state_code, label: s.name, key: s.state_code }));
     const primaryFilters = filterConfig.filter(f => f.group === 'primary');
     const secondaryFilters = filterConfig.filter(f => f.group !== 'primary');
     const hasSecondaryFilters = !!(secondaryFilters && secondaryFilters.length > 0);
@@ -352,7 +516,7 @@ class MainPanelComponent extends Component {
       searchParamsAreInSync && hasPaginationInfo ? pagination.totalItems : listingsLength;
 
     const listingsAreLoaded = !searchInProgress && searchParamsAreInSync;
-    
+
     // const signupLawyer = isAuthenticatedOrJustHydrated ? null : (
     //   <NamedLink name="SignupLawyerPage" className={css.signupLink}>
     //     <span className={css.signup}>
@@ -386,7 +550,7 @@ class MainPanelComponent extends Component {
         />
       ) : null;
     };
-
+    // console.log('state',this.state.currentQueryParams)
     const classes = classNames(rootClassName || css.searchResultContainer, className);
     return (
       <div className={classes}>
@@ -399,16 +563,13 @@ class MainPanelComponent extends Component {
               <div className={css.lformcol}>
                 <label>Country</label>
                 <Select
-                  isClearable = {this.state.isClearable}
+                  isClearable={this.state.isClearable}
                   options={countryOptions}
+                  value={this.state.country}
                   onChange={e => {
-                    e === null? this.setState({ country: '' }):
-                    this.setState({ country: e.value });
+                    e === null ? this.setState({ country: [] }) : this.setState({ country: e });
                     this.getHandleChangedValueFn()({
                       ['pub_country']: e?.value,
-                    });
-                    this.getHandleChangedValueFn()({
-                      ['pub_state']: null,
                     });
                   }}
                 >
@@ -421,32 +582,29 @@ class MainPanelComponent extends Component {
                 </Select>
               </div>
 
-              {this.state.country === 'USA' ? (
+              {this.state.country[0]?.value === 'USA' ? (
                 <>
                   <div className={css.lformcol}>
                     <label>State</label>
                     <Select
+                      value={this.state.state}
                       options={stateOptions}
                       isClearable={this.state.isClearable}
                       // className={css.formcontrol}
                       onChange={e => {
-                        e === null?setState({state:''}):
-                        this.setState({ state: e.value });
+                        e === null ? this.setState({ state: [] }) : this.setState({ state: e });
                         this.getHandleChangedValueFn()({
                           ['pub_state']: e?.value,
                         });
-                        this.getHandleChangedValueFn()({
-                          ['pub_state']:null,
-                        });
                       }}
-                    >
-                    </Select>
+                    ></Select>
                   </div>
 
                   <div className={css.lformcol}>
                     <label>ZIP</label>
                     <input
                       type="text"
+                      value={this.state.postalCode}
                       className={css.formcontrol}
                       placeholder="Type ZIP Code"
                       onChange={e => {
@@ -462,6 +620,7 @@ class MainPanelComponent extends Component {
                 <div className={css.lformcol}>
                   <label>City</label>
                   <input
+                    value={this.state.city}
                     type="text"
                     className={css.formcontrol}
                     placeholder="Enter City Name"
@@ -478,13 +637,14 @@ class MainPanelComponent extends Component {
               <div className={css.lformcol}>
                 <label>Practice Area</label>
                 <Select
-                
-                  isClearable = {this.state.isClearable}
+                  value={this.state.practiceArea}
+                  isClearable={this.state.isClearable}
                   options={practiceAreaOptions}
                   // className={css.formcontrol}
                   onChange={e => {
-                    e === null? this.setState({ practiceArea: '' }):
-                    this.setState({ practiceArea: e.value });
+                    e === null
+                      ? this.setState({ practiceArea: [] })
+                      : this.setState({ practiceArea: e });
                     this.getHandleChangedValueFn()({
                       ['pub_practiceArea']: e?.value,
                     });
@@ -503,6 +663,7 @@ class MainPanelComponent extends Component {
               <div className={css.lformcol}>
                 <label>Keyword</label>
                 <input
+                  value={this.state.keywords}
                   type="text"
                   className={css.formcontrol}
                   placeholder="Type Keyword"
@@ -518,12 +679,12 @@ class MainPanelComponent extends Component {
               <div className={css.lformcol}>
                 <label>Language</label>
                 <Select
-                  isClearable = {this.state.isClearable}
+                  value={this.state.languages}
+                  isClearable={this.state.isClearable}
                   options={languageOptions}
                   // className={css.formcontrol}
                   onChange={e => {
-                    e === null? this.setState({ languages: '' }):
-                    this.setState({ languages: e.value });
+                    e === null ? this.setState({ languages: [] }) : this.setState({ languages: e });
                     this.getHandleChangedValueFn()({
                       ['pub_languages']: e?.value,
                     });
@@ -541,12 +702,12 @@ class MainPanelComponent extends Component {
               <div className={css.lformcol}>
                 <label>Industry</label>
                 <Select
-                  isClearable = {this.state.isClearable}
+                  value={this.state.industry}
+                  isClearable={this.state.isClearable}
                   options={industryOptions}
                   // className={css.formcontrol}
                   onChange={e => {
-                    e === null? this.setState({ industry: '' }):
-                    this.setState({ industry: e.value });
+                    e === null ? this.setState({ industry: [] }) : this.setState({ industry: e });
                     this.getHandleChangedValueFn()({
                       ['pub_industry']: e?.value,
                     });
@@ -567,11 +728,14 @@ class MainPanelComponent extends Component {
             >
               <img src={searchiconbtn} /> Find Legal Advice
             </Button>
-            {(currentUser === null || typeof(currentUser) === undefined)?(<p className={css.aylbtntxt}>
-              Are you a lawyer?
-               <Link to="signup-lawyer">Join us now!</Link> 
-            </p>):''}
-            
+            {currentUser === null || typeof currentUser === undefined ? (
+              <p className={css.aylbtntxt}>
+                Are you a lawyer?
+                <Link to="signup-lawyer">Join us now!</Link>
+              </p>
+            ) : (
+              ''
+            )}
           </div>
         </div>
         {/* <SearchFiltersPrimary
@@ -655,7 +819,6 @@ class MainPanelComponent extends Component {
             </SearchFiltersSecondary>
           </div>
         ) : (
-          
           <div
             className={classNames(css.listings, {
               [css.newSearchInProgress]: !listingsAreLoaded,
@@ -666,18 +829,21 @@ class MainPanelComponent extends Component {
                 <FormattedMessage id="SearchPage.searchError" />
               </h2>
             ) : null}
-            {urlQueryParams.pub_isProviderType === true && 
-              urlQueryParams.pub_hasPublicListing === true && 
-              Object.keys(urlQueryParams).length === 2?null:
-                <SearchResultsPanel
-                  className={css.searchListingsPanel}
-                  listings={listings}
-                  pagination={listingsAreLoaded ? pagination : null}
-                  search={searchParamsForPagination}
-                  setActiveListing={onActivateListing}
-                  history={history}
-                  totalItems={totalItems}
-                />}
+            {urlQueryParams.pub_isProviderType === true &&
+            urlQueryParams.pub_hasPublicListing === true &&
+            Object.keys(urlQueryParams).length === 2 ? (
+              ''
+            ) : (
+              <SearchResultsPanel
+                className={css.searchListingsPanel}
+                listings={listings}
+                pagination={listingsAreLoaded ? pagination : null}
+                search={searchParamsForPagination}
+                setActiveListing={onActivateListing}
+                history={history}
+                totalItems={totalItems}
+              />
+            )}
             {/* <SearchResultsPanel
               className={css.searchListingsPanel}
               listings={listings}
@@ -693,7 +859,6 @@ class MainPanelComponent extends Component {
     );
   }
 }
-
 
 MainPanelComponent.defaultProps = {
   className: null,
@@ -737,12 +902,9 @@ MainPanelComponent.propTypes = {
 const mapStateToProps = state => {
   const { currentUser } = state.user;
 
-  return {currentUser};
+  return { currentUser };
 };
 
-const MainPanel = compose(
-  connect(mapStateToProps)
-)(MainPanelComponent);
-
+const MainPanel = compose(connect(mapStateToProps))(MainPanelComponent);
 
 export default MainPanel;

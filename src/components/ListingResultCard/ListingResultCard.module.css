@@ -131,11 +131,14 @@
 .SectionAvatarImg {
   position: relative;
 }
+
 .cardContainer {
   background: #fff;
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
   margin-bottom: 20px;
+  border-left: 10px solid #A91722;
   align-items: center;
   padding: 15px;
   border-radius: 10px;
@@ -143,9 +146,47 @@
     flex-direction: column;
   }
 }
-
+.listingInfo{
+    padding-left: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-right: 20px;
+    display: flex;
+    flex-direction: column;
+    
+}
+.listingTitle{
+    margin: 0px;
+}
+.listingDescription{
+    margin: 0px
+}
+.price{
+    padding: 10px;
+    margin: 0px;
+    align-items: center;
+    color: #A91722;
+    
+}
+.bookingContent{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 10px;
+    border-left: 2px solid rgb(201, 198, 198);
+}
+.userContent{
+    display: flex;
+    flex-direction: row;
+    padding-left: 10px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-right: 20px;
+    border-right: 2px solid rgb(201, 198, 198);
+}
 .userInfo {
   margin-left: 10px;
+  justify-items: center;
   text-transform: capitalize;
   @media (max-width: 575px) {
     text-align: center;
@@ -154,12 +195,6 @@
   & .userName {
     font-size: 14px;
     color: #38394e;
-    line-height: 18px;
-    margin: 0 0 5px;
-  }
-  & .userVerified{
-    font-size: 13px;
-    color: #a3a3a3;
     line-height: 18px;
     margin: 0 0 5px;
   }
