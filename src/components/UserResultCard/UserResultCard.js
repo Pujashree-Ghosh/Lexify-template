@@ -62,8 +62,10 @@ function UserResultCardComponent(props) {
   //   )[0]?.name
   // );
   const slug = createSlug(listing?.attributes?.title);
+  console.log(1,listing?.attributes?.description)
   return (
     <div className={css.cardContainer} key={listing.id.uuid}>
+      <div className={css.userContent}>
       <div className={css.SectionAvatarImg}>
         {/* <SectionAvatar user={listing.author} /> */}
         <AvatarMedium className={css.profileAvatar} user={ensuredUser} disableProfileLink />
@@ -86,6 +88,11 @@ function UserResultCardComponent(props) {
           )}
         </div>
       </div>
+      </div>
+      <div className={css.userBio}>
+        {listing?.attributes?.description}
+      </div>
+      <div className={css.bookingContent}>
       <div className={css.profileBtnContainer}>
         {/* <NamedLink name="ProfilePage" params={{ id: ensuredUser.id.uuid }}>
           <FormattedMessage id="UserResultCard.ListingProfileLink" />
@@ -119,6 +126,7 @@ function UserResultCardComponent(props) {
         >
           <FormattedMessage id="UserResultCard.ListingProfileLink" />
         </button>
+      </div>
       </div>
     </div>
   );
