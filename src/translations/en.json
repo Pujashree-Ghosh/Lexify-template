@@ -1295,5 +1295,6 @@
   "EditListingWizard.saveEditExpiry": "Save Expiry",
   "EditListingWizard.saveNewExpiry": "Publish",
   "EditListingWizard.saveNewCustomOralAvailability": "Next: Expiry",
-  "EditListingDurationPanel.title": "Duration"
+  "EditListingDurationPanel.title": "Duration",
+  "BookingTimeForm.slotNotAvailableMessage": "This time slot is not available to book"
 }

@@ -12,10 +12,17 @@ import EstimatedBreakdownMaybe from './EstimatedBreakdownMaybe';
 import FieldDateAndTimeInput from './FieldDateAndTimeInput';
 
 import css from './BookingTimeForm.module.css';
+import axios from 'axios';
+import { apiBaseUrl } from '../../util/api';
+import moment from 'moment';
 
 export class BookingTimeFormComponent extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      bookingDetails: [],
+      startDate: '',
+    };
 
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
     this.handleOnChange = this.handleOnChange.bind(this);
@@ -113,6 +120,30 @@ export class BookingTimeFormComponent extends Component {
           const startDate = startTime ? timestampToDate(startTime) : null;
           const endDate = endTime ? timestampToDate(endTime) : null;
 
+          if (startDate && !moment(startDate).isSame(this.state.startDate)) {
+            axios
+              .post(`${apiBaseUrl()}/api/booking/getBooking`, {
+                providerId: this.props?.listing?.author?.id.uuid,
+                start: moment(startDate)
+                  .clone()
+                  .add(1, 'm')
+                  .toDate(),
+                end: moment(endDate)
+                  .clone()
+                  .subtract(1, 'm')
+                  .toDate(),
+              })
+              .then(resp => {
+                this.setState({
+                  bookingDetails: resp.data,
+                  startDate: startDate,
+                });
+              })
+              .catch(err => {
+                console.log(err);
+              });
+          }
+
           // This is the place to collect breakdown estimation data. See the
           // EstimatedBreakdownMaybe component to change the calculations
           // for customized payment processes.
@@ -192,9 +223,17 @@ export class BookingTimeFormComponent extends Component {
                   duration={duration}
                 />
               ) : null}
+              {this.state.bookingDetails && this.state.bookingDetails.length > 0 ? (
+                <span style={{ color: '#d92153' }}>
+                  <FormattedMessage id="BookingTimeForm.slotNotAvailableMessage" />
+                </span>
+              ) : (
+                <>
+                  {bookingInfoMaybe}
+                  {loadingSpinnerMaybe}
+                </>
+              )}
 
-              {bookingInfoMaybe}
-              {loadingSpinnerMaybe}
               {bookingInfoErrorMaybe}
 
               <p className={css.smallPrint}>
@@ -206,7 +245,7 @@ export class BookingTimeFormComponent extends Component {
                   }
                 />
               </p>
-              {!isOwnListing && (
+              {!isOwnListing && this.state.bookingDetails && !this.state.bookingDetails.length && (
                 <div className={submitButtonClasses}>
                   <PrimaryButton type="submit">
                     <FormattedMessage id="BookingTimeForm.requestToBook" />

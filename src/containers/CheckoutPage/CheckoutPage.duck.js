@@ -1,6 +1,6 @@
 import pick from 'lodash/pick';
 import config from '../../config';
-import { initiatePrivileged, transitionPrivileged } from '../../util/api';
+import { apiBaseUrl, initiatePrivileged, transitionPrivileged } from '../../util/api';
 import { denormalisedResponseEntities } from '../../util/data';
 import { storableError } from '../../util/errors';
 import {
@@ -11,6 +11,7 @@ import {
 } from '../../util/transaction';
 import * as log from '../../util/log';
 import { fetchCurrentUserHasOrdersSuccess, fetchCurrentUser } from '../../ducks/user.duck';
+import axios from 'axios';
 
 // ================ Action types ================ //
 
@@ -198,6 +199,13 @@ export const initiateOrder = (orderParams, transactionId) => (dispatch, getState
     const order = entities[0];
     dispatch(initiateOrderSuccess(order));
     dispatch(fetchCurrentUserHasOrdersSuccess(true));
+    axios.post(`${apiBaseUrl()}/api/booking/setBooking`, {
+      orderId: order?.id.uuid,
+      providerId: orderParams.providerId,
+      customerId: orderParams.customerId,
+      start: orderParams.bookingStart,
+      end: orderParams.bookingEnd,
+    });
     return order;
   };
 

@@ -631,15 +631,15 @@ class FieldDateAndTimeInput extends Component {
                 // ))
                 <option
                   key={
-                    availableEndTimes[0].timeOfDay === '00:00'
+                    availableEndTimes[0]?.timeOfDay === '00:00'
                       ? '24:00'
-                      : availableEndTimes[0].timeOfDay
+                      : availableEndTimes[0]?.timeOfDay
                   }
-                  value={availableEndTimes[0].timeOfDay}
+                  value={availableEndTimes[0]?.timeOfDay}
                 >
-                  {availableEndTimes[0].timeOfDay === '00:00'
+                  {availableEndTimes[0]?.timeOfDay === '00:00'
                     ? '24:00'
-                    : availableEndTimes[0].timeOfDay}
+                    : availableEndTimes[0]?.timeOfDay}
                 </option>
               ) : (
                 <option>{placeholderTime}</option>

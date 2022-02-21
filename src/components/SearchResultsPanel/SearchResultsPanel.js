@@ -45,9 +45,14 @@ const SearchResultsPanel = props => {
         <span className={css.resultCount}>
           {totalItems} result{totalItems > 1 ? 's' : ''}
         </span>
-        {listings.map(l => (l.attributes?.publicData?.isProviderType?<UserResultCard listing={l} history={history} key={l.id.uuid} />:<ListingResultCard listing={l} history={history} key={l.id.uuid} /> ))}
+        {listings.map(l =>
+          l.attributes?.publicData?.isProviderType ? (
+            <UserResultCard listing={l} history={history} key={l.id.uuid} />
+          ) : (
+            <ListingResultCard listing={l} history={history} key={l.id.uuid} />
+          )
+        )}
         {
-          
           // <ListingCard
           //   className={css.listingCard}
           //   key={l.id.uuid}
@@ -55,8 +60,6 @@ const SearchResultsPanel = props => {
           //   renderSizes={cardRenderSizes}
           //   setActiveListing={setActiveListing}
           // />
-
-          
         }
         {/* {props.children} */}
       </div>
