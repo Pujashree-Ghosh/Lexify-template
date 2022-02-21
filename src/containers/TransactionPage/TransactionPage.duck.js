@@ -44,6 +44,10 @@ export const ACCEPT_SALE_REQUEST = 'app/TransactionPage/ACCEPT_SALE_REQUEST';
 export const ACCEPT_SALE_SUCCESS = 'app/TransactionPage/ACCEPT_SALE_SUCCESS';
 export const ACCEPT_SALE_ERROR = 'app/TransactionPage/ACCEPT_SALE_ERROR';
 
+export const JOIN_MEETING_REQUEST = 'app/TransactionPage/JOIN_MEETING_REQUEST';
+export const JOIN_MEETING_SUCCESS = 'app/TransactionPage/JOIN_MEETING_SUCCESS';
+export const JOIN_MEETING_ERROR = 'app/TransactionPage/JOIN_MEETING_ERROR';
+
 export const DECLINE_SALE_REQUEST = 'app/TransactionPage/DECLINE_SALE_REQUEST';
 export const DECLINE_SALE_SUCCESS = 'app/TransactionPage/DECLINE_SALE_SUCCESS';
 export const DECLINE_SALE_ERROR = 'app/TransactionPage/DECLINE_SALE_ERROR';
@@ -103,6 +107,9 @@ const initialState = {
   lineItems: null,
   fetchLineItemsInProgress: false,
   fetchLineItemsError: null,
+  joinMeetingProgress: false,
+  joinMeetingSuccess: false,
+  joinMeetingError: null,
 };
 
 // Merge entity arrays using ids, so that conflicting items in newer array (b) overwrite old values (a).
@@ -144,6 +151,13 @@ export default function checkoutPageReducer(state = initialState, action = {}) {
       return { ...state, acceptInProgress: false };
     case ACCEPT_SALE_ERROR:
       return { ...state, acceptInProgress: false, acceptSaleError: payload };
+
+    case JOIN_MEETING_REQUEST:
+      return { ...state, joinMeetingProgress: true, joinMeetingError: null };
+    case JOIN_MEETING_SUCCESS:
+      return { ...state, joinMeetingProgress: false };
+    case JOIN_MEETING_ERROR:
+      return { ...state, joinMeetingProgress: false, joinMeetingError: payload };
 
     case DECLINE_SALE_REQUEST:
       return { ...state, declineInProgress: true, declineSaleError: null, acceptSaleError: null };
@@ -267,6 +281,10 @@ const fetchTransitionsError = e => ({ type: FETCH_TRANSITIONS_ERROR, error: true
 const acceptSaleRequest = () => ({ type: ACCEPT_SALE_REQUEST });
 const acceptSaleSuccess = () => ({ type: ACCEPT_SALE_SUCCESS });
 const acceptSaleError = e => ({ type: ACCEPT_SALE_ERROR, error: true, payload: e });
+
+const joinMeetingRequest = () => ({ type: JOIN_MEETING_REQUEST });
+const joinMeetingSuccess = () => ({ type: JOIN_MEETING_SUCCESS });
+const joinMeetingError = e => ({ type: JOIN_MEETING_ERROR, error: true, payload: e });
 
 const declineSaleRequest = () => ({ type: DECLINE_SALE_REQUEST });
 const declineSaleSuccess = () => ({ type: DECLINE_SALE_SUCCESS });
@@ -458,6 +476,42 @@ export const acceptSale = id => (dispatch, getState, sdk) => {
         transition: TRANSITION_ACCEPT,
       });
       throw e;
+    });
+};
+
+//meeting dispatch function
+export const joinMeeting = (id, isCustomer) => (dispatch, getState, sdk) => {
+  if (acceptOrDeclineInProgress(getState())) {
+    return Promise.reject(new Error('Join meeting already in progress'));
+  }
+  dispatch(joinMeetingRequest());
+  const transition = joinMeeting1Transition(isCustomer);
+  return sdk.transactions
+    .transition({ id, transition, params: {} }, { expand: true })
+    .then(response => {
+      dispatch(addMarketplaceEntities(response));
+      dispatch(joinMeetingSuccess());
+      dispatch(fetchCurrentUserNotifications());
+      return response;
+    })
+    .catch(e => {
+      if (isTransactionsTransitionInvalidTransition(storableError(e))) {
+        console.log('557 first catch', e);
+        return joinMeetingSecond(id, isCustomer, dispatch, sdk, getState);
+      } else {
+        console.log('557 first else catch');
+        dispatch(joinMeetingError(storableError(e)));
+
+        // Rethrow so the page can track whether the sending failed, and
+        // keep the message in the form for a retry.
+        throw e;
+      }
+      // dispatch(joinMeetingError(storableError(e)));
+      // log.error(e, 'accept-sale-failed', {
+      //   txId: id,
+      //   transition,
+      // });
+      // throw e;
     });
 };
 

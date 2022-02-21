@@ -31,6 +31,7 @@ import {
 } from '../../components';
 import { SendMessageForm } from '../../forms';
 import config from '../../config';
+import jsonwebtoken from 'jsonwebtoken';
 
 // These are internal components that make this file more readable.
 import AddressLinkMaybe from './AddressLinkMaybe';
@@ -97,6 +98,7 @@ export class TransactionPanelComponent extends Component {
     this.onSendMessageFormBlur = this.onSendMessageFormBlur.bind(this);
     this.onMessageSubmit = this.onMessageSubmit.bind(this);
     this.scrollToMessage = this.scrollToMessage.bind(this);
+    this.goToConference = this.goToConference.bind(this);
   }
 
   componentDidMount() {
@@ -159,7 +161,83 @@ export class TransactionPanelComponent extends Component {
       });
     }
   }
+  goToConference = async transaction => {
+    console.log('123 test', transaction, config);
+    let startTime = transaction?.booking?.attributes?.start;
+    let endTime = transaction?.booking?.attributes?.end;
+    let transactionId = transaction?.id?.uuid;
+    let listingId = transaction?.listing?.id?.uuid;
+    let listingTitle = transaction?.listing?.attributes?.title;
+    let transaction_customer_id = transaction?.customer?.id?.uuid;
+    let transaction_provider_id = transaction?.provider?.id?.uuid;
+    let role = this.props.transactionRole;
+    const moderator = transaction?.provider?.attributes?.profile?.displayName;
 
+    let actualStartTime;
+    let customerJoinTime;
+
+    // [{"transition":"transition/request-payment","createdAt":"2021-06-09T08:50:22.829Z","by":"customer"},{"transition":"transition/confirm-payment","createdAt":"2021-06-09T08:50:25.122Z","by":"customer"},{"transition":"transition/accept-short-booking","createdAt":"2021-06-09T09:01:02.036Z","by":"provider"},{"transition":"transition/short-booking-provider-join-1","createdAt":"2021-06-09T09:04:02.847Z","by":"provider"},{"transition":"transition/short-booking-customer-join-2","createdAt":"2021-06-09T09:04:06.660Z","by":"customer"}]
+
+    let { transitions } = transaction?.attributes;
+    // const isShortBooking =
+    //   transaction &&
+    //   transaction.attributes.protectedData &&
+    //   transaction.attributes.protectedData.shortBooking;
+
+    // let findActualStartTime = 
+    // // isShortBooking ? [TRANSITION_SHORT_BOOKING_PROVIDER_JOIN_2, TRANSITION_SHORT_BOOKING_CUSTOMER_JOIN_2]: 
+    //   [TRANSITION_PROVIDER_JOIN_1, TRANSITION_PROVIDER_JOIN_2];
+
+    // Array.isArray(transitions) &&
+    //   transitions.length &&
+    //   transitions.forEach(item => {
+    //     if (findActualStartTime.includes(item.transition)) {
+    //       actualStartTime = item.createdAt;
+    //     }
+    //   });
+
+    // let findCustomerJoinTime = 
+    // // isShortBooking ? [TRANSITION_SHORT_BOOKING_CUSTOMER_JOIN_1, TRANSITION_SHORT_BOOKING_CUSTOMER_JOIN_2] :
+    //  [TRANSITION_CUSTOMER_JOIN_1, TRANSITION_CUSTOMER_JOIN_2];
+
+    // Array.isArray(transitions) &&
+    //   transitions.length &&
+    //   transitions.forEach(item => {
+    //     if (findCustomerJoinTime.includes(item.transition)) {
+    //       customerJoinTime = item.createdAt;
+    //     }
+    //   });
+
+    // console.log({ actualStartTime, customerJoinTime });
+
+    if (!transactionId) {
+      console.log('transaction id not found');
+      return;
+    }+6
+
+    let jwtToken = await jsonwebtoken.sign(
+      {
+        startTime,
+        endTime,
+        transactionId,
+        listingId,
+        listingTitle,
+        transaction_customer_id,
+        transaction_provider_id,
+        role,
+        moderator,
+        // shortBooking: isShortBooking,
+        // actualStartTime,
+        // customerJoinTime,
+      },
+      config.secretCode
+    );
+    console.log("99",jwtToken)
+    window.open(`/meeting-new/${jwtToken}`);
+    // this.props.history.push(`/meeting-new/${jwtToken}`);
+    // console.log('555 token', jwtToken);
+    // console.log('555 conf URL', config.canonicalRootURL + '/meeting-new/' + jwtToken);
+  };
   render() {
     const {
       rootClassName,
@@ -195,6 +273,7 @@ export class TransactionPanelComponent extends Component {
       lineItems,
       fetchLineItemsInProgress,
       fetchLineItemsError,
+      onJoinMeeting
     } = this.props;
 
     const currentTransaction = ensureTransaction(transaction);
@@ -203,7 +282,7 @@ export class TransactionPanelComponent extends Component {
     const currentCustomer = ensureUser(currentTransaction.customer);
     const isCustomer = transactionRole === 'customer';
     const isProvider = transactionRole === 'provider';
-
+    console.log('et',transaction)
     const listingLoaded = !!currentListing.id;
     const listingDeleted = listingLoaded && currentListing.attributes.deleted;
     const iscustomerLoaded = !!currentCustomer.id;
@@ -458,11 +537,26 @@ export class TransactionPanelComponent extends Component {
                   fetchLineItemsError={fetchLineItemsError}
                 />
               ) : null}
+              
               <BreakdownMaybe
                 className={css.breakdownContainer}
                 transaction={currentTransaction}
                 transactionRole={transactionRole}
               />
+              <button 
+                // onClick={
+                //     ()=>onJoinMeeting(currentTransaction.id, isCustomer)
+                //     .then(res => {
+                //       this.goToConference(currentTransaction);
+                //       console.log('onJoinMeeting', res);
+                //     })
+                //     .catch(e => {
+                //       console.log('557. err in page', e);
+                //       console.error(e);
+                //     })
+                //   }
+                onClick={()=>this.goToConference(currentTransaction)}
+                >This is a button</button>
 
               {stateData.showSaleButtons ? (
                 <div className={css.desktopActionButtons}>{saleButtons}</div>
@@ -481,6 +575,31 @@ export class TransactionPanelComponent extends Component {
           sendReviewInProgress={sendReviewInProgress}
           sendReviewError={sendReviewError}
         />
+        {/* <PrimaryButton
+          inProgress={joinMeetingProgress}
+          onClick={() => {
+            if (stateData.isShortBooking) {
+              onJoinShortMeeting(currentTransaction.id, isCustomer)
+                .then(res => {
+                  this.goToConference(currentTransaction);
+                  console.log('onJoinShortMeeting', res);
+                })
+                .catch(e => console.error(e));
+            } else {
+              onJoinMeeting(currentTransaction.id, isCustomer)
+                .then(res => {
+                  this.goToConference(currentTransaction);
+                  console.log('onJoinMeeting', res);
+                })
+                .catch(e => {
+                  console.log('557. err in page', e);
+                  console.error(e);
+                });
+            }
+          }}
+        >
+          {stateData.isShortBooking ? 'Join Free Trial Meeting' : 'Join Meeting'}
+        </PrimaryButton> */}
       </div>
     );
   }

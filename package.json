@@ -9,6 +9,8 @@
     "@loadable/component": "^5.14.1",
     "@loadable/server": "^5.14.2",
     "@mapbox/polyline": "^1.1.1",
+    "@material-ui/core": "^4.12.3",
+    "@material-ui/icons": "^4.11.2",
     "@sentry/browser": "5.20.1",
     "@sentry/node": "5.20.1",
     "array-includes": "^3.1.1",
@@ -76,6 +78,8 @@
     "smoothscroll-polyfill": "^0.4.0",
     "source-map-support": "^0.5.9",
     "twilio": "^3.68.0",
+    "twilio-chat": "^6.0.0",
+    "twilio-video-ssr": "^2.12.2-dev",
     "url": "^0.11.0"
   },
   "devDependencies": {
@@ -92,7 +96,9 @@
   "resolutions": {
     "react-dates/lodash": "^4.17.21",
     "react-test-renderer": "^16.13.1",
-    "serialize-javascript": "^2.1.1"
+    "serialize-javascript": "^2.1.1",
+    "react-error-overlay": "6.0.9"
+
   },
   "nodemonConfig": {
     "execMap": {

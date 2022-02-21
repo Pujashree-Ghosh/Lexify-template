@@ -386,3 +386,6 @@ export const humanizeLineItemCode = code => {
 
   return lowercase.charAt(0).toUpperCase() + lowercase.slice(1);
 };
+export function print() {
+  // console.log('1234 print>>', { ...arguments });
+}
