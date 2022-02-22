@@ -1296,5 +1296,7 @@
   "EditListingWizard.saveNewExpiry": "Publish",
   "EditListingWizard.saveNewCustomOralAvailability": "Next: Expiry",
   "EditListingDurationPanel.title": "Duration",
-  "BookingTimeForm.slotNotAvailableMessage": "This time slot is not available to book"
+  "BookingTimeForm.slotNotAvailableMessage": "This time slot is not available to book. Please choose another slot",
+  "ActivityFeed.transitionCancelProvider": "The booking was cancelled by the lawyer.",
+  "ActivityFeed.transitionCancelCustomer": "The booking was cancelled by the customer."
 }

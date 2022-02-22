@@ -92,6 +92,20 @@
     {:name :action/stripe-refund-payment}],
    :from :state/accepted,
    :to :state/cancelled}
+   {:name :transition/cancel-provider,
+   :actor :actor.role/provider,
+   :actions
+   [{:name :action/cancel-booking}
+    {:name :action/calculate-full-refund}],
+   :from :state/accepted,
+   :to :state/cancelled}
+   {:name :transition/cancel-customer,
+   :actor :actor.role/customer,
+   :actions
+   [{:name :action/cancel-booking}
+    {:name :action/calculate-full-refund}],
+   :from :state/accepted,
+   :to :state/cancelled}
   {:name :transition/review-1-by-provider,
    :actor :actor.role/provider,
    :actions [{:name :action/post-review-by-provider}],

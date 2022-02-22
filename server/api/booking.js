@@ -1,10 +1,8 @@
 const { Booking } = require('../models/BookingModel');
 
 module.exports.setBooking = async (req, res) => {
-  // console.log(Booking);
   try {
     const { orderId, providerId, customerId, start, end } = req.body;
-    console.log(req.body);
     if (!orderId) return res.status(404).send('OrderId is required');
     if (!providerId) return res.status(404).send('ProviderID is required');
     if (!customerId) return res.status(404).send('customerID is required');
@@ -21,9 +19,7 @@ module.exports.setBooking = async (req, res) => {
 module.exports.getBooking = async (req, res) => {
   try {
     const { providerId, start, end } = req.body;
-
     if (!providerId) return res.status(404).send('ProviderID is required');
-    // // if (!customerId) return res.status(404).send('mobile is required');
     if (!start) return res.status(404).send('Booking start is required');
     if (!end) return res.status(404).send('Booking end date is required');
 
@@ -53,13 +49,6 @@ module.exports.getBooking = async (req, res) => {
       ],
     });
 
-    // if (!user) {
-    //   return res.status(404).send('User not found!');
-    // } else {
-    //   if (user.otp !== otp) {
-    //     return res.status(401).send('Otp incorrect!');
-    //   }
-    // }
     res.status(200).send(result);
   } catch (error) {
     console.log(error);
@@ -68,26 +57,15 @@ module.exports.getBooking = async (req, res) => {
 };
 module.exports.getAllBooking = async (req, res) => {
   try {
-    // const { providerId, start, end } = req.body;
-
-    // if (!providerId) return res.status(404).send('ProviderID is required');
-    // // if (!customerId) return res.status(404).send('mobile is required');
-    // if (!start) return res.status(404).send('Booking start is required');
-    // if (!end) return res.status(404).send('Booking end date is required');
-
-    // const user = await User.findOne({ mobile });
     const result = await Booking.find();
 
-    // if (!user) {
-    //   return res.status(404).send('User not found!');
-    // } else {
-    //   if (user.otp !== otp) {
-    //     return res.status(401).send('Otp incorrect!');
-    //   }
-    // }
     res.status(200).send('Ok' + result);
   } catch (error) {
     console.log(error);
     return res.status(404).send(error);
   }
+};
+module.exports.deleteBooking = async (req, res) => {
+  const result = await Booking.deleteOne(req.body);
+  res.status(200).send('Ok');
 };

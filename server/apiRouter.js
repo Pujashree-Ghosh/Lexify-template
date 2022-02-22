@@ -21,7 +21,7 @@ const createUserWithIdp = require('./api/auth/createUserWithIdp');
 const { authenticateFacebook, authenticateFacebookCallback } = require('./api/auth/facebook');
 const { authenticateGoogle, authenticateGoogleCallback } = require('./api/auth/google');
 const { sendOtp, verifyOtp } = require('./api/user');
-const { setBooking, getBooking, getAllBooking } = require('./api/booking');
+const { setBooking, getBooking, getAllBooking, deleteBooking } = require('./api/booking');
 
 const createProviderListing = require('./api/create-provider-listing');
 const updateProviderListing = require('./api/update-provider-listing');
@@ -62,6 +62,7 @@ router.post('/user/verify', verifyOtp);
 router.post('/booking/setBooking', setBooking);
 router.post('/booking/getBooking', getBooking);
 router.get('/booking/getBooking', getAllBooking);
+router.delete('/booking/deleteBooking', deleteBooking);
 
 router.post('/createProviderListing', createProviderListing);
 router.post('/updateProviderListing', updateProviderListing);

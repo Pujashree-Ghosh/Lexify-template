@@ -9,6 +9,8 @@ import { ensureTransaction, ensureUser, ensureListing } from '../../util/data';
 import {
   TRANSITION_ACCEPT,
   TRANSITION_CANCEL,
+  TRANSITION_CANCEL_PROVIDER,
+  TRANSITION_CANCEL_CUSTOMER,
   TRANSITION_COMPLETE,
   TRANSITION_DECLINE,
   TRANSITION_EXPIRE,
@@ -143,6 +145,10 @@ const resolveTransitionMessage = (
       ) : (
         <FormattedMessage id="ActivityFeed.transitionExpire" values={{ displayName }} />
       );
+    case TRANSITION_CANCEL_PROVIDER:
+      return <FormattedMessage id="ActivityFeed.transitionCancelProvider" />;
+    case TRANSITION_CANCEL_CUSTOMER:
+      return <FormattedMessage id="ActivityFeed.transitionCancelCustomer" />;
     case TRANSITION_CANCEL:
       return <FormattedMessage id="ActivityFeed.transitionCancel" />;
     case TRANSITION_COMPLETE:
