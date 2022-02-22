@@ -11,7 +11,7 @@ const useStyles = makeStyles({
   },
 });
 
-export function getInitials(name: string) {
+export function getInitials(name) {
   return name
     .split(' ')
     .map(text => text[0])
@@ -19,9 +19,9 @@ export function getInitials(name: string) {
     .toUpperCase();
 }
 
-export default function UserAvatar({ user }: { user: StateContextType['user'] }) {
+export default function UserAvatar({ user }) {
   const classes = useStyles();
-  const { displayName, photoURL } = user!;
+  const { displayName, photoURL } = user;
 
   return photoURL ? (
     <Avatar src={photoURL} />

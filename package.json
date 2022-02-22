@@ -24,7 +24,9 @@
     "cookie-parser": "^1.4.5",
     "core-js": "^3.6.5",
     "cors": "^2.8.5",
+    "d3-timer": "^3.0.1",
     "decimal.js": "10.2.0",
+    "detect-browser": "^5.3.0",
     "dotenv": "6.2.0",
     "dotenv-expand": "4.2.0",
     "express": "^4.16.4",
@@ -55,6 +57,7 @@
     "query-string": "^6.13.1",
     "raf": "^3.4.0",
     "react": "^16.13.1",
+    "react-countdown": "^2.3.2",
     "react-dates": "^21.3.1",
     "react-dom": "^16.13.1",
     "react-final-form": "^6.5.1",
@@ -76,6 +79,8 @@
     "sharetribe-flex-sdk": "^1.15.0",
     "sharetribe-scripts": "5.0.1",
     "smoothscroll-polyfill": "^0.4.0",
+    "socket.io": "^4.1.2",
+    "socket.io-client": "^4.1.2",
     "source-map-support": "^0.5.9",
     "twilio": "^3.68.0",
     "twilio-chat": "^6.0.0",
@@ -98,7 +103,6 @@
     "react-test-renderer": "^16.13.1",
     "serialize-javascript": "^2.1.1",
     "react-error-overlay": "6.0.9"
-
   },
   "nodemonConfig": {
     "execMap": {

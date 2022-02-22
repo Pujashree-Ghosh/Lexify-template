@@ -25,13 +25,13 @@ const useStyles = makeStyles({
   },
 });
 
-const UserMenu: React.FC = () => {
+const UserMenu = () => {
   const classes = useStyles();
   const { user, signOut } = useAppState();
   const { localTracks } = useVideoContext();
 
   const [menuOpen, setMenuOpen] = useState(false);
-  const anchorRef = useRef<HTMLButtonElement>(null);
+  const anchorRef = useRef(null);
 
   const handleSignOut = useCallback(() => {
     localTracks.forEach(track => track.stop());
@@ -53,7 +53,7 @@ const UserMenu: React.FC = () => {
       <div className={classes.userContainer}>
         <UserAvatar user={user} />
         <Button onClick={() => setMenuOpen(isOpen => !isOpen)} ref={anchorRef} className={classes.userButton}>
-          {user!.displayName}
+          {user?.displayName}
           <ExpandMoreIcon />
         </Button>
         <Menu

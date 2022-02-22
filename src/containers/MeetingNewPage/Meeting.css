@@ -1,0 +1,46 @@
+.timer {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    color: #fff;
+    z-index: 9;
+  }
+  .chatinput {
+    position: absolute;
+    margin-bottom: 0 !important;
+  
+    bottom: 0;
+    width: 100%;
+  }
+  .chatinput input {
+    position: absolute;
+    margin: 0;
+    bottom: 0;
+    background: #eee;
+    font-size: 14px;
+    padding: 10px 45px 10px 10px;
+    left: 0;
+  }
+  .chatinput button {
+    padding: 0;
+    margin: 0;
+    position: absolute;
+    right: 0;
+    top: -37px;
+  }
+  .chatinput button:focus,
+  .chatinput button:hover {
+    outline: none !important;
+  }
+  
+  @media (max-width: 991px) {
+    /* #root {
+    overflow-y: auto;
+  } */
+  }
+  @media (max-width: 767px) {
+    .timer {
+      top: 80px;
+    }
+  }
+  

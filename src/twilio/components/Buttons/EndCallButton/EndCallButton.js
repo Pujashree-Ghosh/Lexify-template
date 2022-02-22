@@ -5,7 +5,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { Button } from '@material-ui/core';
 
 import useVideoContext from '../../../hooks/useVideoContext/useVideoContext';
-import SignalHelper from '../../../../util/signalHelper';
+// import SignalHelper from '../../../../util/signalHelper';
 
 const useStyles = makeStyles(theme =>
   createStyles({

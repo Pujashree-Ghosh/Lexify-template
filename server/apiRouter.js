@@ -25,6 +25,8 @@ const createProviderListing = require('./api/create-provider-listing');
 const updateProviderListing = require('./api/update-provider-listing');
 const publishPublicListing = require('./api/publish-public-listing');
 
+const {getTwilioToken}=require('./api/twilio')
+
 const router = express.Router();
 
 // ================ API router middleware: ================ //
@@ -57,6 +59,8 @@ router.use((req, res, next) => {
 
 router.post('/user', sendOtp);
 router.post('/user/verify', verifyOtp);
+
+router.post('/getTwilioToken',getTwilioToken);
 
 router.post('/createProviderListing', createProviderListing);
 router.post('/updateProviderListing', updateProviderListing);

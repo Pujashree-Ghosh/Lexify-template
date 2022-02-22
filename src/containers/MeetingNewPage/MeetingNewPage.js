@@ -13,6 +13,7 @@ import useConnectionOptions from '../../twilio/utils/useConnectionOptions/useCon
 import AppStateProvider, { useAppState } from '../../twilio/state';
 import ErrorDialog from '../../twilio/components/ErrorDialog/ErrorDialog';
 import UnsupportedBrowserWarning from '../../twilio/components/UnsupportedBrowserWarning/UnsupportedBrowserWarning';
+import Meeting from './Meeting';
 
 // import Meeting from './Meeting';
 // import ChatSreen from './Chat';
@@ -25,7 +26,7 @@ const VideoApp = () => {
     <UnsupportedBrowserWarning>
       <VideoProvider options={connectionOptions} onError={setError}>
         <ErrorDialog dismissError={() => setError(null)} error={error} />
-        Dibya
+        <Meeting/>
         {/* <ChatSreen /> */}
       </VideoProvider>
     </UnsupportedBrowserWarning>

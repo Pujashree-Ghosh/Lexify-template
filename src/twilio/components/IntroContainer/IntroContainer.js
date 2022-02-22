@@ -7,7 +7,7 @@ import { useAppState } from '../../state';
 import UserMenu from './UserMenu/UserMenu';
 import { useLocation } from 'react-router-dom';
 
-import mLogo from '../../../assets/main-logo.png';
+import mLogo from '../../../assets/footerlogo.svg';
 
 import VideoLogo from '../../../assets/video_icon.png';
 

@@ -9,6 +9,7 @@ import {
 } from './settings/settingsReducer';
 import axios from 'axios';
 import useActiveSinkId from './useActiveSinkId/useActiveSinkId';
+import { apiBaseUrl } from '../../util/api';
 // import useFirebaseAuth from './useFirebaseAuth/useFirebaseAuth';
 // import usePasscodeAuth from './usePasscodeAuth/usePasscodeAuth.ss';
 // import { User } from 'firebase';
@@ -79,7 +80,7 @@ export default function AppStateProvider(props) {
     // },
     getToken: async (identity, roomName) => {
       const response = await axios.post(
-        `${process.env.REACT_APP_BACKEND_SERVER_URL}/twilio/getTwilioToken`,
+        `http://localhost:3500/api/getTwilioToken`,
         {
           room: roomName,
           identity: identity,

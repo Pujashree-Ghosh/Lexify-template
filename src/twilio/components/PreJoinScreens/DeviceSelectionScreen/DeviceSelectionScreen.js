@@ -146,7 +146,7 @@ export default function DeviceSelectionScreen({
                     color="primary"
                     data-cy-join-now
                     onClick={handleJoin}
-                    disabled={disableButtons}
+                    // disabled={disableButtons}
                   >
                     Join Now
                   </Button>
