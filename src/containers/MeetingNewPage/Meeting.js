@@ -23,7 +23,7 @@ import Countdown from 'react-countdown';
 import css from './Meeting.css';
 import config from '../../config';
 // import { MonetizationOn } from '@material-ui/icons';
-import io from 'socket.io-client';
+// import io from 'socket.io-client';
 const secret = config.secretCode;
 const timeZone = moment.tz.guess();
 const Container = styled('div')({
@@ -98,11 +98,11 @@ const Meeting = props => {
   const [isLoading, setLoading] = useState(false);
   const [isActive, setActive] = useState(false);
   const [meetingState, setMeetingState] = useState(roomState);
-  let socket;
+  // let socket;
   const [customerEnterInWaitingRoom, setcustomerEnterInWaitingRoom] = useState(isCustomer);
   const [customerEnterInMeetingRoom, setcustomerEnterInMeetingRoom] = useState(false);
   const [providerEnterInWaitingRoom, setproviderEnterInWaitingRoom] = useState(isProvider);
-  const [providerEnterInMeetingRoom, setproviderEnterInMeetingRoom] = useState(false);
+  const [providerEnterInMeetingRoom, setproviderEnterInMeetingRoom] = useState(true);
   const [isExtended, setIsExtended] = useState(true);
   const [providerJoinedAt, setproviderJoinedAt] = useState(0);
   const [remainingTime, setremainingTime] = useState(null);
@@ -277,26 +277,26 @@ const Meeting = props => {
     //   return;
     // }
 
-    if (
-      isCustomer &&
-      !providerJoinedAt &&
-      providerJoinedAt !== 0 &&
-      currentTime.isAfter(meetingExpTime)
-    ) {
-      console.log('15111 A');
-      setMeetingExpired(true);
-      return;
-    }
-    if (
-      isProvider &&
-      !customerJoinTime &&
-      customerJoinTime !== 0 &&
-      currentTime.isAfter(meetingExpTime)
-    ) {
-      console.log('15111 B');
-      setMeetingExpired(true);
-      return;
-    }
+    // if (
+    //   isCustomer &&
+    //   !providerJoinedAt &&
+    //   providerJoinedAt !== 0 &&
+    //   currentTime.isAfter(meetingExpTime)
+    // ) {
+    //   console.log('15111 A');
+    //   setMeetingExpired(true);
+    //   return;
+    // }
+    // if (
+    //   isProvider &&
+    //   !customerJoinTime &&
+    //   customerJoinTime !== 0 &&
+    //   currentTime.isAfter(meetingExpTime)
+    // ) {
+    //   console.log('15111 B');
+    //   setMeetingExpired(true);
+    //   return;
+    // }
     if (isCustomer) {
       let timeout;
       if (actualEndTime && moment().isAfter(moment(actualEndTime))) {
@@ -447,178 +447,182 @@ const Meeting = props => {
 
   useEffect(() => {
     const backend_server = process.env.REACT_APP_BACKEND_SERVER_URL;
-    socket = io(backend_server, {
-      query: {
-        roomId: transactionId + '-' + listingId,
-        role,
-        // ...(decoded.actualStartTime ? { actualStartTime: decoded.actualStartTime } : {}),
-        ...(decoded.customerJoinTime ? { customerJoinTime: decoded.customerJoinTime } : {}),
-        maxStartTime: new Date(meetingExpTime).getTime(),
-        // customerJoinTime
-      },
-    });
-    if (typeof window !== undefined) {
-      window.socket = socket;
-    }
-    socket.on(
-      'customer-connected',
-      ({
-        providerJoinedAt,
-        customerJoinedAt,
-        isProviderJoinedAgain,
-        isCustomerJoinedAgain,
-        actualStartTime,
-        customerJoinTime: customerJoinTimeArg,
-      }) => {
-        console.log('socket-->>', 'customer connected');
-        setcustomerEnterInWaitingRoom(true);
-        // if(isC)
-        // setCustomerEnter(true);
-        setproviderJoinedAt(providerJoinedAt);
-        isMeetingStart();
-        // if (isProvider) {
-        console.log('397 B');
-        setActualStartTime(actualStartTime);
-        if (actualStartTime) {
-          let actEndTime = moment(actualStartTime).add(meetingTimeDuration, 'm');
-          setActualEndTime(actEndTime);
-          // let meetingEndDuration = actEndTime.unix() - moment().unix();
-          // let timeout = setTimeout(() => {
-          //   //display expired msg
-          //   //optional->disconnect if connected
-          //   setTimeout(() => {
-          //     console.log('15111 F');
-          //     setMeetingExpired(true);
-          //   }, 3000);
-          // }, meetingEndDuration * 1000);
-        }
-        if (customerJoinTimeArg) {
-          setCustomerJoinTime(customerJoinTimeArg);
-        }
-        // }
-      }
-    );
-    socket.on('customer-disconnected', () => {
-      console.log('socket-->>', 'customer connected');
-      setcustomerEnterInWaitingRoom(false);
-    });
-    socket.on('provider-disconnected', () => {
-      console.log('socket-->>', 'customer connected');
-      setproviderEnterInWaitingRoom(false);
-    });
-    socket.on(
-      'provider-connected',
-      ({
-        providerJoinedAt,
-        customerJoinedAt,
-        isProviderJoinedAgain,
-        isCustomerJoinedAgain,
-        actualStartTime,
-        customerJoinTime,
-        isExtended,
-      }) => {
-        console.log('socket-->>', 'provider connected');
-        setproviderEnterInWaitingRoom(true);
-        setIsExtended(isExtended);
-        // setModeratorEnter(true);
-        isMeetingStart();
-        setproviderJoinedAt(providerJoinedAt);
-        // if (isCustomer) {
-        if (actualStartTime) {
-          console.log('397 C');
-          setActualStartTime(actualStartTime);
-        }
-        // }
-        // if (customerJoinTime) {
-        setCustomerJoinTime(customerJoinTime);
-        // }
-      }
-    );
+    console.log('back',backend_server)
+  //   socket = io(backend_server, {
+  //     query: {
+  //       roomId: transactionId + '-' + listingId,
+  //       // role,
+  //       // ...(decoded.actualStartTime ? { actualStartTime: decoded.actualStartTime } : {}),
+  //       // ...(decoded.customerJoinTime ? { customerJoinTime: decoded.customerJoinTime } : {}),
+  //       // maxStartTime: new Date(meetingExpTime).getTime(),
+  //       // customerJoinTime
+  //     },
+  //   });
+  //   if (typeof window !== undefined) {
+  //     window.socket = socket;
+  //   }
+  //   socket.on(
+  //     'customer-connected',
+  //     ({
+  //       providerJoinedAt,
+  //       customerJoinedAt,
+  //       isProviderJoinedAgain,
+  //       isCustomerJoinedAgain,
+  //       actualStartTime,
+  //       customerJoinTime: customerJoinTimeArg,
+  //     }) => {
+  //       console.log('socket-->>', 'customer connected');
+  //       setcustomerEnterInWaitingRoom(true);
+  //       // if(isC)
+  //       // setCustomerEnter(true);
+        // setproviderJoinedAt(providerJoinedAt);
+  //       isMeetingStart();
+  //       // if (isProvider) {
+  //       console.log('397 B');
+  //       setActualStartTime(actualStartTime);
+  //       if (actualStartTime) {
+  //         let actEndTime = moment(actualStartTime).add(meetingTimeDuration, 'm');
+  //         setActualEndTime(actEndTime);
+  //         // let meetingEndDuration = actEndTime.unix() - moment().unix();
+  //         // let timeout = setTimeout(() => {
+  //         //   //display expired msg
+  //         //   //optional->disconnect if connected
+  //         //   setTimeout(() => {
+  //         //     console.log('15111 F');
+  //         //     setMeetingExpired(true);
+  //         //   }, 3000);
+  //         // }, meetingEndDuration * 1000);
+  //       }
+  //       if (customerJoinTimeArg) {
+  //         setCustomerJoinTime(customerJoinTimeArg);
+  //       }
+  //       // }
+  //     }
+  //   );
+  //   socket.on('customer-disconnected', () => {
+  //     console.log('socket-->>', 'customer connected');
+  //     setcustomerEnterInWaitingRoom(false);
+  //   });
+  //   socket.on('provider-disconnected', () => {
+  //     console.log('socket-->>', 'customer connected');
+  //     setproviderEnterInWaitingRoom(false);
+  //   });
+  //   socket.on(
+  //     'provider-connected',
+  //     ({
+  //       providerJoinedAt,
+  //       customerJoinedAt,
+  //       isProviderJoinedAgain,
+  //       isCustomerJoinedAgain,
+  //       actualStartTime,
+  //       customerJoinTime,
+  //       isExtended,
+  //     }) => {
+  //       console.log('socket-->>', 'provider connected');
+  //       setproviderEnterInWaitingRoom(true);
+  //       setIsExtended(isExtended);
+  //       // setModeratorEnter(true);
+  //       isMeetingStart();
+  //       setproviderJoinedAt(providerJoinedAt);
+  //       // if (isCustomer) {
+  //       if (actualStartTime) {
+  //         console.log('397 C');
+  //         setActualStartTime(actualStartTime);
+  //       }
+  //       // }
+  //       // if (customerJoinTime) {
+  //       setCustomerJoinTime(customerJoinTime);
+  //       // }
+  //     }
+  //   );
 
-    socket.on('meeting', data => {
-      console.log('signalhelper meeting', data);
-      // data = JSON.parse(data);
-      const actualStartTimeFromServer = data.actualStartTime;
-      if (data.status === 'close') {
-        console.log('close');
-        // if (!isProvider && moderatorEnter) setModeratorEnter(false);
-        // setremainingMeetingTime(null);
-        if (!data.isProvider) {
-          // setCustomerEnter(false);
-          setcustomerEnterInMeetingRoom(false);
-        } else {
-          // setModeratorEnter(false);
-          setproviderEnterInMeetingRoom(false);
-        }
-        setMeetingState('disconnected');
-        // if (estEndTime <= moment().format()) {
-        //   setActive(false);
-        // }
-      } else if (data.status === 'open') {
-        console.log(223, { data });
-        if (data.actualStartTime) {
-          console.log('397 D');
-          setActualStartTime(data.actualStartTime);
-        }
-        if (!data.isProvider) {
-          // setCustomerEnter(true);
-          setcustomerEnterInMeetingRoom(true);
-        } else {
-          // setModeratorEnter(true);
-          setproviderEnterInMeetingRoom(true);
-        }
-        setMeetingState('connected');
+  //   socket.on('meeting', data => {
+  //     console.log('signalhelper meeting', data);
+  //     // data = JSON.parse(data);
+  //     const actualStartTimeFromServer = data.actualStartTime;
+  //     if (data.status === 'close') {
+  //       console.log('close');
+  //       // if (!isProvider && moderatorEnter) setModeratorEnter(false);
+  //       // setremainingMeetingTime(null);
+  //       if (!data.isProvider) {
+  //         // setCustomerEnter(false);
+  //         setcustomerEnterInMeetingRoom(false);
+  //       } else {
+  //         // setModeratorEnter(false);
+  //         setproviderEnterInMeetingRoom(false);
+  //       }
+  //       setMeetingState('disconnected');
+  //       // if (estEndTime <= moment().format()) {
+  //       //   setActive(false);
+  //       // }
+  //     } else if (data.status === 'open') {
+  //       console.log(223, { data });
+  //       if (data.actualStartTime) {
+  //         console.log('397 D');
+  //         setActualStartTime(data.actualStartTime);
+  //       }
+  //       if (!data.isProvider) {
+  //         // setCustomerEnter(true);
+  //         setcustomerEnterInMeetingRoom(true);
+  //       } else {
+  //         // setModeratorEnter(true);
+  //         setproviderEnterInMeetingRoom(true);
+  //       }
+  //       setMeetingState('connected');
 
-        let timeout,
-          actEndTime = moment(actualStartTimeFromServer).add(meetingTimeDuration, 'm');
-        setActualEndTime(actEndTime);
-        // setremainingMeetingTime(timerTimeCalculator(moment(), actEndTime));
-        // let meetingEndDuration = actEndTime.unix() - moment().unix();
-        // console.log({ meetingEndDuration });
-        // timeout = setTimeout(() => {
-        //   //display expired msg
-        //   //optional->disconnect if connected
-        //   setTimeout(() => {
-        //     console.log('15111 F');
-        //     setMeetingExpired(true);
-        //   }, 3000);
-        // }, meetingEndDuration * 1000);
-      }
-    });
-    socket.on('meeting-time-extend', time => {
-      setIsExtended(true);
-      setActualEndTime(time);
-    });
-    // socket.on('connection', socket => {
-    //   // socket.broadcast.emit('hi');
-    //   console.log({ socket });
+  //       let timeout,
+  //         actEndTime = moment(actualStartTimeFromServer).add(meetingTimeDuration, 'm');
+  //       setActualEndTime(actEndTime);
+  //       // setremainingMeetingTime(timerTimeCalculator(moment(), actEndTime));
+  //       // let meetingEndDuration = actEndTime.unix() - moment().unix();
+  //       // console.log({ meetingEndDuration });
+  //       // timeout = setTimeout(() => {
+  //       //   //display expired msg
+  //       //   //optional->disconnect if connected
+  //       //   setTimeout(() => {
+  //       //     console.log('15111 F');
+  //       //     setMeetingExpired(true);
+  //       //   }, 3000);
+  //       // }, meetingEndDuration * 1000);
+  //     }
+  //   });
+  //   socket.on('meeting-time-extend', time => {
+  //     setIsExtended(true);
+  //     setActualEndTime(time);
+  //   });
+  //   // socket.on('connection', socket => {
+  //   //   // socket.broadcast.emit('hi');
+  //   //   console.log({ socket });
 
-    // });
-  }, []);
+  //   // });
+  // }, []);
 
-  const extendMeeting = () => {
-    window.socket && window.socket.emit('meeting-time-extend', moment(actualEndTime).add(5, 'm'));
-    setActualEndTime(moment(actualEndTime).add(5, 'm'));
-  };
-  console.log('meeting 390', { isProvider, isActive });
-  // print('123 isactive before return ', isActive);
-  console.log('397 A', {
-    customerEnterInWaitingRoom,
-    providerEnterInWaitingRoom,
-    customerEnterInMeetingRoom,
-    providerEnterInMeetingRoom,
-    roomState,
-    isActive,
-    actualStartTime: actualStartTime && moment(actualStartTime).format('lll'),
-    decoded: decoded,
-    actualEndTime: actualEndTime && moment(actualEndTime).format('lll'),
-    remainingMeetingTime,
-    meetingExpired,
-    customerJoinTime,
-    meetingExpTime: moment(meetingExpTime).format('lll'),
-    remainingTime,
-    providerJoinedAt,
+  // const extendMeeting = () => {
+  //   window.socket && window.socket.emit('meeting-time-extend', moment(actualEndTime).add(5, 'm'));
+  //   setActualEndTime(moment(actualEndTime).add(5, 'm'));
+  // };
+  // console.log('meeting 390', { isProvider, isActive });
+  // // print('123 isactive before return ', isActive);
+  // console.log('397 A', {
+  //   customerEnterInWaitingRoom,
+  //   providerEnterInWaitingRoom,
+  //   customerEnterInMeetingRoom,
+  //   providerEnterInMeetingRoom,
+  //   roomState,
+  //   isActive,
+  //   actualStartTime: actualStartTime && moment(actualStartTime).format('lll'),
+  //   decoded: decoded,
+  //   actualEndTime: actualEndTime && moment(actualEndTime).format('lll'),
+  //   remainingMeetingTime,
+  //   meetingExpired,
+  //   customerJoinTime,
+  //   meetingExpTime: moment(meetingExpTime).format('lll'),
+  //   remainingTime,
+  //   providerJoinedAt,
   });
+  console.log("MS",meetingState)
+  console.log("RS",roomState)
+  
 
   return (
     <ListingContext.Provider
@@ -714,7 +718,7 @@ const Meeting = props => {
           sub={''}
           status={'waiting_duration'}
         /> */}
-
+        {meetingState === 'disconnected'?setMeetingState('connected'):null}
         {roomState === 'disconnected' ? (
           <div>
             <PreJoinScreens
@@ -724,7 +728,7 @@ const Meeting = props => {
               endTime={endTime}
               listingTitle={listingTitle}
               isProvider={isProvider}
-              socket={socket}
+              // socket={socket}
               isMeetingDisbled={
                 !isActive ||
                 meetingExpired ||
@@ -776,7 +780,7 @@ const Meeting = props => {
           <Main>
             <ReconnectingNotification />
             <MobileTopMenuBar isProvider={isProvider} />
-            <Room />
+             <Room />
             {/* {remainingMeetingTime && (
               <Timer
                 initialMinute={remainingMeetingTime && remainingMeetingTime.m}
@@ -818,9 +822,9 @@ const Meeting = props => {
             )}
             <MenuBar
               isProvider={isProvider}
-              extendMeeting={extendMeeting}
-              isExtended={isExtended}
-              isShortBooking={isShortBooking}
+              // extendMeeting={extendMeeting}
+              // isExtended={isExtended}
+              // isShortBooking={isShortBooking}
             />
           </Main>
         ) : (
@@ -832,7 +836,7 @@ const Meeting = props => {
               endTime={endTime}
               listingTitle={listingTitle}
               isProvider={isProvider}
-              socket={socket}
+              // socket={socket}
               isMeetingDisbled={
                 !isActive || meetingExpired || (isCustomer && !providerEnterInMeetingRoom)
               }

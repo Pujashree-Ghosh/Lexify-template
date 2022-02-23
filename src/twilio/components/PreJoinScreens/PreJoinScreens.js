@@ -99,7 +99,7 @@ export default function PreJoinScreens({ meetingExpired, ...props }) {
         listingTitle={listingTitle}
         isMeetingDisbled={props.isMeetingDisbled}
         isProvider={props.isProvider}
-        socket={props.socket}
+        // socket={props.socket}
         onCancel={props.onCancel}
       />
       {!isFirefox &&

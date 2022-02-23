@@ -86,7 +86,7 @@ export default function DeviceSelectionScreen({
       // SignalHelper.emit('meeting', JSON.stringify({ status: 'open', isProvider }));
       if (typeof window !== undefined) {
         console.log('socket----->>>>>', window.socket);
-        window.socket && window.socket.emit('meeting-server', { status: 'open', isProvider });
+        // window.socket && window.socket.emit('meeting-server', { status: 'open', isProvider });
       }
 
       // }, 1000);
@@ -132,7 +132,7 @@ export default function DeviceSelectionScreen({
             <div>
               <Hidden smDown>
                 <ToggleAudioButton className={classes.deviceButton} disabled={disableButtons} />
-                <ToggleVideoButton className={classes.deviceButton} disabled={disableButtons} />
+                <ToggleVideoButton className={classes.deviceButton}  />
               </Hidden>
             </div>
             {!isFirefox && (

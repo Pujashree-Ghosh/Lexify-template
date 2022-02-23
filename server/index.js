@@ -43,7 +43,7 @@ const log = require('./log');
 const { sitemapStructure } = require('./sitemap');
 const csp = require('./csp');
 const sdkUtils = require('./api-util/sdk');
-
+const socketIo = require('socket.io');
 const buildPath = path.resolve(__dirname, '..', 'build');
 const env = process.env.REACT_APP_ENV;
 const dev = process.env.REACT_APP_ENV === 'development';
@@ -57,7 +57,7 @@ const CSP = process.env.REACT_APP_CSP;
 const cspReportUrl = '/csp-report';
 const cspEnabled = CSP === 'block' || CSP === 'report';
 const app = express();
-
+const server = http.createServer(app);
 const errorPage = fs.readFileSync(path.join(buildPath, '500.html'), 'utf-8');
 
 // load sitemap and robots file structure
@@ -154,6 +154,176 @@ if (!dev) {
     app.use(auth.basicAuth(USERNAME, PASSWORD));
   }
 }
+
+//socket server side
+var interval;
+io.on('connection', socket => {
+  console.log('New client connected', socket.handshake.query);
+  const roomId = socket.handshake.query.roomId; //listingid-transectionid
+  // const actualStartTime = socket.handshake.query.actualStartTime || false;
+  const customerJoinTime = socket.handshake.query.customerJoinTime || false;
+  const maxStartTime = socket.handshake.query.maxStartTime || false;
+  // maxStartTime
+  // customerJoinTime
+  socket.join(roomId);
+  // const clients = io.sockets.adapter.rooms.get('1');
+  // console.log('clients', clients);
+  const role = socket.handshake.query.role;
+  connectedUsers[roomId] = connectedUsers[roomId] || {
+    waitingRoom: [],
+    meetingRoom: [],
+    providerJoinedAt: null,
+    customerJoinedAt: null,
+    isCustomerJoinedAgain: false,
+    isProviderJoinedAgain: false,
+    isExtended: false,
+    // actualStartTime,
+    // customerJoinTime,
+  };
+  connectedUsers[roomId] = {
+    ...connectedUsers[roomId],
+    actualStartTime: connectedUsers[roomId].actualStartTime,
+    customerJoinTime: connectedUsers[roomId].customerJoinTime || customerJoinTime,
+    maxStartTime: connectedUsers[roomId].maxStartTime || maxStartTime,
+  };
+  if (role === 'customer') {
+    if (!connectedUsers[roomId].customerJoinedAt) {
+      connectedUsers[roomId].customerJoinedAt = Date.now();
+    } else {
+      connectedUsers[roomId].isCustomerJoinedAgain = true;
+    }
+    if (!connectedUsers[roomId].customerJoinTime) {
+      connectedUsers[roomId].customerJoinTime = Date.now();
+    }
+  }
+  if (role === 'provider') {
+    if (!connectedUsers[roomId].providerJoinedAt) {
+      connectedUsers[roomId].providerJoinedAt = Date.now();
+    } else {
+      connectedUsers[roomId].isProviderJoinedAgain = true;
+    }
+  }
+  connectedUsers[roomId].waitingRoom = [role, ...(connectedUsers[roomId].waitingRoom || [])];
+  console.log(connectedUsers[roomId], role);
+  if (role === 'customer' || connectedUsers[roomId].waitingRoom.includes('customer')) {
+    io.in(roomId).emit('customer-connected', connectedUsers[roomId]);
+    // socket.to(roomId).broadcast.emit('customer connected');
+  }
+  if (role === 'provider' || connectedUsers[roomId].waitingRoom.includes('provider')) {
+    // socket.to(roomId).broadcast.emit('provider connected');
+    console.log(180);
+    io.in(roomId).emit('provider-connected', connectedUsers[roomId]);
+  }
+  if (
+    connectedUsers[roomId].meetingRoom &&
+    connectedUsers[roomId].meetingRoom.includes('provider')
+  ) {
+    io.in(roomId).emit('meeting', {
+      status: 'open',
+      isProvider: true,
+      actualStartTime: connectedUsers[roomId].actualStartTime,
+      customerJoinTime: connectedUsers[roomId].customerJoinTime,
+    });
+  }
+  if (
+    connectedUsers[roomId].meetingRoom &&
+    connectedUsers[roomId].meetingRoom.includes('customer')
+  ) {
+    io.in(roomId).emit('meeting', {
+      status: 'open',
+      isProvider: false,
+      actualStartTime: connectedUsers[roomId].actualStartTime,
+      customerJoinTime: connectedUsers[roomId].customerJoinTime,
+    });
+  }
+
+  if (interval) {
+    clearInterval(interval);
+  }
+
+  interval = setInterval(() => getApiAndEmit(socket), 1000);
+
+  socket.on('meeting-server', data => {
+    console.log('meeting-server', data);
+    if (data.status === 'close') {
+      connectedUsers[roomId].meetingRoom = connectedUsers[roomId].meetingRoom || [];
+      console.log(connectedUsers[roomId]);
+      const revIndex = connectedUsers[roomId].meetingRoom.findIndex(item => item === role);
+      console.log('revIndex', revIndex);
+      if (revIndex !== -1) {
+        let oldUsers = connectedUsers[roomId].meetingRoom;
+        oldUsers.splice(revIndex, 1);
+        connectedUsers[roomId].meetingRoom = oldUsers;
+        console.log(connectedUsers[roomId]);
+      }
+    } else if (data.status === 'open') {
+      console.log(258, connectedUsers[roomId.actualStartTime]);
+      if (!connectedUsers[roomId].actualStartTime && data.isProvider) {
+        console.log(260);
+        connectedUsers[roomId].actualStartTime = Math.min(
+          new Date().getTime(),
+          connectedUsers[roomId].maxStartTime
+        );
+      }
+      connectedUsers[roomId] = connectedUsers[roomId] || {};
+      connectedUsers[roomId].meetingRoom = [role, ...(connectedUsers[roomId].meetingRoom || [])];
+    }
+
+    data.actualStartTime = connectedUsers[roomId].actualStartTime;
+    console.log(data);
+    io.in(roomId).emit('meeting', data);
+  });
+
+  socket.on('meeting-message', data => {
+    io.in(roomId).emit('meeting-message', data);
+  });
+
+  socket.on('meeting-time-extend', time => {
+    connectedUsers[roomId].actualStartTime = moment(connectedUsers[roomId].actualStartTime).add(
+      5,
+      'm'
+    );
+    connectedUsers[roomId].isExtended = true;
+
+    io.in(roomId).emit('meeting-time-extend', time);
+  });
+  socket.on('disconnect', () => {
+    connectedUsers[roomId].waitingRoom = connectedUsers[roomId].waitingRoom || [];
+    console.log(connectedUsers[roomId]);
+    let revIndex = connectedUsers[roomId].waitingRoom.findIndex(item => item === role);
+    console.log('revIndex', revIndex);
+    if (revIndex !== -1) {
+      let oldUsers = connectedUsers[roomId].waitingRoom;
+      oldUsers.splice(revIndex, 1);
+      connectedUsers[roomId].waitingRoom = oldUsers;
+      console.log(connectedUsers[roomId]);
+    }
+    connectedUsers[roomId].meetingRoom = connectedUsers[roomId].meetingRoom || [];
+    console.log(connectedUsers[roomId]);
+    revIndex = connectedUsers[roomId].meetingRoom.findIndex(item => item === role);
+    console.log('revIndex', revIndex);
+    if (revIndex !== -1) {
+      let oldUsers = connectedUsers[roomId].meetingRoom;
+      oldUsers.splice(revIndex, 1);
+      connectedUsers[roomId].meetingRoom = oldUsers;
+      console.log(connectedUsers[roomId]);
+    }
+    if (role === 'customer') {
+      io.in(roomId).emit('customer-disconnected');
+    }
+    if (role === 'provider') {
+      io.in(roomId).emit('provider-disconnected');
+    }
+    console.log('Client disconnected');
+    clearInterval(interval);
+  });
+});
+
+const getApiAndEmit = socket => {
+  const response = new Date();
+  // Emitting a new message. Will be consumed by the client
+  socket.emit('FromAPI', response);
+};
 
 // Initialize Passport.js  (http://www.passportjs.org/)
 // Passport is authentication middleware for Node.js
@@ -292,7 +462,7 @@ if (cspEnabled) {
   });
 }
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   const mode = dev ? 'development' : 'production';
   console.log(`Listening to port ${PORT} in ${mode} mode`);
   if (dev) {

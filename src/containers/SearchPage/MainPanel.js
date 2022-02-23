@@ -150,52 +150,55 @@ class MainPanelComponent extends Component {
         : '',
     });
   }
-  componentDidUpdate() {
-    const { history, urlQueryParams } = this.props;
-    // console.log('UQP',urlQueryParams)
-    if (
-      urlQueryParams?.pub_isProviderType !== true ||
-      urlQueryParams?.pub_hasPublicListing !== true
-    ) {
-      // history.push(
-      //   createResourceLocatorString(
-      //     'SearchPage',
-      //     routeConfiguration(),
-      //     {},
-      //     {pub_hasPublicListing:true, pub_isProviderType:true}
-      //   )
-      // );
-      if (
-        this.state.keywords === '' &&
-        urlQueryParams?.pub_hasPublicListing === true &&
-        urlQueryParams?.pub_isProviderType === true
-      ) {
-        history.push(
-          createResourceLocatorString(
-            'SearchPage',
-            routeConfiguration(),
-            {},
-            { pub_hasPublicListing: true, pub_isProviderType: true }
-          )
-        );
-      }
+  // componentDidUpdate() {
+  //   const { history, urlQueryParams } = this.props;
+  //   // console.log('UQP',urlQueryParams)
+  //   console.log("963",this.state.currentQueryParams)
+  //   console.log("369",urlQueryParams)
+  //   if (
+  //     urlQueryParams?.pub_isProviderType !== true ||
+  //     urlQueryParams?.pub_hasPublicListing !== true
+  //   ) {
+  //     // history.push(
+  //     //   createResourceLocatorString(
+  //     //     'SearchPage',
+  //     //     routeConfiguration(),
+  //     //     {},
+  //     //     {pub_hasPublicListing:true, pub_isProviderType:true}
+  //     //   )
+  //     // );
+  //     if (
+  //       this.state.keywords === '' &&
+  //       urlQueryParams?.pub_hasPublicListing === true &&
+  //       urlQueryParams?.pub_isProviderType === true
+  //     ) {
+  //       history.push(
+  //         createResourceLocatorString(
+  //           'SearchPage',
+  //           routeConfiguration(),
+  //           {},
+  //           { pub_hasPublicListing: true, pub_isProviderType: true }
+  //         )
+  //       );
+  //     }
 
-      if(this.state.currentQueryParams.hasOwnProperty('keywords') && urlQueryParams?.pub_hasPublicListing === true && urlQueryParams?.pub_isProviderType === true){
-        let currParams = this.state.currentQueryParams;
-        delete currParams?.pub_hasPublicListing;
-        delete currParams?.pub_isProviderType;
-        history.push(
-          createResourceLocatorString(
-            'SearchPage',
-            routeConfiguration(),
-            {},
-            {...currParams}
-          )
-        );
-      }
-    }
-  }
+  //     if(this.state.currentQueryParams.hasOwnProperty('keywords') && urlQueryParams?.pub_hasPublicListing === true && urlQueryParams?.pub_isProviderType === true){
+  //       let currParams = this.state.currentQueryParams;
+  //       delete currParams?.pub_hasPublicListing;
+  //       delete currParams?.pub_isProviderType;
+  //       history.push(
+  //         createResourceLocatorString(
+  //           'SearchPage',
+  //           routeConfiguration(),
+  //           {},
+  //           {...currParams}
+  //         )
+  //       );
+  //     }
+  //   }
+  // }
   componentDidUpdate(prevProps, prevState) {
+    
     const practiceAreaOptions = this.props.areaOfLawOptions.map(c => ({
       value: c.key,
       label: c.label,
@@ -267,6 +270,18 @@ class MainPanelComponent extends Component {
     }
 
     const { history, urlQueryParams } = this.props;
+    console.log("curr",this.state.currentQueryParams)
+    console.log("NoCurr",urlQueryParams)
+    // if(Object.keys(urlQueryParams).length === 0){
+    //   history.push(
+    //     createResourceLocatorString(
+    //       'SearchPage',
+    //       routeConfiguration(),
+    //       {},
+    //       {...this.state.currentQueryParams}
+    //     )
+    //   );
+    // }
     if (
       urlQueryParams?.pub_isProviderType !== true ||
       urlQueryParams?.pub_hasPublicListing !== true
@@ -294,19 +309,19 @@ class MainPanelComponent extends Component {
         );
       }
 
-      // if(this.state.currentQueryParams.hasOwnProperty('keywords') && urlQueryParams?.pub_hasPublicListing === true && urlQueryParams?.pub_isProviderType === true){
-      //   let currParams = this.state.currentQueryParams;
-      //   delete currParams?.pub_hasPublicListing;
-      //   delete currParams?.pub_isProviderType;
-      //   history.push(
-      //     createResourceLocatorString(
-      //       'SearchPage',
-      //       routeConfiguration(),
-      //       {},
-      //       {...currParams}
-      //     )
-      //   );
-      // }
+      if(this.state.currentQueryParams.hasOwnProperty('keywords') && urlQueryParams?.pub_hasPublicListing === true && urlQueryParams?.pub_isProviderType === true){
+        let currParams = this.state.currentQueryParams;
+        delete currParams?.pub_hasPublicListing;
+        delete currParams?.pub_isProviderType;
+        history.push(
+          createResourceLocatorString(
+            'SearchPage',
+            routeConfiguration(),
+            {},
+            {...currParams}
+          )
+        );
+      }
     }
   }
   // Apply the filters by redirecting to SearchPage with new filters.
