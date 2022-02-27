@@ -26,6 +26,7 @@ const { setBooking, getBooking, getAllBooking, deleteBooking } = require('./api/
 const createProviderListing = require('./api/create-provider-listing');
 const updateProviderListing = require('./api/update-provider-listing');
 const publishPublicListing = require('./api/publish-public-listing');
+const globalAvailability = require('./api/globalAvailability');
 
 const router = express.Router();
 
@@ -67,6 +68,8 @@ router.delete('/booking/deleteBooking', deleteBooking);
 router.post('/createProviderListing', createProviderListing);
 router.post('/updateProviderListing', updateProviderListing);
 router.post('/publishPublicListing', publishPublicListing);
+router.post('/globalAvailability', globalAvailability);
+router.get('/globalAvailability', globalAvailability);
 
 router.get('/initiate-login-as', initiateLoginAs);
 router.get('/login-as', loginAs);

@@ -47,7 +47,6 @@ export class BookingTimeFormComponent extends Component {
     // We expect values bookingStartTime and bookingEndTime to be strings
     // which is the default case when the value has been selected through the form
     const isSameTime = bookingStartTime === bookingEndTime;
-
     if (bookingStartTime && bookingEndTime && !isSameTime && !this.props.fetchLineItemsInProgress) {
       this.props.onFetchTransactionLineItems({
         bookingData: { startDate, endDate },
@@ -119,29 +118,60 @@ export class BookingTimeFormComponent extends Component {
 
           const startDate = startTime ? timestampToDate(startTime) : null;
           const endDate = endTime ? timestampToDate(endTime) : null;
+          const beforeBufferTime =
+            this.props?.listing?.author?.attributes?.profile?.publicData?.beforeBufferTime || 0;
+          const afterBufferTime =
+            this.props?.listing?.author?.attributes?.profile?.publicData?.afterBufferTime || 0;
+          console.log(beforeBufferTime, afterBufferTime, beforeBufferTime + afterBufferTime);
 
           if (startDate && !moment(startDate).isSame(this.state.startDate)) {
-            axios
-              .post(`${apiBaseUrl()}/api/booking/getBooking`, {
-                providerId: this.props?.listing?.author?.id.uuid,
-                start: moment(startDate)
-                  .clone()
-                  .add(1, 'm')
-                  .toDate(),
-                end: moment(endDate)
-                  .clone()
-                  .subtract(1, 'm')
-                  .toDate(),
-              })
-              .then(resp => {
-                this.setState({
-                  bookingDetails: resp.data,
-                  startDate: startDate,
+            if (beforeBufferTime > 0 || afterBufferTime > 0) {
+              axios
+                .post(`${apiBaseUrl()}/api/booking/getBooking`, {
+                  providerId: this.props?.listing?.author?.id.uuid,
+                  start: moment(startDate)
+                    .clone()
+                    .subtract(beforeBufferTime + afterBufferTime - 1, 'm')
+
+                    .toDate(),
+                  end: moment(endDate)
+                    .clone()
+                    .add(beforeBufferTime + afterBufferTime - 1, 'm')
+                    .toDate(),
+                })
+                .then(resp => {
+                  this.setState({
+                    bookingDetails: resp.data,
+                    startDate: startDate,
+                  });
+                })
+                .catch(err => {
+                  console.log(err);
                 });
-              })
-              .catch(err => {
-                console.log(err);
-              });
+            } else {
+              axios
+                .post(`${apiBaseUrl()}/api/booking/getBooking`, {
+                  providerId: this.props?.listing?.author?.id.uuid,
+                  start: moment(startDate)
+                    .clone()
+                    .add(1, 'm')
+
+                    .toDate(),
+                  end: moment(endDate)
+                    .clone()
+                    .subtract(1, 'm')
+                    .toDate(),
+                })
+                .then(resp => {
+                  this.setState({
+                    bookingDetails: resp.data,
+                    startDate: startDate,
+                  });
+                })
+                .catch(err => {
+                  console.log(err);
+                });
+            }
           }
 
           // This is the place to collect breakdown estimation data. See the

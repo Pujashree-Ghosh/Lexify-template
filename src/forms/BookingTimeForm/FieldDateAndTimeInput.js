@@ -71,7 +71,7 @@ const getAvailableStartTimes = (
     // Otherwise use the end of the timeslot.
     const endLimit = dateIsAfter(endDate, nextDate) ? nextDate : endDate;
 
-    const hours = getStartHours(intl, timeZone, startLimit, endLimit, duration);
+    const hours = getStartHours(intl, timeZone, startLimit, endLimit, '0.5');
     return availableHours.concat(hours);
   }, []);
   return allHours;
@@ -192,7 +192,7 @@ const getAllTimeValues = (
     endTimes.length > 0 && endTimes[0] && endTimes[0].timestamp
       ? endTimes[0].timestamp.toString()
       : null;
-
+  // console.log(9898, endTimes);
   return { startTime, endDate, endTime, selectedTimeSlot };
 };
 
@@ -524,6 +524,27 @@ class FieldDateAndTimeInput extends Component {
      * 3. Remove the css related to hiding the booking end date from the bottom of the FieldDateAndTimeInput.css field
      */
 
+    const printTimeStrings = t => {
+      const m = t % 60;
+      const h = parseInt(t / 60);
+      if (h > 9) {
+        if (m > 9) {
+          return `${h}:${m}`;
+        } else {
+          return `${h}:0${m}`;
+        }
+      } else {
+        if (m > 9) {
+          return `0${h}:${m}`;
+        } else {
+          return `0${h}:0${m}`;
+        }
+      }
+    };
+    const hour = Array(96).fill();
+    const ALL_START_HOURS = hour.map((v, i) => printTimeStrings(i * 15));
+    // console.log(availableStartTimes);
+
     return (
       <div className={classes}>
         <div className={css.formRow}>
@@ -609,6 +630,11 @@ class FieldDateAndTimeInput extends Component {
               ) : (
                 <option>{placeholderTime}</option>
               )}
+              {/* {ALL_START_HOURS.map(p => (
+                <option key={p} value={p}>
+                  {p}
+                </option>
+              ))} */}
             </FieldSelect>
           </div>
 
@@ -644,6 +670,12 @@ class FieldDateAndTimeInput extends Component {
               ) : (
                 <option>{placeholderTime}</option>
               )}
+
+              {/* {ALL_START_HOURS.map(p => (
+                <option key={p} value={p}>
+                  {p}
+                </option>
+              ))} */}
             </FieldSelect>
           </div>
         </div>
