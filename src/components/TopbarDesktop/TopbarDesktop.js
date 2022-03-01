@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { bool, func, object, number, string } from 'prop-types';
 import { FormattedMessage, intlShape } from '../../util/reactIntl';
 import classNames from 'classnames';
-import { ACCOUNT_SETTINGS_PAGES } from '../../routeConfiguration';
+import { ACCOUNT_SETTINGS_PAGES, PROFILE_SETTING_PAGES } from '../../routeConfiguration';
 import { propTypes } from '../../util/types';
 import {
   Avatar,
@@ -74,7 +74,9 @@ const TopbarDesktop = props => {
   const currentPageClass = page => {
     const isAccountSettingsPage =
       page === 'AccountSettingsPage' && ACCOUNT_SETTINGS_PAGES.includes(currentPage);
-    return currentPage === page || isAccountSettingsPage ? css.currentPage : null;
+    const isProfileSettingPage = 
+      page === 'ProfileSettingPage' && PROFILE_SETTING_PAGES.includes(currentPage);
+    return currentPage === page || isAccountSettingsPage || isProfileSettingPage? css.currentPage : null;
   };
 
   const profileMenu = authenticatedOnClientSide ? (

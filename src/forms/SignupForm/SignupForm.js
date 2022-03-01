@@ -198,7 +198,7 @@ const SignupFormComponent = props => (
           axios
             .post(`${apiBaseUrl()}/api/user`, {
               email: values.email,
-              mobile: '+' + values.phoneNumber,
+              mobile: values.phoneNumber,
             })
             .then(resp => {
               console.log(resp);

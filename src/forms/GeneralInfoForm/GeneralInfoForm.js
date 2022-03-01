@@ -24,21 +24,20 @@ import {
 } from '../../components';
 import Select from 'react-select';
 import PhoneInput from 'react-phone-input-2';
-import css from './ProfileSettingsForm.module.css';
-import './PhoneInput2.css';
+import css from '../../forms/ProfileSettingsForm/ProfileSettingsForm.module.css';
+import '../../forms/ProfileSettingsForm/PhoneInput2.css';
 import moment from 'moment';
 import axios from 'axios';
 import { FieldArray } from 'react-final-form-arrays';
 import { apiBaseUrl } from '../../util/api';
 import cloneDeep from 'lodash.clonedeep';
-import ProfilePageSideNav from '../../components/ProfilePageSideNav/ProfilePageSideNav';
 
 const ACCEPT_IMAGES = 'image/*';
 const UPLOAD_CHANGE_DELAY = 2000; // Show spinner so that browser has time to load img srcset
 const identity = v => v;
 const MAX_LIMIT = 100;
 
-class ProfileSettingsFormComponent extends Component {
+class GeneralInfoFormComponent extends Component {
   constructor(props) {
     super(props);
 
@@ -91,7 +90,7 @@ class ProfileSettingsFormComponent extends Component {
 
     return (
       <>
-      <ProfilePageSideNav/>
+      
       <FinalForm
         {...this.props}
         mutators={{ ...arrayMutators }}
@@ -796,373 +795,7 @@ class ProfileSettingsFormComponent extends Component {
                   ''
                 )}
               </div>
-
-              {user && !user?.attributes?.profile?.protectedData?.isLawyer ? (
-                <div className={css.client}>
-                  {user?.attributes?.profile?.publicData?.clientType === 'legalEntity' ? (
-                    <div className={css.sectionContainer}>
-                      <h3 className={css.sectionTitle}>
-                        <FormattedMessage id="ProfileSettingsForm.companyDetail" />
-                      </h3>
-                      {/* <div className={css.nameContainer}> */}
-
-                      <div className={css.fromgroup}>
-                        <FieldTextInput
-                          className={css.companyName}
-                          type="text"
-                          id="companyName"
-                          name="companyName"
-                          placeholder={companyNamePlaceholder}
-                          validate={companyNameRequired}
-                        />
-                      </div>
-                      <div className={css.fromgroup}>
-                        <FieldTextInput
-                          className={css.companyNumber}
-                          type="text"
-                          id="companyNumber"
-                          name="companyNumber"
-                          placeholder={companyNumberPlaceholder}
-                          // validate={companyNumberRequired}
-                        />
-                      </div>
-                      <div className={css.fromgroup}>
-                        <FieldSelect
-                          id="country"
-                          name="country"
-                          // label="Choose an option:"
-                          validate={composeValidators(required(countryRequiredMessage))}
-                        >
-                          <option value="">{countryPlaceHolder}</option>
-                          {this.state.countryData.map(m => (
-                            <option value={m.iso3} key={m.iso3}>
-                              {m.name}
-                            </option>
-                          ))}
-                        </FieldSelect>
-                      </div>
-                      <div className={css.fromgroup}>
-                        <FieldTextInput
-                          className={css.street}
-                          type="text"
-                          id="street"
-                          name="street"
-                          placeholder={streetPlaceholder}
-                          validate={streetRequired}
-                        />
-                      </div>
-                      <div className={css.fromgroup}>
-                        <FieldTextInput
-                          className={css.city}
-                          type="text"
-                          id="city"
-                          name="city"
-                          placeholder={cityPlaceholder}
-                          validate={cityRequired}
-                        />
-                      </div>
-                      <div className={css.fromgroup}>
-                        <FieldTextInput
-                          className={css.state}
-                          type="text"
-                          id="state"
-                          name="state"
-                          placeholder={statePlaceholder}
-                          validate={stateRequired}
-                        />
-                      </div>
-                      <div className={css.fromgroup}>
-                        <FieldTextInput
-                          className={css.ZipCode}
-                          type="text"
-                          id="zipCode"
-                          name="zipCode"
-                          placeholder={zipCodePlaceholder}
-                          validate={zipCodeRequired}
-                        />
-                      </div>
-                      {/* </div> */}
-                    </div>
-                  ) : (
-                    <div className={css.sectionContainer}>
-                      <h3 className={css.sectionTitle}>
-                        <FormattedMessage id="ProfileSettingsForm.address" />
-                      </h3>
-                      {/* <div className={css.nameContainer}> */}
-
-                      <div className={css.fromgroup}>
-                        <FieldSelect
-                          id="country"
-                          name="country"
-                          // label="Choose an option:"
-                          // validate={required}
-                        >
-                          <option value="">{countryPlaceHolder}</option>
-                          {this.state.countryData.map(m => (
-                            <option value={m.iso3} key={m.iso3}>
-                              {m.name}
-                            </option>
-                          ))}
-                        </FieldSelect>
-                      </div>
-                      <div className={css.fromgroup}>
-                        <FieldTextInput
-                          className={css.street}
-                          type="text"
-                          id="street"
-                          name="street"
-                          placeholder={streetPlaceholder}
-                          validate={streetRequired}
-                        />
-                      </div>
-                      <div className={css.fromgroup}>
-                        <FieldTextInput
-                          className={css.city}
-                          type="text"
-                          id="city"
-                          name="city"
-                          placeholder={cityPlaceholder}
-                          validate={cityRequired}
-                        />
-                      </div>
-                      <div className={css.fromgroup}>
-                        <FieldTextInput
-                          className={css.state}
-                          type="text"
-                          id="state"
-                          name="state"
-                          placeholder={statePlaceholder}
-                          validate={stateRequired}
-                        />
-                      </div>
-                      <div className={css.fromgroup}>
-                        <FieldTextInput
-                          className={css.zipCode}
-                          type="text"
-                          id="zipCode"
-                          name="zipCode"
-                          placeholder={zipCodePlaceholder}
-                          validate={zipCodeRequired}
-                        />
-                      </div>
-                      {/* </div> */}
-                    </div>
-                  )}
-
-                  <div className={css.sectionContainer}>
-                    <h3 className={css.sectionTitle}>
-                      <FormattedMessage id="ProfileSettingsForm.timeZone" />
-                    </h3>
-                    {/* <div className={css.nameContainer}> */}
-                    <FieldSelect
-                      id="timeZone"
-                      name="timeZone"
-                      // label="Choose an option:"
-                      // validate={required}
-                    >
-                      <option value="">{timeZonePlaceholder}</option>
-                      <option value="first">First option</option>
-                      <option value="second">Second option</option>
-                    </FieldSelect>
-                  </div>
-                  <div className={css.sectionContainer}>
-                    <h3 className={css.sectionTitle}>
-                      <FormattedMessage id="ProfileSettingsForm.vatNo" />
-                    </h3>
-                    {/* <div className={css.nameContainer}> */}
-                    <FieldTextInput
-                      className={css.street}
-                      type="text"
-                      id="vatNo"
-                      name="vatNo"
-                      // placeholder={vatPlaceholder}
-                      // validate={vatRequired}
-                    />
-                  </div>
-                  <div className={css.sectionContainer}>
-                    <h3 className={css.sectionTitle}>
-                      <FormattedMessage id="ProfileSettingsForm.languages" />
-                    </h3>
-                    {/* <div className={css.nameContainer}> */}
-                    {/* <FieldSelect
-                      id="language"
-                      name="language"
-                      // label="Choose an option:"
-                      validate={composeValidators(required(languageRequiredMessage))}
-                    >
-                      <option value="">{languagePlaceholder}</option>
-                      <option value="first">First option</option>
-                      <option value="second">Second option</option>
-                    </FieldSelect> */}
-                    <Select
-                      closeMenuOnSelect={false}
-                      className={css.reactSelect}
-                      isSearchable={true}
-                      name="language"
-                      placeholder={languagePlaceholder}
-                      onChange={onLanguageChangeHandler}
-                      defaultValue={initialValues.languages && JSON.parse(initialValues.languages)}
-                      isMulti
-                      options={langOption}
-                      onBlur={onLanguageBlurHandler}
-                    />
-                    {this.state.languageError ? (
-                      <div className={css.errorMessage}>{languageRequiredMessage}</div>
-                    ) : (
-                      ''
-                    )}
-                  </div>
-                </div>
-              ) : (
-                <div className={css.lawyer}>
-                  <FieldArray name="jurisdictionPractice">
-                    {({ fields }) => {
-                      return (
-                        <div className={css.sectionContainer}>
-                          <h3 className={css.sectionTitle}>
-                            <FormattedMessage id="ProfileSettingsForm.jurisdictionPracticeTitle" />
-                          </h3>
-                          {fields.map((name, i) => {
-                            return (
-                              <div key={name + i}>
-                                <div className={css.fromgroup}>
-                                  <FieldSelect
-                                    id={`${name}.country`}
-                                    name={`${name}.country`}
-                                    // label="Choose an option:"
-                                    // validate={countryPlaceHolder}
-                                    validate={composeValidators(required(countryRequiredMessage))}
-                                    onChange={() => {
-                                      if (values?.jurisdictionPractice[i]?.state) {
-                                        delete values.jurisdictionPractice[i].state;
-                                      }
-                                      if (values?.jurisdictionPractice[i]?.city) {
-                                        delete values.jurisdictionPractice[i].city;
-                                      }
-                                      if (values?.jurisdictionPractice[i]?.zipCode) {
-                                        delete values.jurisdictionPractice[i].postalCode;
-                                      }
-                                    }}
-                                  >
-                                    <option value="">{countryPlaceHolder}</option>
-                                    {this.state.countryData.map(m => (
-                                      <option value={m.iso3} key={m.iso3}>
-                                        {m.name}
-                                      </option>
-                                    ))}
-                                  </FieldSelect>
-                                </div>
-                                {values.jurisdictionPractice[i]?.country === 'USA' ? (
-                                  <>
-                                    <div className={css.fromgroup}>
-                                      <FieldSelect
-                                        id={`${name}.state`}
-                                        name={`${name}.state`}
-                                        // label="Choose an option:"
-                                        // validate={countryPlaceHolder}
-                                        validate={composeValidators(required(stateRequiredMessage))}
-                                      >
-                                        <option value="">{statePlaceholder}</option>
-                                        {this.state.countryData
-                                          .filter(c => c.iso3 === 'USA')[0]
-                                          ?.states?.map(s => (
-                                            <option value={s.state_code}>{s.name}</option>
-                                          ))}
-                                      </FieldSelect>
-                                    </div>
-                                    <div className={css.fromgroup}>
-                                      <FieldTextInput
-                                        className={css.postalCode}
-                                        type="text"
-                                        id={`${name}.postalCode`}
-                                        name={`${name}.postalCode`}
-                                        placeholder={postalCodePlaceholder}
-                                        validate={composeValidators(
-                                          required(postalCodeRequiredMessage)
-                                        )}
-                                        label={postalCodeLabel}
-                                      />
-                                    </div>
-                                  </>
-                                ) : (
-                                  <div className={css.fromgroup}>
-                                    <FieldTextInput
-                                      className={css.city}
-                                      type="text"
-                                      id={`${name}.city`}
-                                      name={`${name}.city`}
-                                      placeholder={cityPlaceholder}
-                                      validate={composeValidators(required(cityRequiredMessage))}
-                                      label={cityLabel}
-                                    />
-                                  </div>
-                                )}
-
-                                <div className={`${css.fromgroup} ${css.inlinefrom}`}>
-                                  <FieldTextInput
-                                    className={css.halfinput}
-                                    type="date"
-                                    id={`${name}.date`}
-                                    name={`${name}.date`}
-                                    // placeholder={pracTiceDatePlaceholder}
-                                    validate={composeValidators(
-                                      required(practiceDateRequiredMessage)
-                                    )}
-                                    label={practiceDateLabel}
-                                  />
-
-                                  <FieldSelect
-                                    className={css.halfinput}
-                                    id={`${name}.status`}
-                                    name={`${name}.status`}
-                                    label={statusLabel}
-                                    validate={composeValidators(required(statusRequiredMessage))}
-                                  >
-                                    <option value="">{statusPlaceholder}</option>
-                                    <option value="status1">Status 1</option>
-                                    <option value="status2">Status 1</option>
-                                    <option value="status3">Status 1</option>
-                                  </FieldSelect>
-                                </div>
-                              </div>
-                            );
-                          })}
-                          <div className={`${css.fromgroup} ${css.inlinefrom}`}>
-                            <Button
-                              className={css.addMore}
-                              type="button"
-                              onClick={() => {
-                                fields.push();
-                              }}
-                              disabled={
-                                !values.jurisdictionPractice[
-                                  values.jurisdictionPractice?.length - 1
-                                ]?.country ||
-                                !values.jurisdictionPractice[
-                                  values.jurisdictionPractice?.length - 1
-                                ]?.date ||
-                                !values.jurisdictionPractice[
-                                  values.jurisdictionPractice?.length - 1
-                                ]?.status
-                              }
-                            >
-                              <FormattedMessage id="ProfileSettingsForm.addMore" />
-                            </Button>
-                            <Button
-                              className={css.remove}
-                              type="button"
-                              onClick={() => {
-                                fields.pop();
-                              }}
-                              disabled={values.jurisdictionPractice?.length < 2}
-                            >
-                              <FormattedMessage id="ProfileSettingsForm.remove" />
-                            </Button>
-                          </div>
-                        </div>
-                      );
-                    }}
-                  </FieldArray>
+              
                   <div className={css.sectionContainer}>
                     <h3 className={css.sectionTitle}>
                       <FormattedMessage id="ProfileSettingsForm.lawyerLanguages" />
@@ -1213,258 +846,6 @@ class ProfileSettingsFormComponent extends Component {
                       <option value="second">Second option</option>
                     </FieldSelect>
                   </div>
-                  <FieldArray name="education">
-                    {({ fields }) => {
-                      return (
-                        <div className={css.sectionContainer}>
-                          <h3 className={css.sectionTitle}>
-                            <FormattedMessage id="ProfileSettingsForm.rducationTitle" />
-                          </h3>
-                          <p>
-                            It is important to start with your most recent education and work
-                            backwards
-                          </p>
-                          {fields.map((name, i) => {
-                            return (
-                              <div key={name + i}>
-                                <div className={css.fromgroup}>
-                                  <FieldTextInput
-                                    className={css.institute}
-                                    type="text"
-                                    id={`${name}.instituteName`}
-                                    name={`${name}.instituteName`}
-                                    placeholder={institutePlaceholder}
-                                    validate={composeValidators(required(instituteRequiredMessage))}
-                                    label={instituteLabel}
-                                  />
-                                </div>
-
-                                <div className={`${css.fromgroup} ${css.inlinefrom}`}>
-                                  <FieldTextInput
-                                    className={`${css.degree} ${css.halfinput}`}
-                                    type="text"
-                                    id={`${name}.degree`}
-                                    name={`${name}.degree`}
-                                    placeholder={degreePlaceholder}
-                                    validate={composeValidators(required(degreeRequiredMessage))}
-                                    label={degreeLabel}
-                                  />
-
-                                  <FieldSelect
-                                    className={css.halfinput}
-                                    id={`${name}.graduationYear`}
-                                    name={`${name}.graduationYear`}
-                                    label={graduationLabel}
-                                    validate={composeValidators(
-                                      required(graduationRequiredMessage)
-                                    )}
-                                  >
-                                    <option value="">{graduationPlaceholder}</option>
-                                    <option value="2022">2022</option>
-                                    <option value="2021">2021</option>
-                                    <option value="2020">2020</option>
-                                  </FieldSelect>
-                                </div>
-                              </div>
-                            );
-                          })}
-
-                          <div className={css.inlinefrom}>
-                            <Button
-                              className={css.addMore}
-                              type="button"
-                              onClick={() => {
-                                fields.push();
-                              }}
-                              disabled={
-                                !values.education[values.education?.length - 1]?.instituteName ||
-                                !values.education[values.education?.length - 1]?.degree ||
-                                !values.education[values.education?.length - 1]?.graduationYear
-                              }
-                            >
-                              <FormattedMessage id="ProfileSettingsForm.addMore" />
-                            </Button>
-                            <Button
-                              className={css.remove}
-                              type="button"
-                              onClick={() => {
-                                fields.pop();
-                              }}
-                              disabled={values.education?.length < 2}
-                            >
-                              <FormattedMessage id="ProfileSettingsForm.remove" />
-                            </Button>
-                          </div>
-                        </div>
-                      );
-                    }}
-                  </FieldArray>
-                  <FieldArray name="practice">
-                    {({ fields }) => {
-                      return (
-                        <div className={css.sectionContainer}>
-                          <h3 className={css.sectionTitle}>
-                            <FormattedMessage id="ProfileSettingsForm.practiceAreaTitle" />
-                            {/* Practice area */}
-                          </h3>
-
-                          {fields.map((name, i) => {
-                            const options = cloneDeep(areaOfLawOptions).filter(
-                              ({ key }) =>
-                                !values.practice.filter((m, index) => index !== i).includes(key)
-                            );
-                            return (
-                              <div key={name + i}>
-                                <div className={css.fromgroup}>
-                                  <FieldSelect
-                                    id={`${name}`}
-                                    name={`${name}`}
-                                    validate={composeValidators(
-                                      required(practiceAreaRequiredMessage)
-                                    )}
-                                  >
-                                    <option value="">{practiceAreaPlaceholder}</option>
-                                    {cloneDeep(options).map(m => (
-                                      <option value={m.key} key={m.key}>
-                                        {m.label}
-                                      </option>
-                                    ))}
-                                  </FieldSelect>
-                                </div>
-                              </div>
-                            );
-                          })}
-
-                          <div className={css.inlinefrom}>
-                            <Button
-                              className={css.addMore}
-                              type="button"
-                              onClick={() => {
-                                fields.push();
-                              }}
-                              disabled={!values.practice[values.practice?.length - 1]}
-                            >
-                              <FormattedMessage id="ProfileSettingsForm.addMore" />
-                            </Button>
-                            <Button
-                              className={css.remove}
-                              type="button"
-                              onClick={() => {
-                                fields.pop();
-                              }}
-                              disabled={values.practice?.length < 2}
-                            >
-                              <FormattedMessage id="ProfileSettingsForm.remove" />
-                            </Button>
-                          </div>
-                        </div>
-                      );
-                    }}
-                  </FieldArray>
-                  <FieldArray name="industry">
-                    {({ fields }) => {
-                      return (
-                        <div className={css.sectionContainer}>
-                          <h3 className={css.sectionTitle}>
-                            <FormattedMessage id="ProfileSettingsForm.industiesTitle" />
-                          </h3>
-                          <p>
-                            If you fill out industry you must also fill out at least one relevant
-                            recent work for each industry
-                          </p>
-                          {fields.map((name, i) => {
-                            return (
-                              <div key={name + i}>
-                                <div className={css.fromgroup}>
-                                  <FieldTextInput
-                                    className={css.industry}
-                                    type="text"
-                                    id={`${name}.industryName`}
-                                    name={`${name}.industryName`}
-                                    placeholder={industryPlaceholder}
-                                    // validate={required}
-                                    label={industryLabel}
-                                  />
-                                </div>
-                                <div className={css.fromgroup}>
-                                  <FieldTextInput
-                                    className={css.recentWork}
-                                    type="text"
-                                    id={`${name}.recentWork`}
-                                    name={`${name}.recentWork`}
-                                    placeholder={'Write your recent work relevant to this industry'}
-                                    // validate={required}
-                                    label="Recent work"
-                                  />
-                                </div>
-
-                                <div className={css.fromgroup}>
-                                  <FieldTextInput
-                                    type="textarea"
-                                    id={`${name}.description`}
-                                    className={css.description}
-                                    name={`${name}.description`}
-                                    label={descriptionLabel}
-                                    placeholder={descriptionPlaceholder}
-                                  />
-                                  {values?.industry[i]?.description?.split(' ').length >
-                                  MAX_LIMIT ? (
-                                    <span className={css.errorMessage}>
-                                      {`You have exceeded the maximum word limit (max ${MAX_LIMIT} words)`}
-                                    </span>
-                                  ) : (
-                                    ''
-                                  )}
-                                </div>
-
-                                <div className={`${css.fromgroup} ${css.inlinefrom}`}>
-                                  <FieldTextInput
-                                    className={`${css.street} ${css.halfinput}`}
-                                    type="date"
-                                    id={`${name}.from`}
-                                    name={`${name}.from`}
-                                    label={fromLabel}
-                                    // placeholder={vatPlaceholder}
-                                    // validate={vatRequired}
-                                  />
-                                  <FieldTextInput
-                                    className={`${css.street} ${css.halfinput}`}
-                                    type="date"
-                                    id={`${name}.to`}
-                                    name={`${name}.to`}
-                                    label={toLabel}
-                                    // placeholder={vatPlaceholder}
-                                    // validate={vatRequired}
-                                  />
-                                </div>
-                              </div>
-                            );
-                          })}
-                          <div className={css.inlinefrom}>
-                            <Button
-                              className={css.addMore}
-                              type="button"
-                              onClick={() => {
-                                fields.push();
-                              }}
-                            >
-                              <FormattedMessage id="ProfileSettingsForm.addMore" />
-                            </Button>
-                            <Button
-                              className={css.remove}
-                              type="button"
-                              onClick={() => {
-                                fields.pop();
-                              }}
-                              disabled={values.industry?.length < 2}
-                            >
-                              <FormattedMessage id="ProfileSettingsForm.remove" />
-                            </Button>
-                          </div>
-                        </div>
-                      );
-                    }}
-                  </FieldArray>
                   <div className={classNames(css.sectionContainer, css.lastSection)}>
                     <h3 className={css.sectionTitle}>
                       <FormattedMessage id="ProfileSettingsForm.bioHeading" />
@@ -1477,9 +858,8 @@ class ProfileSettingsFormComponent extends Component {
                       placeholder={bioPlaceholder}
                     />
                   </div>
-                  {console.log(user?.attributes?.profile?.protectedData?.isProfileVerified)}
-                </div>
-              )}
+              
+
               {user?.attributes?.profile?.protectedData?.isProfileVerified ? (
                 ''
               ) : (
@@ -1602,7 +982,7 @@ class ProfileSettingsFormComponent extends Component {
   }
 }
 
-ProfileSettingsFormComponent.defaultProps = {
+GeneralInfoFormComponent.defaultProps = {
   rootClassName: null,
   className: null,
   uploadImageError: null,
@@ -1613,7 +993,7 @@ ProfileSettingsFormComponent.defaultProps = {
   updateProfileReady: false,
 };
 
-ProfileSettingsFormComponent.propTypes = {
+GeneralInfoFormComponent.propTypes = {
   rootClassName: string,
   className: string,
 
@@ -1630,8 +1010,8 @@ ProfileSettingsFormComponent.propTypes = {
   intl: intlShape.isRequired,
 };
 
-const ProfileSettingsForm = compose(injectIntl)(ProfileSettingsFormComponent);
+const GeneralInfoForm = compose(injectIntl)(GeneralInfoFormComponent);
 
-ProfileSettingsForm.displayName = 'ProfileSettingsForm';
+GeneralInfoForm.displayName = 'GeneralInfoForm';
 
-export default ProfileSettingsForm;
+export default GeneralInfoForm;

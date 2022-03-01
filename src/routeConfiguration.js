@@ -35,6 +35,12 @@ const StripePayoutPage = loadable(() => import(/* webpackChunkName: "StripePayou
 const TermsOfServicePage = loadable(() => import(/* webpackChunkName: "TermsOfServicePage" */ './containers/TermsOfServicePage/TermsOfServicePage'));
 const TransactionPage = loadable(() => import(/* webpackChunkName: "TransactionPage" */ './containers/TransactionPage/TransactionPage'));
 const MeetingNewPage = loadable(() => import(/* webpackChunkName: "MeetingNewPage" */ './containers/MeetingNewPage/MeetingNewPage'));
+const GeneralInfoPage = loadable(() => import(/* webpackChunkName: "GeneralInfoPage" */ './components/GeneralInfoPage/GeneralInfoPage'));
+const JurisdictionPage = loadable(() => import(/* webpackChunkName: "JurisdictionPage" */ './components/JurisdictionPage/JurisdictionPage'));
+const EducationPage = loadable(() => import(/* webpackChunkName: "EducationPage" */ './components/EducationPage/EducationPage'));
+const PracticeAreaPage = loadable(() => import(/* webpackChunkName: "PracticeAreaPage" */ './components/PracticeAreaPage/PracticeAreaPage'));
+const AvailabilityPage = loadable(() => import(/* webpackChunkName: "AvailabilityPage" */ './components/AvailabilityPage/AvailabilityPage'));
+const VerificationPage = loadable(() => import(/* webpackChunkName: "VerificationPage" */ './components/VerificationPage/VerificationPage'));
 
 // Styleguide helps you to review current components and develop new ones
 const StyleguidePage = loadable(() => import(/* webpackChunkName: "StyleguidePage" */ './containers/StyleguidePage/StyleguidePage'));
@@ -44,6 +50,14 @@ export const ACCOUNT_SETTINGS_PAGES = [
   'PasswordChangePage',
   'StripePayoutPage',
   'PaymentMethodsPage',
+];
+export const PROFILE_SETTING_PAGES = [
+  'GeneralInfoPage',
+  'JurisdictionPage',
+  'EducationPage',
+  'PracticeAreaPage',
+  'AvailabilityPage',
+  'VerificationPage',
 ];
 
 // https://en.wikipedia.org/wiki/Universally_unique_identifier#Nil_UUID
@@ -444,6 +458,61 @@ const routeConfiguration = () => {
       auth: true,
       authPage: 'LoginPage',
       component: props => <MeetingNewPage {...props} />,
+    },
+    {
+      path: '/profile-setting',
+      name: 'ProfileSettingPage',
+      auth: true,
+      authPage: 'LoginPage',
+      component: () => <NamedRedirect name="GeneralInfoPage" />,
+    },
+    {
+      path: '/profile-setting/general-info',
+      name: 'GeneralInfoPage',
+      auth: true,
+      authPage: 'LoginPage',
+      component: GeneralInfoPage,
+      // loadData: pageDataLoadingAPI.GeneralInfoPage.loadData,
+    },
+    {
+      path: '/profile-setting/jurisdiction',
+      name: 'JurisdictionPage',
+      auth: true,
+      authPage: 'LoginPage',
+      component: JurisdictionPage,
+      // loadData: pageDataLoadingAPI.GeneralInfoPage.loadData,
+    },
+    {
+      path: '/profile-setting/education',
+      name: 'EducationPage',
+      auth: true,
+      authPage: 'LoginPage',
+      component: EducationPage,
+      // loadData: pageDataLoadingAPI.GeneralInfoPage.loadData,
+    },
+    {
+      path: '/profile-setting/practice-area-and-industries',
+      name: 'PracticeAreaPage',
+      auth: true,
+      authPage: 'LoginPage',
+      component: PracticeAreaPage,
+      // loadData: pageDataLoadingAPI.GeneralInfoPage.loadData,
+    },
+    {
+      path: '/profile-setting/availability',
+      name: 'AvailabilityPage',
+      auth: true,
+      authPage: 'LoginPage',
+      component: AvailabilityPage,
+      // loadData: pageDataLoadingAPI.GeneralInfoPage.loadData,
+    },
+    {
+      path: '/profile-setting/verification',
+      name: 'VerificationPage',
+      auth: true,
+      authPage: 'LoginPage',
+      component: VerificationPage,
+      // loadData: pageDataLoadingAPI.GeneralInfoPage.loadData,
     },
   ];
 };
