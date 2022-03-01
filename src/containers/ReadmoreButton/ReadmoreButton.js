@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { IoIosArrowDown } from 'react-icons/io';
 import { IoIosArrowUp } from 'react-icons/io';
-import css from './ReadmoreButton.module.css';
+// import css from './ReadmoreButton.module.css';
 
 const BIO_COLLAPSED_LENGTH = 170;
 
 const collapsed = s => {
-  return s.length > BIO_COLLAPSED_LENGTH ? s.substring(0, BIO_COLLAPSED_LENGTH) + '...' : s;
+  return s?.length > BIO_COLLAPSED_LENGTH ? s.substring(0, BIO_COLLAPSED_LENGTH) + '...' : s;
 };
 
 function ReadmoreButton(props) {
@@ -18,7 +18,7 @@ function ReadmoreButton(props) {
         {expand ? collapsed(desc) : desc}
       </div>
       <div>
-        {desc.length >= BIO_COLLAPSED_LENGTH ? (
+        {desc?.length >= BIO_COLLAPSED_LENGTH ? (
           <div
             // className={css.one}
             style={{

@@ -534,6 +534,7 @@
   border: none;
   color: #ffffff;
   font-weight: 500;
+  cursor: pointer;
 }
 .price {
   padding: 20px;

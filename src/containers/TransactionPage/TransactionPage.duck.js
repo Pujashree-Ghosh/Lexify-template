@@ -11,8 +11,10 @@ import {
   txIsInFirstReviewBy,
   TRANSITION_ACCEPT,
   TRANSITION_DECLINE,
+  TRANSITION_CANCEL_PROVIDER,
+  TRANSITION_CANCEL_CUSTOMER,
 } from '../../util/transaction';
-import { transactionLineItems } from '../../util/api';
+import { apiBaseUrl, transactionLineItems } from '../../util/api';
 import * as log from '../../util/log';
 import {
   updatedEntities,
@@ -22,6 +24,7 @@ import {
 import { findNextBoundary, nextMonthFn, monthIdStringInTimeZone } from '../../util/dates';
 import { addMarketplaceEntities } from '../../ducks/marketplaceData.duck';
 import { fetchCurrentUserNotifications } from '../../ducks/user.duck';
+import axios from 'axios';
 
 const { UUID } = sdkTypes;
 
@@ -52,6 +55,14 @@ export const DECLINE_SALE_REQUEST = 'app/TransactionPage/DECLINE_SALE_REQUEST';
 export const DECLINE_SALE_SUCCESS = 'app/TransactionPage/DECLINE_SALE_SUCCESS';
 export const DECLINE_SALE_ERROR = 'app/TransactionPage/DECLINE_SALE_ERROR';
 
+export const CANCEL_SALE_PROVIDER_REQUEST = 'app/TransactionPage/CANCEL_SALE_PROVIDER_REQUEST';
+export const CANCEL_SALE_PROVIDER_SUCCESS = 'app/TransactionPage/CANCEL_SALE_PROVIDER_SUCCESS';
+export const CANCEL_SALE_PROVIDER_ERROR = 'app/TransactionPage/CANCEL_SALE_PROVIDER_ERROR';
+
+export const CANCEL_SALE_CUSTOMER_REQUEST = 'app/TransactionPage/CANCEL_SALE_CUSTOMER_REQUEST';
+export const CANCEL_SALE_CUSTOMER_SUCCESS = 'app/TransactionPage/CANCEL_SALE_CUSTOMER_SUCCESS';
+export const CANCEL_SALE_CUSTOMER_ERROR = 'app/TransactionPage/CANCEL_SALE_CUSTOMER_ERROR';
+
 export const FETCH_MESSAGES_REQUEST = 'app/TransactionPage/FETCH_MESSAGES_REQUEST';
 export const FETCH_MESSAGES_SUCCESS = 'app/TransactionPage/FETCH_MESSAGES_SUCCESS';
 export const FETCH_MESSAGES_ERROR = 'app/TransactionPage/FETCH_MESSAGES_ERROR';
@@ -81,6 +92,10 @@ const initialState = {
   acceptInProgress: false,
   acceptSaleError: null,
   declineInProgress: false,
+  cancelCustomerInProgress: false,
+  cancelProviderInProgress: false,
+  cancelSaleCustomerError: null,
+  cancelSaleProviderError: null,
   declineSaleError: null,
   fetchMessagesInProgress: false,
   fetchMessagesError: null,
@@ -165,6 +180,30 @@ export default function checkoutPageReducer(state = initialState, action = {}) {
       return { ...state, declineInProgress: false };
     case DECLINE_SALE_ERROR:
       return { ...state, declineInProgress: false, declineSaleError: payload };
+
+    case CANCEL_SALE_CUSTOMER_REQUEST:
+      return {
+        ...state,
+        cancelCustomerInProgress: true,
+        cancelSaleCustomerError: null,
+        acceptSaleError: null,
+      };
+    case CANCEL_SALE_CUSTOMER_SUCCESS:
+      return { ...state, cancelCustomerInProgress: false };
+    case CANCEL_SALE_CUSTOMER_ERROR:
+      return { ...state, cancelCustomerInProgress: false, cancelSaleCustomerError: payload };
+
+    case CANCEL_SALE_PROVIDER_REQUEST:
+      return {
+        ...state,
+        cancelProviderInProgress: true,
+        cancelSaleProviderError: null,
+        acceptSaleError: null,
+      };
+    case CANCEL_SALE_PROVIDER_SUCCESS:
+      return { ...state, cancelProviderInProgress: false };
+    case CANCEL_SALE_PROVIDER_ERROR:
+      return { ...state, cancelProviderInProgress: false, cancelSaleProviderError: payload };
 
     case FETCH_MESSAGES_REQUEST:
       return { ...state, fetchMessagesInProgress: true, fetchMessagesError: null };
@@ -289,6 +328,22 @@ const joinMeetingError = e => ({ type: JOIN_MEETING_ERROR, error: true, payload:
 const declineSaleRequest = () => ({ type: DECLINE_SALE_REQUEST });
 const declineSaleSuccess = () => ({ type: DECLINE_SALE_SUCCESS });
 const declineSaleError = e => ({ type: DECLINE_SALE_ERROR, error: true, payload: e });
+
+const cancelSaleProviderRequest = () => ({ type: CANCEL_SALE_PROVIDER_REQUEST });
+const cancelSaleProviderSuccess = () => ({ type: CANCEL_SALE_PROVIDER_SUCCESS });
+const cancelSaleProviderError = e => ({
+  type: CANCEL_SALE_PROVIDER_ERROR,
+  error: true,
+  payload: e,
+});
+
+const cancelSaleCustomerRequest = () => ({ type: CANCEL_SALE_CUSTOMER_REQUEST });
+const cancelSaleCustomerSuccess = () => ({ type: CANCEL_SALE_CUSTOMER_SUCCESS });
+const cancelSaleCustomerError = e => ({
+  type: CANCEL_SALE_CUSTOMER_ERROR,
+  error: true,
+  payload: e,
+});
 
 const fetchMessagesRequest = () => ({ type: FETCH_MESSAGES_REQUEST });
 const fetchMessagesSuccess = (messages, pagination) => ({
@@ -512,6 +567,60 @@ export const joinMeeting = (id, isCustomer) => (dispatch, getState, sdk) => {
       //   transition,
       // });
       // throw e;
+    });
+};
+
+export const cancelSaleCustomer = id => (dispatch, getState, sdk) => {
+  if (acceptOrDeclineInProgress(getState())) {
+    return Promise.reject(new Error('Accept or decline already in progress'));
+  }
+  dispatch(cancelSaleCustomerRequest());
+
+  return sdk.transactions
+    .transition({ id, transition: TRANSITION_CANCEL_CUSTOMER, params: {} }, { expand: true })
+    .then(response => {
+      axios.delete(`${apiBaseUrl()}/api/booking/deleteBooking`, {
+        data: { orderId: response.data.data.id.uuid },
+      });
+      dispatch(addMarketplaceEntities(response));
+      dispatch(cancelSaleCustomerSuccess());
+      dispatch(fetchCurrentUserNotifications());
+      return response;
+    })
+    .catch(e => {
+      dispatch(cancelSaleCustomerError(storableError(e)));
+      log.error(e, 'cancel-sale-customer-failed', {
+        txId: id,
+        transition: TRANSITION_CANCEL_CUSTOMER,
+      });
+      throw e;
+    });
+};
+
+export const cancelSaleProvider = id => (dispatch, getState, sdk) => {
+  if (acceptOrDeclineInProgress(getState())) {
+    return Promise.reject(new Error('Accept or decline already in progress'));
+  }
+  dispatch(cancelSaleProviderRequest());
+
+  return sdk.transactions
+    .transition({ id, transition: TRANSITION_CANCEL_PROVIDER, params: {} }, { expand: true })
+    .then(response => {
+      axios.delete(`${apiBaseUrl()}/api/booking/deleteBooking`, {
+        orderId: response.data.data.id.uuid,
+      });
+      dispatch(addMarketplaceEntities(response));
+      dispatch(cancelSaleProviderSuccess());
+      dispatch(fetchCurrentUserNotifications());
+      return response;
+    })
+    .catch(e => {
+      dispatch(cancelSaleProviderError(storableError(e)));
+      log.error(e, 'cancel-sale-provider-failed', {
+        txId: id,
+        transition: TRANSITION_CANCEL_PROVIDER,
+      });
+      throw e;
     });
 };
 

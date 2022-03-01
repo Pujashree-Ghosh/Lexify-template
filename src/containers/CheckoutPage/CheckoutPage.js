@@ -425,8 +425,13 @@ export class CheckoutPageComponent extends Component {
         ? { setupPaymentMethodForSaving: true }
         : {};
 
+    const providerId = pageData?.listing?.author?.id.uuid;
+    const customerId = ensuredCurrentUser?.id.uuid;
+
     const orderParams = {
       listingId: pageData.listing.id,
+      providerId,
+      customerId,
       bookingStart: tx.booking.attributes.start,
       bookingEnd: tx.booking.attributes.end,
       protectedData: tx.attributes.protectedData,
@@ -782,7 +787,7 @@ export class CheckoutPageComponent extends Component {
 
     const price = currentListing.attributes.price;
     const formattedPrice = formatMoney(intl, price);
-    const detailsSubTitle = `${formattedPrice} ${intl.formatMessage({ id: unitTranslationKey })}`;
+    const detailsSubTitle = `${formattedPrice} `;
 
     const showInitialMessageInput = !(
       existingTransaction && existingTransaction.attributes.lastTransition === TRANSITION_ENQUIRE

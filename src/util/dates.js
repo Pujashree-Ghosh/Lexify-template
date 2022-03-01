@@ -288,9 +288,7 @@ export const getSharpHours = (intl, timeZone, startTime, endTime, duration) => {
   const millisecondBeforeStartTime = moment(millisecondRounded)
     .subtract(min, 'm')
     .toDate();
-  // const millisecondBeforeStartTime = new Date(startTime.getTime() - 1);
-  // console.log(1, moment(millisecondRounded).toDate());
-  // console.log(2, moment(millisecondBeforeStartTime).toDate());
+
   return findBookingUnitBoundaries({
     currentBoundary: findNextBoundary(timeZone, millisecondBeforeStartTime, duration),
     startMoment: moment(startTime),
@@ -305,7 +303,7 @@ export const getSharpHours = (intl, timeZone, startTime, endTime, duration) => {
 
 export const roundDateTime = date => {
   const start = moment(date);
-  const remainder = 15 - (start.minute() % 15);
+  const remainder = 5 - (start.minute() % 5);
   // console.log(333, moment(date).toDate(), remainder);
 
   const dateTime = moment(start)
@@ -345,6 +343,7 @@ export const roundDateTime = date => {
  */
 export const getStartHours = (intl, timeZone, startTime, endTime, duration) => {
   const hours = getSharpHours(intl, timeZone, startTime, endTime, duration);
+  // console.log(hours);
   return hours.length < 2 ? hours : hours.slice(0, -1);
 };
 
@@ -377,6 +376,7 @@ export const getStartHours = (intl, timeZone, startTime, endTime, duration) => {
  */
 export const getEndHours = (intl, timeZone, startTime, endTime, duration) => {
   const hours = getSharpHours(intl, timeZone, startTime, endTime, duration);
+  // console.log(9725, startTime, endTime, hours);
   return hours.length < 2 ? [] : hours.slice(1);
   // return hours;
 };

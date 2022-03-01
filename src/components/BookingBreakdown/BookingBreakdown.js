@@ -3,6 +3,8 @@
  * I.e. dates and other details related to payment decision in receipt format.
  */
 import React from 'react';
+import { compose } from 'redux';
+import { connect } from 'react-redux';
 import { oneOf, string } from 'prop-types';
 import { FormattedMessage, intlShape, injectIntl } from '../../util/reactIntl';
 import classNames from 'classnames';
@@ -23,9 +25,16 @@ import LineItemProviderCommissionRefundMaybe from './LineItemProviderCommissionR
 import LineItemRefundMaybe from './LineItemRefundMaybe';
 import LineItemTotalPrice from './LineItemTotalPrice';
 import LineItemUnknownItemsMaybe from './LineItemUnknownItemsMaybe';
+import Button from '../Button/Button';
+import {
+  cancelSaleCustomer,
+  cancelSaleProvider,
+} from '../../containers/TransactionPage/TransactionPage.duck';
 
 import css from './BookingBreakdown.module.css';
 import LineItemTaxMaybe from './LineItemTaxMaybe';
+import axios from 'axios';
+import { apiBaseUrl } from '../../util/api';
 
 export const BookingBreakdownComponent = props => {
   const {
@@ -38,6 +47,8 @@ export const BookingBreakdownComponent = props => {
     intl,
     dateType,
     timeZone,
+    onCancelSaleCustomer,
+    onCancelSaleProvider,
   } = props;
   // console.log(666, transaction);
   const isCustomer = userRole === 'customer';
@@ -142,15 +153,27 @@ export const BookingBreakdownComponent = props => {
           <FormattedMessage id="BookingBreakdown.commissionFeeNote" />
         </span>
       ) : null}
+      {transaction?.attributes?.lastTransition === 'transition/accept' ? (
+        isCustomer ? (
+          <Button onClick={() => onCancelSaleCustomer(transaction.id)}> Cancel</Button>
+        ) : (
+          <Button onClick={() => onCancelSaleProvider(transaction.id)}> Cancel</Button>
+        )
+      ) : (
+        ''
+      )}
     </div>
   );
 };
+
+const func = propTypes;
 
 BookingBreakdownComponent.defaultProps = {
   rootClassName: null,
   className: null,
   dateType: null,
   timeZone: null,
+  func: () => {},
 };
 
 BookingBreakdownComponent.propTypes = {
@@ -163,12 +186,24 @@ BookingBreakdownComponent.propTypes = {
   booking: propTypes.booking.isRequired,
   dateType: propTypes.dateType,
   timeZone: string,
+  onCancelSaleCustomer: func.isRequired,
 
   // from injectIntl
   intl: intlShape.isRequired,
 };
 
-const BookingBreakdown = injectIntl(BookingBreakdownComponent);
+const mapDispatchToProps = dispatch => {
+  return {
+    onCancelSaleCustomer: transactionId => dispatch(cancelSaleCustomer(transactionId)),
+    onCancelSaleProvider: transactionId => dispatch(cancelSaleProvider(transactionId)),
+  };
+};
+
+const BookingBreakdown = compose(
+  connect(null, mapDispatchToProps),
+  injectIntl
+)(BookingBreakdownComponent);
+// const BookingBreakdown = injectIntl(BookingBreakdownComponent);
 
 BookingBreakdown.displayName = 'BookingBreakdown';
 

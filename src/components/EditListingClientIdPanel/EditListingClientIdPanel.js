@@ -7,7 +7,7 @@ import { LISTING_STATE_DRAFT } from '../../util/types';
 import { ensureListing } from '../../util/data';
 import { EditListingClientIdForm } from '../../forms';
 import { ListingLink } from '../../components';
-
+import { FieldArray } from 'react-final-form-arrays';
 import css from './EditListingClientIdPanel.module.css';
 
 const EditListingClientIdPanel = props => {
@@ -28,7 +28,7 @@ const EditListingClientIdPanel = props => {
   const classes = classNames(rootClassName || css.root, className);
   const currentListing = ensureListing(listing);
   const { publicData } = currentListing.attributes;
-
+  // console.log(currentListing);
   const isPublished = currentListing.id && currentListing.attributes.state !== LISTING_STATE_DRAFT;
   const panelTitle = isPublished ? (
     <FormattedMessage
@@ -46,7 +46,7 @@ const EditListingClientIdPanel = props => {
   );
 
   const type = publicData && publicData.type ? publicData.type : 'solicited';
-  const clientId = publicData && publicData.clientId;
+  const clientId = publicData && publicData.clientId ? publicData.clientId : [''];
 
   return (
     <div className={classes}>

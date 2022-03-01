@@ -39,6 +39,8 @@ export const TRANSITION_EXPIRE = 'transition/expire';
 
 // Admin can also cancel the transition.
 export const TRANSITION_CANCEL = 'transition/cancel';
+export const TRANSITION_CANCEL_PROVIDER = 'transition/cancel-provider';
+export const TRANSITION_CANCEL_CUSTOMER = 'transition/cancel-customer';
 
 // The backend will mark the transaction completed.
 export const TRANSITION_COMPLETE = 'transition/complete';
@@ -147,6 +149,8 @@ const stateDescription = {
     [STATE_ACCEPTED]: {
       on: {
         [TRANSITION_CANCEL]: STATE_CANCELED,
+        [TRANSITION_CANCEL_PROVIDER]: STATE_CANCELED,
+        [TRANSITION_CANCEL_CUSTOMER]: STATE_CANCELED,
         [TRANSITION_COMPLETE]: STATE_DELIVERED,
       },
     },
@@ -231,10 +235,8 @@ export const txIsPaymentExpired = tx =>
 
 // Note: state name used in Marketplace API docs (and here) is actually preauthorized
 // However, word "requested" is used in many places so that we decided to keep it.
-export const txIsRequested = tx => {
-  console.log(getTransitionsToState(STATE_PREAUTHORIZED), getTransitionsToState(STATE_ACCEPTED));
-  return getTransitionsToState(STATE_PREAUTHORIZED).includes(txLastTransition(tx));
-};
+export const txIsRequested = tx =>
+  getTransitionsToState(STATE_PREAUTHORIZED).includes(txLastTransition(tx));
 
 export const txIsAccepted = tx =>
   getTransitionsToState(STATE_ACCEPTED).includes(txLastTransition(tx));
@@ -302,6 +304,8 @@ export const isRelevantPastTransition = transition => {
   return [
     TRANSITION_ACCEPT,
     TRANSITION_CANCEL,
+    TRANSITION_CANCEL_PROVIDER,
+    TRANSITION_CANCEL_CUSTOMER,
     TRANSITION_COMPLETE,
     TRANSITION_CONFIRM_PAYMENT,
     TRANSITION_DECLINE,

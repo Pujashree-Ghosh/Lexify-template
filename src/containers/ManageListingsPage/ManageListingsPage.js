@@ -103,7 +103,7 @@ export class ManageListingsPageComponent extends Component {
       scrollingDisabled,
       intl,
     } = this.props;
-    // console.log(history);
+
     // console.log(listings);
 
     const hasPaginationInfo = !!pagination && pagination.totalItems != null;

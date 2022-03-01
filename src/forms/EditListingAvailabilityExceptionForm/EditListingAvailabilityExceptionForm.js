@@ -35,6 +35,7 @@ import {
   IconArrowHead,
   PrimaryButton,
 } from '../../components';
+import moment from 'moment';
 
 import css from './EditListingAvailabilityExceptionForm.module.css';
 
@@ -106,7 +107,7 @@ const getAvailableTimeRangesForExceptions = (exceptions, timeZone) => {
 };
 
 // Get available start times for new exceptions on given date.
-const getAvailableStartTimes = (date, timeRangesOnSelectedDate, intl, timeZone) => {
+const getAvailableStartTimes = (date, timeRangesOnSelectedDate, intl, timeZone, duration) => {
   if (timeRangesOnSelectedDate.length === 0 || !timeRangesOnSelectedDate[0] || !date) {
     return [];
   }
@@ -127,7 +128,7 @@ const getAvailableStartTimes = (date, timeRangesOnSelectedDate, intl, timeZone) 
     // Otherwise use the end of the timeslot.
     const endLimit = dateIsAfter(end, nextDay) ? nextDay : end;
 
-    const hours = getStartHours(intl, timeZone, startLimit, endLimit);
+    const hours = getStartHours(intl, timeZone, startLimit, endLimit, duration);
     return availableHours.concat(hours);
   }, []);
   return allHours;
@@ -165,8 +166,11 @@ const getAvailableEndTimes = (
   selectedEndDate,
   selectedTimeRange,
   intl,
-  timeZone
+  timeZone,
+  duration
 ) => {
+  const m = duration && parseInt(duration.split('.')[1]);
+  const min = duration ? parseInt(duration.split('.')[0]) * 60 + m : 0;
   if (!selectedTimeRange || !selectedEndDate || !selectedStartTime) {
     return [];
   }
@@ -184,11 +188,14 @@ const getAvailableEndTimes = (
     selectedStartTimeAsDate,
     startOfSelectedEndDate
   );
+  // const start = moment(limitStart)
+  //   .add(min, 'm')
+  //   .toDate();
   const limitEnd = timeRangeEndOrNextMidnight(timeRangeEnd, dayAfterSelectedEndDate);
 
   return isSingleDayRange
-    ? getEndHours(intl, timeZone, limitStart, limitEnd)
-    : getSharpHours(intl, timeZone, limitStart, limitEnd);
+    ? getEndHours(intl, timeZone, limitStart, limitEnd, duration)
+    : getSharpHours(intl, timeZone, limitStart, limitStart, duration);
 };
 
 // Get time-ranges on given date.
@@ -201,6 +208,7 @@ const getTimeRanges = (timeRanges, date, timeZone) => {
 // Use start date to calculate the first possible start time or times, end date and end time or times.
 // If the selected value is passed to function it will be used instead of calculated value.
 const getAllTimeValues = (
+  duration,
   intl,
   timeZone,
   timeRanges,
@@ -214,7 +222,8 @@ const getAllTimeValues = (
         selectedStartDate,
         getTimeRanges(timeRanges, selectedStartDate, timeZone),
         intl,
-        timeZone
+        timeZone,
+        duration
       );
 
   const startTime = selectedStartTime
@@ -232,12 +241,19 @@ const getAllTimeValues = (
   const endDate = selectedEndDate
     ? selectedEndDate
     : startTimeAsDate
-    ? new Date(findNextBoundary(timeZone, startTimeAsDate).getTime() - 1)
+    ? new Date(findNextBoundary(timeZone, startTimeAsDate).getTime())
     : null;
 
   const selectedTimeRange = timeRanges.find(t => isInRange(startTimeAsDate, t.start, t.end));
 
-  const endTimes = getAvailableEndTimes(startTime, endDate, selectedTimeRange, intl, timeZone);
+  const endTimes = getAvailableEndTimes(
+    startTime,
+    endDate,
+    selectedTimeRange,
+    intl,
+    timeZone,
+    duration
+  );
   const endTime =
     endTimes.length > 0 && endTimes[0] && endTimes[0].timestamp ? endTimes[0].timestamp : null;
 
@@ -294,7 +310,7 @@ const isOutsideRange = (exceptionStartDate, selectedTimeRange, timeZone) => day 
 };
 
 // Helper function, which changes form's state when exceptionStartDate input has been changed
-const onExceptionStartDateChange = (value, timeRanges, props) => {
+const onExceptionStartDateChange = (value, timeRanges, duration, props) => {
   const { timeZone, intl, form } = props;
 
   if (!value || !value.date) {
@@ -312,6 +328,7 @@ const onExceptionStartDateChange = (value, timeRanges, props) => {
   const timeRangesOnSelectedDate = getTimeRanges(timeRanges, startDate, timeZone);
 
   const { startTime, endDate, endTime } = getAllTimeValues(
+    duration,
     intl,
     timeZone,
     timeRangesOnSelectedDate,
@@ -326,11 +343,12 @@ const onExceptionStartDateChange = (value, timeRanges, props) => {
 };
 
 // Helper function, which changes form's state when exceptionStartTime select has been changed
-const onExceptionStartTimeChange = (value, timeRangesOnSelectedDate, props) => {
+const onExceptionStartTimeChange = (value, timeRangesOnSelectedDate, duration, props) => {
   const { timeZone, intl, form, values } = props;
   const startDate = values.exceptionStartDate.date;
 
   const { endDate, endTime } = getAllTimeValues(
+    duration,
     intl,
     timeZone,
     timeRangesOnSelectedDate,
@@ -345,7 +363,7 @@ const onExceptionStartTimeChange = (value, timeRangesOnSelectedDate, props) => {
 };
 
 // Helper function, which changes form's state when exceptionEndDate input has been changed
-const onExceptionEndDateChange = (value, timeRangesOnSelectedDate, props) => {
+const onExceptionEndDateChange = (value, timeRangesOnSelectedDate, duration, props) => {
   const { timeZone, intl, form, values } = props;
   if (!value || !value.date) {
     form.change('exceptionEndDate', null);
@@ -360,6 +378,7 @@ const onExceptionEndDateChange = (value, timeRangesOnSelectedDate, props) => {
   const startDate = exceptionStartDate.date;
 
   const { endTime } = getAllTimeValues(
+    duration,
     intl,
     timeZone,
     timeRangesOnSelectedDate,
@@ -419,6 +438,7 @@ const EditListingAvailabilityExceptionForm = props => {
           updateInProgress,
           fetchErrors,
           values,
+          duration,
         } = formRenderProps;
 
         const idPrefix = `${formId}` || 'EditListingAvailabilityExceptionForm';
@@ -453,10 +473,12 @@ const EditListingAvailabilityExceptionForm = props => {
           exceptionStartDay,
           timeRangesOnSelectedDate,
           intl,
-          timeZone
+          timeZone,
+          duration
         );
 
         const { startTime, endDate, selectedTimeRange } = getAllTimeValues(
+          duration,
           intl,
           timeZone,
           timeRangesOnSelectedDate,
@@ -470,7 +492,8 @@ const EditListingAvailabilityExceptionForm = props => {
           exceptionEndDay || endDate,
           selectedTimeRange,
           intl,
-          timeZone
+          timeZone,
+          duration
         );
 
         // Returns a function that changes the current month
@@ -554,7 +577,12 @@ const EditListingAvailabilityExceptionForm = props => {
                     parse={parseFieldDateInput(timeZone)}
                     isDayBlocked={isDayBlocked(availableTimeRanges, timeZone)}
                     onChange={value =>
-                      onExceptionStartDateChange(value, availableTimeRanges, formRenderProps)
+                      onExceptionStartDateChange(
+                        value,
+                        availableTimeRanges,
+                        duration,
+                        formRenderProps
+                      )
                     }
                     onPrevMonthClick={() => handleMonthClick(prevMonthFn)}
                     onNextMonthClick={() => handleMonthClick(nextMonthFn)}
@@ -573,7 +601,12 @@ const EditListingAvailabilityExceptionForm = props => {
                     selectClassName={exceptionStartDate ? css.select : css.selectDisabled}
                     disabled={startTimeDisabled}
                     onChange={value =>
-                      onExceptionStartTimeChange(value, timeRangesOnSelectedDate, formRenderProps)
+                      onExceptionStartTimeChange(
+                        value,
+                        timeRangesOnSelectedDate,
+                        duration,
+                        formRenderProps
+                      )
                     }
                   >
                     {exceptionStartDay ? (
@@ -602,7 +635,12 @@ const EditListingAvailabilityExceptionForm = props => {
                     parse={parseFieldDateInput(timeZone)}
                     isDayBlocked={isDayBlocked(availableTimeRanges, timeZone)}
                     onChange={value =>
-                      onExceptionEndDateChange(value, timeRangesOnSelectedDate, formRenderProps)
+                      onExceptionEndDateChange(
+                        value,
+                        timeRangesOnSelectedDate,
+                        duration,
+                        formRenderProps
+                      )
                     }
                     onPrevMonthClick={() => handleMonthClick(prevMonthFn)}
                     onNextMonthClick={() => handleMonthClick(nextMonthFn)}

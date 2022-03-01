@@ -24,6 +24,7 @@ const defaultDirectives = {
     '*.tiles.mapbox.com',
     'api.mapbox.com',
     'events.mapbox.com',
+    'countriesnow.space/api/v0.1/countries/states',
 
     // Google Analytics
     'www.google-analytics.com',
