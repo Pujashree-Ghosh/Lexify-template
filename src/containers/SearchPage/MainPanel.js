@@ -9,6 +9,8 @@ import { FormattedMessage } from '../../util/reactIntl';
 import { createResourceLocatorString } from '../../util/routes';
 import { isAnyFilterActive } from '../../util/search';
 import { propTypes } from '../../util/types';
+import io from 'socket.io-client';
+
 import {
   SearchResultsPanel,
   SearchFiltersMobile,
@@ -31,6 +33,7 @@ import Select from 'react-select';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withViewport } from '../../util/contextHelpers';
+import { apiBaseUrl } from '../../util/api';
 
 // Primary filters have their content in dropdown-popup.
 // With this offset we move the dropdown to the left a few pixels on desktop layout.
@@ -198,7 +201,28 @@ class MainPanelComponent extends Component {
   //   }
   // }
   componentDidUpdate(prevProps, prevState) {
-    
+    // const socketServerURL = apiBaseUrl();
+    // // this.setState({
+    // //   socket: io(socketServerURL, {
+    // //     query: {
+    // //       roomId: decodeToken.room,
+    // //     },
+    // //   }),
+    // // });
+    // const socket = io(socketServerURL, {
+    //   query: {
+    //     roomId: '123',
+    //   },
+    // });
+    // socket.on('connection', () => {
+    //   console.log('abcdef', 'new client connected');
+    // });
+    // socket.emit('onConnect', '123', '123456');
+    // socket.on('status', (status, id) => {
+    //   console.log('abcde', status, id);
+    // });
+    // console.log('abcd', socket);
+
     const practiceAreaOptions = this.props.areaOfLawOptions.map(c => ({
       value: c.key,
       label: c.label,
@@ -270,8 +294,8 @@ class MainPanelComponent extends Component {
     }
 
     const { history, urlQueryParams } = this.props;
-    console.log("curr",this.state.currentQueryParams)
-    console.log("NoCurr",urlQueryParams)
+    console.log('curr', this.state.currentQueryParams);
+    console.log('NoCurr', urlQueryParams);
     // if(Object.keys(urlQueryParams).length === 0){
     //   history.push(
     //     createResourceLocatorString(
@@ -309,17 +333,16 @@ class MainPanelComponent extends Component {
         );
       }
 
-      if(this.state.currentQueryParams.hasOwnProperty('keywords') && urlQueryParams?.pub_hasPublicListing === true && urlQueryParams?.pub_isProviderType === true){
+      if (
+        this.state.currentQueryParams.hasOwnProperty('keywords') &&
+        urlQueryParams?.pub_hasPublicListing === true &&
+        urlQueryParams?.pub_isProviderType === true
+      ) {
         let currParams = this.state.currentQueryParams;
         delete currParams?.pub_hasPublicListing;
         delete currParams?.pub_isProviderType;
         history.push(
-          createResourceLocatorString(
-            'SearchPage',
-            routeConfiguration(),
-            {},
-            {...currParams}
-          )
+          createResourceLocatorString('SearchPage', routeConfiguration(), {}, { ...currParams })
         );
       }
     }

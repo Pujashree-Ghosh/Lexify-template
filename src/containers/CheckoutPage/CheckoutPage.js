@@ -204,13 +204,16 @@ export class CheckoutPageComponent extends Component {
         jwt.sign(
           {
             room: pageData.listing.id.uuid,
-            name: pageData.listing.attributes.title,
+            listingId: pageData.listing.id.uuid,
+            listingTitle: pageData.listing.attributes.title,
             created_at: moment(),
             author: l_author,
+            // transactionId:
+            // transaction_customer_id:,
+            // transaction_provider_id:,
             role: 'customer',
-            start: moment(pageData.bookingDates.bookingStart).clone(),
-            end: moment(pageData.bookingDates.bookingEnd).clone(),
-            listingName: pageData.listing.attributes.title,
+            startTime: moment(pageData.bookingDates.bookingStart).clone(),
+            endTime: moment(pageData.bookingDates.bookingEnd).clone(),
             userName: this.props.currentUser?.attributes?.profile?.displayName,
           },
           config.secretCode
@@ -224,13 +227,13 @@ export class CheckoutPageComponent extends Component {
         jwt.sign(
           {
             room: pageData.listing.id.uuid,
-            name: pageData.listing.attributes.title,
+            listingId: pageData.listing.id.uuid,
+            listingTitle: pageData.listing.attributes.title,
             created_at: moment(),
             author: l_author,
             role: 'provider',
-            start: moment(pageData.bookingDates.bookingStart).clone(),
-            end: moment(pageData.bookingDates.bookingEnd).clone(),
-            listingName: pageData.listing.attributes.title,
+            startTime: moment(pageData.bookingDates.bookingStart).clone(),
+            endTime: moment(pageData.bookingDates.bookingEnd).clone(),
           },
           config.secretCode
         );

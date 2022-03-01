@@ -52,6 +52,7 @@ import PanelHeading, {
 } from './PanelHeading';
 
 import css from './TransactionPanel.module.css';
+import { PrimaryButton } from '../Button/Button';
 
 // Helper function to get display names for different roles
 const displayNames = (currentUser, currentProvider, currentCustomer, intl) => {
@@ -162,7 +163,6 @@ export class TransactionPanelComponent extends Component {
     }
   }
   goToConference = async transaction => {
-    console.log('123 test', transaction, config);
     let startTime = transaction?.booking?.attributes?.start;
     let endTime = transaction?.booking?.attributes?.end;
     let transactionId = transaction?.id?.uuid;
@@ -184,8 +184,8 @@ export class TransactionPanelComponent extends Component {
     //   transaction.attributes.protectedData &&
     //   transaction.attributes.protectedData.shortBooking;
 
-    // let findActualStartTime = 
-    // // isShortBooking ? [TRANSITION_SHORT_BOOKING_PROVIDER_JOIN_2, TRANSITION_SHORT_BOOKING_CUSTOMER_JOIN_2]: 
+    // let findActualStartTime =
+    // // isShortBooking ? [TRANSITION_SHORT_BOOKING_PROVIDER_JOIN_2, TRANSITION_SHORT_BOOKING_CUSTOMER_JOIN_2]:
     //   [TRANSITION_PROVIDER_JOIN_1, TRANSITION_PROVIDER_JOIN_2];
 
     // Array.isArray(transitions) &&
@@ -196,7 +196,7 @@ export class TransactionPanelComponent extends Component {
     //     }
     //   });
 
-    // let findCustomerJoinTime = 
+    // let findCustomerJoinTime =
     // // isShortBooking ? [TRANSITION_SHORT_BOOKING_CUSTOMER_JOIN_1, TRANSITION_SHORT_BOOKING_CUSTOMER_JOIN_2] :
     //  [TRANSITION_CUSTOMER_JOIN_1, TRANSITION_CUSTOMER_JOIN_2];
 
@@ -213,9 +213,13 @@ export class TransactionPanelComponent extends Component {
     if (!transactionId) {
       console.log('transaction id not found');
       return;
-    }+6
+    }
+    const beforeBufferTime =
+      transaction?.provider?.attributes?.profile?.publicData?.beforeBufferTime || 0;
+    const afterBufferTime =
+      transaction?.provider?.attributes?.profile?.publicData?.afterBufferTime || 0;
 
-    let jwtToken = await jsonwebtoken.sign(
+    let jwtToken = jsonwebtoken.sign(
       {
         startTime,
         endTime,
@@ -225,14 +229,12 @@ export class TransactionPanelComponent extends Component {
         transaction_customer_id,
         transaction_provider_id,
         role,
-        moderator,
-        // shortBooking: isShortBooking,
-        // actualStartTime,
-        // customerJoinTime,
+        beforeBufferTime,
+        afterBufferTime,
       },
       config.secretCode
     );
-    console.log("99",jwtToken)
+    console.log('99', jwtToken);
     window.open(`/meeting-new/${jwtToken}`);
     // this.props.history.push(`/meeting-new/${jwtToken}`);
     // console.log('555 token', jwtToken);
@@ -273,7 +275,7 @@ export class TransactionPanelComponent extends Component {
       lineItems,
       fetchLineItemsInProgress,
       fetchLineItemsError,
-      onJoinMeeting
+      onJoinMeeting,
     } = this.props;
 
     const currentTransaction = ensureTransaction(transaction);
@@ -282,7 +284,7 @@ export class TransactionPanelComponent extends Component {
     const currentCustomer = ensureUser(currentTransaction.customer);
     const isCustomer = transactionRole === 'customer';
     const isProvider = transactionRole === 'provider';
-    console.log('et',transaction)
+    console.log('6923568', transaction);
     const listingLoaded = !!currentListing.id;
     const listingDeleted = listingLoaded && currentListing.attributes.deleted;
     const iscustomerLoaded = !!currentCustomer.id;
@@ -535,13 +537,41 @@ export class TransactionPanelComponent extends Component {
                   fetchLineItemsError={fetchLineItemsError}
                 />
               ) : null}
-              
+
               <BreakdownMaybe
                 className={css.breakdownContainer}
                 transaction={currentTransaction}
                 transactionRole={transactionRole}
               />
-              <button 
+              <PrimaryButton
+                // inProgress={joinMeetingProgress}
+                className={css.joinMeetingBtn}
+                onClick={() => {
+                  //   if (stateData.isShortBooking) {
+                  //     onJoinShortMeeting(currentTransaction.id, isCustomer)
+                  //       .then(res => {
+                  //         this.goToConference(currentTransaction);
+                  //         console.log('onJoinShortMeeting', res);
+                  //       })
+                  //       .catch(e => console.error(e));
+                  //   } else {
+                  //     onJoinMeeting(currentTransaction.id, isCustomer)
+                  //       .then(res => {
+                  //         this.goToConference(currentTransaction);
+                  //         console.log('onJoinMeeting', res);
+                  //       })
+                  //       .catch(e => {
+                  //         console.log('557. err in page', e);
+                  //         console.error(e);
+                  //       });
+                  //   }
+                  //
+                  this.goToConference(currentTransaction);
+                }}
+              >
+                {stateData.isShortBooking ? 'Join Free Trial Meeting' : 'Join Meeting'}
+              </PrimaryButton>
+              {/* <button
                 // onClick={
                 //     ()=>onJoinMeeting(currentTransaction.id, isCustomer)
                 //     .then(res => {
@@ -553,8 +583,10 @@ export class TransactionPanelComponent extends Component {
                 //       console.error(e);
                 //     })
                 //   }
-                onClick={()=>this.goToConference(currentTransaction)}
-                >This is a button</button>
+                onClick={() => this.goToConference(currentTransaction)}
+              >
+                This is a button
+              </button> */}
 
               {stateData.showSaleButtons ? (
                 <div className={css.desktopActionButtons}>{saleButtons}</div>
@@ -573,6 +605,7 @@ export class TransactionPanelComponent extends Component {
           sendReviewInProgress={sendReviewInProgress}
           sendReviewError={sendReviewError}
         />
+
         {/* <PrimaryButton
           inProgress={joinMeetingProgress}
           onClick={() => {

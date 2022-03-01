@@ -480,3 +480,6 @@
   margin-top: 0;
   margin-bottom: 1px;
 }
+.joinMeetingBtn {
+  background-color: var(--successColor);
+}

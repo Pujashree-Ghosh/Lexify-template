@@ -74,14 +74,17 @@ export default function DeviceSelectionScreen({
   const { getToken, isFetching } = useAppState();
   const { connect, isAcquiringLocalTracks, isConnecting } = useVideoContext();
   const stateData = useContext(ListingContext);
-  const disableButtons = isMeetingDisbled || (isFetching || isAcquiringLocalTracks || isConnecting);
+  const disableButtons = isMeetingDisbled || isFetching || isAcquiringLocalTracks || isConnecting;
   const browser = detect();
 
   const isFirefox = browser && browser.name === 'firefox';
   const handleJoin = () => {
     getToken(name, roomName).then(token => {
       //
-      connect(token);
+      // connect(token);
+      connect(token, {
+        region: 'gll',
+      });
       // setTimeout(() => {
       // SignalHelper.emit('meeting', JSON.stringify({ status: 'open', isProvider }));
       if (typeof window !== undefined) {
@@ -132,7 +135,7 @@ export default function DeviceSelectionScreen({
             <div>
               <Hidden smDown>
                 <ToggleAudioButton className={classes.deviceButton} disabled={disableButtons} />
-                <ToggleVideoButton className={classes.deviceButton}  />
+                <ToggleVideoButton className={classes.deviceButton} />
               </Hidden>
             </div>
             {!isFirefox && (

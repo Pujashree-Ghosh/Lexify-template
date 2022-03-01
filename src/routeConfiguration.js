@@ -458,6 +458,8 @@ const routeConfiguration = () => {
       auth: true,
       authPage: 'LoginPage',
       component: props => <MeetingNewPage {...props} />,
+      // loadData: pageDataLoadingAPI.ListingPage.loadData,
+
     },
     {
       path: '/profile-setting',
