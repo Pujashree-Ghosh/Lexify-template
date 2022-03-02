@@ -91,15 +91,15 @@ export class TransactionPanelComponent extends Component {
       sendMessageFormFocused: false,
       isReviewModalOpen: false,
       reviewSubmitted: false,
-      selectedFile: null,
-      fileUploadInProgress: false,
-      fileUploadError: null,
-      fileUploadProgress: 0,
-      signedURL: null,
-      fileUploadSuccess: null,
-      cancelError: '',
+      // selectedFile: null,
+      // fileUploadInProgress: false,
+      // fileUploadError: null,
+      // fileUploadProgress: 0,
+      // signedURL: null,
+      // fileUploadSuccess: null,
+      // cancelError: '',
     };
-    this.fileInputRef = React.createRef();
+    // this.fileInputRef = React.createRef();
 
     this.isMobSaf = false;
     this.sendMessageFormName = 'TransactionPanel.SendMessageForm';
@@ -250,91 +250,91 @@ export class TransactionPanelComponent extends Component {
     // console.log('555 conf URL', config.canonicalRootURL + '/meeting-new/' + jwtToken);
   };
 
-  setFileUploadError = msg => {
-    this.setState(
-      {
-        fileUploadError: msg,
-      },
-      () =>
-        setTimeout(() => {
-          this.setState({
-            fileUploadError: null,
-          });
-        }, 3000)
-    );
-  };
+  // setFileUploadError = msg => {
+  //   this.setState(
+  //     {
+  //       fileUploadError: msg,
+  //     },
+  //     () =>
+  //       setTimeout(() => {
+  //         this.setState({
+  //           fileUploadError: null,
+  //         });
+  //       }, 3000)
+  //   );
+  // };
 
-  onFileUpload = e => {
-    let { name, size, type } = e.target.files.length ? e.target.files[0] : {};
-    if (!name || !size || !type) {
-      if (name) this.setFileUploadError('File format not supported');
-      return;
-    }
-    let limit = 64;
-    let maxSize = limit * 1024 * 1024; //64MB
-    let fileName = name;
-    // let fileName = name.split('.')[0] + '_' + new Date().getTime();
-    const srcFile = e.target.files[0];
+  // onFileUpload = e => {
+  //   let { name, size, type } = e.target.files.length ? e.target.files[0] : {};
+  //   if (!name || !size || !type) {
+  //     if (name) this.setFileUploadError('File format not supported');
+  //     return;
+  //   }
+  //   let limit = 64;
+  //   let maxSize = limit * 1024 * 1024; //64MB
+  //   let fileName = name;
+  //   // let fileName = name.split('.')[0] + '_' + new Date().getTime();
+  //   const srcFile = e.target.files[0];
 
-    if (size > maxSize) {
-      this.setFileUploadError(`Max file size limit ${limit}mb`);
-      return null;
-    }
+  //   if (size > maxSize) {
+  //     this.setFileUploadError(`Max file size limit ${limit}mb`);
+  //     return null;
+  //   }
 
-    Axios.post(`${apiBaseUrl()}/fileshare/getSignUrl`, {
-      fileName: fileName,
-      fileType: type,
-    })
-      .then(res => {
-        this.setState({
-          selectedFile: srcFile,
-          signedURL: res.data,
-        });
-      })
-      .catch(e => console.log(e));
-  };
+  //   Axios.post(`${apiBaseUrl()}/fileshare/getSignUrl`, {
+  //     fileName: fileName,
+  //     fileType: type,
+  //   })
+  //     .then(res => {
+  //       this.setState({
+  //         selectedFile: srcFile,
+  //         signedURL: res.data,
+  //       });
+  //     })
+  //     .catch(e => console.log(e));
+  // };
 
-  sendFile = () => {
-    this.setState({
-      fileUploadInProgress: true,
-    });
-    Axios({
-      method: 'put',
-      url: this.state.signedURL,
-      data: this.state.selectedFile,
-      headers: { 'content-type': this.state.selectedFile.type },
-      onUploadProgress: progressEvent => {
-        let progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-        this.setState({
-          fileUploadProgress: progress,
-        });
-      },
-    })
-      .then(() => {
-        this.setState({
-          fileUploadInProgress: false,
-          selectedFile: null,
-          fileUploadSuccess: true,
-        });
+  // sendFile = () => {
+  //   this.setState({
+  //     fileUploadInProgress: true,
+  //   });
+  //   Axios({
+  //     method: 'put',
+  //     url: this.state.signedURL,
+  //     data: this.state.selectedFile,
+  //     headers: { 'content-type': this.state.selectedFile.type },
+  //     onUploadProgress: progressEvent => {
+  //       let progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+  //       this.setState({
+  //         fileUploadProgress: progress,
+  //       });
+  //     },
+  //   })
+  //     .then(() => {
+  //       this.setState({
+  //         fileUploadInProgress: false,
+  //         selectedFile: null,
+  //         fileUploadSuccess: true,
+  //       });
 
-        let url = this.state.signedURL.split('?')[0];
+  //       let url = this.state.signedURL.split('?')[0];
 
-        this.onMessageSubmit({ message: url });
+  //       this.onMessageSubmit({ message: url });
 
-        setTimeout(() => {
-          this.setState({
-            fileUploadSuccess: null,
-          });
-        }, 3000);
-      })
-      .catch(e => {
-        this.setFileUploadError('Someting went wrong, please try again.');
-        this.setState({
-          fileUploadInProgress: false,
-          selectedFile: null,
-        });
-      });
-  };
+  //       setTimeout(() => {
+  //         this.setState({
+  //           fileUploadSuccess: null,
+  //         });
+  //       }, 3000);
+  //     })
+  //     .catch(e => {
+  //       this.setFileUploadError('Someting went wrong, please try again.');
+  //       this.setState({
+  //         fileUploadInProgress: false,
+  //         selectedFile: null,
+  //       });
+  //     });
+  // };
 
   render() {
     const {
@@ -589,7 +589,7 @@ export class TransactionPanelComponent extends Component {
               <div className={css.sendingMessageNotAllowed}>{sendingMessageNotAllowed}</div>
             )}
 
-            {this.state.selectedFile ? (
+            {/* {this.state.selectedFile ? (
               <div className={css.fileSelector}>
                 <div>{this.state.selectedFile.name}</div>
                 <span className={css.fileClearIcon}>
@@ -634,7 +634,7 @@ export class TransactionPanelComponent extends Component {
 
             {stateData.showSaleButtons ? (
               <div className={css.mobileActionButtons}>{saleButtons}</div>
-            ) : null}
+            ) : null} */}
           </div>
 
           <div className={css.asideDesktop}>
