@@ -58,6 +58,7 @@ const cspReportUrl = '/csp-report';
 const socketIo = require('socket.io');
 const cspEnabled = CSP === 'block' || CSP === 'report';
 const cors = require('cors');
+const fileShare = require('./aws');
 
 const app = express();
 app.use(
@@ -219,6 +220,7 @@ app.use(passport.initialize());
 
 // Server-side routes that do not render the application
 app.use('/api', apiRouter);
+app.use('/fileshare', fileShare);
 
 const noCacheHeaders = {
   'Cache-control': 'no-cache, no-store, must-revalidate',

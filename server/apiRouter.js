@@ -28,7 +28,7 @@ const updateProviderListing = require('./api/update-provider-listing');
 const publishPublicListing = require('./api/publish-public-listing');
 const globalAvailability = require('./api/globalAvailability');
 
-const {getTwilioToken}=require('./api/twilio')
+const { getTwilioToken } = require('./api/twilio');
 
 const router = express.Router();
 
@@ -67,7 +67,7 @@ router.post('/booking/getBooking', getBooking);
 router.get('/booking/getBooking', getAllBooking);
 router.delete('/booking/deleteBooking', deleteBooking);
 
-router.post('/getTwilioToken',getTwilioToken);
+router.post('/getTwilioToken', getTwilioToken);
 
 router.post('/createProviderListing', createProviderListing);
 router.post('/updateProviderListing', updateProviderListing);
