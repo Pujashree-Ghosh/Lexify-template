@@ -234,7 +234,6 @@ export class TransactionPanelComponent extends Component {
       },
       config.secretCode
     );
-    console.log('99', jwtToken);
     window.open(`/meeting-new/${jwtToken}`);
     // this.props.history.push(`/meeting-new/${jwtToken}`);
     // console.log('555 token', jwtToken);
@@ -350,6 +349,7 @@ export class TransactionPanelComponent extends Component {
       }
     };
     const stateData = stateDataFn(currentTransaction);
+    console.log(1996, stateData);
 
     const deletedListingTitle = intl.formatMessage({
       id: 'TransactionPanel.deletedListingTitle',
@@ -543,34 +543,38 @@ export class TransactionPanelComponent extends Component {
                 transaction={currentTransaction}
                 transactionRole={transactionRole}
               />
-              <PrimaryButton
-                // inProgress={joinMeetingProgress}
-                className={css.joinMeetingBtn}
-                onClick={() => {
-                  //   if (stateData.isShortBooking) {
-                  //     onJoinShortMeeting(currentTransaction.id, isCustomer)
-                  //       .then(res => {
-                  //         this.goToConference(currentTransaction);
-                  //         console.log('onJoinShortMeeting', res);
-                  //       })
-                  //       .catch(e => console.error(e));
-                  //   } else {
-                  //     onJoinMeeting(currentTransaction.id, isCustomer)
-                  //       .then(res => {
-                  //         this.goToConference(currentTransaction);
-                  //         console.log('onJoinMeeting', res);
-                  //       })
-                  //       .catch(e => {
-                  //         console.log('557. err in page', e);
-                  //         console.error(e);
-                  //       });
-                  //   }
-                  //
-                  this.goToConference(currentTransaction);
-                }}
-              >
-                {stateData.isShortBooking ? 'Join Free Trial Meeting' : 'Join Meeting'}
-              </PrimaryButton>
+              {stateData.headingState === 'accepted' ? (
+                <PrimaryButton
+                  // inProgress={joinMeetingProgress}
+                  className={css.joinMeetingBtn}
+                  onClick={() => {
+                    //   if (stateData.isShortBooking) {
+                    //     onJoinShortMeeting(currentTransaction.id, isCustomer)
+                    //       .then(res => {
+                    //         this.goToConference(currentTransaction);
+                    //         console.log('onJoinShortMeeting', res);
+                    //       })
+                    //       .catch(e => console.error(e));
+                    //   } else {
+                    //     onJoinMeeting(currentTransaction.id, isCustomer)
+                    //       .then(res => {
+                    //         this.goToConference(currentTransaction);
+                    //         console.log('onJoinMeeting', res);
+                    //       })
+                    //       .catch(e => {
+                    //         console.log('557. err in page', e);
+                    //         console.error(e);
+                    //       });
+                    //   }
+                    //
+                    this.goToConference(currentTransaction);
+                  }}
+                >
+                  {stateData.isShortBooking ? 'Join Free Trial Meeting' : 'Join Meeting'}
+                </PrimaryButton>
+              ) : (
+                ''
+              )}
               {/* <button
                 // onClick={
                 //     ()=>onJoinMeeting(currentTransaction.id, isCustomer)

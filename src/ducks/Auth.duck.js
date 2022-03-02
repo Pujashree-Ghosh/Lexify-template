@@ -213,6 +213,21 @@ export const signup = params => (dispatch, getState, sdk) => {
         protectedData: { ...rest },
         publicData: { isLawyer: rest.isLawyer, phoneNumber: rest.phoneNumber, email },
       }
+    : clientType === 'legalEntity'
+    ? {
+        email,
+        password,
+        firstName,
+        lastName,
+        protectedData: { ...rest },
+        publicData: {
+          isLawyer: rest.isLawyer,
+          phoneNumber: rest.phoneNumber,
+          email,
+          clientType,
+          legalEntity: { companyName: rest.companyName },
+        },
+      }
     : {
         email,
         password,
