@@ -91,7 +91,7 @@ class ProfileSettingsFormComponent extends Component {
 
     return (
       <>
-      <ProfilePageSideNav/>
+      {/* <ProfilePageSideNav/> */}
       <FinalForm
         {...this.props}
         mutators={{ ...arrayMutators }}

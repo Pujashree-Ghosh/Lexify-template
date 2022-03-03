@@ -161,50 +161,50 @@ class GeneralInfoFormComponent extends Component {
           });
           const companyNameRequired = validators.required(companyNameRequiredMessage);
 
-          const companyNumberPlaceholder = intl.formatMessage({
-            id: 'ProfileSettingsForm.companyNumberPlaceholder',
-          });
+        //   const companyNumberPlaceholder = intl.formatMessage({
+        //     id: 'ProfileSettingsForm.companyNumberPlaceholder',
+        //   });
 
-          const countryPlaceHolder = intl.formatMessage({
-            id: 'ProfileSettingsForm.countryPlaceHolder',
-          });
-          const countryRequiredMessage = intl.formatMessage({
-            id: 'ProfileSettingsForm.countryRequired',
-          });
-          const streetPlaceholder = intl.formatMessage({
-            id: 'ProfileSettingsForm.streetPlaceholder',
-          });
-          const streetRequiredMessage = intl.formatMessage({
-            id: 'ProfileSettingsForm.streetRequired',
-          });
-          const streetRequired = validators.required(streetRequiredMessage);
+        //   const countryPlaceHolder = intl.formatMessage({
+        //     id: 'ProfileSettingsForm.countryPlaceHolder',
+        //   });
+        //   const countryRequiredMessage = intl.formatMessage({
+        //     id: 'ProfileSettingsForm.countryRequired',
+        //   });
+        //   const streetPlaceholder = intl.formatMessage({
+        //     id: 'ProfileSettingsForm.streetPlaceholder',
+        //   });
+        //   const streetRequiredMessage = intl.formatMessage({
+        //     id: 'ProfileSettingsForm.streetRequired',
+        //   });
+        //   const streetRequired = validators.required(streetRequiredMessage);
 
-          const cityLabel = intl.formatMessage({
-            id: 'ProfileSettingsForm.cityLabel',
-          });
-          const cityPlaceholder = intl.formatMessage({
-            id: 'ProfileSettingsForm.cityPlaceholder',
-          });
-          const cityRequiredMessage = intl.formatMessage({
-            id: 'ProfileSettingsForm.cityRequired',
-          });
-          const cityRequired = validators.required(cityRequiredMessage);
+        //   const cityLabel = intl.formatMessage({
+        //     id: 'ProfileSettingsForm.cityLabel',
+        //   });
+        //   const cityPlaceholder = intl.formatMessage({
+        //     id: 'ProfileSettingsForm.cityPlaceholder',
+        //   });
+        //   const cityRequiredMessage = intl.formatMessage({
+        //     id: 'ProfileSettingsForm.cityRequired',
+        //   });
+        //   const cityRequired = validators.required(cityRequiredMessage);
 
-          const statePlaceholder = intl.formatMessage({
-            id: 'ProfileSettingsForm.statePlaceholder',
-          });
-          const stateRequiredMessage = intl.formatMessage({
-            id: 'ProfileSettingsForm.stateRequired',
-          });
-          const stateRequired = validators.required(stateRequiredMessage);
+        //   const statePlaceholder = intl.formatMessage({
+        //     id: 'ProfileSettingsForm.statePlaceholder',
+        //   });
+        //   const stateRequiredMessage = intl.formatMessage({
+        //     id: 'ProfileSettingsForm.stateRequired',
+        //   });
+        //   const stateRequired = validators.required(stateRequiredMessage);
 
-          const zipCodePlaceholder = intl.formatMessage({
-            id: 'ProfileSettingsForm.zipCodePlaceholder',
-          });
-          const zipCodeRequiredMessage = intl.formatMessage({
-            id: 'ProfileSettingsForm.zipCodeRequired',
-          });
-          const zipCodeRequired = validators.required(zipCodeRequiredMessage);
+        //   const zipCodePlaceholder = intl.formatMessage({
+        //     id: 'ProfileSettingsForm.zipCodePlaceholder',
+        //   });
+        //   const zipCodeRequiredMessage = intl.formatMessage({
+        //     id: 'ProfileSettingsForm.zipCodeRequired',
+        //   });
+        //   const zipCodeRequired = validators.required(zipCodeRequiredMessage);
 
           const otpPlaceholder = intl.formatMessage({
             id: 'ProfileSettingsForm.otpPlaceholder',
@@ -239,24 +239,24 @@ class GeneralInfoFormComponent extends Component {
           // const pracTiceDatePlaceholder = intl.formatMessage({
           //   id: 'ProfileSettingsForm.practiceDatePlaceholder',
           // });
-          const practiceDateLabel = intl.formatMessage({
-            id: 'ProfileSettingsForm.practiceDateLabel',
-          });
+        //   const practiceDateLabel = intl.formatMessage({
+        //     id: 'ProfileSettingsForm.practiceDateLabel',
+        //   });
 
-          const practiceDateRequiredMessage = intl.formatMessage({
-            id: 'ProfileSettingsForm.practiceDateRequired',
-          });
+        //   const practiceDateRequiredMessage = intl.formatMessage({
+        //     id: 'ProfileSettingsForm.practiceDateRequired',
+        //   });
 
-          const statusPlaceholder = intl.formatMessage({
-            id: 'ProfileSettingsForm.statusPlaceholder',
-          });
-          const statusLabel = intl.formatMessage({
-            id: 'ProfileSettingsForm.statusLabel',
-          });
+        //   const statusPlaceholder = intl.formatMessage({
+        //     id: 'ProfileSettingsForm.statusPlaceholder',
+        //   });
+        //   const statusLabel = intl.formatMessage({
+        //     id: 'ProfileSettingsForm.statusLabel',
+        //   });
 
-          const statusRequiredMessage = intl.formatMessage({
-            id: 'ProfileSettingsForm.statusRequired',
-          });
+        //   const statusRequiredMessage = intl.formatMessage({
+        //     id: 'ProfileSettingsForm.statusRequired',
+        //   });
 
           const languagePlaceholder = intl.formatMessage({
             id: 'ProfileSettingsForm.languagePlaceholder',
@@ -302,45 +302,45 @@ class GeneralInfoFormComponent extends Component {
             id: 'ProfileSettingsForm.degreeRequired',
           });
 
-          const graduationPlaceholder = intl.formatMessage({
-            id: 'ProfileSettingsForm.graduationPlaceholder',
-          });
-          const graduationLabel = intl.formatMessage({
-            id: 'ProfileSettingsForm.graduationLabel',
-          });
+        //   const graduationPlaceholder = intl.formatMessage({
+        //     id: 'ProfileSettingsForm.graduationPlaceholder',
+        //   });
+        //   const graduationLabel = intl.formatMessage({
+        //     id: 'ProfileSettingsForm.graduationLabel',
+        //   });
 
-          const graduationRequiredMessage = intl.formatMessage({
-            id: 'ProfileSettingsForm.graduationRequired',
-          });
+        //   const graduationRequiredMessage = intl.formatMessage({
+        //     id: 'ProfileSettingsForm.graduationRequired',
+        //   });
 
-          const practiceAreaPlaceholder = intl.formatMessage({
-            id: 'ProfileSettingsForm.practiceAreaPlaceholder',
-          });
-          const practiceAreaLabel = intl.formatMessage({
-            id: 'ProfileSettingsForm.practiceAreaLabel',
-          });
+        //   const practiceAreaPlaceholder = intl.formatMessage({
+        //     id: 'ProfileSettingsForm.practiceAreaPlaceholder',
+        //   });
+        //   const practiceAreaLabel = intl.formatMessage({
+        //     id: 'ProfileSettingsForm.practiceAreaLabel',
+        //   });
 
-          const practiceAreaRequiredMessage = intl.formatMessage({
-            id: 'ProfileSettingsForm.practiceAreaRequired',
-          });
+        //   const practiceAreaRequiredMessage = intl.formatMessage({
+        //     id: 'ProfileSettingsForm.practiceAreaRequired',
+        //   });
 
-          const industryPlaceholder = intl.formatMessage({
-            id: 'ProfileSettingsForm.industryPlaceholder',
-          });
-          const industryLabel = intl.formatMessage({
-            id: 'ProfileSettingsForm.industryLabel',
-          });
+        //   const industryPlaceholder = intl.formatMessage({
+        //     id: 'ProfileSettingsForm.industryPlaceholder',
+        //   });
+        //   const industryLabel = intl.formatMessage({
+        //     id: 'ProfileSettingsForm.industryLabel',
+        //   });
 
           // const industryRequiredMessage = intl.formatMessage({
           //   id: 'ProfileSettingsForm.industryRequired',
           // });
 
-          const recentWorkPlaceholder = intl.formatMessage({
-            id: 'ProfileSettingsForm.recentWorkPlaceholder',
-          });
-          const recentWorkLabel = intl.formatMessage({
-            id: 'ProfileSettingsForm.recentWorkLabel',
-          });
+        //   const recentWorkPlaceholder = intl.formatMessage({
+        //     id: 'ProfileSettingsForm.recentWorkPlaceholder',
+        //   });
+        //   const recentWorkLabel = intl.formatMessage({
+        //     id: 'ProfileSettingsForm.recentWorkLabel',
+        //   });
 
           // const recentWorkRequiredMessage = intl.formatMessage({
           //   id: 'ProfileSettingsForm.recentWorkRequired',
@@ -349,9 +349,9 @@ class GeneralInfoFormComponent extends Component {
           // const fromPlaceholder = intl.formatMessage({
           //   id: 'ProfileSettingsForm.fromPlaceholder',
           // });
-          const fromLabel = intl.formatMessage({
-            id: 'ProfileSettingsForm.fromLabel',
-          });
+        //   const fromLabel = intl.formatMessage({
+        //     id: 'ProfileSettingsForm.fromLabel',
+        //   });
 
           // const fromRequiredMessage = intl.formatMessage({
           //   id: 'ProfileSettingsForm.fromRequired',
@@ -360,9 +360,9 @@ class GeneralInfoFormComponent extends Component {
           // const toPlaceholder = intl.formatMessage({
           //   id: 'ProfileSettingsForm.toPlaceholder',
           // });
-          const toLabel = intl.formatMessage({
-            id: 'ProfileSettingsForm.toLabel',
-          });
+        //   const toLabel = intl.formatMessage({
+        //     id: 'ProfileSettingsForm.toLabel',
+        //   });
 
           // const toRequiredMessage = intl.formatMessage({
           //   id: 'ProfileSettingsForm.toRequired',
