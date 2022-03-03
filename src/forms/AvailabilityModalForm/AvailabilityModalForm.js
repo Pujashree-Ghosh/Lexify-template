@@ -302,20 +302,15 @@ const submit = (onSubmit, weekdays) => values => {
     },
     { ...values }
   );
-  if(sortedValues.hasOwnProperty('timezone')){
-    delete sortedValues.timezone
-  }
-  
-    console.log("first",sortedValues)
-//   onSubmit(sortedValues);
+  onSubmit(sortedValues);
 };
 
 const AvailabilityModalFormComponent = props => {
-  const { handleSubmit, ...restOfprops } = props;
+  const { onSubmit, ...restOfprops } = props;
   return (
     <FinalForm
       {...restOfprops}
-      onSubmit={submit(handleSubmit, props.weekdays)}
+      onSubmit={submit(onSubmit, props.weekdays)}
       mutators={{
         ...arrayMutators,
       }}

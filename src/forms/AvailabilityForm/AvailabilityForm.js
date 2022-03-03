@@ -150,7 +150,7 @@ const AvailabilityForm = props => {
     onDeleteAvailabilityException,
     disabled,
     ready,
-    handleSubmit,
+    onSubmit,
     onManageDisableScrolling,
     onNextTab,
     submitButtonText,
@@ -158,7 +158,6 @@ const AvailabilityForm = props => {
     errors,
   } = props;
   const currentUser = useSelector(state=>state.user.currentUser)
-  
   console.log("cu",currentUser)
   const currentUserListing = useSelector(state => state.user.currentUserListing)
   const durationUnit = listing?.attributes?.publicData?.durationUnit;
@@ -169,7 +168,6 @@ const AvailabilityForm = props => {
   const duration = ((Number(durationHour) * 60 + Number(durationMinute)) / 60).toFixed(2) + '';
   const exceptionDuration =
     durationHour && durationMinute ? `${durationHour}.${durationMinute}` : '100';
-console.log(duration)
 
   // console.log(durationUnit === 'hours' ? listingDuration * 60 : listingDuration);
   // Hooks
@@ -194,23 +192,23 @@ console.log(duration)
       // { dayOfWeek: 'sun', startTime: '09:00', endTime: '17:00', seats: 1 },
     ],
   };
-  const availabilityPlan = currentListing.attributes.availabilityPlan || defaultAvailabilityPlan;
+  const availabilityPlan = currentUser?.attributes?.profile?.protectedData?.availabilityPlan || defaultAvailabilityPlan;
   const initialValues = valuesFromLastSubmit
     ? valuesFromLastSubmit
     : createInitialValues(availabilityPlan);
-
-  const handlingSubmit = values => {
+  const handleSubmit = values => {
     setValuesFromLastSubmit(values);
 
     // Final Form can wait for Promises to return.
-    return handleSubmit(values)?.then(() => {
+    return onSubmit(createAvailabilityPlan(values))?.then(() => {
         setIsEditPlanModalOpen(false);
+        console.log("not failed")
       })
       .catch(e => {
         // Don't close modal if there was an error
+        console.log("failed")
       });
   };
-
   const exceptionCount = availabilityExceptions ? availabilityExceptions.length : 0;
   const sortedAvailabilityExceptions = availabilityExceptions.sort(sortExceptionsByStartTime);
 
@@ -222,7 +220,7 @@ console.log(duration)
     const seats = availability === 'available' ? 1 : 0;
 
     return onAddAvailabilityException({
-      listingId: listing.id,
+      listingId: currentUser?.id?.uuid,
       seats,
       start: timestampToDate(exceptionStartTime),
       end: timestampToDate(exceptionEndTime),
@@ -395,12 +393,12 @@ console.log(duration)
           />
         </Modal>
       ) : null}
-      {onManageDisableScrolling ? (
+      {true ? (
         <Modal
           id="EditAvailabilityExceptions"
           isOpen={isEditExceptionsModalOpen}
           onClose={() => setIsEditExceptionsModalOpen(false)}
-          onManageDisableScrolling={onManageDisableScrolling}
+          onManageDisableScrolling={()=>{}}
           containerClassName={css.modalContainer}
           usePortal
         >
@@ -441,7 +439,7 @@ AvailabilityForm.propTypes = {
 //   fetchExceptionsInProgress: bool.isRequired,
 //   onAddAvailabilityException: func.isRequired,
 //   onDeleteAvailabilityException: func.isRequired,
-//   handleSubmit: func.isRequired,
+  onSubmit: func.isRequired,
 //   onManageDisableScrolling: func.isRequired,
 //   onNextTab: func.isRequired,
 //   submitButtonText: string.isRequired,

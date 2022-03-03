@@ -26,6 +26,7 @@ import ProfilePageSideNav from '../../components/ProfilePageSideNav/ProfilePageS
 
 import { updateProfile, uploadImage } from '../../containers/ProfileSettingsPage/ProfileSettingsPage.duck';
 import css from '../../containers/ProfileSettingsPage/ProfileSettingsPage.module.css';
+import { valuesIn } from 'lodash';
 
 
 const onImageUploadHandler = (values, fn) => {
@@ -56,8 +57,6 @@ export class AvailabilityPageComponent extends Component {
       uploadInProgress,
       intl,
     } = this.props;
-    // console.log(this.state);
-    // console.log(currentUser);
 
     const user = ensureCurrentUser(currentUser);
     const { firstName, lastName, bio } = user.attributes.profile;
@@ -70,9 +69,9 @@ export class AvailabilityPageComponent extends Component {
     const isLawyer = protectedData?.isLawyer;
     const handleSubmit = values => {
       if (isLawyer === true) {
-          console.log("val",values)
         const {
           firstName,
+          availabilityPlan,
           lastName,
           bio: rawBio,
           schedule,
@@ -81,21 +80,20 @@ export class AvailabilityPageComponent extends Component {
           phoneNumber,
           ...restVal
         } = values;
-
         const profile = {
         //   firstName: firstName?.trim(),
         //   lastName: lastName?.trim(),
         //   bio,
-          protectedData: { schedule: schedule, phoneNumber: `+${phoneNumber}` },
-          publicData: { phoneNumber: `+${phoneNumber}`, ...restVal },
+          protectedData: { availabilityPlan },
+        //   publicData: { phoneNumber: `+${phoneNumber}`, ...restVal },
         };
-        const uploadedImage = this.props.image;
-
+        // const uploadedImage = this.props.image;
+        // console.log("UV",updatedValues)
         // Update profileImage only if file system has been accessed
-        const updatedValues =
-          uploadedImage && uploadedImage.imageId && uploadedImage.file
-            ? { ...profile, profileImageId: uploadedImage.imageId }
-            : profile;
+        const updatedValues = profile;
+        //   uploadedImage && uploadedImage.imageId && uploadedImage.file
+        //     ? { ...profile, profileImageId: uploadedImage.imageId }
+        //     : profile;
         onUpdateProfile(updatedValues, uuid);
       }
       if (isLawyer === false) {
@@ -136,7 +134,6 @@ export class AvailabilityPageComponent extends Component {
             languages: languages,
           };
         }
-        // console.log('after', Object.keys(values).forEach(k => values[k] == null && delete values[k]));
 
         // Ensure that the optional bio is a string
         const bio = rawBio || '';
@@ -295,7 +292,6 @@ export class AvailabilityPageComponent extends Component {
                   </NamedLink>
                 ) : null}
               </div>
-              <button onClick={handleSubmit}>this is a button</button>
               {profileSettingsForm}
             </div>
           </LayoutWrapperMain>

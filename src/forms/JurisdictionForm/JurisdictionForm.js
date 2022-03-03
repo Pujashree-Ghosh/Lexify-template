@@ -709,17 +709,17 @@ class JurisdictionFormComponent extends Component {
                   </FieldArray>
               
 
-             
+{/*              
               {!user?.attributes?.profile?.protectedData?.isLawyer && clientType ? (
                 <div className={css.sectionContainer}>
                   <h3 className={css.sectionTitle}>
                     {/* <FormattedMessage id="ProfileSettingsForm.yourName" /> */}
-                    {`Registered as ${clientType}`}
-                  </h3>
+                    {/* {`Registered as ${clientType}`} */}
+                  {/* </h3>
                 </div>
-              ) : (
-                ''
-              )}
+              ) : ( */}
+                {/* '' */}
+              {/* )} */}
               
               {submitError}
               <Button
