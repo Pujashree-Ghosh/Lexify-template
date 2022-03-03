@@ -3,7 +3,14 @@ import { string, arrayOf, bool, func, number } from 'prop-types';
 import { FormattedMessage, injectIntl, intlShape } from '../../util/reactIntl';
 import dropWhile from 'lodash/dropWhile';
 import classNames from 'classnames';
-import { Avatar, InlineTextButton, ReviewRating, UserDisplayName } from '../../components';
+
+import {
+  Avatar,
+  InlineTextButton,
+  ReviewRating,
+  UserDisplayName,
+  ExternalLink,
+} from '../../components';
 import { formatDate } from '../../util/dates';
 import { ensureTransaction, ensureUser, ensureListing } from '../../util/data';
 import {
@@ -35,14 +42,49 @@ import * as log from '../../util/log';
 
 import css from './ActivityFeed.module.css';
 
+const validURL = str => {
+  let regex = /(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g;
+  if (!regex.test(str)) {
+    return false;
+  } else {
+    return true;
+  }
+};
+
+const extractName = str => {
+  if (!str) return 'Not found';
+  let newString = str.split('/');
+  newString = newString[newString.length - 1];
+  console.log({ newString });
+  newString = newString.replaceAll('%20', ' ');
+
+  if (!newString) return str;
+
+  return newString;
+};
 const Message = props => {
   const { message, intl } = props;
   const todayString = intl.formatMessage({ id: 'ActivityFeed.today' });
   return (
+    // <div className={css.message}>
+    //   <Avatar className={css.avatar} user={message.sender} disableProfileLink />
+    //   <div>
+    //     <p className={css.messageContent}>{message.attributes.content}</p>
+    //     <p className={css.messageDate}>
+    //       {formatDate(intl, todayString, message.attributes.createdAt)}
+    //     </p>
+    //   </div>
+    // </div>
     <div className={css.message}>
-      <Avatar className={css.avatar} user={message.sender} disableProfileLink />
+      {/* <Avatar className={css.avatar} user={message.sender} disableProfileLink /> */}
       <div>
-        <p className={css.messageContent}>{message.attributes.content}</p>
+        {validURL(message.attributes.content) ? (
+          <ExternalLink href={message.attributes.content} className={css.messageContent}>
+            {extractName(message.attributes.content)}
+          </ExternalLink>
+        ) : (
+          <p className={css.messageContent}>{message.attributes.content}</p>
+        )}
         <p className={css.messageDate}>
           {formatDate(intl, todayString, message.attributes.createdAt)}
         </p>
@@ -61,12 +103,25 @@ const OwnMessage = props => {
   const todayString = intl.formatMessage({ id: 'ActivityFeed.today' });
   return (
     <div className={css.ownMessage}>
-      <div className={css.ownMessageContentWrapper}>
+      {/* <div className={css.ownMessageContentWrapper}>
         <p className={css.ownMessageContent}>{message.attributes.content}</p>
       </div>
       <p className={css.ownMessageDate}>
         {formatDate(intl, todayString, message.attributes.createdAt)}
-      </p>
+      </p> */}
+      {/* <Avatar className={css.avatar} user={message.sender} disableProfileLink /> */}
+      <div>
+        {validURL(message.attributes.content) ? (
+          <ExternalLink href={message.attributes.content} className={css.messageContent}>
+            {extractName(message.attributes.content)}
+          </ExternalLink>
+        ) : (
+          <p className={css.messageContent}>{message.attributes.content}</p>
+        )}
+        <p className={css.messageDate}>
+          {formatDate(intl, todayString, message.attributes.createdAt)}
+        </p>
+      </div>
     </div>
   );
 };

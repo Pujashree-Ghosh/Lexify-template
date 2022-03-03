@@ -50,9 +50,11 @@ import PanelHeading, {
   HEADING_CANCELED,
   HEADING_DELIVERED,
 } from './PanelHeading';
-
-import css from './TransactionPanel.module.css';
+import Axios from 'axios';
 import { PrimaryButton } from '../Button/Button';
+import { apiBaseUrl } from '../../util/api';
+import { AiOutlineCloseCircle } from 'react-icons/ai';
+import css from './TransactionPanel.module.css';
 
 // Helper function to get display names for different roles
 const displayNames = (currentUser, currentProvider, currentCustomer, intl) => {
@@ -89,7 +91,16 @@ export class TransactionPanelComponent extends Component {
       sendMessageFormFocused: false,
       isReviewModalOpen: false,
       reviewSubmitted: false,
+      // selectedFile: null,
+      // fileUploadInProgress: false,
+      // fileUploadError: null,
+      // fileUploadProgress: 0,
+      // signedURL: null,
+      // fileUploadSuccess: null,
+      // cancelError: '',
     };
+    // this.fileInputRef = React.createRef();
+
     this.isMobSaf = false;
     this.sendMessageFormName = 'TransactionPanel.SendMessageForm';
 
@@ -211,7 +222,6 @@ export class TransactionPanelComponent extends Component {
     // console.log({ actualStartTime, customerJoinTime });
 
     if (!transactionId) {
-      console.log('transaction id not found');
       return;
     }
     const beforeBufferTime =
@@ -234,12 +244,98 @@ export class TransactionPanelComponent extends Component {
       },
       config.secretCode
     );
-    console.log('99', jwtToken);
     window.open(`/meeting-new/${jwtToken}`);
     // this.props.history.push(`/meeting-new/${jwtToken}`);
     // console.log('555 token', jwtToken);
     // console.log('555 conf URL', config.canonicalRootURL + '/meeting-new/' + jwtToken);
   };
+
+  // setFileUploadError = msg => {
+  //   this.setState(
+  //     {
+  //       fileUploadError: msg,
+  //     },
+  //     () =>
+  //       setTimeout(() => {
+  //         this.setState({
+  //           fileUploadError: null,
+  //         });
+  //       }, 3000)
+  //   );
+  // };
+
+  // onFileUpload = e => {
+  //   let { name, size, type } = e.target.files.length ? e.target.files[0] : {};
+  //   if (!name || !size || !type) {
+  //     if (name) this.setFileUploadError('File format not supported');
+  //     return;
+  //   }
+  //   let limit = 64;
+  //   let maxSize = limit * 1024 * 1024; //64MB
+  //   let fileName = name;
+  //   // let fileName = name.split('.')[0] + '_' + new Date().getTime();
+  //   const srcFile = e.target.files[0];
+
+  //   if (size > maxSize) {
+  //     this.setFileUploadError(`Max file size limit ${limit}mb`);
+  //     return null;
+  //   }
+
+  //   Axios.post(`${apiBaseUrl()}/fileshare/getSignUrl`, {
+  //     fileName: fileName,
+  //     fileType: type,
+  //   })
+  //     .then(res => {
+  //       this.setState({
+  //         selectedFile: srcFile,
+  //         signedURL: res.data,
+  //       });
+  //     })
+  //     .catch(e => console.log(e));
+  // };
+
+  // sendFile = () => {
+  //   this.setState({
+  //     fileUploadInProgress: true,
+  //   });
+  //   Axios({
+  //     method: 'put',
+  //     url: this.state.signedURL,
+  //     data: this.state.selectedFile,
+  //     headers: { 'content-type': this.state.selectedFile.type },
+  //     onUploadProgress: progressEvent => {
+  //       let progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+  //       this.setState({
+  //         fileUploadProgress: progress,
+  //       });
+  //     },
+  //   })
+  //     .then(() => {
+  //       this.setState({
+  //         fileUploadInProgress: false,
+  //         selectedFile: null,
+  //         fileUploadSuccess: true,
+  //       });
+
+  //       let url = this.state.signedURL.split('?')[0];
+
+  //       this.onMessageSubmit({ message: url });
+
+  //       setTimeout(() => {
+  //         this.setState({
+  //           fileUploadSuccess: null,
+  //         });
+  //       }, 3000);
+  //     })
+  //     .catch(e => {
+  //       this.setFileUploadError('Someting went wrong, please try again.');
+  //       this.setState({
+  //         fileUploadInProgress: false,
+  //         selectedFile: null,
+  //       });
+  //     });
+  // };
+
   render() {
     const {
       rootClassName,
@@ -284,7 +380,6 @@ export class TransactionPanelComponent extends Component {
     const currentCustomer = ensureUser(currentTransaction.customer);
     const isCustomer = transactionRole === 'customer';
     const isProvider = transactionRole === 'provider';
-    console.log('6923568', transaction);
     const listingLoaded = !!currentListing.id;
     const listingDeleted = listingLoaded && currentListing.attributes.deleted;
     const iscustomerLoaded = !!currentCustomer.id;
@@ -350,6 +445,7 @@ export class TransactionPanelComponent extends Component {
       }
     };
     const stateData = stateDataFn(currentTransaction);
+    // console.log(1996, stateData);
 
     const deletedListingTitle = intl.formatMessage({
       id: 'TransactionPanel.deletedListingTitle',
@@ -493,9 +589,52 @@ export class TransactionPanelComponent extends Component {
               <div className={css.sendingMessageNotAllowed}>{sendingMessageNotAllowed}</div>
             )}
 
+            {/* {this.state.selectedFile ? (
+              <div className={css.fileSelector}>
+                <div>{this.state.selectedFile.name}</div>
+                <span className={css.fileClearIcon}>
+                  <AiOutlineCloseCircle
+                    size={20}
+                    onClick={() =>
+                      this.setState({
+                        selectedFile: null,
+                      })
+                    }
+                  />
+                </span>
+              </div>
+            ) : null}
+            <PrimaryButton
+              className={css.addbtn}
+              inProgress={this.state.fileUploadInProgress}
+              ready={this.state.fileUploadSuccess}
+              onClick={() =>
+                this.state.selectedFile ? this.sendFile() : this.fileInputRef.current.click()
+              }
+            >
+              {this.state.selectedFile
+                ? 'Send'
+                : this.state.fileUploadInProgress
+                ? `Uploading ${this.state.fileUploadProgress}%`
+                : 'Add file'}
+            </PrimaryButton>
+            {this.state.fileUploadSuccess ? (
+              <div className={css.successMessage}>File uploaded Successfully</div>
+            ) : null}
+            {this.state.fileUploadError ? (
+              <div className={css.failMessage}>{this.state.fileUploadError}</div>
+            ) : null}
+            <input
+              style={{ display: 'none' }}
+              ref={this.fileInputRef}
+              type="file"
+              // accept=".doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document, .png, .jpg, .jpeg, .pdf, .xlsx"
+              onChange={this.onFileUpload}
+            />
+
             {stateData.showSaleButtons ? (
               <div className={css.mobileActionButtons}>{saleButtons}</div>
-            ) : null}
+            ) : null} */}
           </div>
 
           <div className={css.asideDesktop}>
@@ -543,34 +682,38 @@ export class TransactionPanelComponent extends Component {
                 transaction={currentTransaction}
                 transactionRole={transactionRole}
               />
-              <PrimaryButton
-                // inProgress={joinMeetingProgress}
-                className={css.joinMeetingBtn}
-                onClick={() => {
-                  //   if (stateData.isShortBooking) {
-                  //     onJoinShortMeeting(currentTransaction.id, isCustomer)
-                  //       .then(res => {
-                  //         this.goToConference(currentTransaction);
-                  //         console.log('onJoinShortMeeting', res);
-                  //       })
-                  //       .catch(e => console.error(e));
-                  //   } else {
-                  //     onJoinMeeting(currentTransaction.id, isCustomer)
-                  //       .then(res => {
-                  //         this.goToConference(currentTransaction);
-                  //         console.log('onJoinMeeting', res);
-                  //       })
-                  //       .catch(e => {
-                  //         console.log('557. err in page', e);
-                  //         console.error(e);
-                  //       });
-                  //   }
-                  //
-                  this.goToConference(currentTransaction);
-                }}
-              >
-                {stateData.isShortBooking ? 'Join Free Trial Meeting' : 'Join Meeting'}
-              </PrimaryButton>
+              {stateData.headingState === 'accepted' ? (
+                <PrimaryButton
+                  // inProgress={joinMeetingProgress}
+                  className={css.joinMeetingBtn}
+                  onClick={() => {
+                    //   if (stateData.isShortBooking) {
+                    //     onJoinShortMeeting(currentTransaction.id, isCustomer)
+                    //       .then(res => {
+                    //         this.goToConference(currentTransaction);
+                    //         console.log('onJoinShortMeeting', res);
+                    //       })
+                    //       .catch(e => console.error(e));
+                    //   } else {
+                    //     onJoinMeeting(currentTransaction.id, isCustomer)
+                    //       .then(res => {
+                    //         this.goToConference(currentTransaction);
+                    //         console.log('onJoinMeeting', res);
+                    //       })
+                    //       .catch(e => {
+                    //         console.log('557. err in page', e);
+                    //         console.error(e);
+                    //       });
+                    //   }
+                    //
+                    this.goToConference(currentTransaction);
+                  }}
+                >
+                  {stateData.isShortBooking ? 'Join Free Trial Meeting' : 'Join Meeting'}
+                </PrimaryButton>
+              ) : (
+                ''
+              )}
               {/* <button
                 // onClick={
                 //     ()=>onJoinMeeting(currentTransaction.id, isCustomer)

@@ -16,6 +16,8 @@
 .textarea {
   @apply --marketplaceH4FontStyles;
   border-bottom-width: 0;
+  display: flex;
+  flex-direction: column;
 
   /* Avoid text going behind the submit button */
   padding: 22px 52px 25px 0;
@@ -24,8 +26,7 @@
 
   /* We need to remove horizontal paddings,
    since textarea uses content-box (autosize library fix). */
-  width: calc(100% - 52px);
-
+  width: 100%;
   border-bottom-width: 2px;
   border-bottom-color: var(--attentionColor);
   background-color: transparent;
@@ -75,21 +76,57 @@
 }
 
 .submitButton {
-  @apply --marketplaceButtonStylesSecondary;
+  /* @apply --marketplaceButtonStylesSecondary;
   @apply --marketplaceH5FontStyles;
-  font-weight: var(--fontWeightMedium);
+  font-weight: var(--fontWeightMedium); */
 
   float: right;
-  padding: 0 16px;
-  min-height: auto;
-  min-width: 150px;
-  height: 41px;
+  /* padding: 0 16px; */
+  /* min-height: auto; */
+  /* min-width: 150px;
+  height: 41px; */
 
   display: inline-block;
-  margin: 17px 0 0 0;
-  width: auto;
+  /* margin: 17px 0 0 0; */
+  /* width: auto; */
+  border: none;
+  cursor: pointer;
+}
+/* .submitButton:hover{
+  
+} */
+
+.msgContainer {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+}
+.icons {
+  display: flex;
+  flex-direction: row;
+}
+.uploadIcon {
+  cursor: pointer;
+  margin: auto 5px auto 10px;
+}
+.discardIcon {
+  cursor: pointer;
+  margin: auto 5px auto 10px;
+  color: var(--attentionColor);
+}
+
+.sendIconContainer {
+  margin: auto;
+  cursor: pointer;
+}
+.fileSelector {
+  display: flex;
+  width: 100%;
+  border-bottom: 2px solid;
+  border-bottom-color: var(--attentionColor);
+  background-color: transparent;
 }
 
 .sendIcon {
-  margin: -3px 5px 0 0;
+  margin: -3px 5px 0 10px;
 }

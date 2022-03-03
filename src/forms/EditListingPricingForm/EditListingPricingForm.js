@@ -9,6 +9,8 @@ import { LINE_ITEM_NIGHT, LINE_ITEM_DAY, propTypes } from '../../util/types';
 import * as validators from '../../util/validators';
 import { formatMoney } from '../../util/currency';
 import { types as sdkTypes } from '../../util/sdkLoader';
+import { FieldArray } from 'react-final-form-arrays';
+import arrayMutators from 'final-form-arrays';
 import { Button, Form, FieldCurrencyInput, FieldTextInput } from '../../components';
 import css from './EditListingPricingForm.module.css';
 
@@ -16,6 +18,7 @@ const { Money } = sdkTypes;
 
 export const EditListingPricingFormComponent = props => (
   <FinalForm
+    mutators={{ ...arrayMutators }}
     {...props}
     render={formRenderProps => {
       const {
@@ -86,6 +89,7 @@ export const EditListingPricingFormComponent = props => (
         id: 'EditListingPricingForm.vatinvalid',
       });
       const vatValid = validators.numberValid(vatInvalidMessage);
+      console.log(values, values.vatData);
 
       return (
         <Form onSubmit={handleSubmit} className={classes}>
@@ -101,36 +105,65 @@ export const EditListingPricingFormComponent = props => (
           ) : null}
 
           <div className={css.selectform}>
-            <FieldTextInput
-              id="vattype"
-              name="vattype"
-              label={vattypeLabel}
-              validate={required}
-              type="textarea"
-            >
-              {/*<option value="">Select VAT</option>
-                <option value="5">5%</option>
-                <option value="10">10%</option>
-                <option value="15">15%</option>
-            <option value="20">20%</option>*/}
-            </FieldTextInput>
             {category !== 'publicOral' ? (
-              <FieldTextInput
-                id="vat"
-                name="vat"
-                type="text"
-                label={vatLabel}
-                validate={validators.composeValidators(required, vatValid)}
-                // validate={required}
+              <FieldArray name="vatData">
+                {({ fields }) => {
+                  return (
+                    <div className={css.sectionContainer}>
+                      {fields.map((name, i) => {
+                        return (
+                          <div key={name + i}>
+                            <div className={css.fromgroup}>
+                              <FieldTextInput
+                                id="vattype"
+                                name={`${name}.vatType`}
+                                label={vattypeLabel}
+                                validate={required}
+                                type="textarea"
+                              ></FieldTextInput>
+                              <FieldTextInput
+                                id="vat"
+                                name={`${name}.vat`}
+                                type="text"
+                                label={vatLabel}
+                                validate={validators.composeValidators(required, vatValid)}
+                                // validate={required}
 
-                // pattern={'/^[0-9\b]+$/'}
-              >
-                {/*<option value="">Select VAT</option>
-                <option value="5">5%</option>
-                <option value="10">10%</option>
-                <option value="15">15%</option>
-            <option value="20">20%</option>*/}
-              </FieldTextInput>
+                                // pattern={'/^[0-9\b]+$/'}
+                              ></FieldTextInput>
+                            </div>
+                          </div>
+                        );
+                      })}
+                      <div className={`${css.fromgroup} ${css.inlinefrom}`}>
+                        <Button
+                          className={css.addMore}
+                          type="button"
+                          onClick={() => {
+                            fields.push();
+                          }}
+                          disabled={
+                            !values.vatData[values.vatData?.length - 1]?.vatType ||
+                            !values.vatData[values.vatData?.length - 1]?.vat
+                          }
+                        >
+                          <FormattedMessage id="editlistingPricingForm.addMore" />
+                        </Button>
+                        <Button
+                          className={css.remove}
+                          type="button"
+                          onClick={() => {
+                            fields.pop();
+                          }}
+                          disabled={values.vatData?.length < 2}
+                        >
+                          <FormattedMessage id="editlistingPricingForm.remove" />
+                        </Button>
+                      </div>
+                    </div>
+                  );
+                }}
+              </FieldArray>
             ) : (
               ''
             )}
