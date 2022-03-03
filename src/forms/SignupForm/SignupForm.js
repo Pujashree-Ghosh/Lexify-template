@@ -256,6 +256,24 @@ const SignupFormComponent = props => (
       return (
         <Form className={classes}>
           <div>
+            {tab === 'signup' ? (
+              <>
+                <div className={css.fromgp}>
+                  <FieldSelect
+                    id="clientType"
+                    name="clientType"
+                    label={clientTypeLabel}
+                    validate={clientTypeRequired}
+                  >
+                    <option value="">{clientTypePlaceholder}</option>
+                    <option value="legalEntity">Legal Entity</option>
+                    <option value="privateIndividual">Private Individual</option>
+                  </FieldSelect>
+                </div>
+              </>
+            ) : (
+              ''
+            )}
             <div className={`${css.name} ${css.fromgp}`}>
               <FieldTextInput
                 className={css.firstNameRoot}
@@ -290,39 +308,23 @@ const SignupFormComponent = props => (
                 validate={validators.composeValidators(emailRequired, emailValid)}
               />
             </div>
-            {tab === 'signup' ? (
-              <>
-                <div className={css.fromgp}>
-                  <FieldSelect
-                    id="clientType"
-                    name="clientType"
-                    label={clientTypeLabel}
-                    validate={clientTypeRequired}
-                  >
-                    <option value="">{clientTypePlaceholder}</option>
-                    <option value="legalEntity">Legal Entity</option>
-                    <option value="privateIndividual">Private Individual</option>
-                  </FieldSelect>
-                </div>
-                {values.clientType === 'legalEntity' ? (
-                  <div className={css.fromgp}>
-                    <FieldTextInput
-                      className={css.companyName}
-                      type="text"
-                      id={formId ? `${formId}.companyName` : 'companyName'}
-                      name="companyName"
-                      label={companyNameLabel}
-                      placeholder={companyNamePlaceholder}
-                      validate={companyNameRequired}
-                    />
-                  </div>
-                ) : (
-                  ''
-                )}
-              </>
+
+            {tab === 'signup' && values.clientType === 'legalEntity' ? (
+              <div className={css.fromgp}>
+                <FieldTextInput
+                  className={css.companyName}
+                  type="text"
+                  id={formId ? `${formId}.companyName` : 'companyName'}
+                  name="companyName"
+                  label={companyNameLabel}
+                  placeholder={companyNamePlaceholder}
+                  validate={companyNameRequired}
+                />
+              </div>
             ) : (
               ''
             )}
+
             <div className={css.fromgp}>
               <label className={css.selectLabel}>{phoneLabel}</label>
               <div className={css.phoneInputField}>
