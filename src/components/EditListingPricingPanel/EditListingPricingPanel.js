@@ -60,7 +60,7 @@ const EditListingPricingPanel = props => {
       className={css.form}
       initialValues={{ price, vatData }}
       onSubmit={values => {
-        const { vat, vatData } = values;
+        const { price, vatData } = values;
         const updatedValues = {
           publicData: { vatData },
           price: price,
