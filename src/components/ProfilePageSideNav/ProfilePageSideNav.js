@@ -83,14 +83,7 @@
         name: 'AvailabilityPage',
       },
     },
-    {
-      text: <FormattedMessage id="ProfilePageSideNav.verification" />,
-      selected: currentTab === 'VerificationPage',
-      id: 'VerificationPage',
-      linkProps: {
-        name: 'VerificationPage',
-      },
-    },
+    
    ];
  
    return <LayoutWrapperSideNav tabs={tabs} />;

@@ -19,6 +19,7 @@ import {
 } from '../../components';
 import { ProfileSettingsForm } from '../../forms';
 import { TopbarContainer } from '../../containers';
+import ProfilePageSideNav from '../../components/ProfilePageSideNav/ProfilePageSideNav';
 
 import { updateProfile, uploadImage } from './ProfileSettingsPage.duck';
 import css from './ProfileSettingsPage.module.css';
@@ -269,11 +270,12 @@ export class ProfileSettingsPageComponent extends Component {
 
     return (
       <Page className={css.root} title={title} scrollingDisabled={scrollingDisabled}>
-        <LayoutSingleColumn>
+        {/* <LayoutSingleColumn> */}
           <LayoutWrapperTopbar>
             <TopbarContainer currentPage="ProfileSettingsPage" />
             <UserNav selectedPageName="ProfileSettingsPage" listing={currentUserListing} />
           </LayoutWrapperTopbar>
+          <ProfilePageSideNav/>
           <LayoutWrapperMain>
             <div className={css.content}>
               {/* {userProfileType} */}
@@ -297,7 +299,7 @@ export class ProfileSettingsPageComponent extends Component {
           <LayoutWrapperFooter>
             <Footer />
           </LayoutWrapperFooter>
-        </LayoutSingleColumn>
+        {/* </LayoutSingleColumn> */}
       </Page>
     );
   }
