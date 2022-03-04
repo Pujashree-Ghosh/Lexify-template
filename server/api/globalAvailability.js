@@ -99,13 +99,9 @@ module.exports = async (req, response) => {
   return new Promise((resolve, reject) => {
     integrationSdk.listings
       .query({
-        authorId, //id needs to replaced later by authorId
+        authorId,
       })
-      // .show({ id: '620ba027-f0df-4593-b8bc-ac827cefc439' })
       .then(res => {
-        console.log(res.data.data);
-        // let publishedListings = [];
-        // publishedListings.push(res.data.data);
         integrationSdk.users
           .show({ id: authorId })
           .then(user => {

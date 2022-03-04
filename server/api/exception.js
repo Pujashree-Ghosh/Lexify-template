@@ -22,7 +22,7 @@ module.exports.fetchException = async (req, response) => {
         integrationSdk.availabilityExceptions
           .query({
             listingId: '620ba027-f0df-4593-b8bc-ac827cefc439',
-            start: new Date(`${startDate}`),
+            start: new Date(startDate),
             end: new Date(endDate),
           })
           .then(res => {
@@ -33,5 +33,92 @@ module.exports.fetchException = async (req, response) => {
       .catch(err => {
         console.log(err);
       });
+  });
+};
+
+module.exports.createException = async (req, response) => {
+  const authorId = req.body.uuid;
+  const startDate = req.body.startDate;
+  const endDate = req.body.endDate;
+  const seats = req.body.seats;
+  return new Promise((resolve, reject) => {
+    integrationSdk.listings
+      .query({
+        authorId, //id needs to replaced later by authorId
+      })
+      .then(res => {
+        const publishedListings = res.data.data.filter(
+          l =>
+            (l.attributes.state === 'published' &&
+              l.attributes.publicData.type !== 'unsolicited') ||
+            l.attributes.publicData.isProviderType
+        );
+        publishedListings.map(l => {
+          integrationSdk.availabilityExceptions
+            .create(
+              {
+                listingId: l.id.uuid,
+                start: new Date(startDate),
+                end: new Date(endDate),
+                seats: seats,
+              },
+              {
+                expand: true,
+              }
+            )
+            .then(res => {
+              // console.log('updated');
+            });
+        });
+        return response.status(200).send('updated');
+      })
+      .catch(e => console.log(e));
+  });
+};
+
+module.exports.deleteException = async (req, response) => {
+  const authorId = req.body.uuid;
+  const startDate = req.body.startDate;
+  const endDate = req.body.endDate;
+  const seats = req.body.seats;
+  return new Promise((resolve, reject) => {
+    integrationSdk.listings
+      .query({
+        authorId,
+      })
+      .then(resp => {
+        // console.log(resp.data.data);
+        const listings = resp.data.data.filter(
+          l =>
+            (l.attributes.state === 'published' &&
+              l.attributes.publicData.type !== 'unsolicited') ||
+            l.attributes.publicData.isProviderType
+        );
+        listings.map(l => {
+          integrationSdk.availabilityExceptions
+            .query({
+              listingId: l.id.uuid,
+              start: new Date(startDate),
+              end: new Date(endDate),
+            })
+            .then(res => {
+              console.log(res.data.data[0].id.uuid);
+              integrationSdk.availabilityExceptions
+                .delete(
+                  {
+                    id: res.data.data[0].id.uuid,
+                  },
+                  {
+                    expand: false,
+                  }
+                )
+                .then(res => {
+                  console.log(res);
+                });
+            });
+        });
+        return response.status(200).send('deleted');
+      })
+      .catch(e => console.log(e));
   });
 };
