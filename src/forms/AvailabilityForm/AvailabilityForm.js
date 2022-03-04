@@ -193,16 +193,14 @@ const AvailabilityForm = props => {
       startDate: currMoment,
       endDate: newMoment,
     }).then((response)=>{
-      console.log("response",response.data.data.data);
       const data = response.data.data.data;
-      
-      if(data.length > exceptionsFromApi.length){data.map(i=>setExceptionsFromApi(old => [...old,i]))}
+      if(data.length > exceptionsFromApi.length){data.map(i=>setExceptionsFromApi(old => {[...old,i]}))}
       
       // exceptionsFromApi = data;
       // data.map(i=>exceptionsFromApi.push(i))
       // exceptionsFromApi = _.cloneDeep(data);
     }).catch()
-  });
+  },[]);
   console.log("EA",exceptionsFromApi)
 
 
@@ -250,11 +248,11 @@ const AvailabilityForm = props => {
     // TODO: add proper seat handling
     const seats = availability === 'available' ? 1 : 0;
 
-    return onAddAvailabilityException({
-      listingId: currentUser?.id?.uuid,
+    return axios.post(`localhost:3500/api/createException`,{
+      authorId: currentUser?.id?.uuid,
       seats,
-      start: timestampToDate(exceptionStartTime),
-      end: timestampToDate(exceptionEndTime),
+      startDate: timestampToDate(exceptionStartTime),
+      endDate: timestampToDate(exceptionEndTime),
     })
       .then(() => {
         setIsEditExceptionsModalOpen(false);
@@ -339,6 +337,7 @@ const AvailabilityForm = props => {
           <div className={css.exceptions}>
             {exceptionsFromApi.map(availabilityException => {
               const { start, end, seats } = availabilityException.attributes;
+              console.log("first",end)
               return (
                 <div key={availabilityException.id.uuid} className={css.exception}>
                   <div className={css.exceptionHeader}>
@@ -358,8 +357,13 @@ const AvailabilityForm = props => {
                     </div>
                     <button
                       className={css.removeExceptionButton}
-                      onClick={() =>
-                        onDeleteAvailabilityException({ id: availabilityException.id })
+                      onClick={() => {
+                        axios.delete(`${apiBaseUrl()}/api/deleteException`, {data:{
+                          authorId: currentUser.id.uuid,
+                          startDate: start,
+                          endDate: end
+                        }}).then(()=>{console.log("deleted")}).catch(()=>{console.log("delete failed")})
+                      }
                       }
                     >
                       <IconClose size="normal" className={css.removeIcon} />
