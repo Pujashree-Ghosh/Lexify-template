@@ -21,7 +21,7 @@ module.exports.fetchException = async (req, response) => {
         // console.log(new uuidv4(providerListing));
         integrationSdk.availabilityExceptions
           .query({
-            listingId: '620ba027-f0df-4593-b8bc-ac827cefc439',
+            listingId: providerListing,
             start: new Date(startDate),
             end: new Date(endDate),
           })
@@ -80,7 +80,7 @@ module.exports.deleteException = async (req, response) => {
   const authorId = req.body.uuid;
   const startDate = req.body.startDate;
   const endDate = req.body.endDate;
-  const seats = req.body.seats;
+  // const seats = req.body.seats;
   return new Promise((resolve, reject) => {
     integrationSdk.listings
       .query({
