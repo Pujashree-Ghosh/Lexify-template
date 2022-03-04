@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { arrayOf, bool, func, object, string } from 'prop-types';
 import classNames from 'classnames';
@@ -19,8 +20,13 @@ import {
 import AvailabiltyModalForm from '../AvailabilityModalForm/AvailabilityModalForm';
 import { EditListingAvailabilityPlanForm, EditListingAvailabilityExceptionForm } from '../../forms';
 import { FaRegEdit } from 'react-icons/fa';
-
+import moment from 'moment';
 import css from './EditListingAvailabilityPanel.module.css';
+import axios from 'axios';
+import cloneDeep from 'lodash.clonedeep';
+// import structuredClone from '@ungap/structured-clone';
+import { apiBaseUrl } from '../../util/api';
+import { data } from 'sharetribe-flex-integration-sdk';
 
 const WEEKDAYS = ['mon', 'tue', 'wed', 'thu', 'fri'];
 
@@ -159,6 +165,7 @@ const AvailabilityForm = props => {
   } = props;
   const currentUser = useSelector(state=>state.user.currentUser)
   console.log("cu",currentUser)
+  
   const currentUserListing = useSelector(state => state.user.currentUserListing)
   const durationUnit = listing?.attributes?.publicData?.durationUnit;
   const durationMinute = currentUserListing?.attributes?.publicData?.durationMinute;
@@ -174,6 +181,30 @@ const AvailabilityForm = props => {
   const [isEditPlanModalOpen, setIsEditPlanModalOpen] = useState(false);
   const [isEditExceptionsModalOpen, setIsEditExceptionsModalOpen] = useState(false);
   const [valuesFromLastSubmit, setValuesFromLastSubmit] = useState(null);
+  const [exceptionsFromApi, setExceptionsFromApi] = useState([])
+  //loading exceptions
+  useEffect(() => {
+    const currMoment = new Date(moment()).toISOString();
+    // const currMomNew = new Date(currMoment).toISOString();
+    const newMoment = new Date(moment().add(2, 'months')).toISOString();
+    // const newMomNew = new Date(newMoment).toISOString();
+    axios.post(`http://localhost:3500/api/fetchexception`,{
+      uuid: currentUser.id.uuid,
+      startDate: currMoment,
+      endDate: newMoment,
+    }).then((response)=>{
+      console.log("response",response.data.data.data);
+      const data = response.data.data.data;
+      
+      if(data.length > exceptionsFromApi.length){data.map(i=>setExceptionsFromApi(old => [...old,i]))}
+      
+      // exceptionsFromApi = data;
+      // data.map(i=>exceptionsFromApi.push(i))
+      // exceptionsFromApi = _.cloneDeep(data);
+    }).catch()
+  });
+  console.log("EA",exceptionsFromApi)
+
 
   const classes = classNames(rootClassName || css.root, className);
   const currentListing = ensureOwnListing(listing);
@@ -209,7 +240,7 @@ const AvailabilityForm = props => {
         console.log("failed")
       });
   };
-  const exceptionCount = availabilityExceptions ? availabilityExceptions.length : 0;
+  const exceptionCount = exceptionsFromApi ? exceptionsFromApi.length : 100;
   const sortedAvailabilityExceptions = availabilityExceptions.sort(sortExceptionsByStartTime);
 
   // Save exception click handler
@@ -232,6 +263,8 @@ const AvailabilityForm = props => {
         // Don't close modal if there was an error
       });
   };
+  
+  
   return (
     <main className={classes}>
       <h1 className={css.title}>
@@ -304,7 +337,7 @@ const AvailabilityForm = props => {
           </div>
         ) : (
           <div className={css.exceptions}>
-            {sortedAvailabilityExceptions.map(availabilityException => {
+            {exceptionsFromApi.map(availabilityException => {
               const { start, end, seats } = availabilityException.attributes;
               return (
                 <div key={availabilityException.id.uuid} className={css.exception}>
