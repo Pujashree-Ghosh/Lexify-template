@@ -21,7 +21,7 @@ const createUserWithIdp = require('./api/auth/createUserWithIdp');
 const { authenticateFacebook, authenticateFacebookCallback } = require('./api/auth/facebook');
 const { authenticateGoogle, authenticateGoogleCallback } = require('./api/auth/google');
 const { sendOtp, verifyOtp } = require('./api/user');
-const { fetchException } = require('./api/exception');
+const { fetchException, createException, deleteException } = require('./api/exception');
 const { setBooking, getBooking, getAllBooking, deleteBooking } = require('./api/booking');
 
 const createProviderListing = require('./api/create-provider-listing');
@@ -68,6 +68,8 @@ router.post('/booking/getBooking', getBooking);
 router.get('/booking/getBooking', getAllBooking);
 router.delete('/booking/deleteBooking', deleteBooking);
 router.post('/fetchexception', fetchException);
+router.post('/createException', createException);
+router.delete('/deleteException', deleteException);
 
 router.post('/getTwilioToken', getTwilioToken);
 
