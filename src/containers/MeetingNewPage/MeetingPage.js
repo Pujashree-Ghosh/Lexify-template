@@ -3,6 +3,7 @@ import Room from './Room';
 import { connect, LocalDataTrack } from 'twilio-video-ssr';
 import axios from 'axios';
 import './MeetingPage.css';
+import { apiBaseUrl } from '../../util/api';
 
 const dataTrack = new LocalDataTrack();
 
@@ -16,7 +17,7 @@ class MeetingPage extends Component {
     };
   }
   getToken = async obj => {
-    const response = await axios.post(`http://localhost:3500/api/getTwilioToken`, {
+    const response = await axios.post(`${apiBaseUrl()}/api/getTwilioToken`, {
       room: 'cool-room',
       identity: obj,
     });
@@ -34,15 +35,12 @@ class MeetingPage extends Component {
   joinRoom = async () => {
     try {
       const { token } = this.state;
-      const room = await connect(
-        token,
-        {
-          name: 'cool-room',
-          audio: true,
-          video: true,
-          // tracks: [dataTrack],
-        }
-      );
+      const room = await connect(token, {
+        name: 'cool-room',
+        audio: true,
+        video: true,
+        // tracks: [dataTrack],
+      });
 
       this.setState({ room: room });
     } catch (err) {

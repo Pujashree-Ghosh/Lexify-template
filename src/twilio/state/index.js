@@ -79,13 +79,10 @@ export default function AppStateProvider(props) {
     //   return fetch(`${endpoint}?${params}`, { headers }).then(res => res.text());
     // },
     getToken: async (identity, roomName) => {
-      const response = await axios.post(
-        `http://localhost:3500/api/getTwilioToken`,
-        {
-          room: roomName,
-          identity: identity,
-        }
-      );
+      const response = await axios.post(`${apiBaseUrl()}/api/getTwilioToken`, {
+        room: roomName,
+        identity: identity,
+      });
       const { data } = response;
       return data;
     },
