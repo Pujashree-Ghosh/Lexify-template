@@ -28,7 +28,7 @@ import css from './EditListingWizard.module.css';
 // import EditListingAreOfLawPanel from '../EditListingAreaOfLawPanel/EditListingAreaOfLawPanel';
 // import EditListingClientIdPanel from '../EditListingClientIdPanel/EditListingClientIdPanel';
 
-export const AVAILABILITY = 'availability';
+// export const AVAILABILITY = 'availability';
 export const DESCRIPTION = 'description';
 export const FEATURES = 'features';
 export const POLICY = 'policy';
@@ -52,7 +52,7 @@ export const SUPPORTED_TABS = [
   // POLICY,
   // LOCATION,
   PRICING,
-  AVAILABILITY,
+  // AVAILABILITY,
   EXPIRY,
   // PHOTOS,
 ];
@@ -146,7 +146,7 @@ const EditListingWizardTab = props => {
 
       return onUpsertListingDraft(tab, upsertValues)
         .then(r => {
-          if (tab !== AVAILABILITY && tab !== marketplaceTabs[marketplaceTabs.length - 1]) {
+          if (tab !== marketplaceTabs[marketplaceTabs.length - 1]) {
             // Create listing flow: smooth scrolling polyfill to scroll to correct tab
             handleCreateFlowTabScrolling(false);
 
@@ -182,7 +182,6 @@ const EditListingWizardTab = props => {
       disabled: fetchInProgress,
     };
   };
-
   switch (tab) {
     case DESCRIPTION: {
       const submitButtonTranslationKey =
@@ -260,7 +259,6 @@ const EditListingWizardTab = props => {
           submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
           onSubmit={values => {
             onCompleteEditListingWizardTab(tab, values);
-            console.log(111,values);
           }}
         />
       );
@@ -316,6 +314,10 @@ const EditListingWizardTab = props => {
       const submitButtonTranslationKey =
         category === 'customService'
           ? isNewListingFlow
+            ? 'EditListingWizard.saveNewCustomServicePricing'
+            : 'EditListingWizard.saveEditPricing'
+          : category === 'customOral'
+          ? isNewListingFlow
             ? 'EditListingWizard.saveNewCustomOralPricing'
             : 'EditListingWizard.saveEditPricing'
           : isNewListingFlow
@@ -332,34 +334,34 @@ const EditListingWizardTab = props => {
         />
       );
     }
-    case AVAILABILITY: {
-      const submitButtonTranslationKey =
-        category === 'customOral'
-          ? isNewListingFlow
-            ? 'EditListingWizard.saveNewCustomOralAvailability'
-            : 'EditListingWizard.saveEditCustomOralAvailability'
-          : isNewListingFlow
-          ? 'EditListingWizard.saveNewAvailability'
-          : 'EditListingWizard.saveEditAvailability';
-      return (
-        <EditListingAvailabilityPanel
-          {...panelProps(AVAILABILITY)}
-          fetchExceptionsInProgress={fetchExceptionsInProgress}
-          availabilityExceptions={availabilityExceptions}
-          submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
-          onAddAvailabilityException={onAddAvailabilityException}
-          onDeleteAvailabilityException={onDeleteAvailabilityException}
-          onSubmit={values => {
-            // We want to return the Promise to the form,
-            // so that it doesn't close its modal if an error is thrown.
-            return onCompleteEditListingWizardTab(tab, values, true);
-          }}
-          onNextTab={() =>
-            redirectAfterDraftUpdate(listing.id.uuid, params, tab, marketplaceTabs, history)
-          }
-        />
-      );
-    }
+    // case AVAILABILITY: {
+    //   const submitButtonTranslationKey =
+    //     category === 'customOral'
+    //       ? isNewListingFlow
+    //         ? 'EditListingWizard.saveNewCustomOralAvailability'
+    //         : 'EditListingWizard.saveEditCustomOralAvailability'
+    //       : isNewListingFlow
+    //       ? 'EditListingWizard.saveNewAvailability'
+    //       : 'EditListingWizard.saveEditAvailability';
+    //   return (
+    //     <EditListingAvailabilityPanel
+    //       {...panelProps(AVAILABILITY)}
+    //       fetchExceptionsInProgress={fetchExceptionsInProgress}
+    //       availabilityExceptions={availabilityExceptions}
+    //       submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
+    //       onAddAvailabilityException={onAddAvailabilityException}
+    //       onDeleteAvailabilityException={onDeleteAvailabilityException}
+    //       onSubmit={values => {
+    //         // We want to return the Promise to the form,
+    //         // so that it doesn't close its modal if an error is thrown.
+    //         return onCompleteEditListingWizardTab(tab, values, true);
+    //       }}
+    //       onNextTab={() =>
+    //         redirectAfterDraftUpdate(listing.id.uuid, params, tab, marketplaceTabs, history)
+    //       }
+    //     />
+    //   );
+    // }
     case EXPIRY: {
       const submitButtonTranslationKey = isNewListingFlow
         ? 'EditListingWizard.saveNewExpiry'
@@ -435,8 +437,6 @@ EditListingWizardTab.propTypes = {
   // We cannot use propTypes.listing since the listing might be a draft.
   listing: shape({
     attributes: shape({
-      
-      
       ata: object,
       description: string,
       geolocation: object,

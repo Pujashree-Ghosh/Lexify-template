@@ -19,7 +19,7 @@ import { Modal, NamedRedirect, Tabs, StripeConnectAccountStatusBox } from '../..
 import { StripeConnectAccountForm } from '../../forms';
 
 import EditListingWizardTab, {
-  AVAILABILITY,
+  // AVAILABILITY,
   DESCRIPTION,
   // FEATURES,
   // POLICY,
@@ -37,7 +37,7 @@ import axios from 'axios';
 import { apiBaseUrl } from '../../util/api';
 
 // Show availability calendar only if environment variable availabilityEnabled is true
-const availabilityMaybe = config.enableAvailability ? [AVAILABILITY] : [];
+// const availabilityMaybe = config.enableAvailability ? [AVAILABILITY] : [];
 
 // You can reorder these panels.
 // Note 1: You need to change save button translations for new listing flow
@@ -81,9 +81,11 @@ const tabLabel = (intl, tab) => {
     key = 'EditListingWizard.tabLabelDuration';
   } else if (tab === DEADLINE) {
     key = 'EditListingWizard.tabLabelDeadline';
-  } else if (tab === AVAILABILITY) {
-    key = 'EditListingWizard.tabLabelAvailability';
-  } else if (tab === PRICING) {
+  }
+  //  else if (tab === AVAILABILITY) {
+  //   key = 'EditListingWizard.tabLabelAvailability';
+  // }
+  else if (tab === PRICING) {
     key = 'EditListingWizard.tabLabelPricing';
   }
   // else if (tab === PHOTOS) {
@@ -106,7 +108,7 @@ const tabLabel = (intl, tab) => {
  */
 const tabCompleted = (tab, listing) => {
   const {
-    availabilityPlan,
+    // availabilityPlan,
     description,
     geolocation,
     price,
@@ -131,8 +133,8 @@ const tabCompleted = (tab, listing) => {
       return !!(publicData && publicData.durationHour && publicData.durationHour);
     case DEADLINE:
       return !!(publicData && publicData.Deadline);
-    case AVAILABILITY:
-      return !!availabilityPlan;
+    // case AVAILABILITY:
+    //   return !!availabilityPlan;
     case PRICING:
       return !!price;
     case EXPIRY:
@@ -321,9 +323,9 @@ class EditListingWizard extends Component {
     } = this.props;
     let TABS =
       category === 'publicOral'
-        ? [DESCRIPTION, AREAOFLAW, DURATION, ...availabilityMaybe, PRICING]
+        ? [DESCRIPTION, AREAOFLAW, DURATION, PRICING]
         : category === 'customOral'
-        ? [DESCRIPTION, CLIENT, DURATION, PRICING, ...availabilityMaybe, EXPIRY]
+        ? [DESCRIPTION, CLIENT, DURATION, PRICING, EXPIRY]
         : [
             DESCRIPTION,
             CLIENT,

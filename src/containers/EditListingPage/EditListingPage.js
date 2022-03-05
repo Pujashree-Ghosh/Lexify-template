@@ -92,7 +92,7 @@ export const EditListingPageComponent = props => {
   const isDraftURI = type === LISTING_PAGE_PARAM_TYPE_DRAFT;
   const isNewListingFlow = isNewURI || isDraftURI;
 
-  const listingId = page.submittedListingId || (id ? new UUID(id) : null);
+  const listingId = id ? new UUID(id) : null;
   const listing = getOwnListing(listingId);
   const currentListing = ensureOwnListing(listing);
   const { state: currentListingState } = currentListing.attributes;
@@ -110,7 +110,7 @@ export const EditListingPageComponent = props => {
     } else {
       setCategory(currentListing?.attributes?.publicData?.category);
     }
-    console.log(isNewURI, category);
+    // console.log(isNewURI, category, currentListing?.id?.uuid, params, page?.submittedListingId);
   });
 
   if (shouldRedirect) {
