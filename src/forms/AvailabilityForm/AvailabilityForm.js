@@ -164,8 +164,6 @@ const AvailabilityForm = props => {
     errors,
   } = props;
   const currentUser = useSelector(state=>state.user.currentUser)
-  console.log("cu",currentUser)
-  
   const currentUserListing = useSelector(state => state.user.currentUserListing)
   const durationUnit = listing?.attributes?.publicData?.durationUnit;
   const durationMinute = currentUserListing?.attributes?.publicData?.durationMinute;
@@ -174,7 +172,7 @@ const AvailabilityForm = props => {
   // const duration = (durationUnit === 'hours' ? listingDuration * 60 : listingDuration) / 60;
   const duration = ((Number(durationHour) * 60 + Number(durationMinute)) / 60).toFixed(2) + '';
   const exceptionDuration =
-    durationHour && durationMinute ? `${durationHour}.${durationMinute}` : '100';
+    durationHour && durationMinute ? `${durationHour}.${durationMinute}` : '0.15';
 
   // console.log(durationUnit === 'hours' ? listingDuration * 60 : listingDuration);
   // Hooks
@@ -182,25 +180,36 @@ const AvailabilityForm = props => {
   const [isEditExceptionsModalOpen, setIsEditExceptionsModalOpen] = useState(false);
   const [valuesFromLastSubmit, setValuesFromLastSubmit] = useState(null);
   const [exceptionsFromApi, setExceptionsFromApi] = useState([])
-  //loading exceptions
-  useEffect(() => {
+  
+  const exceptionHandler = () => {
     const currMoment = new Date(moment()).toISOString();
     // const currMomNew = new Date(currMoment).toISOString();
     const newMoment = new Date(moment().add(2, 'months')).toISOString();
     // const newMomNew = new Date(newMoment).toISOString();
-    axios.post(`http://localhost:3500/api/fetchexception`,{
-      uuid: currentUser.id.uuid,
+    axios.post(`${apiBaseUrl()}/api/fetchexception`,{
+      authorId: currentUser.id.uuid,
       startDate: currMoment,
       endDate: newMoment,
     }).then((response)=>{
-      const data = response.data.data.data;
-      if(data.length > exceptionsFromApi.length){data.map(i=>setExceptionsFromApi(old => {[...old,i]}))}
+      const data = response?.data?.data?.data;
+      // if(data.length > exceptionsFromApi.length){data.map(i=>setExceptionsFromApi(old => {[...old,i]}))}
+      if(JSON.stringify(data)!== JSON.stringify(exceptionsFromApi)){
+        setExceptionsFromApi(data);
+      }
+      
+
+      // })
       
       // exceptionsFromApi = data;
       // data.map(i=>exceptionsFromApi.push(i))
       // exceptionsFromApi = _.cloneDeep(data);
     }).catch()
-  },[]);
+  }
+  //loading exceptions
+  useEffect(() => {
+    exceptionHandler()
+    console.log("444",exceptionsFromApi)
+  });
   console.log("EA",exceptionsFromApi)
 
 
@@ -242,19 +251,20 @@ const AvailabilityForm = props => {
   const sortedAvailabilityExceptions = availabilityExceptions.sort(sortExceptionsByStartTime);
 
   // Save exception click handler
-  const saveException = values => {
+     const saveException = values => {
     const { availability, exceptionStartTime, exceptionEndTime } = values;
-
+    console.log("est",timestampToDate(exceptionStartTime).toISOString())
     // TODO: add proper seat handling
     const seats = availability === 'available' ? 1 : 0;
 
-    return axios.post(`localhost:3500/api/createException`,{
+    return axios.post(`${apiBaseUrl()}/api/createException`,{
       authorId: currentUser?.id?.uuid,
       seats,
-      startDate: timestampToDate(exceptionStartTime),
-      endDate: timestampToDate(exceptionEndTime),
+      startDate: timestampToDate(exceptionStartTime).toISOString(),
+      endDate: timestampToDate(exceptionEndTime).toISOString(),
     })
       .then(() => {
+        console.log("ksjdbfsdjifnsdifbsdfbsdh")
         setIsEditExceptionsModalOpen(false);
       })
       .catch(e => {
@@ -337,7 +347,7 @@ const AvailabilityForm = props => {
           <div className={css.exceptions}>
             {exceptionsFromApi.map(availabilityException => {
               const { start, end, seats } = availabilityException.attributes;
-              console.log("first",end)
+              console.log("end",new Date(end))
               return (
                 <div key={availabilityException.id.uuid} className={css.exception}>
                   <div className={css.exceptionHeader}>
@@ -362,7 +372,11 @@ const AvailabilityForm = props => {
                           authorId: currentUser.id.uuid,
                           startDate: start,
                           endDate: end
-                        }}).then(()=>{console.log("deleted")}).catch(()=>{console.log("delete failed")})
+                        }})
+                        .then(()=>{
+                          console.log("first")
+                          exceptionHandler()})
+                        .catch(()=>{console.log("delete failed")})
                       }
                       }
                     >
@@ -371,8 +385,8 @@ const AvailabilityForm = props => {
                   </div>
                   <TimeRange
                     className={css.timeRange}
-                    startDate={start}
-                    endDate={end}
+                    startDate={new Date(start)}
+                    endDate={new Date(end)}
                     dateType={DATE_TYPE_DATETIME}
                     timeZone={availabilityPlan.timezone}
                   />
