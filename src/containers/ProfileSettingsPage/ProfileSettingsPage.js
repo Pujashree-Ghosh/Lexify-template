@@ -287,11 +287,13 @@ export class ProfileSettingsPageComponent extends Component {
     return (
       <Page className={css.root} title={title} scrollingDisabled={scrollingDisabled}>
         {/* <LayoutSingleColumn> */}
-          <LayoutWrapperTopbar>
-            <TopbarContainer currentPage="ProfileSettingsPage" />
-            <UserNav selectedPageName="ProfileSettingsPage" listing={currentUserListing} />
-          </LayoutWrapperTopbar>
-          <ProfilePageSideNav/>
+        <LayoutWrapperTopbar>
+          <TopbarContainer currentPage="ProfileSettingsPage" />
+          <UserNav selectedPageName="ProfileSettingsPage" listing={currentUserListing} />
+        </LayoutWrapperTopbar>
+
+        <div className={css.profrowup}>
+          <ProfilePageSideNav />
           <LayoutWrapperMain>
             <div className={css.content}>
               {/* {userProfileType} */}
@@ -312,9 +314,11 @@ export class ProfileSettingsPageComponent extends Component {
               {profileSettingsForm}
             </div>
           </LayoutWrapperMain>
-          <LayoutWrapperFooter>
-            <Footer />
-          </LayoutWrapperFooter>
+        </div>
+
+        <LayoutWrapperFooter>
+          <Footer />
+        </LayoutWrapperFooter>
         {/* </LayoutSingleColumn> */}
       </Page>
     );

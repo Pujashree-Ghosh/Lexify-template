@@ -30,6 +30,7 @@
   border-bottom-width: 2px;
   border-bottom-color: var(--attentionColor);
   background-color: transparent;
+  position: absolute;
 
   @media (--viewportMedium) {
     margin: 0;
@@ -39,8 +40,15 @@
     margin: 0;
     width: 100%;
   }
+  @media (max-width: 1023px) {
+    padding: 2px 0 25px 0;
+  }
 }
 
+.textarea textarea {
+  padding-right: 66px;
+  box-sizing: border-box;
+}
 .spinner {
   stroke: var(--matterColorLight);
   width: 18px;
@@ -104,6 +112,7 @@
 .icons {
   display: flex;
   flex-direction: row;
+  margin: 0 0 0 auto;
 }
 .uploadIcon {
   cursor: pointer;
