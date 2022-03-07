@@ -8,7 +8,7 @@
   width: calc(100% - 48px);
   margin: 0 auto 0 0;
   border-left: 1px solid var(--matterColorNegative);
-  padding: 0 100px;
+  padding: 0 100px 50px;
 
   @media (max-width: 1023px) {
     padding: 0 50px 50px;
