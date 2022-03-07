@@ -176,15 +176,15 @@ export class AvailabilityPageComponent extends Component {
         protectedData.isLawyer ? (
           <AvailabilityForm
         //   {...panelProps()}
-        //   fetchExceptionsInProgress={fetchExceptionsInProgress}
-        //   availabilityExceptions={availabilityExceptions}
-        //   submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
-        //   onAddAvailabilityException={onAddAvailabilityException}
-        //   onDeleteAvailabilityException={onDeleteAvailabilityException}
+          // fetchExceptionsInProgress={fetchExceptionsInProgress}
+          // availabilityExceptions={availabilityExceptions}
+          // submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
+          // onAddAvailabilityException={onAddAvailabilityException}
+          // onDeleteAvailabilityException={onDeleteAvailabilityException}
           onSubmit={handleSubmit}
-        //   onNextTab={() =>
-        //     redirectAfterDraftUpdate(listing.id.uuid, params, tab, marketplaceTabs, history)
-        //   }
+          // onNextTab={() =>
+          //   redirectAfterDraftUpdate(listing.id.uuid, params, tab, marketplaceTabs, history)
+          // }
           />
         ) : (
           <ProfileSettingsForm

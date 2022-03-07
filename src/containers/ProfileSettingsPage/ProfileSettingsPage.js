@@ -6,6 +6,7 @@ import { FormattedMessage, injectIntl, intlShape } from '../../util/reactIntl';
 import { propTypes } from '../../util/types';
 import { ensureCurrentUser } from '../../util/data';
 import { isScrollingDisabled } from '../../ducks/UI.duck';
+import { Link, withRouter } from 'react-router-dom';
 import {
   Page,
   UserNav,
@@ -17,6 +18,8 @@ import {
   NamedLink,
   FieldRadioButton,
 } from '../../components';
+import { createResourceLocatorString } from '../../util/routes';
+import routeConfiguration from '../../routeConfiguration';
 import { ProfileSettingsForm } from '../../forms';
 import { TopbarContainer } from '../../containers';
 import ProfilePageSideNav from '../../components/ProfilePageSideNav/ProfilePageSideNav';
@@ -36,7 +39,20 @@ export class ProfileSettingsPageComponent extends Component {
     super(props);
     this.state = {};
   }
-
+  componentDidMount(){
+      const {currentUser,history} = this.props;
+      const isLawyer = currentUser?.attributes?.profile?.publicData?.isLawyer;
+      if(isLawyer){
+      history.push(
+        createResourceLocatorString(
+          'GeneralInfoPage',
+          routeConfiguration(),
+          {},
+          { }
+        )
+      );
+      }
+  }
   render() {
     const {
       currentUser,
@@ -54,7 +70,7 @@ export class ProfileSettingsPageComponent extends Component {
 
     // console.log(this.state);
     // console.log(currentUser);
-
+    
     const user = ensureCurrentUser(currentUser);
     const { firstName, lastName, bio } = user.attributes.profile;
     const profileImageId = user.profileImage ? user.profileImage.id : null;
@@ -360,8 +376,8 @@ const mapDispatchToProps = dispatch => ({
   onUpdateProfile: (data, uuid) => dispatch(updateProfile(data, uuid)),
 });
 
-const ProfileSettingsPage = compose(
-  connect(mapStateToProps, mapDispatchToProps),
+const ProfileSettingsPage = compose(withRouter,
+  connect( mapStateToProps, mapDispatchToProps),
   injectIntl
 )(ProfileSettingsPageComponent);
 

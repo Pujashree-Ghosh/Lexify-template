@@ -9,10 +9,10 @@ const integrationSdk = flexIntegrationSdk.createInstance({
 // const { v4: uuidv4 } = require('uuid');
 
 module.exports.fetchException = async (req, response) => {
-  const authorId = req.body.uuid;
+  const authorId = req.body.authorId;
   const startDate = req.body.startDate;
   const endDate = req.body.endDate;
-  console.log(startDate, endDate);
+  // console.log(startDate, endDate);
   return new Promise((resolve, reject) => {
     integrationSdk.users
       .show({ id: authorId })
@@ -37,22 +37,25 @@ module.exports.fetchException = async (req, response) => {
 };
 
 module.exports.createException = async (req, response) => {
-  const authorId = req.body.uuid;
+  const authorId =req.body. authorId;
   const startDate = req.body.startDate;
   const endDate = req.body.endDate;
   const seats = req.body.seats;
+  console.log(authorId)
   return new Promise((resolve, reject) => {
     integrationSdk.listings
       .query({
         authorId, //id needs to replaced later by authorId
       })
       .then(res => {
+        // console.log(res.data.data.length)
         const publishedListings = res.data.data.filter(
           l =>
-            (l.attributes.state === 'published' &&
+            ((l.attributes.state === 'published' &&
               l.attributes.publicData.type !== 'unsolicited') ||
-            l.attributes.publicData.isProviderType
+            l.attributes.publicData.isProviderType)
         );
+
         publishedListings.map(l => {
           integrationSdk.availabilityExceptions
             .create(
@@ -67,8 +70,8 @@ module.exports.createException = async (req, response) => {
               }
             )
             .then(res => {
-              // console.log('updated');
-            });
+              console.log(res);
+            }).catch();
         });
         return response.status(200).send('updated');
       })
@@ -77,7 +80,7 @@ module.exports.createException = async (req, response) => {
 };
 
 module.exports.deleteException = async (req, response) => {
-  const authorId = req.body.uuid;
+  const authorId = req.body.authorId;
   const startDate = req.body.startDate;
   const endDate = req.body.endDate;
   // const seats = req.body.seats;
@@ -102,7 +105,6 @@ module.exports.deleteException = async (req, response) => {
               end: new Date(endDate),
             })
             .then(res => {
-              console.log(res.data.data[0].id.uuid);
               integrationSdk.availabilityExceptions
                 .delete(
                   {
