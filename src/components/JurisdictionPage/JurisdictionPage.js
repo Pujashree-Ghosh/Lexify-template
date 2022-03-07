@@ -22,9 +22,11 @@ import GeneralInfoForm from '../../forms/GeneralInfoForm/GeneralInfoForm';
 import { TopbarContainer } from '../../containers';
 import JurisdictionForm from '../../forms/JurisdictionForm/JurisdictionForm';
 import ProfilePageSideNav from '../../components/ProfilePageSideNav/ProfilePageSideNav';
-import { updateProfile, uploadImage } from '../../containers/ProfileSettingsPage/ProfileSettingsPage.duck';
+import {
+  updateProfile,
+  uploadImage,
+} from '../../containers/ProfileSettingsPage/ProfileSettingsPage.duck';
 import css from '../../containers/ProfileSettingsPage/ProfileSettingsPage.module.css';
-
 
 const onImageUploadHandler = (values, fn) => {
   const { id, imageId, file } = values;
@@ -38,7 +40,6 @@ export class JurisdictionPageComponent extends Component {
     super(props);
     this.state = {};
   }
-  
 
   render() {
     const {
@@ -273,11 +274,13 @@ export class JurisdictionPageComponent extends Component {
     return (
       <Page className={css.root} title={title} scrollingDisabled={scrollingDisabled}>
         {/* <LayoutSingleColumn> */}
-          <LayoutWrapperTopbar>
-            <TopbarContainer currentPage="ProfileSettingsPage" />
-            <UserNav selectedPageName="ProfileSettingsPage" listing={currentUserListing} />
-          </LayoutWrapperTopbar>
-          <ProfilePageSideNav currentTab = "JurisdictionPage"/>
+        <LayoutWrapperTopbar>
+          <TopbarContainer currentPage="ProfileSettingsPage" />
+          <UserNav selectedPageName="ProfileSettingsPage" listing={currentUserListing} />
+        </LayoutWrapperTopbar>
+
+        <div className={css.profrowup}>
+          <ProfilePageSideNav currentTab="JurisdictionPage" />
           <LayoutWrapperMain>
             <div className={css.content}>
               {/* {userProfileType} */}
@@ -298,9 +301,10 @@ export class JurisdictionPageComponent extends Component {
               {profileSettingsForm}
             </div>
           </LayoutWrapperMain>
-          <LayoutWrapperFooter>
-            <Footer />
-          </LayoutWrapperFooter>
+        </div>
+        <LayoutWrapperFooter>
+          <Footer />
+        </LayoutWrapperFooter>
         {/* </LayoutSingleColumn> */}
       </Page>
     );

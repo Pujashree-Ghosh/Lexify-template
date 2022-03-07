@@ -23,11 +23,12 @@ import GeneralInfoForm from '../../forms/GeneralInfoForm/GeneralInfoForm';
 import { TopbarContainer } from '../../containers';
 import ProfilePageSideNav from '../../components/ProfilePageSideNav/ProfilePageSideNav';
 
-
-import { updateProfile, uploadImage } from '../../containers/ProfileSettingsPage/ProfileSettingsPage.duck';
+import {
+  updateProfile,
+  uploadImage,
+} from '../../containers/ProfileSettingsPage/ProfileSettingsPage.duck';
 import css from '../../containers/ProfileSettingsPage/ProfileSettingsPage.module.css';
 import { valuesIn } from 'lodash';
-
 
 const onImageUploadHandler = (values, fn) => {
   const { id, imageId, file } = values;
@@ -41,7 +42,6 @@ export class AvailabilityPageComponent extends Component {
     super(props);
     this.state = {};
   }
-  
 
   render() {
     const {
@@ -81,11 +81,11 @@ export class AvailabilityPageComponent extends Component {
           ...restVal
         } = values;
         const profile = {
-        //   firstName: firstName?.trim(),
-        //   lastName: lastName?.trim(),
-        //   bio,
+          //   firstName: firstName?.trim(),
+          //   lastName: lastName?.trim(),
+          //   bio,
           protectedData: { availabilityPlan },
-        //   publicData: { phoneNumber: `+${phoneNumber}`, ...restVal },
+          //   publicData: { phoneNumber: `+${phoneNumber}`, ...restVal },
         };
         // const uploadedImage = this.props.image;
         // console.log("UV",updatedValues)
@@ -156,7 +156,7 @@ export class AvailabilityPageComponent extends Component {
         onUpdateProfile(updatedValues, uuid);
       }
     };
-      
+
     //   const panelProps = () => {
     //     return {
     //       className: css.panel,
@@ -175,16 +175,16 @@ export class AvailabilityPageComponent extends Component {
       user.id && publicData && protectedData ? (
         protectedData.isLawyer ? (
           <AvailabilityForm
-        //   {...panelProps()}
-        //   fetchExceptionsInProgress={fetchExceptionsInProgress}
-        //   availabilityExceptions={availabilityExceptions}
-        //   submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
-        //   onAddAvailabilityException={onAddAvailabilityException}
-        //   onDeleteAvailabilityException={onDeleteAvailabilityException}
-          onSubmit={handleSubmit}
-        //   onNextTab={() =>
-        //     redirectAfterDraftUpdate(listing.id.uuid, params, tab, marketplaceTabs, history)
-        //   }
+            //   {...panelProps()}
+            //   fetchExceptionsInProgress={fetchExceptionsInProgress}
+            //   availabilityExceptions={availabilityExceptions}
+            //   submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
+            //   onAddAvailabilityException={onAddAvailabilityException}
+            //   onDeleteAvailabilityException={onDeleteAvailabilityException}
+            onSubmit={handleSubmit}
+            //   onNextTab={() =>
+            //     redirectAfterDraftUpdate(listing.id.uuid, params, tab, marketplaceTabs, history)
+            //   }
           />
         ) : (
           <ProfileSettingsForm
@@ -270,11 +270,12 @@ export class AvailabilityPageComponent extends Component {
     return (
       <Page className={css.root} title={title} scrollingDisabled={scrollingDisabled}>
         {/* <LayoutSingleColumn> */}
-          <LayoutWrapperTopbar>
-            <TopbarContainer currentPage="ProfileSettingsPage" />
-            <UserNav selectedPageName="ProfileSettingsPage" listing={currentUserListing} />
-          </LayoutWrapperTopbar>
-          <ProfilePageSideNav currentTab = "AvailabilityPage"/>
+        <LayoutWrapperTopbar>
+          <TopbarContainer currentPage="ProfileSettingsPage" />
+          <UserNav selectedPageName="ProfileSettingsPage" listing={currentUserListing} />
+        </LayoutWrapperTopbar>
+        <div className={css.profrowup}>
+          <ProfilePageSideNav currentTab="AvailabilityPage" />
           <LayoutWrapperMain>
             <div className={css.content}>
               {/* {userProfileType} */}
@@ -295,9 +296,10 @@ export class AvailabilityPageComponent extends Component {
               {profileSettingsForm}
             </div>
           </LayoutWrapperMain>
-          <LayoutWrapperFooter>
-            <Footer />
-          </LayoutWrapperFooter>
+        </div>
+        <LayoutWrapperFooter>
+          <Footer />
+        </LayoutWrapperFooter>
         {/* </LayoutSingleColumn> */}
       </Page>
     );
