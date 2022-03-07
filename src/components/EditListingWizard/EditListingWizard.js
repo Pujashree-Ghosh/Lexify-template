@@ -325,7 +325,7 @@ class EditListingWizard extends Component {
       category === 'publicOral'
         ? [DESCRIPTION, AREAOFLAW, DURATION, PRICING]
         : category === 'customOral'
-        ? [DESCRIPTION, CLIENT, DURATION, PRICING, EXPIRY]
+        ? [DESCRIPTION, DURATION, CLIENT, PRICING, EXPIRY]
         : [
             DESCRIPTION,
             CLIENT,

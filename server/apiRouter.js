@@ -30,6 +30,7 @@ const publishPublicListing = require('./api/publish-public-listing');
 const globalAvailability = require('./api/globalAvailability');
 
 const { getTwilioToken } = require('./api/twilio');
+const { listingExceptionCreate, listingExceptionDelete } = require('./api/unsolicitedException');
 
 const router = express.Router();
 
@@ -78,6 +79,8 @@ router.post('/updateProviderListing', updateProviderListing);
 router.post('/publishPublicListing', publishPublicListing);
 router.post('/globalAvailability', globalAvailability);
 router.get('/globalAvailability', globalAvailability);
+router.post('/listing/createException', listingExceptionCreate);
+router.delete('/listing/exceptionDelete', listingExceptionDelete);
 
 router.get('/initiate-login-as', initiateLoginAs);
 router.get('/login-as', loginAs);

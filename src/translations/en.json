@@ -1311,5 +1311,9 @@
   "SignupForm.companyNameRequired": "Company name required",
   "SignupForm.representCompanyLabel": "I represent the company",
   "editlistingPricingForm.remove": "Reomove",
-  "editlistingPricingForm.addMore": "Add more"
+  "editlistingPricingForm.addMore": "Add more",
+  "EditListingAvailabilityForm.startDateLabel": "Start Date",
+  "EditListingAvailabilityForm.endDateLabel": "End Date",
+  "EditListingAvailabilityForm.startTimeLabel": "Start Time",
+  "EditListingAvailabilityForm.endTimeLabel": "End Time"
 }

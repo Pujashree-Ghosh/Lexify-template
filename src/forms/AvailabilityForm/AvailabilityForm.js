@@ -163,8 +163,8 @@ const AvailabilityForm = props => {
     updateInProgress,
     errors,
   } = props;
-  const currentUser = useSelector(state=>state.user.currentUser)
-  const currentUserListing = useSelector(state => state.user.currentUserListing)
+  const currentUser = useSelector(state => state.user.currentUser);
+  const currentUserListing = useSelector(state => state.user.currentUserListing);
   const durationUnit = listing?.attributes?.publicData?.durationUnit;
   const durationMinute = currentUserListing?.attributes?.publicData?.durationMinute;
   const durationHour = currentUserListing?.attributes?.publicData?.durationHour;
@@ -179,39 +179,40 @@ const AvailabilityForm = props => {
   const [isEditPlanModalOpen, setIsEditPlanModalOpen] = useState(false);
   const [isEditExceptionsModalOpen, setIsEditExceptionsModalOpen] = useState(false);
   const [valuesFromLastSubmit, setValuesFromLastSubmit] = useState(null);
-  const [exceptionsFromApi, setExceptionsFromApi] = useState([])
-  
+  const [exceptionsFromApi, setExceptionsFromApi] = useState([]);
+
   const exceptionHandler = () => {
     const currMoment = new Date(moment()).toISOString();
     // const currMomNew = new Date(currMoment).toISOString();
     const newMoment = new Date(moment().add(2, 'months')).toISOString();
     // const newMomNew = new Date(newMoment).toISOString();
-    axios.post(`${apiBaseUrl()}/api/fetchexception`,{
-      authorId: currentUser.id.uuid,
-      startDate: currMoment,
-      endDate: newMoment,
-    }).then((response)=>{
-      const data = response?.data?.data?.data;
-      // if(data.length > exceptionsFromApi.length){data.map(i=>setExceptionsFromApi(old => {[...old,i]}))}
-      if(JSON.stringify(data)!== JSON.stringify(exceptionsFromApi)){
-        setExceptionsFromApi(data);
-      }
-      
+    axios
+      .post(`${apiBaseUrl()}/api/fetchexception`, {
+        authorId: currentUser.id.uuid,
+        startDate: currMoment,
+        endDate: newMoment,
+      })
+      .then(response => {
+        const data = response?.data?.data?.data;
+        // if(data.length > exceptionsFromApi.length){data.map(i=>setExceptionsFromApi(old => {[...old,i]}))}
+        if (JSON.stringify(data) !== JSON.stringify(exceptionsFromApi)) {
+          setExceptionsFromApi(data);
+        }
 
-      // })
-      
-      // exceptionsFromApi = data;
-      // data.map(i=>exceptionsFromApi.push(i))
-      // exceptionsFromApi = _.cloneDeep(data);
-    }).catch()
-  }
+        // })
+
+        // exceptionsFromApi = data;
+        // data.map(i=>exceptionsFromApi.push(i))
+        // exceptionsFromApi = _.cloneDeep(data);
+      })
+      .catch();
+  };
   //loading exceptions
   useEffect(() => {
-    exceptionHandler()
-    console.log("444",exceptionsFromApi)
+    exceptionHandler();
+    console.log('444', exceptionsFromApi);
   });
-  console.log("EA",exceptionsFromApi)
-
+  console.log('EA', exceptionsFromApi);
 
   const classes = classNames(rootClassName || css.root, className);
   const currentListing = ensureOwnListing(listing);
@@ -230,7 +231,8 @@ const AvailabilityForm = props => {
       // { dayOfWeek: 'sun', startTime: '09:00', endTime: '17:00', seats: 1 },
     ],
   };
-  const availabilityPlan = currentUser?.attributes?.profile?.protectedData?.availabilityPlan || defaultAvailabilityPlan;
+  const availabilityPlan =
+    currentUser?.attributes?.profile?.protectedData?.availabilityPlan || defaultAvailabilityPlan;
   const initialValues = valuesFromLastSubmit
     ? valuesFromLastSubmit
     : createInitialValues(availabilityPlan);
@@ -238,41 +240,42 @@ const AvailabilityForm = props => {
     setValuesFromLastSubmit(values);
 
     // Final Form can wait for Promises to return.
-    return onSubmit(createAvailabilityPlan(values))?.then(() => {
+    return onSubmit(createAvailabilityPlan(values))
+      ?.then(() => {
         setIsEditPlanModalOpen(false);
-        console.log("not failed")
+        console.log('not failed');
       })
       .catch(e => {
         // Don't close modal if there was an error
-        console.log("failed")
+        console.log('failed');
       });
   };
   const exceptionCount = exceptionsFromApi ? exceptionsFromApi.length : 100;
   const sortedAvailabilityExceptions = availabilityExceptions.sort(sortExceptionsByStartTime);
 
   // Save exception click handler
-     const saveException = values => {
+  const saveException = values => {
     const { availability, exceptionStartTime, exceptionEndTime } = values;
-    console.log("est",timestampToDate(exceptionStartTime).toISOString())
+    console.log('est', timestampToDate(exceptionStartTime).toISOString());
     // TODO: add proper seat handling
     const seats = availability === 'available' ? 1 : 0;
 
-    return axios.post(`${apiBaseUrl()}/api/createException`,{
-      authorId: currentUser?.id?.uuid,
-      seats,
-      startDate: timestampToDate(exceptionStartTime).toISOString(),
-      endDate: timestampToDate(exceptionEndTime).toISOString(),
-    })
+    return axios
+      .post(`${apiBaseUrl()}/api/createException`, {
+        authorId: currentUser?.id?.uuid,
+        seats,
+        startDate: timestampToDate(exceptionStartTime).toISOString(),
+        endDate: timestampToDate(exceptionEndTime).toISOString(),
+      })
       .then(() => {
-        console.log("ksjdbfsdjifnsdifbsdfbsdh")
+        console.log('ksjdbfsdjifnsdifbsdfbsdh');
         setIsEditExceptionsModalOpen(false);
       })
       .catch(e => {
         // Don't close modal if there was an error
       });
   };
-  
-  
+
   return (
     <main className={classes}>
       <h1 className={css.title}>
@@ -347,7 +350,7 @@ const AvailabilityForm = props => {
           <div className={css.exceptions}>
             {exceptionsFromApi.map(availabilityException => {
               const { start, end, seats } = availabilityException.attributes;
-              console.log("end",new Date(end))
+              console.log('end', new Date(end));
               return (
                 <div key={availabilityException.id.uuid} className={css.exception}>
                   <div className={css.exceptionHeader}>
@@ -368,17 +371,22 @@ const AvailabilityForm = props => {
                     <button
                       className={css.removeExceptionButton}
                       onClick={() => {
-                        axios.delete(`${apiBaseUrl()}/api/deleteException`, {data:{
-                          authorId: currentUser.id.uuid,
-                          startDate: start,
-                          endDate: end
-                        }})
-                        .then(()=>{
-                          console.log("first")
-                          exceptionHandler()})
-                        .catch(()=>{console.log("delete failed")})
-                      }
-                      }
+                        axios
+                          .delete(`${apiBaseUrl()}/api/deleteException`, {
+                            data: {
+                              authorId: currentUser.id.uuid,
+                              startDate: start,
+                              endDate: end,
+                            },
+                          })
+                          .then(() => {
+                            console.log('first');
+                            exceptionHandler();
+                          })
+                          .catch(() => {
+                            console.log('delete failed');
+                          });
+                      }}
                     >
                       <IconClose size="normal" className={css.removeIcon} />
                     </button>
@@ -427,7 +435,7 @@ const AvailabilityForm = props => {
           id="EditAvailabilityPlan"
           isOpen={isEditPlanModalOpen}
           onClose={() => setIsEditPlanModalOpen(false)}
-          onManageDisableScrolling={()=>{}}
+          onManageDisableScrolling={() => {}}
           containerClassName={css.modalContainer}
           usePortal
         >
@@ -449,7 +457,7 @@ const AvailabilityForm = props => {
           id="EditAvailabilityExceptions"
           isOpen={isEditExceptionsModalOpen}
           onClose={() => setIsEditExceptionsModalOpen(false)}
-          onManageDisableScrolling={()=>{}}
+          onManageDisableScrolling={() => {}}
           containerClassName={css.modalContainer}
           usePortal
         >
@@ -468,9 +476,9 @@ const AvailabilityForm = props => {
   );
 };
 const mapStateToProps = state => {
-    const { currentUser } = state.user;
-    return { currentUser };
-  };
+  const { currentUser } = state.user;
+  return { currentUser };
+};
 AvailabilityForm.defaultProps = {
   className: null,
   rootClassName: null,
@@ -484,19 +492,18 @@ AvailabilityForm.propTypes = {
 
   // We cannot use propTypes.listing since the listing might be a draft.
   listing: object,
-//   disabled: bool.isRequired,
-//   ready: bool.isRequired,
+  //   disabled: bool.isRequired,
+  //   ready: bool.isRequired,
   availabilityExceptions: arrayOf(propTypes.availabilityException),
-//   fetchExceptionsInProgress: bool.isRequired,
-//   onAddAvailabilityException: func.isRequired,
-//   onDeleteAvailabilityException: func.isRequired,
+  //   fetchExceptionsInProgress: bool.isRequired,
+  //   onAddAvailabilityException: func.isRequired,
+  //   onDeleteAvailabilityException: func.isRequired,
   onSubmit: func.isRequired,
-//   onManageDisableScrolling: func.isRequired,
-//   onNextTab: func.isRequired,
-//   submitButtonText: string.isRequired,
-//   updateInProgress: bool.isRequired,
-//   errors: object.isRequired,
+  //   onManageDisableScrolling: func.isRequired,
+  //   onNextTab: func.isRequired,
+  //   submitButtonText: string.isRequired,
+  //   updateInProgress: bool.isRequired,
+  //   errors: object.isRequired,
 };
-
 
 export default AvailabilityForm;

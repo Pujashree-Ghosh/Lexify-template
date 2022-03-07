@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { FormattedMessage } from '../../util/reactIntl';
@@ -7,7 +7,8 @@ import { LISTING_STATE_DRAFT } from '../../util/types';
 import { ensureListing } from '../../util/data';
 import { EditListingClientIdForm } from '../../forms';
 import { ListingLink } from '../../components';
-import { FieldArray } from 'react-final-form-arrays';
+import { useSelector } from 'react-redux';
+import moment from 'moment';
 import css from './EditListingClientIdPanel.module.css';
 
 const EditListingClientIdPanel = props => {
@@ -25,10 +26,17 @@ const EditListingClientIdPanel = props => {
     errors,
   } = props;
 
+  //
+
   const classes = classNames(rootClassName || css.root, className);
   const currentListing = ensureListing(listing);
+  const duration =
+    currentListing?.attributes?.publicData?.durationHour &&
+    currentListing?.attributes?.publicData?.durationMinute
+      ? parseInt(currentListing?.attributes?.publicData?.durationHour * 60) +
+        parseInt(currentListing?.attributes?.publicData?.durationMinute)
+      : null;
   const { publicData } = currentListing.attributes;
-  // console.log(currentListing);
   const isPublished = currentListing.id && currentListing.attributes.state !== LISTING_STATE_DRAFT;
   const panelTitle = isPublished ? (
     <FormattedMessage
@@ -47,17 +55,42 @@ const EditListingClientIdPanel = props => {
 
   const type = publicData && publicData.type ? publicData.type : 'solicited';
   const clientId = publicData && publicData.clientId ? publicData.clientId : [''];
+  const startDate =
+    publicData && publicData.startDate ? { date: moment(publicData.startDate).toDate() } : '';
+  const endDate =
+    publicData && publicData.endDate ? { date: moment(publicData.endDate).toDate() } : '';
+  const startHour = publicData && publicData.startHour ? publicData.startHour : '';
+  const endHour = publicData && publicData.endHour ? publicData.endHour : '';
+  const globalAvailabilityPlan = useSelector(
+    state => state?.user?.currentUser?.attributes?.profile?.protectedData?.availabilityPlan
+  );
+  const availabilityPlan = currentListing?.attributes?.availabilityPlan;
 
   return (
     <div className={classes}>
       <h1 className={css.title}>{panelTitle}</h1>
       <EditListingClientIdForm
         className={css.form}
-        initialValues={{ clientId, type }}
+        initialValues={{ clientId, type, startDate, endDate, startHour, endHour }}
         onSubmit={values => {
-          const { clientId, type } = values;
+          const { clientId, type, startDate, endDate, startHour, endHour } = values;
           const updatedValues = {
-            publicData: { clientId, type },
+            publicData: {
+              clientId,
+              type,
+              startDate: moment(startDate.date).format(),
+              endDate: moment(endDate.date).format(),
+              startHour,
+              endHour,
+            },
+            availabilityPlan:
+              type !== 'unsolicited'
+                ? globalAvailabilityPlan
+                : {
+                    entries: [],
+                    timezone: availabilityPlan.timezone,
+                    type: availabilityPlan.type,
+                  },
           };
           onSubmit(updatedValues);
         }}
@@ -68,6 +101,8 @@ const EditListingClientIdPanel = props => {
         updated={panelUpdated}
         updateInProgress={updateInProgress}
         fetchErrors={errors}
+        currentListing={currentListing}
+        duration={duration}
       />
     </div>
   );

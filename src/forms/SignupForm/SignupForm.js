@@ -274,6 +274,21 @@ const SignupFormComponent = props => (
             ) : (
               ''
             )}
+            {tab === 'signup' && values.clientType === 'legalEntity' ? (
+              <div className={css.fromgp}>
+                <FieldTextInput
+                  className={css.companyName}
+                  type="text"
+                  id={formId ? `${formId}.companyName` : 'companyName'}
+                  name="companyName"
+                  label={companyNameLabel}
+                  placeholder={companyNamePlaceholder}
+                  validate={companyNameRequired}
+                />
+              </div>
+            ) : (
+              ''
+            )}
             <div className={`${css.name} ${css.fromgp}`}>
               <FieldTextInput
                 className={css.firstNameRoot}
@@ -308,22 +323,6 @@ const SignupFormComponent = props => (
                 validate={validators.composeValidators(emailRequired, emailValid)}
               />
             </div>
-
-            {tab === 'signup' && values.clientType === 'legalEntity' ? (
-              <div className={css.fromgp}>
-                <FieldTextInput
-                  className={css.companyName}
-                  type="text"
-                  id={formId ? `${formId}.companyName` : 'companyName'}
-                  name="companyName"
-                  label={companyNameLabel}
-                  placeholder={companyNamePlaceholder}
-                  validate={companyNameRequired}
-                />
-              </div>
-            ) : (
-              ''
-            )}
 
             <div className={css.fromgp}>
               <label className={css.selectLabel}>{phoneLabel}</label>
