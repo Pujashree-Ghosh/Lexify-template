@@ -483,3 +483,7 @@
 .joinMeetingBtn {
   background-color: var(--successColor);
 }
+.googleButton {
+  margin-top: 20px;
+  background-color: var(--successColor);
+}

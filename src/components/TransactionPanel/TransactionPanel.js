@@ -53,7 +53,7 @@ import PanelHeading, {
 import Axios from 'axios';
 import { PrimaryButton } from '../Button/Button';
 import { apiBaseUrl } from '../../util/api';
-import { AiOutlineCloseCircle } from 'react-icons/ai';
+import { BsCalendar2Plus } from 'react-icons/bs';
 import css from './TransactionPanel.module.css';
 
 // Helper function to get display names for different roles
@@ -98,6 +98,7 @@ export class TransactionPanelComponent extends Component {
       // signedURL: null,
       // fileUploadSuccess: null,
       // cancelError: '',
+      inProgress: false,
     };
     // this.fileInputRef = React.createRef();
 
@@ -417,12 +418,14 @@ export class TransactionPanelComponent extends Component {
           headingState: HEADING_REQUESTED,
           showDetailCardHeadings: isCustomer,
           showSaleButtons: isProvider && !isCustomerBanned,
+          showCalendar: true,
         };
       } else if (txIsAccepted(tx)) {
         return {
           headingState: HEADING_ACCEPTED,
           showDetailCardHeadings: isCustomer,
           showAddress: isCustomer,
+          showCalendar: true,
         };
       } else if (txIsDeclined(tx)) {
         return {
@@ -512,6 +515,71 @@ export class TransactionPanelComponent extends Component {
 
     const classes = classNames(rootClassName || css.root, className);
 
+    const CLIENT_ID = '250414934125-bppk87i6vqilqe344dsffcdvlgj5ge5k.apps.googleusercontent.com';
+    const API_KEY = 'AIzaSyBsDSbBejfmTSfD8JHlqCop0DxP8m-0WMM';
+    const DISCOVERY_DOCS = ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'];
+    const SCOPES = 'https://www.googleapis.com/auth/calendar';
+
+    const handleGoogleCalendarClick = () => {
+      let { displayEnd, displayStart } = currentTransaction.booking
+        ? currentTransaction.booking.attributes
+        : {};
+      let { title, availabilityPlan } = currentTransaction.listing.attributes;
+
+      let event = {
+        summary: title,
+        location: { displayName: location.address },
+        // description: 'Really great refreshments',
+        start: {
+          dateTime: new Date(new Date(displayStart)),
+        },
+        end: {
+          dateTime: new Date(new Date(displayEnd)),
+        },
+        transactionId: currentTransaction.id.uuid,
+      };
+      this.setState({ inProgress: true });
+      const gapi = window.gapi;
+      if (!displayStart || !displayEnd) {
+        console.error('No start or end time found in event object');
+        return;
+      }
+
+      gapi.load('client:auth2', () => {
+        gapi.client.init({
+          apiKey: API_KEY,
+          clientId: CLIENT_ID,
+          discoveryDocs: DISCOVERY_DOCS,
+          scope: SCOPES,
+        });
+
+        gapi.client.load('calendar', 'v3', () => console.log('Done'));
+
+        gapi.auth2
+          .getAuthInstance()
+          .signIn()
+          .then(() => {
+            let request = gapi.client.calendar.events.insert({
+              calendarId: 'primary',
+              resource: event,
+            });
+
+            request.execute(event => {
+              this.setState({ inProgress: false, ready: true, gDisable: true });
+              console.log('event', event);
+              console.log('event link', event.htmlLink);
+            });
+          })
+          .catch(e => {
+            console.error(e);
+            this.setState({
+              inProgress: false,
+            });
+          });
+      });
+      // }
+    };
+
     return (
       <div className={classes}>
         <div className={css.container}>
@@ -587,6 +655,31 @@ export class TransactionPanelComponent extends Component {
               />
             ) : (
               <div className={css.sendingMessageNotAllowed}>{sendingMessageNotAllowed}</div>
+            )}
+
+            {stateData.showCalendar ? (
+              <>
+                <PrimaryButton
+                  className={css.googleButton}
+                  ready={this.state.ready}
+                  inProgress={this.state.inProgress}
+                  onClick={handleGoogleCalendarClick}
+                  disabled={this.state.gDisable}
+                >
+                  Add This Order To Google Calendar
+                </PrimaryButton>
+                {/* <Button
+                  className={css.googleButton}
+                  ready={this.state.msReady}
+                  inProgress={this.state.msInProgress}
+                  onClick={addOutlookEvent}
+                  disabled={this.state.msDisable}
+                >
+                  Add This Order To Outlook Calendar
+                </Button> */}
+              </>
+            ) : (
+              ''
             )}
 
             {/* {this.state.selectedFile ? (
@@ -682,6 +775,7 @@ export class TransactionPanelComponent extends Component {
                 transaction={currentTransaction}
                 transactionRole={transactionRole}
               />
+
               {stateData.headingState === 'accepted' ? (
                 <PrimaryButton
                   // inProgress={joinMeetingProgress}
@@ -709,7 +803,7 @@ export class TransactionPanelComponent extends Component {
                     this.goToConference(currentTransaction);
                   }}
                 >
-                  {stateData.isShortBooking ? 'Join Free Trial Meeting' : 'Join Meeting'}
+                  Join Meeting
                 </PrimaryButton>
               ) : (
                 ''
