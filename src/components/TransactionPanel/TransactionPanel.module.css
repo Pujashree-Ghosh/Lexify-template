@@ -299,7 +299,7 @@
     margin: 18px 24px 0 24px;
   }
   @media (--viewportLarge) {
-    margin: 24px 48px 47px 48px;
+    margin: 24px 48px 20px 48px;
     padding: 6px 0 2px 0;
   }
 }
@@ -480,10 +480,31 @@
   margin-top: 0;
   margin-bottom: 1px;
 }
+.jnbtncon {
+  padding: 0 48px;
+  @media (max-width: 1023px) {
+    padding: 0 24px;
+  }
+}
+.p0btn {
+  @media (max-width: 1023px) {
+    padding: 0 24px;
+  }
+}
 .joinMeetingBtn {
   background-color: var(--successColor);
+  margin: 0 auto 24px;
+  border-radius: 1px;
+  @media (max-width: 1023px) {
+    margin: 10px 0 0;
+  }
 }
 .googleButton {
   margin-top: 20px;
   background-color: var(--successColor);
+  border-radius: 1px;
+
+  @media (max-width: 575px) {
+    font-size: 14px;
+  }
 }
