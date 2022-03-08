@@ -619,6 +619,41 @@ export class TransactionPanelComponent extends Component {
                 showAddress={stateData.showAddress}
               />
               <BreakdownMaybe transaction={currentTransaction} transactionRole={transactionRole} />
+
+              <div className={css.jnbtncon}>
+                {stateData.headingState === 'accepted' ? (
+                  <PrimaryButton
+                    // inProgress={joinMeetingProgress}
+                    className={css.joinMeetingBtn}
+                    onClick={() => {
+                      //   if (stateData.isShortBooking) {
+                      //     onJoinShortMeeting(currentTransaction.id, isCustomer)
+                      //       .then(res => {
+                      //         this.goToConference(currentTransaction);
+                      //         console.log('onJoinShortMeeting', res);
+                      //       })
+                      //       .catch(e => console.error(e));
+                      //   } else {
+                      //     onJoinMeeting(currentTransaction.id, isCustomer)
+                      //       .then(res => {
+                      //         this.goToConference(currentTransaction);
+                      //         console.log('onJoinMeeting', res);
+                      //       })
+                      //       .catch(e => {
+                      //         console.log('557. err in page', e);
+                      //         console.error(e);
+                      //       });
+                      //   }
+                      //
+                      this.goToConference(currentTransaction);
+                    }}
+                  >
+                    Join Meeting
+                  </PrimaryButton>
+                ) : (
+                  ''
+                )}
+              </div>
             </div>
 
             {savePaymentMethodFailed ? (
@@ -657,18 +692,19 @@ export class TransactionPanelComponent extends Component {
               <div className={css.sendingMessageNotAllowed}>{sendingMessageNotAllowed}</div>
             )}
 
-            {stateData.showCalendar ? (
-              <>
-                <PrimaryButton
-                  className={css.googleButton}
-                  ready={this.state.ready}
-                  inProgress={this.state.inProgress}
-                  onClick={handleGoogleCalendarClick}
-                  disabled={this.state.gDisable}
-                >
-                  Add This Order To Google Calendar
-                </PrimaryButton>
-                {/* <Button
+            <div className={css.p0btn}>
+              {stateData.showCalendar ? (
+                <>
+                  <PrimaryButton
+                    className={css.googleButton}
+                    ready={this.state.ready}
+                    inProgress={this.state.inProgress}
+                    onClick={handleGoogleCalendarClick}
+                    disabled={this.state.gDisable}
+                  >
+                    Add This Order To Google Calendar
+                  </PrimaryButton>
+                  {/* <Button
                   className={css.googleButton}
                   ready={this.state.msReady}
                   inProgress={this.state.msInProgress}
@@ -677,10 +713,11 @@ export class TransactionPanelComponent extends Component {
                 >
                   Add This Order To Outlook Calendar
                 </Button> */}
-              </>
-            ) : (
-              ''
-            )}
+                </>
+              ) : (
+                ''
+              )}
+            </div>
 
             {/* {this.state.selectedFile ? (
               <div className={css.fileSelector}>
@@ -770,44 +807,46 @@ export class TransactionPanelComponent extends Component {
                 />
               ) : null}
 
-              <BreakdownMaybe
-                className={css.breakdownContainer}
-                transaction={currentTransaction}
-                transactionRole={transactionRole}
-              />
-
-              {stateData.headingState === 'accepted' ? (
-                <PrimaryButton
-                  // inProgress={joinMeetingProgress}
-                  className={css.joinMeetingBtn}
-                  onClick={() => {
-                    //   if (stateData.isShortBooking) {
-                    //     onJoinShortMeeting(currentTransaction.id, isCustomer)
-                    //       .then(res => {
-                    //         this.goToConference(currentTransaction);
-                    //         console.log('onJoinShortMeeting', res);
-                    //       })
-                    //       .catch(e => console.error(e));
-                    //   } else {
-                    //     onJoinMeeting(currentTransaction.id, isCustomer)
-                    //       .then(res => {
-                    //         this.goToConference(currentTransaction);
-                    //         console.log('onJoinMeeting', res);
-                    //       })
-                    //       .catch(e => {
-                    //         console.log('557. err in page', e);
-                    //         console.error(e);
-                    //       });
-                    //   }
-                    //
-                    this.goToConference(currentTransaction);
-                  }}
-                >
-                  Join Meeting
-                </PrimaryButton>
-              ) : (
-                ''
-              )}
+              <div className={css.breakdownContainer}>
+                <BreakdownMaybe
+                  transaction={currentTransaction}
+                  transactionRole={transactionRole}
+                />
+                <div className={css.jnbtncon}>
+                  {stateData.headingState === 'accepted' ? (
+                    <PrimaryButton
+                      // inProgress={joinMeetingProgress}
+                      className={css.joinMeetingBtn}
+                      onClick={() => {
+                        //   if (stateData.isShortBooking) {
+                        //     onJoinShortMeeting(currentTransaction.id, isCustomer)
+                        //       .then(res => {
+                        //         this.goToConference(currentTransaction);
+                        //         console.log('onJoinShortMeeting', res);
+                        //       })
+                        //       .catch(e => console.error(e));
+                        //   } else {
+                        //     onJoinMeeting(currentTransaction.id, isCustomer)
+                        //       .then(res => {
+                        //         this.goToConference(currentTransaction);
+                        //         console.log('onJoinMeeting', res);
+                        //       })
+                        //       .catch(e => {
+                        //         console.log('557. err in page', e);
+                        //         console.error(e);
+                        //       });
+                        //   }
+                        //
+                        this.goToConference(currentTransaction);
+                      }}
+                    >
+                      Join Meeting
+                    </PrimaryButton>
+                  ) : (
+                    ''
+                  )}
+                </div>
+              </div>
               {/* <button
                 // onClick={
                 //     ()=>onJoinMeeting(currentTransaction.id, isCustomer)

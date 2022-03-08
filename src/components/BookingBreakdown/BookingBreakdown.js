@@ -155,9 +155,15 @@ export const BookingBreakdownComponent = props => {
       ) : null}
       {transaction?.attributes?.lastTransition === 'transition/accept' ? (
         isCustomer ? (
-          <Button onClick={() => onCancelSaleCustomer(transaction.id)}> Cancel</Button>
+          <Button className={css.bkcnclbtn} onClick={() => onCancelSaleCustomer(transaction.id)}>
+            {' '}
+            Cancel
+          </Button>
         ) : (
-          <Button onClick={() => onCancelSaleProvider(transaction.id)}> Cancel</Button>
+          <Button className={css.bkcnclbtn} onClick={() => onCancelSaleProvider(transaction.id)}>
+            {' '}
+            Cancel
+          </Button>
         )
       ) : (
         ''
