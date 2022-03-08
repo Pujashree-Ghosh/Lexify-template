@@ -575,7 +575,7 @@ const Meeting = props => {
                 !isActive ||
                 meetingExpired ||
                 (isCustomer && !providerEnterInMeetingRoom) ||
-                (isShortBooking && isProvider && !customerJoinTime)
+                (isProvider && !customerJoinTime)
               }
               providerEnterInMeetingRoom={providerEnterInMeetingRoom}
               customerEnterInWaitingRoom={customerEnterInWaitingRoom}

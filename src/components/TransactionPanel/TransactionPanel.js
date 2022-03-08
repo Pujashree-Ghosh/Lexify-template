@@ -32,6 +32,7 @@ import {
 import { SendMessageForm } from '../../forms';
 import config from '../../config';
 import jsonwebtoken from 'jsonwebtoken';
+import { UserAgentApplication } from 'msal';
 
 // These are internal components that make this file more readable.
 import AddressLinkMaybe from './AddressLinkMaybe';
@@ -112,6 +113,19 @@ export class TransactionPanelComponent extends Component {
     this.onMessageSubmit = this.onMessageSubmit.bind(this);
     this.scrollToMessage = this.scrollToMessage.bind(this);
     this.goToConference = this.goToConference.bind(this);
+    this.userAgentApplication = new UserAgentApplication({
+      auth: {
+        clientId: 'c5c3ffe8-8b3e-49a5-8e88-920a883c826f',
+
+        authority: 'https://login.microsoftonline.com/common/',
+        redirectUri: 'https://lexify-dev.herokuapp.com/',
+        // redirectUri: 'http://localhost:3000/',
+      },
+      cache: {
+        cacheLocation: 'localStorage',
+        storeAuthStateInCookie: false,
+      },
+    });
   }
 
   componentDidMount() {
@@ -513,6 +527,118 @@ export class TransactionPanelComponent extends Component {
       </NamedLink>
     );
 
+    const MS_SCOPES = ['user.read', 'calendars.ReadWrite'];
+
+    const login_ms = async () => {
+      try {
+        await this.userAgentApplication.loginPopup({
+          scopes: MS_SCOPES,
+          prompt: 'select_account',
+        });
+
+        // After login, get the user's profile
+        return await getUserProfile();
+      } catch (err) {
+        // this.setState({
+        //   msOutlookCalenderLogin: false,
+        //   user: {},
+        //   error: this.normalizeError(err),
+        // });
+      }
+    };
+    const logout_ms = () => {
+      this.userAgentApplication.logout();
+    };
+
+    const getAccessToken = async scopes => {
+      try {
+        const accounts = this.userAgentApplication.getAccount();
+        console.log('119 accounts', accounts);
+        if (accounts.length <= 0) throw new Error('login_required');
+
+        var silentResult = await this.userAgentApplication.acquireTokenSilent({
+          scopes: scopes,
+          account: accounts[0],
+        });
+        return silentResult.accessToken;
+      } catch (err) {
+        // If a silent request fails, it may be because the user needs
+        // to login or grant consent to one or more of the requested scopes
+        if (this.isInteractionRequired(err)) {
+          var interactiveResult = await this.userAgentApplication.acquireTokenPopup({
+            scopes: scopes,
+          });
+
+          return interactiveResult.accessToken;
+        } else {
+          throw err;
+        }
+      }
+    };
+
+    const getUserProfile = async () => {
+      try {
+        var accessToken = await getAccessToken(MS_SCOPES);
+
+        if (accessToken) {
+          return accessToken;
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    const addOutlookEvent = async () => {
+      this.setState({ msInProgress: true });
+      let { displayEnd, displayStart, seats } = currentTransaction.booking
+        ? currentTransaction.booking.attributes
+        : {};
+      let { title } = currentTransaction.listing.attributes;
+      const tzone = (displayStart + '').split('(')[1]?.split(')')[0];
+      let event = {
+        subject: title,
+        location: { displayName: location.address },
+        // description: 'Really great refreshments',
+        start: {
+          dateTime: new Date(new Date(displayStart)),
+          timeZone: tzone,
+        },
+        end: {
+          dateTime: new Date(new Date(displayEnd)),
+          timeZone: tzone,
+        },
+        transactionId: currentTransaction.id.uuid,
+      };
+
+      let token;
+      if (!this.state.accessTokenMS) {
+        token = await login_ms();
+      } else {
+        token = this.state.accessTokenMS;
+      }
+
+      var graphEndpoint = 'https://graph.microsoft.com/v1.0/me/events';
+
+      Axios({
+        method: 'post',
+        url: graphEndpoint,
+        data: JSON.stringify(event),
+        headers: {
+          Authorization: 'Bearer ' + token,
+          'Content-Type': 'application/json',
+        },
+      })
+        .then(resp => {
+          //do something with response
+          console.log('199 res', resp);
+          this.setState({ msReady: true, msInProgress: false, msDisable: true });
+        })
+        .catch(e => {
+          this.setState({ msInProgress: false });
+          console.log('199 error: ', e);
+        });
+    };
+
     const classes = classNames(rootClassName || css.root, className);
 
     const CLIENT_ID = '250414934125-bppk87i6vqilqe344dsffcdvlgj5ge5k.apps.googleusercontent.com';
@@ -668,7 +794,7 @@ export class TransactionPanelComponent extends Component {
                 >
                   Add This Order To Google Calendar
                 </PrimaryButton>
-                {/* <Button
+                <PrimaryButton
                   className={css.googleButton}
                   ready={this.state.msReady}
                   inProgress={this.state.msInProgress}
@@ -676,7 +802,7 @@ export class TransactionPanelComponent extends Component {
                   disabled={this.state.msDisable}
                 >
                   Add This Order To Outlook Calendar
-                </Button> */}
+                </PrimaryButton>
               </>
             ) : (
               ''
