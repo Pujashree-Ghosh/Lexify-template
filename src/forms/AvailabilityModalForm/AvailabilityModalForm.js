@@ -250,7 +250,8 @@ const DailyPlan = props => {
                             <option value={s} key={s}>
                               {s}
                             </option>
-                          ))}
+                          ))
+                          }
                         </FieldSelect>
                       </div>
                     </div>
@@ -306,7 +307,7 @@ const submit = (onSubmit, weekdays) => values => {
 };
 
 const AvailabilityModalFormComponent = props => {
-  const { onSubmit, ...restOfprops } = props;
+  const { onSubmit, duration,...restOfprops } = props;
   return (
     <FinalForm
       {...restOfprops}

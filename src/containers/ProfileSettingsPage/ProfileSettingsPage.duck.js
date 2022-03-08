@@ -149,7 +149,7 @@ export const updateProfile = (actionPayload, id) => {
       .then(response => {
         axios
           .post(`${apiBaseUrl()}/api/updateProviderListing`, { id })
-          .then(axios.get(`${apiBaseUrl()}/api/globalAvailability`).then(() => dispatch(updateProfileSuccess(response))));
+          .then(axios.post(`${apiBaseUrl()}/api/globalAvailability`,{ authorId : id }).then(() => dispatch(updateProfileSuccess(response))));
 
         const entities = denormalisedResponseEntities(response);
         if (entities.length !== 1) {

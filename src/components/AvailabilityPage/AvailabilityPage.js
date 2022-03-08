@@ -176,7 +176,7 @@ export class AvailabilityPageComponent extends Component {
         protectedData.isLawyer ? (
           <AvailabilityForm
             //   {...panelProps()}
-            //   fetchExceptionsInProgress={fetchExceptionsInProgress}
+            // fetchExceptionsInProgress={fetchExceptionsInProgress}
             //   availabilityExceptions={availabilityExceptions}
             //   submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
             //   onAddAvailabilityException={onAddAvailabilityException}
@@ -279,11 +279,11 @@ export class AvailabilityPageComponent extends Component {
           <LayoutWrapperMain>
             <div className={css.content}>
               {/* {userProfileType} */}
-              <div className={css.headingContainer}>
+              {/* <div className={css.headingContainer}>
                 <h1 className={css.heading}>
                   <FormattedMessage id="ProfileSettingsPage.heading" />
-                </h1>
-                {user.id ? (
+                </h1> */}
+              {/* {user.id ? (
                   <NamedLink
                     className={css.profileLink}
                     name="ProfilePage"
@@ -291,8 +291,8 @@ export class AvailabilityPageComponent extends Component {
                   >
                     <FormattedMessage id="ProfileSettingsPage.viewProfileLink" />
                   </NamedLink>
-                ) : null}
-              </div>
+                ) : null} */}
+              {/* </div> */}
               {profileSettingsForm}
             </div>
           </LayoutWrapperMain>
