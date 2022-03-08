@@ -30,7 +30,7 @@
   border-bottom-width: 2px;
   border-bottom-color: var(--attentionColor);
   background-color: transparent;
-  position: absolute;
+  /* position: absolute; */
 
   @media (--viewportMedium) {
     margin: 0;
