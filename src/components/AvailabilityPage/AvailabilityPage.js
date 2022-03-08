@@ -95,7 +95,6 @@ export class AvailabilityPageComponent extends Component {
         //     ? { ...profile, profileImageId: uploadedImage.imageId }
         //     : profile;
         onUpdateProfile(updatedValues, uuid);
-        
       }
       if (isLawyer === false) {
         const {
@@ -177,7 +176,7 @@ export class AvailabilityPageComponent extends Component {
         protectedData.isLawyer ? (
           <AvailabilityForm
             //   {...panelProps()}
-            //   fetchExceptionsInProgress={fetchExceptionsInProgress}
+            // fetchExceptionsInProgress={fetchExceptionsInProgress}
             //   availabilityExceptions={availabilityExceptions}
             //   submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
             //   onAddAvailabilityException={onAddAvailabilityException}
@@ -284,7 +283,7 @@ export class AvailabilityPageComponent extends Component {
                 <h1 className={css.heading}>
                   <FormattedMessage id="ProfileSettingsPage.heading" />
                 </h1> */}
-                {/* {user.id ? (
+              {/* {user.id ? (
                   <NamedLink
                     className={css.profileLink}
                     name="ProfilePage"

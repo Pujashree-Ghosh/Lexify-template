@@ -183,6 +183,8 @@ const AvailabilityForm = props => {
   const [exceptionsFromApi, setExceptionsFromApi] = useState([]);
   const [isReady, setIsReady] = useState(false);
   const [isUpdateInProgress, setIsUpdateInProgress] = useState(false);
+  const [isExceptionButtonDisabled, setIsExceptionButtonDisabled] = useState(true);
+  const [exceptionsLoading, setExceptionsLoading] = useState(true);
 
   const exceptionHandler = () => {
     const currMoment = new Date(moment()).toISOString();
@@ -196,6 +198,7 @@ const AvailabilityForm = props => {
         endDate: newMoment,
       })
       .then(response => {
+        setExceptionsLoading(false);
         const data = response?.data?.data?.data;
         // if(data.length > exceptionsFromApi.length){data.map(i=>setExceptionsFromApi(old => {[...old,i]}))}
         if (JSON.stringify(data) !== JSON.stringify(exceptionsFromApi)) {
@@ -337,7 +340,7 @@ const AvailabilityForm = props => {
             )}
           </h2>
         </header>
-        {fetchExceptionsInProgress ? (
+        {exceptionsLoading ? (
           <div className={css.exceptionsLoading}>
             <IconSpinner />
           </div>
@@ -369,7 +372,9 @@ const AvailabilityForm = props => {
                     </div>
                     <button
                       className={css.removeExceptionButton}
+                      disabled={false}
                       onClick={() => {
+                        setExceptionsLoading(true);
                         axios
                           .delete(`${apiBaseUrl()}/api/deleteException`, {
                             data: {
@@ -378,10 +383,16 @@ const AvailabilityForm = props => {
                               endDate: end,
                             },
                           })
-                          .then(() => {
+                          .then(res => {
+                            console.log('478', res);
+                            // if (res) {
+                            //   console.log('in here');
+                            //   exceptionHandler();
+                            // }
+                            // setIsExceptionButtonDisabled(true);
+
                             setTimeout(() => {
                               exceptionHandler();
-                              console.log('478', exceptionsFromApi);
                             }, 2000);
 
                             console.log('delete done');
