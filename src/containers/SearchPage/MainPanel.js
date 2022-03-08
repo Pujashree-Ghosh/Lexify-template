@@ -294,8 +294,6 @@ class MainPanelComponent extends Component {
     }
 
     const { history, urlQueryParams } = this.props;
-    console.log('curr', this.state.currentQueryParams);
-    console.log('NoCurr', urlQueryParams);
     // if(Object.keys(urlQueryParams).length === 0){
     //   history.push(
     //     createResourceLocatorString(

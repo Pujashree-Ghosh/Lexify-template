@@ -182,6 +182,7 @@ export class AvailabilityPageComponent extends Component {
             //   onAddAvailabilityException={onAddAvailabilityException}
             //   onDeleteAvailabilityException={onDeleteAvailabilityException}
             onSubmit={handleSubmit}
+            updateInProgress={updateInProgress}
             //   onNextTab={() =>
             //     redirectAfterDraftUpdate(listing.id.uuid, params, tab, marketplaceTabs, history)
             //   }

@@ -163,6 +163,7 @@ const AvailabilityForm = props => {
     updateInProgress,
     errors,
   } = props;
+  console.log('uIP', updateInProgress);
   const currentUser = useSelector(state => state.user.currentUser);
   const currentUserListing = useSelector(state => state.user.currentUserListing);
   const durationUnit = listing?.attributes?.publicData?.durationUnit;
@@ -330,7 +331,7 @@ const AvailabilityForm = props => {
       <section className={css.section}>
         <header className={css.sectionHeader}>
           <h2 className={css.sectionTitle}>
-            {fetchExceptionsInProgress ? (
+            {exceptionsLoading ? (
               <FormattedMessage id="EditListingAvailabilityPanel.availabilityExceptionsTitleNoCount" />
             ) : (
               <FormattedMessage
