@@ -456,7 +456,7 @@ class StripePaymentForm extends Component {
         {initiateOrderError ? (
           <span className={css.errorMessage}>{initiateOrderError.message}</span>
         ) : null}
-        {showInitialMessageInput ? (
+        {/* {showInitialMessageInput ? (
           <div>
             <h3 className={css.messageHeading}>
               <FormattedMessage id="StripePaymentForm.messageHeading" />
@@ -471,7 +471,7 @@ class StripePaymentForm extends Component {
               className={css.message}
             />
           </div>
-        ) : null}
+        ) : null} */}
         <div className={css.submitContainer}>
           {hasPaymentErrors ? (
             <span className={css.errorMessage}>{paymentErrorMessage}</span>
