@@ -39,19 +39,12 @@ export class ProfileSettingsPageComponent extends Component {
     super(props);
     this.state = {};
   }
-  componentDidMount(){
-      const {currentUser,history} = this.props;
-      const isLawyer = currentUser?.attributes?.profile?.publicData?.isLawyer;
-      if(isLawyer){
-      history.push(
-        createResourceLocatorString(
-          'GeneralInfoPage',
-          routeConfiguration(),
-          {},
-          { }
-        )
-      );
-      }
+  componentDidMount() {
+    const { currentUser, history } = this.props;
+    const isLawyer = currentUser?.attributes?.profile?.publicData?.isLawyer;
+    if (isLawyer) {
+      history.push(createResourceLocatorString('GeneralInfoPage', routeConfiguration(), {}, {}));
+    }
   }
   render() {
     const {
@@ -70,7 +63,7 @@ export class ProfileSettingsPageComponent extends Component {
 
     // console.log(this.state);
     // console.log(currentUser);
-    
+
     const user = ensureCurrentUser(currentUser);
     const { firstName, lastName, bio } = user.attributes.profile;
     const profileImageId = user.profileImage ? user.profileImage.id : null;
@@ -291,30 +284,28 @@ export class ProfileSettingsPageComponent extends Component {
           <TopbarContainer currentPage="ProfileSettingsPage" />
           <UserNav selectedPageName="ProfileSettingsPage" listing={currentUserListing} />
         </LayoutWrapperTopbar>
-
-        <div className={css.profrowup}>
-          <ProfilePageSideNav />
-          <LayoutWrapperMain>
-            <div className={css.content}>
-              {/* {userProfileType} */}
-              <div className={css.headingContainer}>
-                <h1 className={css.heading}>
-                  <FormattedMessage id="ProfileSettingsPage.heading" />
-                </h1>
-                {user.id ? (
-                  <NamedLink
-                    className={css.profileLink}
-                    name="ProfilePage"
-                    params={{ id: user.id.uuid }}
-                  >
-                    <FormattedMessage id="ProfileSettingsPage.viewProfileLink" />
-                  </NamedLink>
-                ) : null}
-              </div>
-              {profileSettingsForm}
+        {/* <ProfilePageSideNav/> */}
+        <LayoutWrapperMain>
+          <div className={css.content}>
+            {/* {userProfileType} */}
+            <div className={css.headingContainer}>
+              <h1 className={css.heading}>
+                <FormattedMessage id="ProfileSettingsPage.heading" />
+              </h1>
+              {user.id ? (
+                <NamedLink
+                  className={css.profileLink}
+                  name="ProfilePage"
+                  params={{ id: user.id.uuid }}
+                >
+                  <FormattedMessage id="ProfileSettingsPage.viewProfileLink" />
+                </NamedLink>
+              ) : null}
             </div>
-          </LayoutWrapperMain>
-        </div>
+            {profileSettingsForm}
+          </div>
+        </LayoutWrapperMain>
+        {/* </div> */}
 
         <LayoutWrapperFooter>
           <Footer />
@@ -380,8 +371,9 @@ const mapDispatchToProps = dispatch => ({
   onUpdateProfile: (data, uuid) => dispatch(updateProfile(data, uuid)),
 });
 
-const ProfileSettingsPage = compose(withRouter,
-  connect( mapStateToProps, mapDispatchToProps),
+const ProfileSettingsPage = compose(
+  withRouter,
+  connect(mapStateToProps, mapDispatchToProps),
   injectIntl
 )(ProfileSettingsPageComponent);
 

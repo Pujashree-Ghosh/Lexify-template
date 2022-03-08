@@ -170,7 +170,8 @@ const AvailabilityForm = props => {
   const durationHour = currentUserListing?.attributes?.publicData?.durationHour;
   const listingDuration = listing?.attributes?.publicData?.duration;
   // const duration = (durationUnit === 'hours' ? listingDuration * 60 : listingDuration) / 60;
-  const duration = ((Number(durationHour) * 60 + Number(durationMinute)) / 60).toFixed(2) + '';
+  // const duration = ((Number(durationHour) * 60 + Number(durationMinute)) / 60).toFixed(2) + '' ;
+  const duration = '0.15';
   const exceptionDuration =
     durationHour && durationMinute ? `${durationHour}.${durationMinute}` : '0.15';
 
@@ -180,6 +181,8 @@ const AvailabilityForm = props => {
   const [isEditExceptionsModalOpen, setIsEditExceptionsModalOpen] = useState(false);
   const [valuesFromLastSubmit, setValuesFromLastSubmit] = useState(null);
   const [exceptionsFromApi, setExceptionsFromApi] = useState([]);
+  const [isReady, setIsReady] = useState(false);
+  const [isUpdateInProgress, setIsUpdateInProgress] = useState(false);
 
   const exceptionHandler = () => {
     const currMoment = new Date(moment()).toISOString();
@@ -198,21 +201,18 @@ const AvailabilityForm = props => {
         if (JSON.stringify(data) !== JSON.stringify(exceptionsFromApi)) {
           setExceptionsFromApi(data);
         }
-
-        // })
-
-        // exceptionsFromApi = data;
-        // data.map(i=>exceptionsFromApi.push(i))
-        // exceptionsFromApi = _.cloneDeep(data);
       })
       .catch();
   };
   //loading exceptions
+  // useEffect(() => {
+  //   exceptionHandler()
+
+  // });
+  console.log('444', exceptionsFromApi);
   useEffect(() => {
     exceptionHandler();
-    console.log('444', exceptionsFromApi);
-  });
-  console.log('EA', exceptionsFromApi);
+  }, []);
 
   const classes = classNames(rootClassName || css.root, className);
   const currentListing = ensureOwnListing(listing);
@@ -243,7 +243,6 @@ const AvailabilityForm = props => {
     return onSubmit(createAvailabilityPlan(values))
       ?.then(() => {
         setIsEditPlanModalOpen(false);
-        console.log('not failed');
       })
       .catch(e => {
         // Don't close modal if there was an error
@@ -268,7 +267,7 @@ const AvailabilityForm = props => {
         endDate: timestampToDate(exceptionEndTime).toISOString(),
       })
       .then(() => {
-        console.log('ksjdbfsdjifnsdifbsdfbsdh');
+        exceptionHandler();
         setIsEditExceptionsModalOpen(false);
       })
       .catch(e => {
@@ -380,9 +379,14 @@ const AvailabilityForm = props => {
                             },
                           })
                           .then(() => {
-                            console.log('first');
-                            exceptionHandler();
+                            setTimeout(() => {
+                              exceptionHandler();
+                              console.log('478', exceptionsFromApi);
+                            }, 2000);
+
+                            console.log('delete done');
                           })
+
                           .catch(() => {
                             console.log('delete failed');
                           });
@@ -421,7 +425,7 @@ const AvailabilityForm = props => {
         </p>
       ) : null}
 
-      {!isPublished ? (
+      {/* {!isPublished ? (
         <Button
           className={css.goToNextTabButton}
           onClick={onNextTab}
@@ -429,7 +433,7 @@ const AvailabilityForm = props => {
         >
           {submitButtonText}
         </Button>
-      ) : null}
+      ) : null} */}
       {true ? (
         <Modal
           id="EditAvailabilityPlan"

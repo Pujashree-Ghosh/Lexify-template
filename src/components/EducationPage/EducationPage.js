@@ -283,11 +283,11 @@ export class EducationPageComponent extends Component {
           <LayoutWrapperMain>
             <div className={css.content}>
               {/* {userProfileType} */}
-              <div className={css.headingContainer}>
+              {/* <div className={css.headingContainer}>
                 <h1 className={css.heading}>
                   <FormattedMessage id="ProfileSettingsPage.heading" />
-                </h1>
-                {user.id ? (
+                </h1> */}
+                {/* {user.id ? (
                   <NamedLink
                     className={css.profileLink}
                     name="ProfilePage"
@@ -295,8 +295,8 @@ export class EducationPageComponent extends Component {
                   >
                     <FormattedMessage id="ProfileSettingsPage.viewProfileLink" />
                   </NamedLink>
-                ) : null}
-              </div>
+                ) : null} */}
+              {/* </div> */}
               {profileSettingsForm}
             </div>
           </LayoutWrapperMain>

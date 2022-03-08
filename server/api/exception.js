@@ -37,11 +37,11 @@ module.exports.fetchException = async (req, response) => {
 };
 
 module.exports.createException = async (req, response) => {
-  const authorId =req.body. authorId;
+  const authorId = req.body.authorId;
   const startDate = req.body.startDate;
   const endDate = req.body.endDate;
   const seats = req.body.seats;
-  console.log(authorId)
+  console.log(authorId);
   return new Promise((resolve, reject) => {
     integrationSdk.listings
       .query({
@@ -51,9 +51,9 @@ module.exports.createException = async (req, response) => {
         // console.log(res.data.data.length)
         const publishedListings = res.data.data.filter(
           l =>
-            ((l.attributes.state === 'published' &&
+            (l.attributes.state === 'published' &&
               l.attributes.publicData.type !== 'unsolicited') ||
-            l.attributes.publicData.isProviderType)
+            l.attributes.publicData.isProviderType
         );
 
         publishedListings.map(l => {
@@ -71,7 +71,8 @@ module.exports.createException = async (req, response) => {
             )
             .then(res => {
               console.log(res);
-            }).catch();
+            })
+            .catch();
         });
         return response.status(200).send('updated');
       })
@@ -91,6 +92,7 @@ module.exports.deleteException = async (req, response) => {
       })
       .then(resp => {
         // console.log(resp.data.data);
+
         const listings = resp.data.data.filter(
           l =>
             (l.attributes.state === 'published' &&
@@ -108,14 +110,14 @@ module.exports.deleteException = async (req, response) => {
               integrationSdk.availabilityExceptions
                 .delete(
                   {
-                    id: res.data.data[0].id.uuid,
+                    id: res?.data?.data[0]?.id?.uuid,
                   },
                   {
                     expand: false,
                   }
                 )
                 .then(res => {
-                  console.log(res);
+                  // console.log(res);
                 });
             });
         });
