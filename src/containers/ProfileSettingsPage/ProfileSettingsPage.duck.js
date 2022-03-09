@@ -24,6 +24,7 @@ const initialState = {
   uploadInProgress: false,
   updateInProgress: false,
   updateProfileError: null,
+  updateSuccess: false,
 };
 
 export default function reducer(state = initialState, action = {}) {
@@ -60,6 +61,7 @@ export default function reducer(state = initialState, action = {}) {
         ...state,
         image: null,
         updateInProgress: false,
+        updateSuccess: true,
       };
     case UPDATE_PROFILE_ERROR:
       return {
@@ -149,7 +151,11 @@ export const updateProfile = (actionPayload, id) => {
       .then(response => {
         axios
           .post(`${apiBaseUrl()}/api/updateProviderListing`, { id })
-          .then(axios.post(`${apiBaseUrl()}/api/globalAvailability`,{ authorId : id }).then(() => dispatch(updateProfileSuccess(response))));
+          .then(
+            axios
+              .post(`${apiBaseUrl()}/api/globalAvailability`, { authorId: id })
+              .then(() => dispatch(updateProfileSuccess(response)))
+          );
 
         const entities = denormalisedResponseEntities(response);
         if (entities.length !== 1) {

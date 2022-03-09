@@ -343,6 +343,18 @@ class MainPanelComponent extends Component {
           createResourceLocatorString('SearchPage', routeConfiguration(), {}, { ...currParams })
         );
       }
+      if (
+        this.state.currentQueryParams.hasOwnProperty('pub_practiceArea') &&
+        urlQueryParams?.pub_hasPublicListing === true &&
+        urlQueryParams?.pub_isProviderType === true
+      ) {
+        let currParams = this.state.currentQueryParams;
+        delete currParams?.pub_hasPublicListing;
+        delete currParams?.pub_isProviderType;
+        history.push(
+          createResourceLocatorString('SearchPage', routeConfiguration(), {}, { ...currParams })
+        );
+      }
     }
   }
   // Apply the filters by redirecting to SearchPage with new filters.
@@ -362,18 +374,22 @@ class MainPanelComponent extends Component {
       this.state.industry[0]?.value === ''
     ) {
     } else {
-      if (this.state.keywords !== '') {
-        delete search.pub_isProviderType;
-        delete search.pub_hasPublicListing;
-      }
-      Object.keys(search).forEach(key => {
-        if (search[key] === '') {
-          delete search[key];
-        }
-      });
-      history.push(createResourceLocatorString('SearchPage', routeConfiguration(), {}, search));
+      // if (this.state.keywords !== '') {
+      //   delete search.pub_isProviderType;
+      //   delete search.pub_hasPublicListing;
+      // }
+      // Object.keys(search).forEach(key => {
+      //   if (search[key] === '') {
+      //     delete search[key];
+      //   }
+      // });
+      // history.push(createResourceLocatorString('SearchPage', routeConfiguration(), {}, search));
     }
     if (this.state.keywords !== '') {
+      delete search.pub_isProviderType;
+      delete search.pub_hasPublicListing;
+    }
+    if (this.state.practiceArea !== '') {
       delete search.pub_isProviderType;
       delete search.pub_hasPublicListing;
     }

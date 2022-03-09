@@ -56,8 +56,9 @@ export class AvailabilityPageComponent extends Component {
       uploadImageError,
       uploadInProgress,
       intl,
+      updateSuccess,
     } = this.props;
-
+    console.log('hello', updateSuccess);
     const user = ensureCurrentUser(currentUser);
     const { firstName, lastName, bio } = user.attributes.profile;
     const profileImageId = user.profileImage ? user.profileImage.id : null;
@@ -344,6 +345,7 @@ const mapStateToProps = state => {
     uploadInProgress,
     updateInProgress,
     updateProfileError,
+    updateSuccess,
   } = state.ProfileSettingsPage;
   return {
     currentUser,
@@ -354,6 +356,7 @@ const mapStateToProps = state => {
     updateProfileError,
     uploadImageError,
     uploadInProgress,
+    updateSuccess,
   };
 };
 

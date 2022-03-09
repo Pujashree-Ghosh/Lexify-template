@@ -163,7 +163,6 @@ const AvailabilityForm = props => {
     updateInProgress,
     errors,
   } = props;
-  console.log('uIP', updateInProgress);
   const currentUser = useSelector(state => state.user.currentUser);
   const currentUserListing = useSelector(state => state.user.currentUserListing);
   const durationUnit = listing?.attributes?.publicData?.durationUnit;
