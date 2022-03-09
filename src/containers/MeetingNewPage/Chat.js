@@ -1,23 +1,7 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React from 'react';
 import css from '../MeetingNewPage/Meeting.css';
-import {
-  AppBar,
-  Backdrop,
-  CircularProgress,
-  Container,
-  CssBaseline,
-  Grid,
-  IconButton,
-  List,
-  TextField,
-  Toolbar,
-  Typography,
-  Drawer,
-  Button,
-} from '@material-ui/core';
+import { Backdrop, CircularProgress, Grid, IconButton, List, Drawer } from '@material-ui/core';
 import { Send } from '@material-ui/icons';
-import axios from 'axios';
-import { useAppState } from './../../twilio/state';
 import ChatItem from './ChatItem';
 // import Twilio from 'twilio-chat';
 import { FormattedMessage, intlShape, injectIntl } from '../../util/reactIntl';
@@ -67,7 +51,6 @@ class ChatSreen extends React.Component {
   componentDidMount = async () => {
     window.socket &&
       window.socket.on('meeting-message', message => {
-        console.log(102222, message);
         this.setState(
           { isNewMessage: true, messages: [...this.state.messages, message] },
           this.scrollToBottom
@@ -109,7 +92,6 @@ class ChatSreen extends React.Component {
     const { anchor, isChatOpen, loading, messages, text, isNewMessage } = this.state;
     return (
       <div>
-        {/* <Button onClick={this.toggleDrawer()}>Chat</Button> */}
         <button
           onClick={this.toggleDrawer()}
           className="MuiButtonBase-root MuiButton-root MuiButton-text ct-btn"
@@ -132,14 +114,6 @@ class ChatSreen extends React.Component {
             <CircularProgress style={{ color: 'white' }} />
           </Backdrop>
 
-          {/* <AppBar elevation={10}>
-          <Toolbar>
-            <Typography variant="h6">{`Room: ${room}, User: ${email}`}</Typography>
-          </Toolbar>
-        </AppBar>
-
-        <CssBaseline /> */}
-
           <Grid container direction="column" style={styles.mainGrid}>
             <Grid item style={styles.gridItemChatList}>
               <List dense={true}>
@@ -156,16 +130,10 @@ class ChatSreen extends React.Component {
                 <Grid item style={styles.textFieldContainer}>
                   <input
                     type="text"
-                    // required
-                    // style={styles.textField}
                     placeholder="Enter message"
-                    // variant="outlined"
-                    // multiline
-                    // rows={2}
                     id="textMessage"
                     name="textMessage"
                     value={text}
-                    // disabled={!channel}
                     onChange={event => {
                       this.updateText(event);
                     }}
