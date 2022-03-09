@@ -384,7 +384,6 @@ const AvailabilityForm = props => {
                             },
                           })
                           .then(res => {
-                            console.log('478', res);
                             // if (res) {
                             //   console.log('in here');
                             //   exceptionHandler();
@@ -394,13 +393,9 @@ const AvailabilityForm = props => {
                             setTimeout(() => {
                               exceptionHandler();
                             }, 2000);
-
-                            console.log('delete done');
                           })
 
-                          .catch(() => {
-                            console.log('delete failed');
-                          });
+                          .catch(() => {});
                       }}
                     >
                       <IconClose size="normal" className={css.removeIcon} />
