@@ -26,7 +26,7 @@ const VideoApp = () => {
     <UnsupportedBrowserWarning>
       <VideoProvider options={connectionOptions} onError={setError}>
         <ErrorDialog dismissError={() => setError(null)} error={error} />
-        <Meeting/>
+        <Meeting />
         {/* <ChatSreen /> */}
       </VideoProvider>
     </UnsupportedBrowserWarning>

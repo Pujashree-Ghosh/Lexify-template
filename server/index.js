@@ -95,6 +95,9 @@ io.on('connection', socket => {
     }
     console.log('connected : ' + connectedUsers[roomId].users.map(m => m.socketId));
   });
+  socket.on('meeting-message', data => {
+    io.in(roomId).emit('meeting-message', data);
+  });
   socket.on('disconnectUser', () => {
     console.log(connectedUsers[roomId].users.findIndex(i => i.socketId === socket.id));
     const index = connectedUsers[roomId].users.findIndex(i => i.socketId === socket.id);

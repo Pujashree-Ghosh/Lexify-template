@@ -12,7 +12,7 @@ import { Typography, Grid, Hidden } from '@material-ui/core';
 import ToggleAudioButton from '../Buttons/ToggleAudioButton/ToggleAudioButton';
 import ToggleVideoButton from '../Buttons/ToggleVideoButton/ToggleVideoButton';
 import ToggleScreenShareButton from '../Buttons/ToogleScreenShareButton/ToggleScreenShareButton';
-// import ChatScreen from './../../../containers/MeetingNewPage/Chat';
+import ChatScreen from './../../../containers/MeetingNewPage/Chat';
 import { ListingContext } from './../../../containers/MeetingNewPage/Meeting';
 import SignalHelper from '../../../util/signalHelper';
 import { print } from '../../../util/data';
@@ -122,11 +122,11 @@ export default function MenuBar({ isProvider, extendMeeting, isShortBooking, isE
               /> */}
             </Grid>
           </Grid>
-          {/* <Grid item>
+          <Grid item>
             <Grid container justify="center">
               <ChatScreen />
             </Grid>
-          </Grid> */}
+          </Grid>
           <Hidden smDown>
             <Grid style={{ flex: 1 }}>
               <Grid container justify="flex-end">

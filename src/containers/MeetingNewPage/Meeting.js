@@ -26,8 +26,9 @@ import { types as sdkTypes } from '../../util/sdkLoader';
 
 const { UUID } = sdkTypes;
 import config from '../../config';
+import { apiBaseUrl } from '../../util/api';
 // import { MonetizationOn } from '@material-ui/icons';
-// import io from 'socket.io-client';
+import io from 'socket.io-client';
 const secret = config.secretCode;
 const timeZone = moment.tz.guess();
 const Container = styled('div')({
@@ -90,7 +91,7 @@ const Meeting = props => {
   const [isLoading, setLoading] = useState(false);
   const [isActive, setActive] = useState(false);
   const [meetingState, setMeetingState] = useState(roomState);
-  // let socket;
+  let socket;
   const [customerEnterInWaitingRoom, setcustomerEnterInWaitingRoom] = useState(isCustomer);
   const [customerEnterInMeetingRoom, setcustomerEnterInMeetingRoom] = useState(false);
   const [providerEnterInWaitingRoom, setproviderEnterInWaitingRoom] = useState(isProvider);
@@ -137,7 +138,7 @@ const Meeting = props => {
   // const meetingTimeDuration = moment().isSameOrBefore(startTime)
   //   ? moment(endTime).diff(moment(startTime), 'm')
   //   : moment(endTime).diff(moment(startTime).add(5, 'm'), 'm');
-  const roomName = listingId + 'MKH' + transactionId;
+  const roomName = listingId + transactionId;
 
   // let estEndTime = moment(actualStartTime).add(meetingTimeDuration, 'm');
   // console.log(
@@ -372,20 +373,20 @@ const Meeting = props => {
   }, [actualEndTime, roomState]);
 
   useEffect(() => {
-    const backend_server = process.env.REACT_APP_BACKEND_SERVER_URL;
-    //   socket = io(backend_server, {
-    //     query: {
-    //       roomId: transactionId + '-' + listingId,
-    //       // role,
-    //       // ...(decoded.actualStartTime ? { actualStartTime: decoded.actualStartTime } : {}),
-    //       // ...(decoded.customerJoinTime ? { customerJoinTime: decoded.customerJoinTime } : {}),
-    //       // maxStartTime: new Date(meetingExpTime).getTime(),
-    //       // customerJoinTime
-    //     },
-    //   });
-    //   if (typeof window !== undefined) {
-    //     window.socket = socket;
-    //   }
+    const backend_server = apiBaseUrl();
+    socket = io(backend_server, {
+      query: {
+        roomId: transactionId + listingId,
+        // role,
+        // ...(decoded.actualStartTime ? { actualStartTime: decoded.actualStartTime } : {}),
+        // ...(decoded.customerJoinTime ? { customerJoinTime: decoded.customerJoinTime } : {}),
+        // maxStartTime: new Date(meetingExpTime).getTime(),
+        // customerJoinTime
+      },
+    });
+    if (typeof window !== undefined) {
+      window.socket = socket;
+    }
     //   socket.on(
     //     'customer-connected',
     //     ({
@@ -590,7 +591,7 @@ const Meeting = props => {
                 status={'waiting_duration'}
               />
             )} */}
-            {remainingTime && (
+            {/* {remainingTime && (
               <Countdown
                 date={remainingTime}
                 // date={Date.now() + 2000}
@@ -616,7 +617,7 @@ const Meeting = props => {
                 //   );
                 // }}
               />
-            )}
+            )} */}
           </div>
         ) : providerEnterInMeetingRoom ? (
           <Main>
@@ -724,7 +725,7 @@ const Meeting = props => {
                 status={'waiting_duration'}
               />
             )} */}
-            {remainingTime && (
+            {/* {remainingTime && (
               <Countdown
                 date={remainingTime}
                 // date={Date.now() + 2000}
@@ -750,7 +751,7 @@ const Meeting = props => {
                   );
                 }}
               />
-            )}
+            )} */}
           </div>
         )}
       </Container>

@@ -102,7 +102,7 @@ export default function PreJoinScreens({ meetingExpired, ...props }) {
         // socket={props.socket}
         onCancel={props.onCancel}
       />
-      {!isFirefox &&
+      {/* {!isFirefox &&
         !meetingExpired &&
         !props.isProvider &&
         (props.providerEnterInMeetingRoom ? (
@@ -125,7 +125,7 @@ export default function PreJoinScreens({ meetingExpired, ...props }) {
           Mentee has not entered in the meeting. Please do not leave the waiting room until the
           timer clock reaches Zero otherwise you could be still charged or not paid.
         </div>
-      )}
+      )} */}
       {!isFirefox && meetingExpired && (
         <div style={{ textAlign: 'center', color: 'red' }}>Meeting has been expired!</div>
       )}
