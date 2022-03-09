@@ -2,7 +2,7 @@ import React from 'react';
 import css from '../MeetingNewPage/Meeting.css';
 import { Backdrop, CircularProgress, Grid, IconButton, List, Drawer } from '@material-ui/core';
 import { Send } from '@material-ui/icons';
-// import ChatItem from './ChatItem';
+import ChatItem from './ChatItem';
 // import Twilio from 'twilio-chat';
 import { FormattedMessage, intlShape, injectIntl } from '../../util/reactIntl';
 import { compose } from 'redux';
@@ -93,6 +93,7 @@ class ChatSreen extends React.Component {
     return (
       <div>
         <button
+          type="button"
           onClick={this.toggleDrawer()}
           className="MuiButtonBase-root MuiButton-root MuiButton-text ct-btn"
         >
@@ -117,10 +118,10 @@ class ChatSreen extends React.Component {
           <Grid container direction="column" style={styles.mainGrid}>
             <Grid item style={styles.gridItemChatList}>
               <List dense={true}>
-                {/* {messages &&
+                {messages &&
                   messages.map((message, index) => (
-                    // <ChatItem key={index} message={message} email={email} />
-                  ))} */}
+                    <ChatItem key={index} message={message} email={email} />
+                  ))}
                 <div ref={this.messagesEndRef} />
               </List>
             </Grid>
