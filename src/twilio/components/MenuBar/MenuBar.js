@@ -122,11 +122,11 @@ export default function MenuBar({ isProvider, extendMeeting, isShortBooking, isE
               /> */}
             </Grid>
           </Grid>
-          <Grid item>
+          {/* <Grid item>
             <Grid container justify="center">
               <ChatScreen />
             </Grid>
-          </Grid>
+          </Grid> */}
           <Hidden smDown>
             <Grid style={{ flex: 1 }}>
               <Grid container justify="flex-end">
