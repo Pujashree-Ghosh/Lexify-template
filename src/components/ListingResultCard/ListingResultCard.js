@@ -15,6 +15,7 @@ import config from '../../config';
 import { createResourceLocatorString } from '../../util/routes';
 import axios from 'axios';
 import { createSlug } from '../../util/urlHelpers';
+import ReadmoreButton from '../../containers/ReadmoreButton/ReadmoreButton';
 
 function ListingResultCardComponent(props) {
   const { listing, currentUser, onShowUser, history } = props;
@@ -61,70 +62,74 @@ function ListingResultCardComponent(props) {
   //   )[0]?.name
   // );
   const slug = createSlug(listing?.attributes?.title);
+
   return (
     <div className={css.cardContainer} key={listing.id.uuid}>
       <div className={css.userContent}>
         <div className={css.SectionAvatarImg}>
-            {/* <SectionAvatar user={listing.author} /> */}
-            <AvatarMedium className={css.profileAvatar} user={ensuredUser} disableProfileLink />
+          {/* <SectionAvatar user={listing.author} /> */}
+          <AvatarMedium className={css.profileAvatar} user={ensuredUser} disableProfileLink />
         </div>
         <div className={css.userInfo}>
-            <div className={css.userName}>{listing.attributes.title}</div>
-            {/* <div className={css.userLisence}>{listing.attributes.title}</div> */}
-            <div className={css.userLocation}>
+          <div className={css.userName}>{listing.author.attributes.profile.displayName}</div>
+          {/* <div className={css.userLisence}>{listing.attributes.title}</div> */}
+          <div className={css.userLocation}>
             {listing?.attributes?.publicData?.country?.length ? (
-                <>
+              <>
                 <img src={biolocationIcon} className={css.locationIcon} />
 
                 <span>
-                    {`${state ? state : city ? city : ''}, 
+                  {`${state ? state : city ? city : ''}, 
                 ${country}`}
                 </span>
-                </>
+              </>
             ) : (
-                ''
+              ''
             )}
-            </div>
+          </div>
         </div>
       </div>
       <div className={css.listingInfo}>
-          <p className={css.listingTitle}>{listing.attributes.title}</p><p className={css.listingDescription}>{listing.attributes.description}</p>
+        <p className={css.listingTitle}>{listing.attributes.title}</p>
+        {/* <p className={css.listingDescription}>
+          {listing.attributes.description.length > 150
+            ? listing.attributes.description.slice(0, 150) + '...'
+            : listing.attributes.description}
+        </p> */}
+        <ReadmoreButton description={listing.attributes.description} />
       </div>
       <div className={css.bookingContent}>
-          <div className={css.price}>${(listing.attributes?.price?.amount/100)}.00</div>
+        <div className={css.price}>${listing.attributes?.price?.amount / 100}.00</div>
         <div className={css.profileBtnContainer}>
-            {/* <NamedLink name="ProfilePage" params={{ id: ensuredUser.id.uuid }}>
+          {/* <NamedLink name="ProfilePage" params={{ id: ensuredUser.id.uuid }}>
             <FormattedMessage id="UserResultCard.ListingProfileLink" />
             </NamedLink> */}
-            <button
+          <button
             className={css.profileBtn}
-            onClick={() =>
-                {
-                if(listing?.attributes?.publicData?.isProviderType){
-                    history.push(
-                    createResourceLocatorString(
-                        'ProfilePage',
-                        routeConfiguration(),
-                        { id: ensuredUser.id.uuid },
-                        {}
-                    )
-                    )
-                }else{
-                    history.push(
-                    createResourceLocatorString(
-                        'ListingPage',
-                        routeConfiguration(),
-                        { id: listing.id.uuid,slug },
-                        {}
-                    )
-                    )
-                }
-                
-                }
-            }
-            >
+            onClick={() => {
+              if (listing?.attributes?.publicData?.isProviderType) {
+                history.push(
+                  createResourceLocatorString(
+                    'ProfilePage',
+                    routeConfiguration(),
+                    { id: ensuredUser.id.uuid },
+                    {}
+                  )
+                );
+              } else {
+                history.push(
+                  createResourceLocatorString(
+                    'ListingPage',
+                    routeConfiguration(),
+                    { id: listing.id.uuid, slug },
+                    {}
+                  )
+                );
+              }
+            }}
+          >
             <FormattedMessage id="UserResultCard.ListingProfileLink" />
-            </button>
+          </button>
         </div>
       </div>
     </div>

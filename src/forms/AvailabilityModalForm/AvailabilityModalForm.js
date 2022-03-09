@@ -250,8 +250,7 @@ const DailyPlan = props => {
                             <option value={s} key={s}>
                               {s}
                             </option>
-                          ))
-                          }
+                          ))}
                         </FieldSelect>
                       </div>
                     </div>
@@ -307,7 +306,7 @@ const submit = (onSubmit, weekdays) => values => {
 };
 
 const AvailabilityModalFormComponent = props => {
-  const { onSubmit, duration,...restOfprops } = props;
+  const { onSubmit, duration, ...restOfprops } = props;
   return (
     <FinalForm
       {...restOfprops}
@@ -380,7 +379,12 @@ const AvailabilityModalFormComponent = props => {
                   <FormattedMessage id="EditListingAvailabilityPlanForm.updateFailed" />
                 </p>
               ) : null}
-              <PrimaryButton type="submit" inProgress={submitInProgress} disabled={submitDisabled}>
+              <PrimaryButton
+                type="submit"
+                inProgress={submitInProgress}
+                disabled={submitDisabled}
+                // ready={true}
+              >
                 <FormattedMessage id="EditListingAvailabilityPlanForm.saveSchedule" />
               </PrimaryButton>
             </div>
@@ -404,17 +408,15 @@ AvailabilityModalFormComponent.propTypes = {
   submitButtonWrapperClassName: string,
 
   inProgress: bool,
-//   fetchErrors: object.isRequired,
+  //   fetchErrors: object.isRequired,
 
-//   listingTitle: string.isRequired,
+  //   listingTitle: string.isRequired,
 
   // from injectIntl
   intl: intlShape.isRequired,
 };
 
-const AvailabiltyModalForm = compose(injectIntl)(
-    AvailabilityModalFormComponent
-);
+const AvailabiltyModalForm = compose(injectIntl)(AvailabilityModalFormComponent);
 
 AvailabiltyModalForm.displayName = 'AvailabiltyModalForm';
 

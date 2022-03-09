@@ -294,8 +294,6 @@ class MainPanelComponent extends Component {
     }
 
     const { history, urlQueryParams } = this.props;
-    console.log('curr', this.state.currentQueryParams);
-    console.log('NoCurr', urlQueryParams);
     // if(Object.keys(urlQueryParams).length === 0){
     //   history.push(
     //     createResourceLocatorString(
@@ -307,6 +305,20 @@ class MainPanelComponent extends Component {
     //   );
     // }
     if (
+      urlQueryParams &&
+      Object.keys(urlQueryParams).length === 0 &&
+      Object.getPrototypeOf(urlQueryParams) === Object.prototype
+    ) {
+      history.push(
+        createResourceLocatorString(
+          'SearchPage',
+          routeConfiguration(),
+          {},
+          { pub_hasPublicListing: true, pub_isProviderType: true }
+        )
+      );
+    }
+    if (
       urlQueryParams?.pub_isProviderType !== true ||
       urlQueryParams?.pub_hasPublicListing !== true
     ) {
@@ -315,11 +327,12 @@ class MainPanelComponent extends Component {
       //     'SearchPage',
       //     routeConfiguration(),
       //     {},
-      //     {pub_hasPublicListing:true, pub_isProviderType:true}
+      //     { pub_hasPublicListing: true, pub_isProviderType: true }
       //   )
       // );
       if (
         this.state.keywords === '' &&
+        this.state.practiceArea.length < 1 &&
         urlQueryParams?.pub_hasPublicListing === true &&
         urlQueryParams?.pub_isProviderType === true
       ) {
@@ -335,6 +348,18 @@ class MainPanelComponent extends Component {
 
       if (
         this.state.currentQueryParams.hasOwnProperty('keywords') &&
+        urlQueryParams?.pub_hasPublicListing === true &&
+        urlQueryParams?.pub_isProviderType === true
+      ) {
+        let currParams = this.state.currentQueryParams;
+        delete currParams?.pub_hasPublicListing;
+        delete currParams?.pub_isProviderType;
+        history.push(
+          createResourceLocatorString('SearchPage', routeConfiguration(), {}, { ...currParams })
+        );
+      }
+      if (
+        this.state.currentQueryParams.hasOwnProperty('pub_practiceArea') &&
         urlQueryParams?.pub_hasPublicListing === true &&
         urlQueryParams?.pub_isProviderType === true
       ) {
@@ -364,9 +389,15 @@ class MainPanelComponent extends Component {
       this.state.industry[0]?.value === ''
     ) {
     } else {
-      if (this.state.keywords !== '') {
+      if (this.state.keywords !== '' || this.state.practiceArea.length >= 1) {
+        search.pub_category = 'publicOral';
         delete search.pub_isProviderType;
         delete search.pub_hasPublicListing;
+      }
+      if (this.state.keywords === '' && this.state.practiceArea.length < 1) {
+        if (search.hasOwnProperty('pub_category')) {
+          delete search.pub_category;
+        }
       }
       Object.keys(search).forEach(key => {
         if (search[key] === '') {
@@ -375,16 +406,6 @@ class MainPanelComponent extends Component {
       });
       history.push(createResourceLocatorString('SearchPage', routeConfiguration(), {}, search));
     }
-    if (this.state.keywords !== '') {
-      delete search.pub_isProviderType;
-      delete search.pub_hasPublicListing;
-    }
-    Object.keys(search).forEach(key => {
-      if (search[key] === '') {
-        delete search[key];
-      }
-    });
-    history.push(createResourceLocatorString('SearchPage', routeConfiguration(), {}, search));
   }
 
   // Close the filters by clicking cancel, revert to the initial params

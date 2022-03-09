@@ -185,7 +185,7 @@ const AvailabilityForm = props => {
   const [isUpdateInProgress, setIsUpdateInProgress] = useState(false);
   const [isExceptionButtonDisabled, setIsExceptionButtonDisabled] = useState(true);
   const [exceptionsLoading, setExceptionsLoading] = useState(true);
-
+  const [exceptionUpdateInProgress, setExceptionUpdateInProgress] = useState(false);
   const exceptionHandler = () => {
     const currMoment = new Date(moment()).toISOString();
     // const currMomNew = new Date(currMoment).toISOString();
@@ -212,7 +212,6 @@ const AvailabilityForm = props => {
   //   exceptionHandler()
 
   // });
-  console.log('444', exceptionsFromApi);
   useEffect(() => {
     exceptionHandler();
   }, []);
@@ -258,7 +257,7 @@ const AvailabilityForm = props => {
   // Save exception click handler
   const saveException = values => {
     const { availability, exceptionStartTime, exceptionEndTime } = values;
-    console.log('est', timestampToDate(exceptionStartTime).toISOString());
+    setExceptionUpdateInProgress(true);
     // TODO: add proper seat handling
     const seats = availability === 'available' ? 1 : 0;
 
@@ -271,6 +270,7 @@ const AvailabilityForm = props => {
       })
       .then(() => {
         exceptionHandler();
+        setExceptionUpdateInProgress(false);
         setIsEditExceptionsModalOpen(false);
       })
       .catch(e => {
@@ -330,7 +330,7 @@ const AvailabilityForm = props => {
       <section className={css.section}>
         <header className={css.sectionHeader}>
           <h2 className={css.sectionTitle}>
-            {fetchExceptionsInProgress ? (
+            {exceptionsLoading ? (
               <FormattedMessage id="EditListingAvailabilityPanel.availabilityExceptionsTitleNoCount" />
             ) : (
               <FormattedMessage
@@ -481,7 +481,7 @@ const AvailabilityForm = props => {
             onSubmit={saveException}
             timeZone={availabilityPlan.timezone}
             availabilityExceptions={sortedAvailabilityExceptions}
-            updateInProgress={updateInProgress}
+            updateInProgress={exceptionUpdateInProgress}
             fetchErrors={errors}
             duration={exceptionDuration}
           />

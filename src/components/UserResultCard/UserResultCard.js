@@ -15,6 +15,7 @@ import config from '../../config';
 import { createResourceLocatorString } from '../../util/routes';
 import axios from 'axios';
 import { createSlug } from '../../util/urlHelpers';
+import ReadmoreButton from '../../containers/ReadmoreButton/ReadmoreButton';
 
 function UserResultCardComponent(props) {
   const { listing, currentUser, onShowUser, history } = props;
@@ -62,7 +63,6 @@ function UserResultCardComponent(props) {
   //   )[0]?.name
   // );
   const slug = createSlug(listing?.attributes?.title);
-  console.log(1, listing);
   return (
     <div className={css.cardContainer} key={listing.id.uuid}>
       <div className={css.userContent}>
@@ -95,7 +95,9 @@ function UserResultCardComponent(props) {
       </div>
 
       <div className={css.dmuser}>
-        <div className={css.userBio}>{listing?.attributes?.description}</div>
+        <div className={css.userBio}>
+          <ReadmoreButton description={listing?.attributes?.description} />
+        </div>
         <div className={css.bookingContent}>
           <div className={css.profileBtnContainer}>
             {/* <NamedLink name="ProfilePage" params={{ id: ensuredUser.id.uuid }}>
