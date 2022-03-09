@@ -121,6 +121,8 @@ export const EditListingPricingFormComponent = props => (
                                 validate={required}
                                 type="textarea"
                               ></FieldTextInput>
+                            </div>
+                            <div className={css.fromgroup}>
                               <FieldTextInput
                                 id="vat"
                                 name={`${name}.vat`}

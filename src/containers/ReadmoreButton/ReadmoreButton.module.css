@@ -1,6 +1,9 @@
 @import '../../styles/customMediaQueries.css';
 @import '../../styles/propertySets.css';
 
-.one {
-  color: '#a91722';
+.showdisbth {
+  color: #a91722;
+  padding: 10px 0;
+  cursor: pointer;
+  font-size: 12px;
 }
