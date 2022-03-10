@@ -183,9 +183,13 @@ const AvailabilityForm = props => {
   const [exceptionsFromApi, setExceptionsFromApi] = useState([]);
   const [isReady, setIsReady] = useState(false);
   const [isUpdateInProgress, setIsUpdateInProgress] = useState(false);
+<<<<<<< Updated upstream
   const [isExceptionButtonDisabled, setIsExceptionButtonDisabled] = useState(true);
   const [exceptionsLoading, setExceptionsLoading] = useState(true);
   const [exceptionUpdateInProgress, setExceptionUpdateInProgress] = useState(false);
+=======
+
+>>>>>>> Stashed changes
   const exceptionHandler = () => {
     const currMoment = new Date(moment()).toISOString();
     // const currMomNew = new Date(currMoment).toISOString();
@@ -198,7 +202,10 @@ const AvailabilityForm = props => {
         endDate: newMoment,
       })
       .then(response => {
+<<<<<<< Updated upstream
         setExceptionsLoading(false);
+=======
+>>>>>>> Stashed changes
         const data = response?.data?.data?.data;
         // if(data.length > exceptionsFromApi.length){data.map(i=>setExceptionsFromApi(old => {[...old,i]}))}
         if (JSON.stringify(data) !== JSON.stringify(exceptionsFromApi)) {
@@ -212,6 +219,10 @@ const AvailabilityForm = props => {
   //   exceptionHandler()
 
   // });
+<<<<<<< Updated upstream
+=======
+  console.log('444', exceptionsFromApi);
+>>>>>>> Stashed changes
   useEffect(() => {
     exceptionHandler();
   }, []);
@@ -257,7 +268,11 @@ const AvailabilityForm = props => {
   // Save exception click handler
   const saveException = values => {
     const { availability, exceptionStartTime, exceptionEndTime } = values;
+<<<<<<< Updated upstream
     setExceptionUpdateInProgress(true);
+=======
+    console.log('est', timestampToDate(exceptionStartTime).toISOString());
+>>>>>>> Stashed changes
     // TODO: add proper seat handling
     const seats = availability === 'available' ? 1 : 0;
 
@@ -270,7 +285,10 @@ const AvailabilityForm = props => {
       })
       .then(() => {
         exceptionHandler();
+<<<<<<< Updated upstream
         setExceptionUpdateInProgress(false);
+=======
+>>>>>>> Stashed changes
         setIsEditExceptionsModalOpen(false);
       })
       .catch(e => {
@@ -352,6 +370,10 @@ const AvailabilityForm = props => {
           <div className={css.exceptions}>
             {exceptionsFromApi.map(availabilityException => {
               const { start, end, seats } = availabilityException.attributes;
+<<<<<<< Updated upstream
+=======
+              console.log('end', new Date(end));
+>>>>>>> Stashed changes
               return (
                 <div key={availabilityException.id.uuid} className={css.exception}>
                   <div className={css.exceptionHeader}>
@@ -373,7 +395,10 @@ const AvailabilityForm = props => {
                       className={css.removeExceptionButton}
                       disabled={false}
                       onClick={() => {
+<<<<<<< Updated upstream
                         setExceptionsLoading(true);
+=======
+>>>>>>> Stashed changes
                         axios
                           .delete(`${apiBaseUrl()}/api/deleteException`, {
                             data: {
@@ -382,6 +407,7 @@ const AvailabilityForm = props => {
                               endDate: end,
                             },
                           })
+<<<<<<< Updated upstream
                           .then(res => {
                             // if (res) {
                             //   console.log('in here');
@@ -395,6 +421,20 @@ const AvailabilityForm = props => {
                           })
 
                           .catch(() => {});
+=======
+                          .then(() => {
+                            setTimeout(() => {
+                              exceptionHandler();
+                              console.log('478', exceptionsFromApi);
+                            }, 2000);
+
+                            console.log('delete done');
+                          })
+
+                          .catch(() => {
+                            console.log('delete failed');
+                          });
+>>>>>>> Stashed changes
                       }}
                     >
                       <IconClose size="normal" className={css.removeIcon} />

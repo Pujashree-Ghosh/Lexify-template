@@ -95,6 +95,7 @@ export class AvailabilityPageComponent extends Component {
         //     ? { ...profile, profileImageId: uploadedImage.imageId }
         //     : profile;
         onUpdateProfile(updatedValues, uuid);
+        
       }
       if (isLawyer === false) {
         const {
@@ -284,7 +285,11 @@ export class AvailabilityPageComponent extends Component {
                 <h1 className={css.heading}>
                   <FormattedMessage id="ProfileSettingsPage.heading" />
                 </h1> */}
+<<<<<<< Updated upstream
               {/* {user.id ? (
+=======
+                {/* {user.id ? (
+>>>>>>> Stashed changes
                   <NamedLink
                     className={css.profileLink}
                     name="ProfilePage"
