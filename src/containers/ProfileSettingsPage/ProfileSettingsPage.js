@@ -280,6 +280,7 @@ export class ProfileSettingsPageComponent extends Component {
     return (
       <Page className={css.root} title={title} scrollingDisabled={scrollingDisabled}>
         {/* <LayoutSingleColumn> */}
+<<<<<<< Updated upstream
         <LayoutWrapperTopbar>
           <TopbarContainer currentPage="ProfileSettingsPage" />
           <UserNav selectedPageName="ProfileSettingsPage" listing={currentUserListing} />
@@ -301,6 +302,31 @@ export class ProfileSettingsPageComponent extends Component {
                   <FormattedMessage id="ProfileSettingsPage.viewProfileLink" />
                 </NamedLink>
               ) : null}
+=======
+          <LayoutWrapperTopbar>
+            <TopbarContainer currentPage="ProfileSettingsPage" />
+            <UserNav selectedPageName="ProfileSettingsPage" listing={currentUserListing} />
+          </LayoutWrapperTopbar>
+          {/* <ProfilePageSideNav/> */}
+          <LayoutWrapperMain>
+            <div className={css.content}>
+              {/* {userProfileType} */}
+              <div className={css.headingContainer}>
+                <h1 className={css.heading}>
+                  <FormattedMessage id="ProfileSettingsPage.heading" />
+                </h1>
+                {user.id ? (
+                  <NamedLink
+                    className={css.profileLink}
+                    name="ProfilePage"
+                    params={{ id: user.id.uuid }}
+                  >
+                    <FormattedMessage id="ProfileSettingsPage.viewProfileLink" />
+                  </NamedLink>
+                ) : null}
+              </div>
+              {profileSettingsForm}
+>>>>>>> Stashed changes
             </div>
             {profileSettingsForm}
           </div>

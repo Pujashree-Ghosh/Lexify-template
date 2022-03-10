@@ -22,7 +22,13 @@ const { authenticateFacebook, authenticateFacebookCallback } = require('./api/au
 const { authenticateGoogle, authenticateGoogleCallback } = require('./api/auth/google');
 const { sendOtp, verifyOtp } = require('./api/user');
 const { fetchException, createException, deleteException } = require('./api/exception');
-const { setBooking, getBooking, getAllBooking, deleteBooking } = require('./api/booking');
+const {
+  setBooking,
+  getBooking,
+  getAllBooking,
+  deleteBooking,
+  getProviderBooking,
+} = require('./api/booking');
 
 const createProviderListing = require('./api/create-provider-listing');
 const updateProviderListing = require('./api/update-provider-listing');
@@ -67,6 +73,7 @@ router.post('/user/verify', verifyOtp);
 router.post('/booking/setBooking', setBooking);
 router.post('/booking/getBooking', getBooking);
 router.get('/booking/getBooking', getAllBooking);
+router.post('/booking/getProviderBooking', getProviderBooking);
 router.delete('/booking/deleteBooking', deleteBooking);
 router.post('/fetchexception', fetchException);
 router.post('/createException', createException);

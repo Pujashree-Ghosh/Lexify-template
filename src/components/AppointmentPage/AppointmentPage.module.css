@@ -1,0 +1,247 @@
+@import '../../styles/customMediaQueries.css';
+
+.root {
+}
+
+.tabs {
+  display: none;
+
+  @media (--viewportMedium) {
+    display: flex;
+    justify-content: flex-end;
+    height: 55px;
+    align-items: flex-end;
+    padding: 13px 24px 0 24px;
+  }
+
+  @media (--viewportLarge) {
+    padding: 0 36px;
+  }
+}
+.pointer {
+  pointer-events: none;
+}
+
+.tab {
+  display: flex;
+  align-items: flex-end;
+  height: 100%;
+  margin-left: 16px;
+
+  &:first-child {
+    margin-left: 0;
+  }
+
+  @media (--viewportLarge) {
+    margin-left: 24px;
+  }
+}
+
+.listingPanel {
+  width: 100%;
+  margin: 24px auto 0 auto;
+
+  @media (--viewportMedium) {
+    margin: 48px auto 0 auto;
+  }
+
+  @media (--viewportLarge) {
+    margin: 80px auto 0 auto;
+    max-width: 62.5vw;
+  }
+}
+
+.title {
+  margin: 0 24px 24px 24px;
+
+  @media (--viewportMedium) {
+    margin: 0 24px 48px 24px;
+  }
+
+  @media (--viewportLarge) {
+    margin: 0 36px 48px 36px;
+  }
+}
+
+.listingCards {
+  padding: 0 24px 96px 24px;
+
+  @media (--viewportMedium) {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  @media (--viewportLarge) {
+    padding: 0 36px 36px 36px;
+  }
+}
+
+.listingCard {
+  margin-bottom: 36px;
+  flex-basis: 100%;
+
+  @media (--viewportMedium) {
+    /**
+     * resultPanel: 62.5vw from 1024px = 640px
+     * panelPaddings: - 2*36px = 72px
+     *
+     * columnCount: 2
+     * gutterWidthBetweenColumns: 24px
+     *
+     * (resultPanel - (panelPaddings + gutterWidthBetweenColumns)) / columnCount = listingCardWidth
+     * ergo => listingCardWidth: 272px
+     *
+     * flex-basis: calc((100%/columnCount) - (guttersBetweenColumns / columnCount))
+     */
+    flex-basis: calc(50% - 12px);
+    margin-right: 24px;
+  }
+
+  @media (--viewportXLarge) {
+    /**
+     * resultPanelWidthRatio = 0.625 aka 62.5%
+     *
+     * resultPanel: 62.5vw from 1920px = 1200px
+     * panelPaddings: - 2*36px = 72px
+     *
+     * columnCount: 3
+     * guttersBetweenColumns: 2*24px = 48px
+     *
+     * (resultPanel - (panelPaddings + guttersBetweenColumns)) / columnCount = listingCardWidth
+     * ergo => listingCardWidth: 360px
+     *
+     * flex-basis: calc((100%/columnCount) - (guttersBetweenColumns / columnCount))
+     */
+    flex-basis: calc(33.33% - 16px);
+    margin-right: 24px;
+  }
+}
+
+/**
+ * Remove margin-right from listingCards on the last column
+ * This is a special case in the world of breakpoints. Nth-of-type effects every nth item.
+ * Here we take margin-right away, but we don't want it affect the next column breakpoint.
+ */
+
+.listingCard:nth-of-type(2n) {
+  @media screen and (min-width: 768px) and (max-width: 1920px) {
+    margin-right: 0;
+  }
+}
+
+.listingCard:nth-of-type(3n) {
+  @media (--viewportXLarge) {
+    margin-right: 0;
+  }
+}
+
+.pagination {
+  /* margin-top: auto; pushes pagination to the end of the page. */
+  margin: auto 24px 0 24px;
+
+  @media (--viewportLarge) {
+    margin: auto 36px 0 36px;
+  }
+}
+
+.heading {
+  position: relative;
+  width: 80vw;
+  margin-right: auto;
+  margin-left: auto;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  color: black;
+}
+
+/* horizontaldesign */
+.horizontalcard {
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  border-left: brown 5px solid;
+  display: flex;
+  flex-direction: row;
+  margin: 20px 0px;
+}
+.lefthorizontal {
+  width: 80%;
+  padding-left: 10px;
+}
+.lefttitle {
+  font-size: 20px;
+  font-weight: bold;
+  padding-top: 50px;
+  color: black;
+}
+.description {
+  padding-top: 10px;
+}
+.righthorizontal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 20%;
+  padding-bottom: 20px;
+  /* box-shadow: -3px 0px 2px 0px #aaaaaa; */
+  border-left: rgb(179, 172, 172) 1px solid;
+  padding-top: 10px;
+  margin: 20px 0px;
+}
+.rightlowerdiv {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: -3px 0px 2px 0px #aaaaaa;
+  width: 100%;
+  height: 100%;
+}
+.span {
+  background-color: #ebffef;
+  padding: 2px 2px;
+  padding-right: 15px;
+  padding-left: 15px;
+  color: #2db10b;
+}
+.editbutton {
+  background-color: #2db10b;
+  padding: 2px 2px;
+  border-radius: 5px;
+  padding-right: 20px;
+  padding-left: 18px;
+  align-items: center;
+  border: none;
+  color: #ffffff;
+  font-weight: 500;
+  cursor: pointer;
+}
+.price {
+  padding: 20px;
+  color: #a91722;
+  font-size: 25px;
+  font-weight: bold;
+  font-family: poppins;
+}
+.togglemenu {
+  display: inline;
+}
+.linkcolor {
+  color: #ebffef;
+}
+.readmore {
+  color: #a91722;
+}
+.inlinebutton {
+  width: 200px;
+  color: #f30d0d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+.buttontext {
+  color: #f30d0d;
+}
+.toggleicon {
+  position: absolute;
+  right: 0px;
+}

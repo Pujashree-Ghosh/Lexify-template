@@ -41,6 +41,7 @@ const EducationPage = loadable(() => import(/* webpackChunkName: "EducationPage"
 const PracticeAreaPage = loadable(() => import(/* webpackChunkName: "PracticeAreaPage" */ './components/PracticeAreaPage/PracticeAreaPage'));
 const AvailabilityPage = loadable(() => import(/* webpackChunkName: "AvailabilityPage" */ './components/AvailabilityPage/AvailabilityPage'));
 const VerificationPage = loadable(() => import(/* webpackChunkName: "VerificationPage" */ './components/VerificationPage/VerificationPage'));
+const AppointmentPage = loadable(() => import(/* webpackChunkName: "AppointmentPage" */ './components/AppointmentPage/AppointmentPage'));
 
 // Styleguide helps you to review current components and develop new ones
 const StyleguidePage = loadable(() => import(/* webpackChunkName: "StyleguidePage" */ './containers/StyleguidePage/StyleguidePage'));
@@ -183,6 +184,13 @@ const routeConfiguration = () => {
           params={{ slug: draftSlug, id: draftId, type: 'new', tab: 'description' }}
         />
       ),
+    },
+    {
+      path: '/appointment-page',
+      name: 'AppointmentPage',
+      auth:true,
+      authPage: 'LoginPage',
+      component: AppointmentPage,
     },
     {
       path: '/listings',
