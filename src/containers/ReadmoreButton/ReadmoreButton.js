@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { IoIosArrowDown } from 'react-icons/io';
 import { IoIosArrowUp } from 'react-icons/io';
-// import css from './ReadmoreButton.module.css';
+import css from './ReadmoreButton.module.css';
 
 const BIO_COLLAPSED_LENGTH = 170;
 
@@ -14,20 +14,18 @@ function ReadmoreButton(props) {
   const [expand, setexpand] = useState(true);
   return (
     <div>
-      <div style={{ paddingTop: '12px', color: '#4A4A4A', fontWeight: '400' }}>
-        {expand ? collapsed(desc) : desc}
-      </div>
+      <div>{expand ? collapsed(desc) : desc}</div>
       <div>
         {desc?.length >= BIO_COLLAPSED_LENGTH ? (
           <div
-            // className={css.one}
-            style={{
-              color: '#a91722',
-              paddingTop: '20px',
-              paddingBottom: '10px',
-              fontWeight: '600',
-              cursor: 'pointer',
-            }}
+            className={css.showdisbth}
+            // style={{
+            //   color: '#a91722',
+            //   paddingTop: '20px',
+            //   paddingBottom: '10px',
+            //   fontWeight: '600',
+            //   cursor: 'pointer',
+            // }}
             onClick={() => {
               setexpand(!expand);
               // console.log(expand);

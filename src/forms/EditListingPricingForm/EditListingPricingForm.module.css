@@ -51,16 +51,17 @@
 }
 .inlinefrom {
   display: flex;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   align-items: center;
 }
 .inlinefrom button {
   min-height: 44px;
-  max-width: 48%;
+  max-width: 150px;
 }
 .remove {
   background: #8c8c8c;
   color: #000;
+  margin-left: 30px;
 }
 .remove:hover {
   color: #fff;
