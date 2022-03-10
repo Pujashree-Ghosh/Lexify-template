@@ -74,9 +74,11 @@ const TopbarDesktop = props => {
   const currentPageClass = page => {
     const isAccountSettingsPage =
       page === 'AccountSettingsPage' && ACCOUNT_SETTINGS_PAGES.includes(currentPage);
-    const isProfileSettingPage = 
+    const isProfileSettingPage =
       page === 'ProfileSettingPage' && PROFILE_SETTING_PAGES.includes(currentPage);
-    return currentPage === page || isAccountSettingsPage || isProfileSettingPage? css.currentPage : null;
+    return currentPage === page || isAccountSettingsPage || isProfileSettingPage
+      ? css.currentPage
+      : null;
   };
 
   const profileMenu = authenticatedOnClientSide ? (
@@ -86,6 +88,15 @@ const TopbarDesktop = props => {
       </MenuLabel>
       {currentUser?.attributes?.profile?.protectedData?.isLawyer ? (
         <MenuContent className={css.profileMenuContent}>
+          <MenuItem key="AppointmentPage">
+            <NamedLink
+              className={classNames(css.profileSettingsLink, currentPageClass('AppointmentPage'))}
+              name="AppointmentPage"
+            >
+              <span className={css.menuItemBorder} />
+              <FormattedMessage id="TopbarDesktop.appointmentsLink" />
+            </NamedLink>
+          </MenuItem>
           <MenuItem key="ManageListingsPage">
             <NamedLink
               className={classNames(

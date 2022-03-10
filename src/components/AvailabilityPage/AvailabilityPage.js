@@ -58,7 +58,6 @@ export class AvailabilityPageComponent extends Component {
       intl,
       updateSuccess,
     } = this.props;
-    console.log('hello', updateSuccess);
     const user = ensureCurrentUser(currentUser);
     const { firstName, lastName, bio } = user.attributes.profile;
     const profileImageId = user.profileImage ? user.profileImage.id : null;

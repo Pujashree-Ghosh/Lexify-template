@@ -352,7 +352,6 @@ const AvailabilityForm = props => {
           <div className={css.exceptions}>
             {exceptionsFromApi.map(availabilityException => {
               const { start, end, seats } = availabilityException.attributes;
-              console.log('end', new Date(end));
               return (
                 <div key={availabilityException.id.uuid} className={css.exception}>
                   <div className={css.exceptionHeader}>
