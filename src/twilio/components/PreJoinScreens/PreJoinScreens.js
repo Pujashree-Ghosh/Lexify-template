@@ -73,7 +73,6 @@ export default function PreJoinScreens({ meetingExpired, ...props }) {
       <MediaErrorSnackbar error={mediaError} />
     </>
   );
-  print('preJoin screen', Steps, step);
   const browser = detect();
 
   // console.log(799, meetingExpired);

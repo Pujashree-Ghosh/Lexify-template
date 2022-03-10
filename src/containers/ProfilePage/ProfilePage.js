@@ -137,7 +137,7 @@ export class ProfilePageComponent extends Component {
       listings,
       areaOfLawOptions,
     } = this.props;
-    //console.log(user);
+    // console.log(listings);
     const ensuredCurrentUser = ensureCurrentUser(currentUser);
     const profileUser = ensureUser(user);
     const isCurrentUser =
@@ -844,6 +844,7 @@ const mapStateToProps = state => {
   } = state.ProfilePage;
   const userMatches = getMarketplaceEntities(state, [{ type: 'user', id: userId }]);
   const listings = getMarketplaceEntities(state, userListingRefs);
+  console.log(listings, userListingRefs);
   const user = userMatches.length === 1 ? userMatches[0] : null;
 
   return {

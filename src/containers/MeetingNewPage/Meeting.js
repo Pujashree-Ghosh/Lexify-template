@@ -109,8 +109,6 @@ const Meeting = props => {
   const [customerJoinTime, setCustomerJoinTime] = useState(decoded.customerJoinTime || 0);
   // const [actualStartTime, setActualStartTime] = useState(tempStartTime);
   const [actualEndTime, setActualEndTime] = useState(endTime);
-  console.log(692, moment(actualEndTime).toDate(), moment(startTime).toDate(), currentTime);
-  console.log(69223, moment(currentTime).isAfter(actualEndTime));
 
   // const [customerEnter, setCustomerEnter] = useState(isCustomer || (isProvider && actualStartTime));
   // const {
@@ -184,9 +182,7 @@ const Meeting = props => {
         //   return;
         // }
         let startCount = localStartTime - currentTime;
-        print('counter 1', startCount);
         let startCountTimer = setTimeout(() => {
-          print('counter >>>', isActive);
           // let endCount = localEndTime - moment();
           // print('endCount', endCount);
           // setTimeout(() => {

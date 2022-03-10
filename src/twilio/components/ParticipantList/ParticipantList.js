@@ -53,9 +53,7 @@ export default function ParticipantList() {
   const stateData = useContext(ListingContext);
   if (participants.length === 0) return null; // Don't render this component if there are no remote participants.
   if (participants.length > 0) {
-    print('443 participants', participants);
     const moderatorParticipant = participants.filter(p => p.identity == stateData.moderator);
-    print('443 moderator participants', moderatorParticipant);
     if (moderatorParticipant.length > 0) {
       SignalHelper.emit('moderator', JSON.stringify({ isEnter: true }));
     }
