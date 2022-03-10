@@ -626,7 +626,7 @@ const Meeting = props => {
               renderer={props => (
                 <div className={css.timer}>
                   {props.hours === 0 && props.minutes === 0 && props.seconds === 0 ? null : (
-                    <div>
+                    <div className="timerMessage">
                       <h1>
                         {moment(currentTime).isAfter(actualEndTime)
                           ? ' Buffer time has started '

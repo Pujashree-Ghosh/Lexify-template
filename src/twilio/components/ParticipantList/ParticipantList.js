@@ -13,7 +13,10 @@ import SignalHelper from '../../../util/signalHelper';
 const useStyles = makeStyles(theme =>
   createStyles({
     container: {
-      padding: '2em',
+      // padding: '2em',
+      minWidth: '300px',
+      position: 'absolute',
+      right: '0',
       overflowY: 'auto',
       background: 'rgb(79, 83, 85)',
       gridArea: '1 / 2 / 1 / 3',
