@@ -27,7 +27,7 @@ const useStyles = makeStyles(theme =>
       position: 'relative',
       display: 'flex',
       alignItems: 'center',
-      height: 0,
+      height: '200px',
       overflow: 'hidden',
       marginBottom: '2em',
       '& video': {

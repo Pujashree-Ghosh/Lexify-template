@@ -40,6 +40,7 @@
 .listingPanel {
   width: 100%;
   margin: 24px auto 0 auto;
+  /* overflow-x: hidden; */
 
   @media (--viewportMedium) {
     margin: 48px auto 0 auto;
@@ -47,7 +48,7 @@
 
   @media (--viewportLarge) {
     margin: 80px auto 0 auto;
-    max-width: 62.5vw;
+    max-width: 800px;
   }
 }
 
@@ -162,16 +163,35 @@
   display: flex;
   flex-direction: row;
   margin: 20px 0px;
+  position: relative;
+  @media (max-width: 1023px) {
+    max-width: 95%;
+    margin: 20px auto;
+  }
+  @media (max-width: 575px) {
+    flex-direction: column;
+    padding: 8px;
+  }
 }
 .lefthorizontal {
   width: 80%;
   padding-left: 10px;
+  @media (max-width: 767px) {
+    width: 70%;
+  }
+  @media (max-width: 575px) {
+    padding: 0;
+    width: 100%;
+  }
 }
 .lefttitle {
   font-size: 20px;
   font-weight: bold;
   padding-top: 50px;
   color: black;
+  @media (max-width: 575px) {
+    padding: 0;
+  }
 }
 .description {
   padding-top: 10px;
@@ -186,6 +206,17 @@
   border-left: rgb(179, 172, 172) 1px solid;
   padding-top: 10px;
   margin: 20px 0px;
+  @media (max-width: 767px) {
+    width: 30%;
+  }
+  @media (max-width: 575px) {
+    width: 100%;
+    border-left: 0;
+    margin: 0;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding-bottom: 0;
+  }
 }
 .rightlowerdiv {
   display: flex;
@@ -222,7 +253,11 @@
   font-family: poppins;
 }
 .togglemenu {
-  display: inline;
+  position: absolute;
+  right: 6px;
+  top: -2px;
+  height: auto;
+  width: 30px;
 }
 .linkcolor {
   color: #ebffef;
@@ -231,12 +266,15 @@
   color: #a91722;
 }
 .inlinebutton {
-  width: 200px;
   color: #f30d0d;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: bold;
+  padding: 5px;
+  font-size: 13px;
+  width: auto;
+  min-width: 154px;
 }
 .buttontext {
   color: #f30d0d;
@@ -244,4 +282,13 @@
 .toggleicon {
   position: absolute;
   right: 0px;
+}
+.menuContent {
+  max-width: 154px;
+  right: 0;
+  position: absolute;
+  left: auto !important;
+  width: auto !important;
+  background: #fff;
+  border: 1px solid #d2d2d2;
 }

@@ -52,6 +52,9 @@
   min-height: 44px;
   max-width: 48%;
   font-weight: bolder;
+  @media (max-width: 991px) {
+    max-width: 100%;
+  }
 }
 .remove {
   background: #8c8c8c;
@@ -88,6 +91,16 @@
       right: 0;
       top: 10px;
       cursor: pointer;
+    }
+  }
+}
+.cdin {
+  margin-bottom: 30px;
+  & .cdinwd {
+    width: 48%;
+
+    & input {
+      padding-bottom: 0;
     }
   }
 }

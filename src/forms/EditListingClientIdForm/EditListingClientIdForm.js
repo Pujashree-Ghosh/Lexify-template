@@ -375,100 +375,104 @@ const EditListingClientIdFormComponent = props => (
                 )}
               /> */}
 
-              <div className={css.mb40}>
-                {startDateLabel}
-                <FieldDateInput
-                  className={(css.bookingDates, css.startDatePlaceholder)}
-                  id="startDate"
-                  name="startDate"
-                  placeholderText={startDateLabel}
-                  useMobileMargins
-                  onChange={val => {
-                    if (duration) {
-                      form.change('endDate', val);
-                    } else {
-                      form.change('endDate', {});
-                    }
-                  }}
-                  // myClass={true}
-                />
-              </div>
-              <div>
-                {endDateLabel}
-                <FieldDateInput
-                  id="endDate"
-                  className={css.bookingDates}
-                  name="endDate"
-                  placeholderText={endDateLabel}
-                  useMobileMargins
-                  isDayBlocked={day => {
-                    return moment(values?.startDate.date).isAfter(day);
-                  }}
-                  disabled={duration ? true : false}
-                />
-              </div>
-              <div>
-                {startTimeLabel}
-                <FieldSelect
-                  id="startHour"
-                  name="startHour"
-                  // label={startTimeLabel}
-                  className={css.bookingDates}
-                  validate={composeValidators(required('Start hour is required'))}
-                  onChange={handleStartTimeChange}
-                >
-                  <option value="">Choose Start Hour</option>
-                  {ALL_HOURS.map(i => (
-                    <option value={i}>{i}</option>
-                  ))}
-                </FieldSelect>
-              </div>
-              <div>
-                {endTimeLabel}
-
-                {endHours && endHours.length > 0 ? (
-                  <FieldSelect
-                    id="endHour"
-                    name="endHour"
-                    // label={endTimeLabel}
+              <div className={`${css.inlinefrom} ${css.cdin} mobiledsd`}>
+                <div className={css.cdinwd}>
+                  {startDateLabel}
+                  <FieldDateInput
+                    className={(css.bookingDates, css.startDatePlaceholder)}
+                    id="startDate"
+                    name="startDate"
+                    placeholderText={startDateLabel}
+                    useMobileMargins
+                    onChange={val => {
+                      if (duration) {
+                        form.change('endDate', val);
+                      } else {
+                        form.change('endDate', {});
+                      }
+                    }}
+                    // myClass={true}
+                  />
+                </div>
+                <div className={css.cdinwd}>
+                  {endDateLabel}
+                  <FieldDateInput
+                    id="endDate"
                     className={css.bookingDates}
-                    validate={composeValidators(required('End hour is required'))}
+                    name="endDate"
+                    placeholderText={endDateLabel}
+                    useMobileMargins
+                    isDayBlocked={day => {
+                      return moment(values?.startDate.date).isAfter(day);
+                    }}
                     disabled={duration ? true : false}
-                  >
-                    <option value="">Choose End Hour</option>
-                    {endHours.map(i => (
-                      <option value={i}>{i}</option>
-                    ))}
-                  </FieldSelect>
-                ) : initialEndHours ? (
+                  />
+                </div>
+              </div>
+              <div className={`${css.inlinefrom} ${css.cdin}`}>
+                <div className={css.cdinwd}>
+                  {startTimeLabel}
                   <FieldSelect
-                    id="endHour"
-                    name="endHour"
-                    // label={endTimeLabel}
+                    id="startHour"
+                    name="startHour"
+                    // label={startTimeLabel}
                     className={css.bookingDates}
-                    validate={composeValidators(required('End hour is required'))}
-                    disabled={duration ? true : false}
+                    validate={composeValidators(required('Start hour is required'))}
+                    onChange={handleStartTimeChange}
                   >
-                    <option value="">Choose End Hour</option>
-                    {initialEndHours.map(i => (
-                      <option value={i}>{i}</option>
-                    ))}
-                  </FieldSelect>
-                ) : (
-                  <FieldSelect
-                    id="endHour"
-                    name="endHour"
-                    // label={endTimeLabel}
-                    className={css.bookingDates}
-                    validate={composeValidators(required('End hour is required'))}
-                    disabled={duration ? true : false}
-                  >
-                    <option value="">Choose End Hour</option>
+                    <option value="">Choose Start Hour</option>
                     {ALL_HOURS.map(i => (
                       <option value={i}>{i}</option>
                     ))}
                   </FieldSelect>
-                )}
+                </div>
+                <div className={css.cdinwd}>
+                  {endTimeLabel}
+
+                  {endHours && endHours.length > 0 ? (
+                    <FieldSelect
+                      id="endHour"
+                      name="endHour"
+                      // label={endTimeLabel}
+                      className={css.bookingDates}
+                      validate={composeValidators(required('End hour is required'))}
+                      disabled={duration ? true : false}
+                    >
+                      <option value="">Choose End Hour</option>
+                      {endHours.map(i => (
+                        <option value={i}>{i}</option>
+                      ))}
+                    </FieldSelect>
+                  ) : initialEndHours ? (
+                    <FieldSelect
+                      id="endHour"
+                      name="endHour"
+                      // label={endTimeLabel}
+                      className={css.bookingDates}
+                      validate={composeValidators(required('End hour is required'))}
+                      disabled={duration ? true : false}
+                    >
+                      <option value="">Choose End Hour</option>
+                      {initialEndHours.map(i => (
+                        <option value={i}>{i}</option>
+                      ))}
+                    </FieldSelect>
+                  ) : (
+                    <FieldSelect
+                      id="endHour"
+                      name="endHour"
+                      // label={endTimeLabel}
+                      className={css.bookingDates}
+                      validate={composeValidators(required('End hour is required'))}
+                      disabled={duration ? true : false}
+                    >
+                      <option value="">Choose End Hour</option>
+                      {ALL_HOURS.map(i => (
+                        <option value={i}>{i}</option>
+                      ))}
+                    </FieldSelect>
+                  )}
+                </div>
               </div>
               {bookingError ? (
                 <span style={{ color: ' red' }}>You already have something in this time slot</span>

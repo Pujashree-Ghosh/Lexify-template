@@ -5,10 +5,26 @@
 .PhoneInputInput {
     padding-right: 80px;
 }
+.timerMessage{
+    position: absolute;
+    z-index: 99;
+    padding: 20px 8px;
+    font-size: 18px;
+    color: #fff;
+
+}
+.timerMessage h1{
+    font-size: 18px;
+        
+}
 @media (min-width: 1440px) {
  
 }
 @media (max-width: 767px) {
+.mobiledsd .SingleDatePickerInput {
+ margin: 0 !important;
+width: 100% !important;
+}
 
 }
 @media (max-width: 575px) {

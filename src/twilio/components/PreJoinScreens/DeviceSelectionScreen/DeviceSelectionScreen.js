@@ -104,13 +104,6 @@ export default function DeviceSelectionScreen({
   //   });
   // }, []);
 
-  print(
-    '111  DeviceSelectionScreen',
-    isProvider
-    // disableButtons,
-    // isMeetingDisbled,
-    // isFetching || isAcquiringLocalTracks || isConnecting
-  );
   return (
     <>
       <Typography variant="h5" className={classes.gutterBottom}>

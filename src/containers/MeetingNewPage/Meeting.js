@@ -26,8 +26,9 @@ import { types as sdkTypes } from '../../util/sdkLoader';
 
 const { UUID } = sdkTypes;
 import config from '../../config';
+import { apiBaseUrl } from '../../util/api';
 // import { MonetizationOn } from '@material-ui/icons';
-// import io from 'socket.io-client';
+import io from 'socket.io-client';
 const secret = config.secretCode;
 const timeZone = moment.tz.guess();
 const Container = styled('div')({
@@ -90,7 +91,7 @@ const Meeting = props => {
   const [isLoading, setLoading] = useState(false);
   const [isActive, setActive] = useState(false);
   const [meetingState, setMeetingState] = useState(roomState);
-  // let socket;
+  let socket;
   const [customerEnterInWaitingRoom, setcustomerEnterInWaitingRoom] = useState(isCustomer);
   const [customerEnterInMeetingRoom, setcustomerEnterInMeetingRoom] = useState(false);
   const [providerEnterInWaitingRoom, setproviderEnterInWaitingRoom] = useState(isProvider);
@@ -108,8 +109,6 @@ const Meeting = props => {
   const [customerJoinTime, setCustomerJoinTime] = useState(decoded.customerJoinTime || 0);
   // const [actualStartTime, setActualStartTime] = useState(tempStartTime);
   const [actualEndTime, setActualEndTime] = useState(endTime);
-  console.log(692, moment(actualEndTime).toDate(), moment(startTime).toDate(), currentTime);
-  console.log(69223, moment(currentTime).isAfter(actualEndTime));
 
   // const [customerEnter, setCustomerEnter] = useState(isCustomer || (isProvider && actualStartTime));
   // const {
@@ -137,7 +136,7 @@ const Meeting = props => {
   // const meetingTimeDuration = moment().isSameOrBefore(startTime)
   //   ? moment(endTime).diff(moment(startTime), 'm')
   //   : moment(endTime).diff(moment(startTime).add(5, 'm'), 'm');
-  const roomName = listingId + 'MKH' + transactionId;
+  const roomName = listingId + transactionId;
 
   // let estEndTime = moment(actualStartTime).add(meetingTimeDuration, 'm');
   // console.log(
@@ -183,9 +182,7 @@ const Meeting = props => {
         //   return;
         // }
         let startCount = localStartTime - currentTime;
-        print('counter 1', startCount);
         let startCountTimer = setTimeout(() => {
-          print('counter >>>', isActive);
           // let endCount = localEndTime - moment();
           // print('endCount', endCount);
           // setTimeout(() => {
@@ -372,20 +369,20 @@ const Meeting = props => {
   }, [actualEndTime, roomState]);
 
   useEffect(() => {
-    const backend_server = process.env.REACT_APP_BACKEND_SERVER_URL;
-    //   socket = io(backend_server, {
-    //     query: {
-    //       roomId: transactionId + '-' + listingId,
-    //       // role,
-    //       // ...(decoded.actualStartTime ? { actualStartTime: decoded.actualStartTime } : {}),
-    //       // ...(decoded.customerJoinTime ? { customerJoinTime: decoded.customerJoinTime } : {}),
-    //       // maxStartTime: new Date(meetingExpTime).getTime(),
-    //       // customerJoinTime
-    //     },
-    //   });
-    //   if (typeof window !== undefined) {
-    //     window.socket = socket;
-    //   }
+    const backend_server = apiBaseUrl();
+    socket = io(backend_server, {
+      query: {
+        roomId: transactionId + listingId,
+        // role,
+        // ...(decoded.actualStartTime ? { actualStartTime: decoded.actualStartTime } : {}),
+        // ...(decoded.customerJoinTime ? { customerJoinTime: decoded.customerJoinTime } : {}),
+        // maxStartTime: new Date(meetingExpTime).getTime(),
+        // customerJoinTime
+      },
+    });
+    if (typeof window !== undefined) {
+      window.socket = socket;
+    }
     //   socket.on(
     //     'customer-connected',
     //     ({
@@ -590,7 +587,7 @@ const Meeting = props => {
                 status={'waiting_duration'}
               />
             )} */}
-            {remainingTime && (
+            {/* {remainingTime && (
               <Countdown
                 date={remainingTime}
                 // date={Date.now() + 2000}
@@ -616,7 +613,7 @@ const Meeting = props => {
                 //   );
                 // }}
               />
-            )}
+            )} */}
           </div>
         ) : providerEnterInMeetingRoom ? (
           <Main>
@@ -629,7 +626,7 @@ const Meeting = props => {
               renderer={props => (
                 <div className={css.timer}>
                   {props.hours === 0 && props.minutes === 0 && props.seconds === 0 ? null : (
-                    <div>
+                    <div className="timerMessage">
                       <h1>
                         {moment(currentTime).isAfter(actualEndTime)
                           ? ' Buffer time has started '
@@ -724,7 +721,7 @@ const Meeting = props => {
                 status={'waiting_duration'}
               />
             )} */}
-            {remainingTime && (
+            {/* {remainingTime && (
               <Countdown
                 date={remainingTime}
                 // date={Date.now() + 2000}
@@ -750,7 +747,7 @@ const Meeting = props => {
                   );
                 }}
               />
-            )}
+            )} */}
           </div>
         )}
       </Container>

@@ -11,7 +11,7 @@ import mLogo from '../../../assets/footerlogo.svg';
 
 import VideoLogo from '../../../assets/video_icon.png';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   background: {
     display: 'flex',
     alignItems: 'center',
@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
   innerContainer: {
     display: 'flex',
     width: '888px',
-    height: '379px',
+    // height: '379px',
     borderRadius: '8px',
     boxShadow: '0px 2px 4px 0px rgba(40, 42, 43, 0.3)',
     overflow: 'hidden',
@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     backgroundImage: Swoosh,
     backgroundSize: 'cover',
-    width: '296px',
+    width: '20px',
     [theme.breakpoints.down('sm')]: {
       width: '100%',
       height: '100px',
@@ -106,7 +106,7 @@ const useStyles = makeStyles((theme) => ({
 //   subContent?: React.ReactNode;
 // }
 
-const IntroContainer = (props) => {
+const IntroContainer = props => {
   const classes = useStyles();
   const { user } = useAppState();
   const location = useLocation();
@@ -121,12 +121,12 @@ const IntroContainer = (props) => {
       <div className={classes.container}>
         <div className={`${classes.innerContainer} innr-con-mod`}>
           <div className={`${classes.swooshContainer} inner-side-mod`}>
-            <div className={classes.logoContainer}>
+            {/* <div className={classes.logoContainer}>
               <img src={VideoLogo} class="logoContainerImg" />
               <Typography variant="h6" className={classes.title}>
                 Video Conference
               </Typography>
-            </div>
+            </div> */}
           </div>
           <div className={`${classes.content} inner-right-mod`}>{props.children}</div>
         </div>
