@@ -89,3 +89,26 @@
     width: 100%;
   }
 }
+.disclaimercheckbox {
+  display: flex;
+  flex-direction: row;
+}
+.disclaimer {
+  margin-bottom: 10px;
+}
+.disclaimerLink {
+  margin-bottom: 10px;
+}
+.linkUl {
+  border-bottom: 2px solid var(--attentionColor);
+  cursor: pointer;
+}
+.modalOk {
+  background-color: var(--successColor);
+  width: 50%;
+  margin: 0 auto 24px;
+  /* border-radius: 1px; */
+  @media (max-width: 1023px) {
+    margin: 10px 0 0;
+  }
+}

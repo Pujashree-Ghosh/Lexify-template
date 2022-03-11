@@ -189,6 +189,7 @@ export class ListingPageComponent extends Component {
       getListing,
       getOwnListing,
       intl,
+      history,
       onManageDisableScrolling,
       onFetchTimeSlots,
       params: rawParams,
@@ -412,7 +413,7 @@ export class ListingPageComponent extends Component {
             <div className={css.listingpagecon}>
               <div className={css.contentContainer}>
                 <div className={css.mainContent}>
-                  <SectionImages
+                  {/* <SectionImages
                     title={title}
                     listing={currentListing}
                     isOwnListing={isOwnListing}
@@ -426,8 +427,23 @@ export class ListingPageComponent extends Component {
                     onImageCarouselClose={() => this.setState({ imageCarouselOpen: false })}
                     handleViewPhotosClick={handleViewPhotosClick}
                     onManageDisableScrolling={onManageDisableScrolling}
-                  />
+                  /> */}
                   <SectionAvatar user={currentAuthor} params={params} />
+                  <div
+                    className={css.viewProfileLink}
+                    onClick={() => {
+                      history.push(
+                        createResourceLocatorString(
+                          'ProfilePage',
+                          routeConfiguration(),
+                          { id: currentAuthor.id.uuid },
+                          {}
+                        )
+                      );
+                    }}
+                  >
+                    View listings
+                  </div>
                   <SectionHeading
                     priceTitle={priceTitle}
                     formattedPrice={formattedPrice}
@@ -439,7 +455,7 @@ export class ListingPageComponent extends Component {
                     //onContactUser={this.onContactUser}
                   />
                   <SectionDescriptionMaybe description={description} />
-                  <SectionDisclaimer publicData={publicData} />
+                  {/* <SectionDisclaimer publicData={publicData} /> */}
                   {/*<SectionFeaturesMaybe options={yogaStylesOptions} publicData={publicData} />*/}
                   {/*<SectionMapMaybe
                     geolocation={geolocation}

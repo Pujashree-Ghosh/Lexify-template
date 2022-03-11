@@ -708,7 +708,7 @@ export class TransactionPanelComponent extends Component {
       <div className={classes}>
         <div className={css.container}>
           <div className={css.txInfo}>
-            <DetailCardImage
+            {/* <DetailCardImage
               rootClassName={css.imageWrapperMobile}
               avatarWrapperClassName={css.avatarWrapperMobile}
               listingTitle={listingTitle}
@@ -717,7 +717,7 @@ export class TransactionPanelComponent extends Component {
               isCustomer={isCustomer}
               listingId={currentListing.id && currentListing.id.uuid}
               listingDeleted={listingDeleted}
-            />
+            /> */}
             {isProvider ? (
               <div className={css.avatarWrapperProviderDesktop}>
                 <AvatarLarge user={currentCustomer} className={css.avatarDesktop} />
@@ -893,7 +893,7 @@ export class TransactionPanelComponent extends Component {
 
           <div className={css.asideDesktop}>
             <div className={css.detailCard}>
-              <DetailCardImage
+              {/* <DetailCardImage
                 avatarWrapperClassName={css.avatarWrapperDesktop}
                 listingTitle={listingTitle}
                 image={firstImage}
@@ -901,16 +901,16 @@ export class TransactionPanelComponent extends Component {
                 isCustomer={isCustomer}
                 listingId={currentListing.id && currentListing.id.uuid}
                 listingDeleted={listingDeleted}
-              />
+              /> */}
 
-              <DetailCardHeadingsMaybe
+              {/* <DetailCardHeadingsMaybe
                 showDetailCardHeadings={stateData.showDetailCardHeadings}
                 listingTitle={listingTitle}
                 subTitle={bookingSubTitle}
                 location={location}
                 geolocation={geolocation}
                 showAddress={stateData.showAddress}
-              />
+              /> */}
               {stateData.showBookingPanel ? (
                 <BookingPanel
                   className={css.bookingPanel}

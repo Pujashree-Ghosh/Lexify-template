@@ -7,7 +7,7 @@ import { FormattedMessage, intlShape, injectIntl } from '../../util/reactIntl';
 import { timestampToDate } from '../../util/dates';
 import { propTypes } from '../../util/types';
 import config from '../../config';
-import { Form, IconSpinner, PrimaryButton } from '../../components';
+import { FieldCheckbox, Form, IconSpinner, Modal, PrimaryButton } from '../../components';
 import EstimatedBreakdownMaybe from './EstimatedBreakdownMaybe';
 import FieldDateAndTimeInput from './FieldDateAndTimeInput';
 
@@ -15,6 +15,11 @@ import css from './BookingTimeForm.module.css';
 import axios from 'axios';
 import { apiBaseUrl } from '../../util/api';
 import moment from 'moment';
+// import { FieldCheckbox } from '../../examples';
+// import FieldCheckbox from './FieldCheckbox';
+
+import { Checkbox } from '@material-ui/core';
+import FieldCheckboxComponent from '../../components/FieldCheckbox/FieldCheckbox';
 
 export class BookingTimeFormComponent extends Component {
   constructor(props) {
@@ -22,6 +27,7 @@ export class BookingTimeFormComponent extends Component {
     this.state = {
       bookingDetails: [],
       startDate: '',
+      showDisclaimer: false,
     };
 
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
@@ -94,6 +100,7 @@ export class BookingTimeFormComponent extends Component {
             intl,
             isOwnListing,
             listingId,
+            listing,
             submitButtonWrapperClassName,
             unitType,
             values,
@@ -132,7 +139,6 @@ export class BookingTimeFormComponent extends Component {
                   start: moment(startDate)
                     .clone()
                     .subtract(beforeBufferTime + afterBufferTime - 1, 'm')
-
                     .toDate(),
                   end: moment(endDate)
                     .clone()
@@ -228,6 +234,7 @@ export class BookingTimeFormComponent extends Component {
             startDateInputProps,
             endDateInputProps,
           };
+          console.log(values);
 
           return (
             <Form onSubmit={handleSubmit} className={classes} enforcePagePreloadFor="CheckoutPage">
@@ -237,6 +244,21 @@ export class BookingTimeFormComponent extends Component {
                   this.handleOnChange(values);
                 }}
               />
+              <Modal
+                id="boolingPageDisclaimer"
+                isOpen={this.state.showDisclaimer}
+                onClose={() => this.setState({ showDisclaimer: false })}
+                usePortal
+                onManageDisableScrolling={() => {}}
+              >
+                <div className={css.disclaimer}>{listing?.attributes?.publicData?.disclaimer}</div>
+                <PrimaryButton
+                  className={css.modalOk}
+                  onClick={() => this.setState({ showDisclaimer: false })}
+                >
+                  Ok
+                </PrimaryButton>
+              </Modal>
               {monthlyTimeSlots && timeZone ? (
                 <FieldDateAndTimeInput
                   {...dateInputProps}
@@ -251,6 +273,7 @@ export class BookingTimeFormComponent extends Component {
                   pristine={pristine}
                   timeZone={timeZone}
                   duration={duration}
+                  listing={listing}
                 />
               ) : null}
               {this.state.bookingDetails && this.state.bookingDetails.length > 0 ? (
@@ -275,9 +298,34 @@ export class BookingTimeFormComponent extends Component {
                   }
                 />
               </p>
+              {/* <div className={css.disclaimercheckbox}>
+                <input type="checkbox" className={css.Checkbox} />
+                <div className={css.disclaimer}>
+                  I have read the{' '}
+                  <span onClick={() => console.log('clieck')}>
+                    <u>disclaimer</u>
+                  </span>
+                </div>
+              </div> */}
+              {/* </checkbox> */}
+              <div className={css.disclaimercheckbox}>
+                <FieldCheckbox id="disclaimer" name="disclaimer" label={''} value="disclaimer" />
+                <div className={css.disclaimerLink}>
+                  <div>
+                    I have read the{' '}
+                    <span
+                      className={css.linkUl}
+                      onClick={() => this.setState({ showDisclaimer: true })}
+                    >
+                      disclaimer
+                    </span>
+                  </div>
+                </div>
+              </div>
+
               {!isOwnListing && this.state.bookingDetails && !this.state.bookingDetails.length && (
                 <div className={submitButtonClasses}>
-                  <PrimaryButton type="submit">
+                  <PrimaryButton type="submit" disabled={!values.disclaimer?.length > 0}>
                     <FormattedMessage id="BookingTimeForm.requestToBook" />
                   </PrimaryButton>
                 </div>

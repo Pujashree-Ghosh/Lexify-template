@@ -611,3 +611,11 @@
 .listingpagecon {
   background: #f8f8f8;
 }
+.viewProfileLink {
+  text-decoration: underline 2px var(--attentionColor);
+  text-underline-offset: 2px;
+  cursor: pointer;
+  width: fit-content;
+  margin-bottom: 20px;
+  font-size: 16px;
+}
