@@ -56,7 +56,13 @@
   flex-shrink: 0;
   margin-right: 18px;
 }
-
+.price {
+  padding: 0 10px 0 0;
+  margin: 0px;
+  align-items: center;
+  color: #a91722;
+  font-weight: 800;
+}
 .priceValue {
   /* Font */
   @apply --marketplaceH3FontStyles;
@@ -133,39 +139,48 @@
 }
 .userContent {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   padding-left: 10px;
   padding-top: 10px;
   padding-bottom: 10px;
   padding-right: 20px;
-  max-width: 240px;
-  flex-basis: 240px;
-  align-items: center;
+  max-width: 350px;
+  flex-basis: 350px;
   @media (max-width: 767px) {
-    max-width: 100%;
-    flex-basis: 100%;
-    align-items: center;
+    flex-direction: row;
+    flex-basis: auto;
     width: 100%;
-    border: 0;
-    padding: 5px;
+    max-width: 100%;
+    padding: 10px 0;
+  }
+  @media (max-width: 575px) {
+    flex-direction: column;
   }
 }
+.avtrpp {
+  display: flex;
+  align-items: center;
+}
 .userBio {
-  flex-basis: calc(100% - 146px);
-  padding: 0 15px;
+  flex-basis: calc(100% - 20px);
+  padding: 0 35px 0 0;
   word-break: break-all;
   line-height: 20px;
   border-right: 1px solid rgb(201, 198, 198);
-  border-left: 1px solid rgb(201, 198, 198);
+  /* border-left: 1px solid rgb(201, 198, 198); */
   min-height: 80px;
-  align-items: center;
+  /* align-items: center; */
   display: flex;
   font-size: 14px;
+  flex-direction: column;
+  justify-content: center;
 
   @media (max-width: 767px) {
     width: 100%;
-    border-left: 0;
-    min-height: 30px;
+    border-right: 0;
+    min-height: none;
+    flex-basis: 100%;
+    padding: 0;
   }
   @media (max-width: 575px) {
     min-height: auto;
@@ -180,16 +195,18 @@
   flex-direction: row;
   justify-content: space-between;
   margin-bottom: 20px;
-  align-items: center;
+  /* align-items: center; */
   padding: 15px;
-  border-radius: 10px;
+  border-radius: 0;
+  border-left: 7px solid #a91722;
+  box-shadow: 1px 0px 8px rgba(0, 0, 0, 0.2);
   @media (max-width: 767px) {
     flex-direction: column;
   }
 }
 .dmuser {
   display: flex;
-  flex-basis: calc(100% - 240px);
+  flex-basis: calc(100% - 200px);
   align-items: center;
   @media (max-width: 767px) {
     width: 100%;
@@ -200,7 +217,14 @@
   }
 }
 .bookingContent {
-  padding: 20px 10px 20px 20px;
+  padding: 15px 0 0;
+  display: flex;
+  align-items: center;
+
+  @media (max-width: 767px) {
+    margin: 0 0 0 auto;
+    flex-basis: 40%;
+  }
   @media (max-width: 575px) {
     padding: 10px 0 0;
     width: 100%;
@@ -209,8 +233,8 @@
 .userInfo {
   margin-left: 10px;
   text-transform: capitalize;
-  @media (max-width: 575px) {
-  }
+  /* @media (max-width: 575px) {
+  } */
   & .userName {
     font-size: 14px;
     color: #38394e;
@@ -225,10 +249,13 @@
   }
 }
 .profileBtnContainer {
-  margin-left: auto;
-  /* margin-right: 20px; */
+  width: calc(100% - 74px);
+  margin: 0 0 0 auto;
+  @media (max-width: 767px) {
+    width: calc(100% - 8px);
+  }
   @media (max-width: 575px) {
-    margin-right: auto;
+    width: calc(100% - 50%);
   }
 }
 .profileBtn {
@@ -243,7 +270,7 @@
   font-weight: 300;
   cursor: pointer;
   border: 0;
-  max-width: 200px;
+  max-width: 100%;
   line-height: 20px;
   @media (max-width: 575px) {
     max-width: none;
