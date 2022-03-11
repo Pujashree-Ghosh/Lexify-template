@@ -10,7 +10,10 @@ import biolocationIcon from '../../assets/material-location-on.svg';
 import moment from 'moment';
 function AppointmentCardComponent(props) {
   const { unitType, type, tx, intl, stateData } = props;
-  const { provider, listing, booking } = tx;
+  const provider = tx && tx.provider;
+  const listing = tx && tx.listing;
+  const booking = tx && tx.booking;
+  // const { provider, listing, booking } = tx;
   console.log(listing);
 
   return (
