@@ -103,7 +103,12 @@ function ServicesPageComponent(props) {
     <Page className={css.root} title={title} scrollingDisabled={scrollingDisabled}>
       <LayoutSingleColumn>
         <LayoutWrapperTopbar>
-          <TopbarContainer currentPage="Services" />
+          <TopbarContainer
+            className={css.topbar}
+            mobileRootClassName={css.mobileTopbar}
+            desktopClassName={css.desktopTopbar}
+            currentPage="ServicesPage"
+          />
           <UserNav selectedPageName="ServicesPage" />
         </LayoutWrapperTopbar>
         <LayoutWrapperMain>

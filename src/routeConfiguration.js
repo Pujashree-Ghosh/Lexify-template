@@ -18,6 +18,7 @@ const ContactDetailsPage = loadable(() => import(/* webpackChunkName: "ContactDe
 const EditListingPage = loadable(() => import(/* webpackChunkName: "EditListingPage" */ './containers/EditListingPage/EditListingPage'));
 const EmailVerificationPage = loadable(() => import(/* webpackChunkName: "EmailVerificationPage" */ './containers/EmailVerificationPage/EmailVerificationPage'));
 const InboxPage = loadable(() => import(/* webpackChunkName: "InboxPage" */ './containers/InboxPage/InboxPage'));
+const MyAppointmentPage = loadable(() => import(/* webpackChunkName: "MyAppointmentPage" */ './containers/MyAppointmentPage/MyAppointmentPage'));
 const LandingPage = loadable(() => import(/* webpackChunkName: "LandingPage" */ './containers/LandingPage/LandingPage'));
 const ListingPage = loadable(() => import(/* webpackChunkName: "ListingPage" */ /* webpackPrefetch: true */ './containers/ListingPage/ListingPage'));
 const PasswordChangePage = loadable(() => import(/* webpackChunkName: "PasswordChangePage" */ './containers/PasswordChangePage/PasswordChangePage'));
@@ -41,7 +42,7 @@ const EducationPage = loadable(() => import(/* webpackChunkName: "EducationPage"
 const PracticeAreaPage = loadable(() => import(/* webpackChunkName: "PracticeAreaPage" */ './components/PracticeAreaPage/PracticeAreaPage'));
 const AvailabilityPage = loadable(() => import(/* webpackChunkName: "AvailabilityPage" */ './components/AvailabilityPage/AvailabilityPage'));
 const VerificationPage = loadable(() => import(/* webpackChunkName: "VerificationPage" */ './components/VerificationPage/VerificationPage'));
-const AppointmentPage = loadable(() => import(/* webpackChunkName: "AppointmentPage" */ './components/AppointmentPage/AppointmentPage'));
+// const AppointmentPage = loadable(() => import(/* webpackChunkName: "AppointmentPage" */ './components/AppointmentPage/AppointmentPage'));
 
 // Styleguide helps you to review current components and develop new ones
 const StyleguidePage = loadable(() => import(/* webpackChunkName: "StyleguidePage" */ './containers/StyleguidePage/StyleguidePage'));
@@ -185,13 +186,13 @@ const routeConfiguration = () => {
         />
       ),
     },
-    {
-      path: '/appointment-page',
-      name: 'AppointmentPage',
-      auth:true,
-      authPage: 'LoginPage',
-      component: AppointmentPage,
-    },
+    // {
+    //   path: '/appointment-page',
+    //   name: 'AppointmentPage',
+    //   auth:true,
+    //   authPage: 'LoginPage',
+    //   component: AppointmentPage,
+    // },
     {
       path: '/listings',
       name: 'ManageListingsPage',
@@ -316,6 +317,21 @@ const routeConfiguration = () => {
       authPage: 'LoginPage',
       component: InboxPage,
       loadData: pageDataLoadingAPI.InboxPage.loadData,
+    },
+    {
+      path: '/appointment',
+      name: 'MyAppoinmentBasePage',
+      auth: true,
+      authPage: 'LoginPage',
+      component: () => <NamedRedirect name="MyAppointmentPage" params={{ tab: 'pending' }} />,
+    },
+    {
+      path: '/appointment/:tab',
+      name: 'MyAppointmentPage',
+      auth: true,
+      authPage: 'LoginPage',
+      component: MyAppointmentPage,
+      loadData: pageDataLoadingAPI.MyAppointmentPage.loadData,
     },
     {
       path: '/order/:id',

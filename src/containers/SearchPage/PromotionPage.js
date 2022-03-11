@@ -96,7 +96,12 @@ function PromotionPageComponent(props) {
     <Page className={css.root} title={title} scrollingDisabled={scrollingDisabled}>
       <LayoutSingleColumn>
         <LayoutWrapperTopbar>
-          <TopbarContainer currentPage="Promotion" />
+          <TopbarContainer
+            className={css.topbar}
+            mobileRootClassName={css.mobileTopbar}
+            desktopClassName={css.desktopTopbar}
+            currentPage="PromotionPage"
+          />
           <UserNav selectedPageName="PromotionPage" />
         </LayoutWrapperTopbar>
         <LayoutWrapperMain>
