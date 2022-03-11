@@ -14,7 +14,7 @@ function ReadmoreButton(props) {
   const [expand, setexpand] = useState(true);
   return (
     <div>
-      <div>{expand ? collapsed(desc) : desc}</div>
+      <div className={css.destxt}>{expand ? collapsed(desc) : desc}</div>
       <div>
         {desc?.length >= BIO_COLLAPSED_LENGTH ? (
           <div
