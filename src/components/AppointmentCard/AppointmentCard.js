@@ -69,41 +69,49 @@ function AppointmentCardComponent(props) {
   return (
     <div className={css.cardContainer} key={1}>
       <div className={css.dateInfo}>
-        <div className={css.weekDay}>{data.startDate.dayOfWeek}</div>
-        <div className={css.day}>{data.startDate.day}</div>
-        <div className={css.monthYear}>{`${data.startDate.month},${data.startDate.year}`}</div>
+        <span>{data.startDate.dayOfWeek}</span>
+        <span className={css.stday}>{data.startDate.day}</span>
+        <span>{`${data.startDate.month},${data.startDate.year}`}</span>
       </div>
       <div className={css.horizontal}>
         <div className={css.statusContainer}>
           {data.pending ? (
-            <p className={css.status}>'Pending Confimation'</p>
+            <p className={css.status}>Pending Confimation</p>
           ) : data.upcoming ? (
-            <p className={css.status}>'Pending'</p>
+            <p className={`${css.status} ${css.statuspending}`}>Pending</p>
           ) : data.completed ? (
-            <p className={css.status}>'Completed'</p>
+            <p className={`${css.status} ${css.statuscom}`}>Completed</p>
           ) : (
             ''
           )}
         </div>
         <div className={css.providerAndListing}>
           <div className={css.listingDurationDeadline}>
-            <div className={css.startTime}>6.00 PM</div>
-            <div className={css.listingInfo}>
-              <p className={css.listingTitle}>{data.listingTitle}</p>
-              {/* <p className={css.listingDescription}>
+            <div className={css.startTime}>
+              <img src="/static/icons/timeicon.png" />
+              6.00 PM
+            </div>
+
+            <p className={css.listingInfo}>{data.listingTitle}</p>
+            {/* <p className={css.listingDescription}>
                 {listing.attributes.description.length > 150
                     ? listing.attributes.description.slice(0, 150) + '...'
                     : listing.attributes.description}
                 </p> */}
-              {/* <ReadmoreButton
+            {/* <ReadmoreButton
                 description={
                     'This is a consultation This is a consultation This is a consultation This is a consultation This is a consultation This is a consultation'
                 }
                 /> */}
-            </div>
+
             <div className={css.durationDeadline}>
-              <div className={css.duration}>{`Duration: ${data.duration} Hour`}</div>
-              <div className={css.deadline}>Deadline: 12/12/1212</div>
+              <span className={css.duration}>
+                <span>Duration: </span>
+                {`${data.duration} Hour`}
+              </span>
+              <span className={css.deadline}>
+                <span>Deadline:</span> 12/12/1212
+              </span>
             </div>
           </div>
           <div className={css.userContent}>
@@ -139,7 +147,7 @@ function AppointmentCardComponent(props) {
           {/* <div className={css.price}>${listing.attributes?.price?.amount / 100}.00</div> */}
           {data.pending ? (
             <>
-              <div>
+              <div className={css.cctxtp}>
                 Please click on 'confirm' to confirm that you have recieved the consultation
               </div>
               <div className={css.profileBtnContainer}>
