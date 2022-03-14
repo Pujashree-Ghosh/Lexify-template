@@ -58,7 +58,7 @@
 }
 
 .avatar {
-  margin: 0 30px 0 0;
+  margin: 0 0px 0 0;
   width: 150px;
   height: 150px;
   @media (max-width: 575px) {
@@ -239,6 +239,15 @@
   @media (max-width: 575px) {
     flex-direction: column;
     align-items: center;
+  }
+}
+.profileImage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-right: 20px;
+  @media (max-width: 575px) {
+    padding-right: 0;
   }
 }
 .profileName {
@@ -488,10 +497,16 @@
   display: flex;
   flex-direction: row;
   margin: 20px 0px;
+  @media (max-width: 575px) {
+    flex-direction: column;
+  }
 }
 .lefthorizontal {
   width: 80%;
   padding-left: 10px;
+  @media (max-width: 575px) {
+    width: 100%;
+  }
 }
 .lefttitle {
   font-size: 20px;
@@ -508,6 +523,15 @@
   border-left: rgb(179, 172, 172) 1px solid;
   padding-top: 10px;
   margin: 20px 0px;
+  @media (max-width: 767px) {
+    width: 40%;
+  }
+  @media (max-width: 575px) {
+    width: 100%;
+    align-items: center;
+    flex-direction: row;
+    border: 0;
+  }
 }
 .rightlowerdiv {
   display: flex;
@@ -542,6 +566,9 @@
   font-size: 25px;
   font-weight: bold;
   font-family: poppins;
+  @media (max-width: 575px) {
+    padding: 0 10px;
+  }
 }
 .togglemenu {
   display: inline;
