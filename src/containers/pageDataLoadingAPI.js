@@ -6,12 +6,14 @@ import { loadData as ContactDetailsPageLoader } from './ContactDetailsPage/Conta
 import { loadData as EditListingPageLoader } from './EditListingPage/EditListingPage.duck';
 import { loadData as EmailVerificationPageLoader } from './EmailVerificationPage/EmailVerificationPage.duck';
 import { loadData as InboxPageLoader } from './InboxPage/InboxPage.duck';
+import { loadData as MyAppointmentPageLoader } from './MyAppointmentPage/MyAppointmentPage.duck';
 import { loadData as ListingPageLoader } from './ListingPage/ListingPage.duck';
 import { loadData as ManageListingsPageLoader } from './ManageListingsPage/ManageListingsPage.duck';
 import { loadData as PaymentMethodsPageLoader } from './PaymentMethodsPage/PaymentMethodsPage.duck';
 import { loadData as ProfilePageLoader } from './ProfilePage/ProfilePage.duck';
 import { loadData as SearchPageLoader } from './SearchPage/SearchPage.duck';
 import { loadData as StripePayoutPageLoader } from './StripePayoutPage/StripePayoutPage.duck';
+
 import {
   loadData as TransactionPageLoader,
   setInitialValues as TransactionPageInitialValues,
@@ -33,6 +35,9 @@ const getPageDataLoadingAPI = () => {
     },
     InboxPage: {
       loadData: InboxPageLoader,
+    },
+    MyAppointmentPage: {
+      loadData: MyAppointmentPageLoader,
     },
     ListingPage: {
       loadData: ListingPageLoader,

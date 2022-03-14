@@ -61,10 +61,10 @@ const UserNav = props => {
         ...listingTab(listing, selectedPageName),
       },
       {
-        text: <FormattedMessage id="UserNav.appointments" />,
-        selected: selectedPageName === 'AppointmentPage',
+        text: <FormattedMessage id="UserNav.myAppointments" />,
+        selected: selectedPageName === 'MyAppoinmentBasePage',
         linkProps: {
-          name: 'AppointmentPage',
+          name: 'MyAppoinmentBasePage',
         },
       },
       {
@@ -107,6 +107,13 @@ const UserNav = props => {
     ];
   } else {
     tabs = [
+      {
+        text: <FormattedMessage id="UserNav.myAppointments" />,
+        selected: selectedPageName === 'MyAppoinmentBasePage',
+        linkProps: {
+          name: 'MyAppoinmentBasePage',
+        },
+      },
       {
         text: <FormattedMessage id="UserNav.PromotionPage" />,
         selected: selectedPageName === 'PromotionPage',

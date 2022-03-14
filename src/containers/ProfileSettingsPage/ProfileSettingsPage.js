@@ -304,6 +304,7 @@ export class ProfileSettingsPageComponent extends Component {
             </div>
             {profileSettingsForm}
           </div>
+          {profileSettingsForm}
         </LayoutWrapperMain>
         {/* </div> */}
 

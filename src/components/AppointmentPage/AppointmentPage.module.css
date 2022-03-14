@@ -41,13 +41,17 @@
   width: 100%;
   margin: 24px auto 0 auto;
 
+  @media (max-width: 1023px) {
+    max-width: 90%;
+  }
+
   @media (--viewportMedium) {
     margin: 48px auto 0 auto;
   }
 
   @media (--viewportLarge) {
     margin: 80px auto 0 auto;
-    max-width: 62.5vw;
+    max-width: 70vw;
   }
 }
 
@@ -147,7 +151,6 @@
 
 .heading {
   position: relative;
-  width: 80vw;
   margin-right: auto;
   margin-left: auto;
   margin-top: 10px;
