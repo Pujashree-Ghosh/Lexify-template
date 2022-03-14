@@ -32,6 +32,7 @@ import {
 } from '../../components';
 import { TopbarContainer } from '../../containers';
 import css from './PromotionPage.module.css';
+import ListingResultCard from '../../components/ListingResultCard/ListingResultCard';
 
 function PromotionPageComponent(props) {
   // console.log(props);
@@ -42,13 +43,19 @@ function PromotionPageComponent(props) {
     currentUser,
     filterConfig,
     listings,
-    onActivateListing,
+    // onActivateListing,
     location,
+    searchInProgress,
+    searchListingsError,
+    searchParams,
+    pagination,
   } = props;
   const ensuredCurrentUser = ensureCurrentUser(currentUser);
   const panelMediumWidth = 50;
   const panelLargeWidth = 62.5;
   const panelWidth = 62.5;
+
+  // console.log(searchParams, searchInProgress);
 
   const cardRenderSizes = [
     '(max-width: 767px) 100vw',
@@ -65,12 +72,12 @@ function PromotionPageComponent(props) {
 
   // console.log(listings);
   const routes = routeConfiguration();
+  const type = validQueryParams && validQueryParams?.pub_type;
+  const clientId = validQueryParams && validQueryParams.pub_clientId;
+  const email =
+    ensuredCurrentUser && ensuredCurrentUser.attributes && ensuredCurrentUser.attributes.email;
   const title = intl.formatMessage({ id: 'PromotionPage.title' });
   useEffect(() => {
-    const type = validQueryParams && validQueryParams?.pub_type;
-    const clientId = validQueryParams && validQueryParams.pub_clientId;
-    const email =
-      ensuredCurrentUser && ensuredCurrentUser.attributes && ensuredCurrentUser.attributes.email;
     // console.log(ensuredCurrentUser);
     if (type !== 'unsolicited' || clientId !== email) {
       // setLoading(true);
@@ -86,12 +93,12 @@ function PromotionPageComponent(props) {
         setLoading(false);
       }, 2000);
     }
-  });
-  useEffect(() => {
-    setTimeout(() => {
-      setLoading(false);
-    }, 3000);
-  }, []);
+  }, [type, email]);
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     setLoading(false);
+  //   }, 3000);
+  // }, []);
   return (
     <Page className={css.root} title={title} scrollingDisabled={scrollingDisabled}>
       <LayoutSingleColumn>
@@ -105,27 +112,41 @@ function PromotionPageComponent(props) {
           <UserNav selectedPageName="PromotionPage" />
         </LayoutWrapperTopbar>
         <LayoutWrapperMain>
-          {loading && <div>Loading Result..</div>}
-          {!loading &&
+          {/* {loading && <div>Loading Result..</div>} */}
+          {searchParams.pub_type !== 'unsolicited' ||
+          searchParams.pub_clientId !== email ||
+          searchInProgress ? (
+            <div>Loading Result..</div>
+          ) : (
+            !loading &&
             validQueryParams &&
             ensuredCurrentUser &&
             ensuredCurrentUser.id &&
             ensuredCurrentUser.id.uuid &&
             validQueryParams.pub_clientId === ensuredCurrentUser.attributes.email &&
             validQueryParams.pub_type === 'unsolicited' && (
-              <div className={css.content}>
+              // <div className={css.content}>
+              <div className={css.listingCards}>
                 {listings.map(l => (
-                  <ListingCard
-                    className={css.listingCard}
-                    key={l.id.uuid}
-                    listing={l}
-                    renderSizes={cardRenderSizes}
-                    setActiveListing={onActivateListing}
-                  />
+                  // <ListingCard
+                  //   className={css.listingCard}
+                  //   key={l.id.uuid}
+                  //   listing={l}
+                  //   renderSizes={cardRenderSizes}
+                  //   setActiveListing={onActivateListing}
+                  // />
+                  <ListingResultCard listing={l} history={history} key={l.id.uuid} />
                 ))}
               </div>
+            )
+          )}
+          {!searchInProgress &&
+            !listings.length &&
+            searchParams.pub_type === 'unsolicited' &&
+            searchParams.pub_clientId === email && (
+              <div className={css.nrftxt}>No result found</div>
             )}
-          {!loading && !listings.length && <div className={css.nrftxt}>No result found</div>}
+          {searchListingsError ? <div className={css.nrftxt}>Some error occurred</div> : ''}
         </LayoutWrapperMain>
         <LayoutWrapperFooter>
           <Footer />
@@ -137,10 +158,9 @@ function PromotionPageComponent(props) {
 
 PromotionPageComponent.defaultProps = {
   listings: [],
-  // mapListings: [],
-  // pagination: null,
-  // searchListingsError: null,
-  // searchParams: {},
+  pagination: null,
+  searchListingsError: null,
+  searchParams: {},
   // tab: 'listings',
   filterConfig: config.custom.filters,
   // sortConfig: config.custom.sortConfig,
@@ -153,11 +173,11 @@ PromotionPageComponent.propTypes = {
   // onActivateListing: func.isRequired,
   // onManageDisableScrolling: func.isRequired,
   // onSearchMapListings: func.isRequired,
-  // pagination: propTypes.pagination,
+  pagination: propTypes.pagination,
   // scrollingDisabled: bool.isRequired,
   // searchInProgress: bool.isRequired,
-  // searchListingsError: propTypes.error,
-  // searchParams: object,
+  searchListingsError: propTypes.error,
+  searchParams: object,
   // tab: oneOf(['filters', 'listings', 'map']).isRequired,
   filterConfig: propTypes.filterConfig,
   // sortConfig: propTypes.sortConfig,
@@ -176,10 +196,10 @@ PromotionPageComponent.propTypes = {
 const mapStateToProps = state => {
   const {
     currentPageResultIds,
-    //   pagination,
-    //   searchInProgress,
-    //   searchListingsError,
-    //   searchParams,
+    pagination,
+    searchInProgress,
+    searchListingsError,
+    searchParams,
     //   searchMapListingIds,
     //   activeListingId,
   } = state.SearchPage;
@@ -194,11 +214,11 @@ const mapStateToProps = state => {
     listings: pageListings,
     currentUser,
     //   mapListings,
-    //   pagination,
+    pagination,
     scrollingDisabled: isScrollingDisabled(state),
-    //   searchInProgress,
-    //   searchListingsError,
-    //   searchParams,
+    searchInProgress,
+    searchListingsError,
+    searchParams,
     //   activeListingId,
   };
 };

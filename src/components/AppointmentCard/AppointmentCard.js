@@ -14,7 +14,6 @@ function AppointmentCardComponent(props) {
   const listing = tx && tx.listing;
   const booking = tx && tx.booking;
   // const { provider, listing, booking } = tx;
-  console.log(listing);
 
   return (
     <div className={css.cardContainer}>

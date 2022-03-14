@@ -32,6 +32,7 @@ import {
 } from '../../components';
 import { TopbarContainer } from '../../containers';
 import css from './PromotionPage.module.css';
+import ListingResultCard from '../../components/ListingResultCard/ListingResultCard';
 
 function ServicesPageComponent(props) {
   // console.log(props);
@@ -44,8 +45,11 @@ function ServicesPageComponent(props) {
     listings,
     onActivateListing,
     location,
+    searchInProgress,
+    searchListingsError,
+    pagination,
+    searchParams,
   } = props;
-  // console.log(listings);
   const ensuredCurrentUser = ensureCurrentUser(currentUser);
   const panelMediumWidth = 50;
   const panelLargeWidth = 62.5;
@@ -67,11 +71,15 @@ function ServicesPageComponent(props) {
   // console.log(listings);
   const routes = routeConfiguration();
   const title = intl.formatMessage({ id: 'ServicesPage.title' });
+  const type = validQueryParams && validQueryParams?.pub_type;
+  const clientId = validQueryParams && validQueryParams.pub_clientId;
+  const email =
+    ensuredCurrentUser && ensuredCurrentUser.attributes && ensuredCurrentUser.attributes.email;
   useEffect(() => {
-    const type = validQueryParams && validQueryParams?.pub_type;
-    const clientId = validQueryParams && validQueryParams.pub_clientId;
-    const email =
-      ensuredCurrentUser && ensuredCurrentUser.attributes && ensuredCurrentUser.attributes.email;
+    // const type = validQueryParams && validQueryParams?.pub_type;
+    // const clientId = validQueryParams && validQueryParams.pub_clientId;
+    // const email =
+    //   ensuredCurrentUser && ensuredCurrentUser.attributes && ensuredCurrentUser.attributes.email;
     // console.log(ensuredCurrentUser);
     if (type !== 'solicited' || clientId !== email) {
       // setLoading(true);
@@ -85,7 +93,7 @@ function ServicesPageComponent(props) {
           )
         );
         setLoading(false);
-      }, 2000);
+      }, 3000);
     }
     // setTimeout(() => {
     //   history.push(
@@ -93,12 +101,13 @@ function ServicesPageComponent(props) {
     //   );
     //   setLoading(false);
     // }, 2000);
-  });
-  useEffect(() => {
-    setTimeout(() => {
-      setLoading(false);
-    }, 3000);
-  }, []);
+  }, [type, email]);
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     setLoading(false);
+  //   }, 3000);
+  // }, []);
+  console.log(searchParams, searchInProgress);
   return (
     <Page className={css.root} title={title} scrollingDisabled={scrollingDisabled}>
       <LayoutSingleColumn>
@@ -112,27 +121,41 @@ function ServicesPageComponent(props) {
           <UserNav selectedPageName="ServicesPage" />
         </LayoutWrapperTopbar>
         <LayoutWrapperMain>
-          {loading && <div>Loading Result..</div>}
-          {!loading &&
+          {/* {loading && <div>Loading Result..</div>} */}
+          {searchParams.pub_type !== 'solicited' ||
+          searchParams.pub_clientId !== email ||
+          searchInProgress ? (
+            <div>Loading Result..</div>
+          ) : (
+            !loading &&
             validQueryParams &&
             ensuredCurrentUser &&
             ensuredCurrentUser.id &&
             ensuredCurrentUser.id.uuid &&
             validQueryParams.pub_clientId === ensuredCurrentUser.attributes.email &&
             validQueryParams.pub_type === 'solicited' && (
-              <div className={css.content}>
+              // <div className={css.content}>
+              <div className={css.listingCards}>
                 {listings.map(l => (
-                  <ListingCard
-                    className={css.listingCard}
-                    key={l.id.uuid}
-                    listing={l}
-                    renderSizes={cardRenderSizes}
-                    setActiveListing={onActivateListing}
-                  />
+                  // <ListingCard
+                  //   className={css.listingCard}
+                  //   key={l.id.uuid}
+                  //   listing={l}
+                  //   renderSizes={cardRenderSizes}
+                  //   setActiveListing={onActivateListing}
+                  // />
+                  <ListingResultCard listing={l} history={history} key={l.id.uuid} />
                 ))}
               </div>
+            )
+          )}
+          {!searchInProgress &&
+            !listings.length &&
+            searchParams.pub_type === 'solicited' &&
+            searchParams.pub_clientId === email && (
+              <div className={css.nrftxt}>No result found</div>
             )}
-          {!loading && !listings.length && <div className={css.nrftxt}>No result found</div>}
+          {searchListingsError ? <div className={css.nrftxt}>Some error occurred</div> : ''}
         </LayoutWrapperMain>
         <LayoutWrapperFooter>
           <Footer />
@@ -145,9 +168,9 @@ function ServicesPageComponent(props) {
 ServicesPageComponent.defaultProps = {
   listings: [],
   // mapListings: [],
-  // pagination: null,
-  // searchListingsError: null,
-  // searchParams: {},
+  pagination: null,
+  searchListingsError: null,
+  searchParams: {},
   // tab: 'listings',
   filterConfig: config.custom.filters,
   // sortConfig: config.custom.sortConfig,
@@ -160,11 +183,11 @@ ServicesPageComponent.propTypes = {
   // onActivateListing: func.isRequired,
   // onManageDisableScrolling: func.isRequired,
   // onSearchMapListings: func.isRequired,
-  // pagination: propTypes.pagination,
+  pagination: propTypes.pagination,
   // scrollingDisabled: bool.isRequired,
-  // searchInProgress: bool.isRequired,
-  // searchListingsError: propTypes.error,
-  // searchParams: object,
+  searchInProgress: bool.isRequired,
+  searchListingsError: propTypes.error,
+  searchParams: object,
   // tab: oneOf(['filters', 'listings', 'map']).isRequired,
   filterConfig: propTypes.filterConfig,
   // sortConfig: propTypes.sortConfig,
@@ -183,10 +206,10 @@ ServicesPageComponent.propTypes = {
 const mapStateToProps = state => {
   const {
     currentPageResultIds,
-    //   pagination,
-    //   searchInProgress,
-    //   searchListingsError,
-    //   searchParams,
+    pagination,
+    searchInProgress,
+    searchListingsError,
+    searchParams,
     //   searchMapListingIds,
     //   activeListingId,
   } = state.SearchPage;
@@ -203,9 +226,9 @@ const mapStateToProps = state => {
     //   mapListings,
     //   pagination,
     scrollingDisabled: isScrollingDisabled(state),
-    //   searchInProgress,
-    //   searchListingsError,
-    //   searchParams,
+    searchInProgress,
+    searchListingsError,
+    searchParams,
     //   activeListingId,
   };
 };
