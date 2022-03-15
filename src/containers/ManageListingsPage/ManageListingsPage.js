@@ -203,7 +203,7 @@ export class ManageListingsPageComponent extends Component {
               </div> */}
 
               <div>
-                <div>
+                <div className={css.listingrow}>
                   {listings.map((m, i) => {
                     const { price, state } = m.attributes;
                     const isDraft = state === LISTING_STATE_DRAFT;
