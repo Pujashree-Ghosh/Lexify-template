@@ -269,12 +269,14 @@ const SignupFormComponent = props => (
                     <option value="legalEntity">Legal Entity</option>
                     <option value="privateIndividual">Private Individual</option>
                   </FieldSelect>
+                  {console.log(88, values?.clientType)}
                 </div>
               </>
             ) : (
               ''
             )}
-            {tab === 'signup' && values.clientType === 'legalEntity' ? (
+
+            {values.clientType === 'legalEntity' ? (
               <div className={css.fromgp}>
                 <FieldTextInput
                   className={css.companyName}
@@ -286,124 +288,128 @@ const SignupFormComponent = props => (
                   validate={companyNameRequired}
                 />
               </div>
-            ) : (
-              ''
-            )}
-            <div className={`${css.name} ${css.fromgp}`}>
-              <FieldTextInput
-                className={css.firstNameRoot}
-                type="text"
-                id={formId ? `${formId}.fname` : 'fname'}
-                name="fname"
-                autoComplete="given-name"
-                label={firstNameLabel}
-                placeholder={firstNamePlaceholder}
-                validate={firstNameRequired}
-              />
-              <FieldTextInput
-                className={css.lastNameRoot}
-                type="text"
-                id={formId ? `${formId}.lname` : 'lname'}
-                name="lname"
-                autoComplete="family-name"
-                label={lastNameLabel}
-                placeholder={lastNamePlaceholder}
-                validate={lastNameRequired}
-              />
-            </div>
-
-            <div className={css.fromgp}>
-              <FieldTextInput
-                type="email"
-                id={formId ? `${formId}.email` : 'email'}
-                name="email"
-                autoComplete="email"
-                label={emailLabel}
-                placeholder={emailPlaceholder}
-                validate={validators.composeValidators(emailRequired, emailValid)}
-              />
-            </div>
-
-            <div className={css.fromgp}>
-              <label className={css.selectLabel}>{phoneLabel}</label>
-              <div className={css.phoneInputField}>
-                <div className={css.phnWithErr}>
-                  <PhoneInput
-                    value={values.phoneNumber}
-                    onChange={val => {
-                      // values.phoneNumber && isPossiblePhoneNumber(values.phoneNumber)
-                      //   ? setPhoneErr(false)
-                      //   : '';
-                      values.phoneNumber && values.phoneNumber.length > 8 ? setPhnErr(false) : '';
-                      form.change('phoneNumber', `+${val}`);
-                    }}
-                    onBlur={() => {
-                      // values.phoneNumber && isPossiblePhoneNumber(values.phoneNumber)
-                      values.phoneNumber && values.phoneNumber.length > 8
-                        ? setPhnErr(false)
-                        : setPhnErr(true);
-                    }}
+            ) : null}
+            {tab === 'signup-lawyer' || values.clientType !== undefined ? (
+              <div>
+                <div className={`${css.name} ${css.fromgp}`}>
+                  <FieldTextInput
+                    className={css.firstNameRoot}
+                    type="text"
+                    id={formId ? `${formId}.fname` : 'fname'}
+                    name="fname"
+                    autoComplete="given-name"
+                    label={firstNameLabel}
+                    placeholder={firstNamePlaceholder}
+                    validate={firstNameRequired}
                   />
-                  {phnErr ? (
-                    <span className={css.phnErrMsg}>
-                      <FormattedMessage id="profileSettingForm.phoneRequired" />
-                    </span>
-                  ) : (
-                    ''
-                  )}
+                  <FieldTextInput
+                    className={css.lastNameRoot}
+                    type="text"
+                    id={formId ? `${formId}.lname` : 'lname'}
+                    name="lname"
+                    autoComplete="family-name"
+                    label={lastNameLabel}
+                    placeholder={lastNamePlaceholder}
+                    validate={lastNameRequired}
+                  />
                 </div>
-                <button
-                  className={css.sendOtpButton}
-                  type="button"
-                  onClick={() => {
-                    // this.setState({ showOtp: true });
-                    setShowOtp(true);
-                    sendOtp();
-                  }}
-                  // inProgress={}
-                  disabled={sendOtpDisable}
-                >
-                  <FormattedMessage id="ProfileSettingsForm.sendOtp" />
-                </button>
-              </div>
-            </div>
 
-            {showOtp ? (
-              <div className={css.fromgp}>
-                <FieldTextInput
-                  className={css.otp}
-                  type="password"
-                  id={formId ? `${formId}.otp` : 'otp'}
-                  name="otp"
-                  label={otpLabel}
-                  // placeholder={otpPlaceholder}
-                  validate={otpRequired}
-                />
-                {otpErr ? (
-                  <span className={css.otpErrMsg}>
-                    {' '}
-                    <FormattedMessage id="SignupForm.otpErrMsg" />
-                  </span>
+                <div className={css.fromgp}>
+                  <FieldTextInput
+                    type="email"
+                    id={formId ? `${formId}.email` : 'email'}
+                    name="email"
+                    autoComplete="email"
+                    label={emailLabel}
+                    placeholder={emailPlaceholder}
+                    validate={validators.composeValidators(emailRequired, emailValid)}
+                  />
+                </div>
+
+                <div className={css.fromgp}>
+                  <label className={css.selectLabel}>{phoneLabel}</label>
+                  <div className={css.phoneInputField}>
+                    <div className={css.phnWithErr}>
+                      <PhoneInput
+                        value={values.phoneNumber}
+                        onChange={val => {
+                          // values.phoneNumber && isPossiblePhoneNumber(values.phoneNumber)
+                          //   ? setPhoneErr(false)
+                          //   : '';
+                          values.phoneNumber && values.phoneNumber.length > 8
+                            ? setPhnErr(false)
+                            : '';
+                          form.change('phoneNumber', `+${val}`);
+                        }}
+                        onBlur={() => {
+                          // values.phoneNumber && isPossiblePhoneNumber(values.phoneNumber)
+                          values.phoneNumber && values.phoneNumber.length > 8
+                            ? setPhnErr(false)
+                            : setPhnErr(true);
+                        }}
+                      />
+                      {phnErr ? (
+                        <span className={css.phnErrMsg}>
+                          <FormattedMessage id="profileSettingForm.phoneRequired" />
+                        </span>
+                      ) : (
+                        ''
+                      )}
+                    </div>
+                    <button
+                      className={css.sendOtpButton}
+                      type="button"
+                      onClick={() => {
+                        // this.setState({ showOtp: true });
+                        setShowOtp(true);
+                        sendOtp();
+                      }}
+                      // inProgress={}
+                      disabled={sendOtpDisable}
+                    >
+                      <FormattedMessage id="ProfileSettingsForm.sendOtp" />
+                    </button>
+                  </div>
+                </div>
+
+                {showOtp ? (
+                  <div className={css.fromgp}>
+                    <FieldTextInput
+                      className={css.otp}
+                      type="password"
+                      id={formId ? `${formId}.otp` : 'otp'}
+                      name="otp"
+                      label={otpLabel}
+                      // placeholder={otpPlaceholder}
+                      validate={otpRequired}
+                    />
+                    {otpErr ? (
+                      <span className={css.otpErrMsg}>
+                        {' '}
+                        <FormattedMessage id="SignupForm.otpErrMsg" />
+                      </span>
+                    ) : (
+                      ''
+                    )}
+                  </div>
                 ) : (
                   ''
                 )}
-              </div>
-            ) : (
-              ''
-            )}
 
-            <div className={css.fromgp}>
-              <FieldTextInput
-                className={css.password}
-                type="password"
-                id={formId ? `${formId}.password` : 'password'}
-                name="password"
-                autoComplete="new-password"
-                label={passwordLabel}
-                placeholder={passwordPlaceholder}
-                validate={passwordValidators}
-              />
-            </div>
+                <div className={css.fromgp}>
+                  <FieldTextInput
+                    className={css.password}
+                    type="password"
+                    id={formId ? `${formId}.password` : 'password'}
+                    name="password"
+                    autoComplete="new-password"
+                    label={passwordLabel}
+                    placeholder={passwordPlaceholder}
+                    validate={passwordValidators}
+                  />
+                </div>
+              </div>
+            ) : null}
             {values.clientType === 'legalEntity' ? (
               <div className={css.fromgp}>
                 <p className={css.companyChkBox}>
