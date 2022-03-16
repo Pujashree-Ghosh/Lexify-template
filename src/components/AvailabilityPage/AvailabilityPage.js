@@ -285,11 +285,7 @@ export class AvailabilityPageComponent extends Component {
                 <h1 className={css.heading}>
                   <FormattedMessage id="ProfileSettingsPage.heading" />
                 </h1> */}
-<<<<<<< Updated upstream
-              {/* {user.id ? (
-=======
                 {/* {user.id ? (
->>>>>>> Stashed changes
                   <NamedLink
                     className={css.profileLink}
                     name="ProfilePage"

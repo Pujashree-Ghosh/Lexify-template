@@ -43,7 +43,7 @@ import {
   LISTING_PAGE_PARAM_TYPE_EDIT,
   createSlug,
 } from '../../util/urlHelpers';
-
+import Select from 'react-select';
 import { closeListing, openListing, getOwnListingsById } from './ManageListingsPage.duck';
 import css from './ManageListingsPage.module.css';
 import ReadmoreButton from '../ReadmoreButton/ReadmoreButton';
@@ -76,7 +76,7 @@ export class ManageListingsPageComponent extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { listingMenuOpen: null };
+    this.state = { listingMenuOpen: null,statusSort:'',practiceAreaSort:'',typeSort:'' };
     this.onToggleMenu = this.onToggleMenu.bind(this);
   }
 
@@ -104,7 +104,7 @@ export class ManageListingsPageComponent extends Component {
       intl,
     } = this.props;
 
-    console.log(444, listings);
+    console.log(444, this.state);
 
     const hasPaginationInfo = !!pagination && pagination.totalItems != null;
     const listingsAreLoaded = !queryInProgress && hasPaginationInfo;
@@ -155,6 +155,48 @@ export class ManageListingsPageComponent extends Component {
     const closingErrorListingId = !!closingListingError && closingListingError.listingId;
     const openingErrorListingId = !!openingListingError && openingListingError.listingId;
 
+    const statusOptions = [{key:'published',value:'Published',label:'Published'},{key:'unpublished',value:'Unpublished',label:'Unpublished'},{key:'closed',value:'Closed',label:'Closed'}];
+    const typeOptions = [{key:'publicOral',value:'Public Oral',label:'Public Oral'},{key:'customOral',value:'Custom Oral',label:'Customer Oral'},{key:'customService',value:'Custom Service',label:'Custome Service'}]
+    const practiceAreaOptions = [{key:'contactAndAgreements',value:'Contact And Agreements',label:'Contact And Agreements'},{key:'employeeBenefits',value:'Employee Benefits',label:'Employee Benefits'},{key:'employmentAndLabour',value:'Employment And Labor',label:'Employment And Labor'}];
+    const sortSection = 
+            <div className={css.lformrow}>
+              <div className={css.lformcol}>
+                <label>Type of Listing</label>
+                <Select
+                  value={this.state.typeSort}
+                  isClearable={true}
+                  options={typeOptions}
+                  className={css.formcontrol}
+                  onChange={e => {
+                    e===null?this.setState({typeSort:[]}):this.setState({ typeSort:e });
+                  }}
+                />
+              </div>
+              <div className={css.lformcol}>
+                <label>Status</label>
+                <Select
+                  value={this.state.statusSort}
+                  isClearable={true}
+                  options={statusOptions}
+                  className={css.formcontrol}
+                  onChange={e => {
+                    e === null ? this.setState({ statusSort: [] }) : this.setState({ statusSort: e });
+                  }}
+                />
+              </div>
+              <div className={css.lformcol}>
+                <label>Practice Area</label>
+                <Select
+                  value={this.state.practiceAreaSort}
+                  isClearable={true}
+                  options={practiceAreaOptions}
+                  className={css.formcontrol}
+                  onChange={e => {
+                    e === null ? this.setState({ practiceAreaSort: [] }) : this.setState({ practiceAreaSort: e });
+                  }}
+                />
+              </div>
+            </div>
     const title = intl.formatMessage({ id: 'ManageListingsPage.title' });
 
     const panelWidth = 62.5;
@@ -176,9 +218,12 @@ export class ManageListingsPageComponent extends Component {
             <UserNav selectedPageName="ManageListingsPage" />
           </LayoutWrapperTopbar>
           <LayoutWrapperMain>
+          <div>
+              {sortSection}
+            </div>
             {queryInProgress ? loadingResults : null}
             {queryListingsError ? queryError : null}
-
+            
             <div className={css.listingPanel}>
               <div className={css.heading}>{heading}</div>
               {/*  */}
@@ -203,7 +248,8 @@ export class ManageListingsPageComponent extends Component {
               </div> */}
 
               <div>
-                <div>
+                
+                <div className={css.listingrow}>
                   {listings.map((m, i) => {
                     const { price, state } = m.attributes;
                     const isDraft = state === LISTING_STATE_DRAFT;

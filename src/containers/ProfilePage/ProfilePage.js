@@ -50,13 +50,14 @@ import { MdEmail, MdLocalPhone } from 'react-icons/md';
 import { TopbarContainer, NotFoundPage } from '../../containers';
 import config from '../../config';
 import locationIcon from '../../assets/locationicon.svg';
-
+import Select from 'react-select';
 import biolocationIcon from '../../assets/material-location-on.svg';
 import biowebsite from '../../assets/feather-globe.svg';
 import biophone from '../../assets/zocial-call.svg';
 import biolinkedin from '../../assets/awesome-linkedin-in.svg';
 
 import css from './ProfilePage.module.css';
+import { loadData } from './ProfilePage.duck';
 // import CustomPaginate from '../CustomPaginate/CustomPaginate';
 
 // import CustomPagination from '../Pagination/Pagination';
@@ -92,6 +93,7 @@ export class ProfilePageComponent extends Component {
       showProfileDetail: false,
       countryData: [],
       pageNumber: 0,
+      practiceAreaSort: ''
     };
 
     this.showOfProviderReviews = this.showOfProviderReviews.bind(this);
@@ -136,8 +138,8 @@ export class ProfilePageComponent extends Component {
       queryParams,
       listings,
       areaOfLawOptions,
+      onLoadData,
     } = this.props;
-    // console.log(listings);
     const ensuredCurrentUser = ensureCurrentUser(currentUser);
     const profileUser = ensureUser(user);
     const isCurrentUser =
@@ -153,6 +155,25 @@ export class ProfilePageComponent extends Component {
     const page = queryParams ? queryParams.page : 1;
     const hasPaginationInfo = !!pagination && pagination.totalItems != null;
     const listingsAreLoaded = !queryInProgress && hasPaginationInfo;
+
+    const practiceAreaOptions = [{value:"Contracts and Agreements",label:"Contracts and Agreements",key:"contractsAndAgreements"},
+    {key:"employeeBenefits",value:"Employee Benefits",label:"Employee Benefits"},
+    {key:"employmentAndLabor",value:"Employment And Labor",label:"Employment And Labor"}];
+    
+    const practiceAreaSortSelect = 
+      <Select
+        value={this.state.practiceAreaSort}
+        options={practiceAreaOptions}
+        isClearable={true}
+        isMulti={true}
+        onChange={e => {
+            console.log(999,e);
+            this.setState({ practiceAreaSort: e })
+            onLoadData({id: user.id.uuid,practiceAreaSort:e?.key})
+          }
+        }
+      >
+      </Select>
     const noResults =
       listingsAreLoaded && pagination.totalItems <= 1 ? (
         <h1 className={css.title}>
@@ -539,6 +560,7 @@ export class ProfilePageComponent extends Component {
                     /> */}
                     Consultations provided by {user?.attributes?.profile?.displayName}
                   </h2>
+                  {practiceAreaSortSelect}
                   {/* {queryInProgress ? loadingResults : null}
                   {queryListingsError ? queryError : null} */}
 
@@ -844,7 +866,7 @@ const mapStateToProps = state => {
   } = state.ProfilePage;
   const userMatches = getMarketplaceEntities(state, [{ type: 'user', id: userId }]);
   const listings = getMarketplaceEntities(state, userListingRefs);
-  console.log(listings, userListingRefs);
+  // console.log(listings, userListingRefs);
   const user = userMatches.length === 1 ? userMatches[0] : null;
 
   return {
@@ -861,10 +883,13 @@ const mapStateToProps = state => {
     queryParams,
   };
 };
+const mapDispatchToProps = (dispatch) => ({
+  onLoadData: (params) => dispatch(loadData(params))
+})
 
 const ProfilePage = compose(
   withRouter,
-  connect(mapStateToProps),
+  connect(mapStateToProps,mapDispatchToProps),
   withViewport,
   injectIntl
 )(ProfilePageComponent);
