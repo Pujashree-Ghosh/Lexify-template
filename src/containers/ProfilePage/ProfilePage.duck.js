@@ -130,7 +130,7 @@ export const queryUserListings = (userId,practiceAreaSort) => (dispatch, getStat
     .query({
       author_id: userId,
       pub_category: 'publicOral',
-      pub_practiceArea: ["contractsAndAgreements"["employeeBenefits"["employmentAndLabor"]]],
+      pub_practiceArea: practiceAreaSort,
       // page: 2,
       // per_page: 2,
       include: ['author', 'images'],

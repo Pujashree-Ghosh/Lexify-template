@@ -157,7 +157,7 @@ export class ManageListingsPageComponent extends Component {
 
     const statusOptions = [{key:'published',value:'Published',label:'Published'},{key:'unpublished',value:'Unpublished',label:'Unpublished'},{key:'closed',value:'Closed',label:'Closed'}];
     const typeOptions = [{key:'publicOral',value:'Public Oral',label:'Public Oral'},{key:'customOral',value:'Custom Oral',label:'Customer Oral'},{key:'customService',value:'Custom Service',label:'Custome Service'}]
-    const practiceAreaOptions = [{key:'contactAndAgreements',value:'Contact And Agreements',label:'Contact And Agreements'},{key:'employeeBenefits',value:'Employee Benefits',label:'Employee Benefits'},{key:'employmentAndLabour',value:'Employment And Labor',label:'Employment And Labor'}];
+    const practiceAreaOptions = [{key:'contractAndAgreements',value:'Contract And Agreements',label:'Contract And Agreements'},{key:'employeeBenefits',value:'Employee Benefits',label:'Employee Benefits'},{key:'employmentAndLabour',value:'Employment And Labor',label:'Employment And Labor'}];
     const sortSection = 
             <div className={css.lformrow}>
               <div className={css.lformcol}>

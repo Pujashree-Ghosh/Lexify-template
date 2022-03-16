@@ -167,9 +167,14 @@ export class ProfilePageComponent extends Component {
         isClearable={true}
         isMulti={true}
         onChange={e => {
-            console.log(999,e);
+            let res;
+            res = e.reduce((pre,curnt)=>pre?pre+`,[${curnt.key}`:curnt.key,"")
+            if(e.length > 1){
+              e.slice(1).forEach((_)=>res+="]")
+            }
+            console.log(999,`has_any:${res}`);
             this.setState({ practiceAreaSort: e })
-            onLoadData({id: user.id.uuid,practiceAreaSort:e?.key})
+            onLoadData({id: user.id.uuid,practiceAreaSort:`has_any:${res}`})
           }
         }
       >

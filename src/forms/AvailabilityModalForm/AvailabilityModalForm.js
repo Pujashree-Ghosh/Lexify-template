@@ -307,11 +307,7 @@ const submit = (onSubmit, weekdays) => values => {
 };
 
 const AvailabilityModalFormComponent = props => {
-<<<<<<< Updated upstream
   const { onSubmit, duration, ...restOfprops } = props;
-=======
-  const { onSubmit, duration,...restOfprops } = props;
->>>>>>> Stashed changes
   return (
     <FinalForm
       {...restOfprops}
