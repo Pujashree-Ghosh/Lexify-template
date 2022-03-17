@@ -49,6 +49,7 @@ import Select from 'react-select';
 import { closeListing, openListing, getOwnListingsById } from './ManageListingsPage.duck';
 import css from './ManageListingsPage.module.css';
 import ReadmoreButton from '../ReadmoreButton/ReadmoreButton';
+import Money from 'js-money';
 
 const MENU_CONTENT_OFFSET = -12;
 
@@ -89,16 +90,15 @@ export class ManageListingsPageComponent extends Component {
     this.onToggleMenu = this.onToggleMenu.bind(this);
   }
   componentDidMount() {
-    console.log('first', this.props.currentUser?.id?.uuid);
     axios
       .post(`${apiBaseUrl()}/api/sortOwnListings`, {
-        authorId: this.props.currentUser?.id?.uuid,
+        authorId: this.props?.currentUser?.id?.uuid,
         states: null,
         pub_category: null,
         pub_areaOfLaw: null,
       })
       .then(res => {
-        console.log(114, res.data);
+        console.log(114, res.data.data.length);
         this.setState({
           listingsFromApi: res?.data?.data,
         });
@@ -137,7 +137,6 @@ export class ManageListingsPageComponent extends Component {
     } = this.props;
 
     console.log(444, this.state);
-    console.log('first', queryParams);
 
     const hasPaginationInfo = !!pagination && pagination.totalItems != null;
     const listingsAreLoaded = !queryInProgress && hasPaginationInfo;
@@ -365,7 +364,15 @@ export class ManageListingsPageComponent extends Component {
                       ? LISTING_PAGE_PARAM_TYPE_DRAFT
                       : LISTING_PAGE_PARAM_TYPE_EDIT;
 
+                    // const { formattedPrice } = priceData(() => {
+                    //   if (price !== null && price instanceof Money) {
+                    //     return price;
+                    //   }
+                    // }, intl);
                     // const { formattedPrice } = priceData(price, intl);
+                    const formattedPrice =
+                      typeof price !== undefined ? '$' + price?.amount / 100 + '.00' : '';
+                    console.log('FP', typeof formattedPrice);
                     const id = m.id.uuid;
                     const slug = createSlug(m?.attributes?.title);
                     let listingOpen = null;
@@ -403,7 +410,7 @@ export class ManageListingsPageComponent extends Component {
                               <span className={css.span}> PUBLISHED</span>
                             )}
                           </div>
-                          {/* <span className={css.price}> {formattedPrice} </span> */}
+                          <span className={css.price}> {formattedPrice} </span>
                           <button
                             className={css.editbutton}
                             onClick={() =>

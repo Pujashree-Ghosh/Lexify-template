@@ -132,7 +132,7 @@ export const queryUserListings = (userId, practiceAreaSort) => (dispatch, getSta
       pub_category: 'publicOral',
       pub_areaOfLaw: practiceAreaSort ? practiceAreaSort : null,
       // page: 2,
-      // per_page: 2,
+      // per_page: 10,
       include: ['author', 'images'],
       'fields.image': ['variants.landscape-crop', 'variants.landscape-crop2x'],
     })
