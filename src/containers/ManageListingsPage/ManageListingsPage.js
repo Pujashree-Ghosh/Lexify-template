@@ -89,7 +89,26 @@ export class ManageListingsPageComponent extends Component {
     this.onToggleMenu = this.onToggleMenu.bind(this);
   }
   componentDidMount() {
-    // console.log(112, this.state.listingsFromApi);
+    console.log('first', this.props.currentUser?.id?.uuid);
+    axios
+      .post(`${apiBaseUrl()}/api/sortOwnListings`, {
+        authorId: this.props.currentUser?.id?.uuid,
+        states: null,
+        pub_category: null,
+        pub_areaOfLaw: null,
+      })
+      .then(res => {
+        console.log(114, res.data);
+        this.setState({
+          listingsFromApi: res?.data?.data,
+        });
+        // if (JSON.stringify(this.state.listingsFromApi) !== JSON.stringify(res?.data?.data)) {
+        //   this.setState({
+        //     listingsFromApi: res?.data?.data,
+        //   });
+        // }
+      })
+      .catch();
   }
 
   onToggleMenu(listing) {
@@ -118,6 +137,7 @@ export class ManageListingsPageComponent extends Component {
     } = this.props;
 
     console.log(444, this.state);
+    console.log('first', queryParams);
 
     const hasPaginationInfo = !!pagination && pagination.totalItems != null;
     const listingsAreLoaded = !queryInProgress && hasPaginationInfo;
@@ -173,9 +193,9 @@ export class ManageListingsPageComponent extends Component {
       axios
         .post(`${apiBaseUrl()}/api/sortOwnListings`, {
           authorId: this.props.currentUser?.id?.uuid,
-          states: states,
-          pub_category: category,
-          pub_areaOfLaw: areaOfLaw,
+          states: states !== '' ? states : null,
+          pub_category: category !== '' ? category : null,
+          pub_areaOfLaw: areaOfLaw !== '' ? areaOfLaw : null,
         })
         .then(res => {
           console.log(114, res.data);
@@ -217,10 +237,15 @@ export class ManageListingsPageComponent extends Component {
             className={css.formcontrol}
             onChange={e => {
               e === null ? this.setState({ typeSort: '' }) : this.setState({ typeSort: e?.key });
+              if (e?.key !== 'publicOral') {
+                this.setState({
+                  practiceAreaSort: '',
+                });
+              }
               listingssss({
                 category: e?.key,
                 states: this.state.statusSort,
-                areaOfLaw: this.state.practiceAreaSort,
+                areaOfLaw: e?.key === 'publicOral' ? this.state.practiceAreaSort : null,
               });
             }}
           />
