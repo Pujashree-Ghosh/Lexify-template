@@ -93,7 +93,7 @@ export class ProfilePageComponent extends Component {
       showProfileDetail: false,
       countryData: [],
       pageNumber: 0,
-      practiceAreaSort: ''
+      practiceAreaSort: '',
     };
 
     this.showOfProviderReviews = this.showOfProviderReviews.bind(this);
@@ -142,6 +142,11 @@ export class ProfilePageComponent extends Component {
     } = this.props;
     const ensuredCurrentUser = ensureCurrentUser(currentUser);
     const profileUser = ensureUser(user);
+    console.log(
+      'first',
+      listings.map(l => l.attributes.publicData.areaOfLaw)
+    );
+    console.log('state', this.state);
     const isCurrentUser =
       ensuredCurrentUser.id && profileUser.id && ensuredCurrentUser.id.uuid === profileUser.id.uuid;
     const displayName = profileUser.attributes.profile.displayName;
@@ -156,29 +161,41 @@ export class ProfilePageComponent extends Component {
     const hasPaginationInfo = !!pagination && pagination.totalItems != null;
     const listingsAreLoaded = !queryInProgress && hasPaginationInfo;
 
-    const practiceAreaOptions = [{value:"Contracts and Agreements",label:"Contracts and Agreements",key:"contractsAndAgreements"},
-    {key:"employeeBenefits",value:"Employee Benefits",label:"Employee Benefits"},
-    {key:"employmentAndLabor",value:"Employment And Labor",label:"Employment And Labor"}];
-    
-    const practiceAreaSortSelect = 
+    const practiceAreaOptions = [
+      {
+        value: 'Contracts and Agreements',
+        label: 'Contracts and Agreements',
+        key: 'contractsAndAgreements',
+      },
+      { key: 'employeeBenefits', value: 'Employee Benefits', label: 'Employee Benefits' },
+      { key: 'employmentAndLabor', value: 'Employment And Labor', label: 'Employment And Labor' },
+    ];
+
+    const practiceAreaSortSelect = (
       <Select
-        value={this.state.practiceAreaSort}
+        value={this.state.practiceAreaSort.key}
         options={practiceAreaOptions}
         isClearable={true}
-        isMulti={true}
+        // isMulti={true}
         onChange={e => {
-            let res;
-            res = e.reduce((pre,curnt)=>pre?pre+`,[${curnt.key}`:curnt.key,"")
-            if(e.length > 1){
-              e.slice(1).forEach((_)=>res+="]")
-            }
-            console.log(999,`has_any:${res}`);
-            this.setState({ practiceAreaSort: e })
-            onLoadData({id: user.id.uuid,practiceAreaSort:`has_any:${res}`})
-          }
-        }
-      >
-      </Select>
+          // let res;
+          // res = e.reduce((pre, curnt) => (pre ? pre + `,[${curnt.key}` : curnt.key), '');
+          // if (e.length > 1) {
+          //   e.slice(1).forEach(_ => (res += ']'));
+          // }
+          // console.log(999, `has_any:${res}`);
+          // console.log(
+          //   'event',
+          //   e.map(e => e.key)
+          // );
+          this.setState({ practiceAreaSort: e?.key });
+          onLoadData({
+            id: user.id.uuid,
+            practiceAreaSort: e?.key,
+          });
+        }}
+      ></Select>
+    );
     const noResults =
       listingsAreLoaded && pagination.totalItems <= 1 ? (
         <h1 className={css.title}>
@@ -888,13 +905,13 @@ const mapStateToProps = state => {
     queryParams,
   };
 };
-const mapDispatchToProps = (dispatch) => ({
-  onLoadData: (params) => dispatch(loadData(params))
-})
+const mapDispatchToProps = dispatch => ({
+  onLoadData: params => dispatch(loadData(params)),
+});
 
 const ProfilePage = compose(
   withRouter,
-  connect(mapStateToProps,mapDispatchToProps),
+  connect(mapStateToProps, mapDispatchToProps),
   withViewport,
   injectIntl
 )(ProfilePageComponent);

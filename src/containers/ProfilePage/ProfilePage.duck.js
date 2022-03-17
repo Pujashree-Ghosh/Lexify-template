@@ -130,7 +130,7 @@ export const queryUserListings = (userId, practiceAreaSort) => (dispatch, getSta
     .query({
       author_id: userId,
       pub_category: 'publicOral',
-      pub_practiceArea: practiceAreaSort,
+      pub_areaOfLaw: practiceAreaSort ? practiceAreaSort : null,
       // page: 2,
       // per_page: 2,
       include: ['author', 'images'],
@@ -139,7 +139,6 @@ export const queryUserListings = (userId, practiceAreaSort) => (dispatch, getSta
     .then(response => {
       // Pick only the id and type properties from the response listings
       const listingRefs = response.data.data.map(({ id, type }) => ({ id, type }));
-      console.log(22, listingRefs, response.data);
       // console.log(22,practiceAreaSort)
       dispatch(addMarketplaceEntities(response));
       dispatch(queryListingsSuccess(listingRefs));
@@ -182,7 +181,6 @@ export const showUser = userId => (dispatch, getState, sdk) => {
 export const loadData = params => (dispatch, getState, sdk) => {
   const userId = new UUID(params.id);
   const practiceAreaSort = params.practiceAreaSort;
-  console.log(990, params);
   // Clear state so that previously loaded data is not visible
   // in case this page load fails.
   dispatch(setInitialState());
