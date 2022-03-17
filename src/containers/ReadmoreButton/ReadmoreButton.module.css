@@ -1,6 +1,11 @@
 @import '../../styles/customMediaQueries.css';
 @import '../../styles/propertySets.css';
 
+.destxt {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 200;
+}
 .showdisbth {
   color: #a91722;
   padding: 10px 0;

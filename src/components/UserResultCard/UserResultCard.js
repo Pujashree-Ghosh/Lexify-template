@@ -65,38 +65,39 @@ function UserResultCardComponent(props) {
   const slug = createSlug(listing?.attributes?.title);
   return (
     <div className={css.cardContainer} key={listing.id.uuid}>
-      <div className={css.userContent}>
-        <div className={css.SectionAvatarImg}>
-          {/* <SectionAvatar user={listing.author} /> */}
-          <AvatarMedium className={css.profileAvatar} user={ensuredUser} disableProfileLink />
-        </div>
-        <div className={css.userInfo}>
-          <div className={css.userName}>{listing.attributes.title}</div>
-          <div className={css.userVerified}>
-            {currentUser?.attributes?.profile?.protectedData?.isProfileVerified
-              ? 'Attorney of law'
-              : null}
-          </div>
-          <div className={css.userLocation}>
-            {listing?.attributes?.publicData?.country?.length ? (
-              <>
-                <img src={biolocationIcon} className={css.locationIcon} />
-
-                <span>
-                  {`${state ? state : city ? city : ''}, 
-              ${country}`}
-                </span>
-              </>
-            ) : (
-              ''
-            )}
-          </div>
-        </div>
-      </div>
-
       <div className={css.dmuser}>
         <div className={css.userBio}>
           <ReadmoreButton description={listing?.attributes?.description} />
+        </div>
+      </div>
+      <div className={css.userContent}>
+        <div className={css.avtrpp}>
+          <div className={css.SectionAvatarImg}>
+            {/* <SectionAvatar user={listing.author} /> */}
+            <AvatarMedium className={css.profileAvatar} user={ensuredUser} disableProfileLink />
+          </div>
+          <div className={css.userInfo}>
+            <div className={css.userName}>{listing.attributes.title}</div>
+            <div className={css.userVerified}>
+              {currentUser?.attributes?.profile?.protectedData?.isProfileVerified
+                ? 'Attorney of law'
+                : null}
+            </div>
+            <div className={css.userLocation}>
+              {listing?.attributes?.publicData?.country?.length ? (
+                <>
+                  <img src={biolocationIcon} className={css.locationIcon} />
+
+                  <span>
+                    {`${state ? state : city ? city : ''}, 
+              ${country}`}
+                  </span>
+                </>
+              ) : (
+                ''
+              )}
+            </div>
+          </div>
         </div>
         <div className={css.bookingContent}>
           <div className={css.profileBtnContainer}>

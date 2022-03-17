@@ -71,28 +71,42 @@ const fetchOrdersOrSalesError = e => ({
 
 // ================ Thunks ================ //
 
-const INBOX_PAGE_SIZE = 10;
+const INBOX_PAGE_SIZE = 5;
 
 export const loadData = (params, search) => (dispatch, getState, sdk) => {
   const { tab } = params;
+  const transitionParam =
+    tab === 'pending'
+      ? ['transition/pending']
+      : tab === 'upcoming'
+      ? ['transition/accept']
+      : [
+          'transition/complete',
+          'transition/expire-review-period',
+          'transition/review-1-by-customer',
+          'transition/review-1-by-provider',
+          'transition/review-2-by-provider',
+          'transition/expire-provider-review-period',
+          'transition/review-2-by-customer',
+          'transition/expire-customer-review-period',
+        ];
 
   const onlyFilterValues = {
-    orders: 'order',
-    sales: 'sale',
+    pending: 'pending',
+    upcoming: 'upcoming',
+    complete: 'complete',
   };
 
   const onlyFilter = onlyFilterValues[tab];
   if (!onlyFilter) {
-    return Promise.reject(new Error(`Invalid tab for InboxPage: ${tab}`));
+    return Promise.reject(new Error(`Invalid tab for MyAppoinmentPage: ${tab}`));
   }
 
   dispatch(fetchOrdersOrSalesRequest());
-
   const { page = 1 } = parse(search);
-
   const apiQueryParams = {
-    only: onlyFilter,
-    lastTransitions: TRANSITIONS,
+    only: 'order',
+    lastTransitions: transitionParam,
     include: [
       'provider',
       'provider.profileImage',
@@ -113,11 +127,10 @@ export const loadData = (params, search) => (dispatch, getState, sdk) => {
     page,
     per_page: INBOX_PAGE_SIZE,
   };
-  console.log(TRANSITIONS);
+
   return sdk.transactions
     .query(apiQueryParams)
     .then(response => {
-      console.log(response);
       dispatch(addMarketplaceEntities(response));
       dispatch(fetchOrdersOrSalesSuccess(response));
       return response;

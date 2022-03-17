@@ -240,7 +240,7 @@
     padding: 30px;
     border: 1px solid #e3e3e3;
     border-radius: 10px;
-    max-height: 540px;
+    /* max-height: 540px; */
 
     /* padding-left: 60px; */
 
@@ -610,4 +610,12 @@
 }
 .listingpagecon {
   background: #f8f8f8;
+}
+.viewProfileLink {
+  text-decoration: underline 2px var(--attentionColor);
+  text-underline-offset: 2px;
+  cursor: pointer;
+  width: fit-content;
+  margin-bottom: 20px;
+  font-size: 16px;
 }

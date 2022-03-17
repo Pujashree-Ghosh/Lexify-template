@@ -705,6 +705,157 @@ class ProfileSettingsFormComponent extends Component {
                     />
                   </div>
                 </div>
+                <div className={css.client}>
+                  {user?.attributes?.profile?.publicData?.clientType === 'legalEntity' ? (
+                    <div className={css.sectionContainer}>
+                      <h3 className={css.sectionTitle}>
+                        <FormattedMessage id="ProfileSettingsForm.companyDetail" />
+                      </h3>
+                      {/* <div className={css.nameContainer}> */}
+
+                      <div className={css.fromgroup}>
+                        <FieldTextInput
+                          className={css.companyName}
+                          type="text"
+                          id="companyName"
+                          name="companyName"
+                          placeholder={companyNamePlaceholder}
+                          validate={companyNameRequired}
+                        />
+                      </div>
+                      <div className={css.fromgroup}>
+                        <FieldTextInput
+                          className={css.companyNumber}
+                          type="text"
+                          id="companyNumber"
+                          name="companyNumber"
+                          placeholder={companyNumberPlaceholder}
+                          // validate={companyNumberRequired}
+                        />
+                      </div>
+                      <div className={css.fromgroup}>
+                        <FieldSelect
+                          id="country"
+                          name="country"
+                          // label="Choose an option:"
+                          validate={composeValidators(required(countryRequiredMessage))}
+                        >
+                          <option value="">{countryPlaceHolder}</option>
+                          {this.state.countryData.map(m => (
+                            <option value={m.iso3} key={m.iso3}>
+                              {m.name}
+                            </option>
+                          ))}
+                        </FieldSelect>
+                      </div>
+                      <div className={css.fromgroup}>
+                        <FieldTextInput
+                          className={css.street}
+                          type="text"
+                          id="street"
+                          name="street"
+                          placeholder={streetPlaceholder}
+                          validate={streetRequired}
+                        />
+                      </div>
+                      <div className={css.fromgroup}>
+                        <FieldTextInput
+                          className={css.city}
+                          type="text"
+                          id="city"
+                          name="city"
+                          placeholder={cityPlaceholder}
+                          validate={cityRequired}
+                        />
+                      </div>
+                      <div className={css.fromgroup}>
+                        <FieldTextInput
+                          className={css.state}
+                          type="text"
+                          id="state"
+                          name="state"
+                          placeholder={statePlaceholder}
+                          validate={stateRequired}
+                        />
+                      </div>
+                      <div className={css.fromgroup}>
+                        <FieldTextInput
+                          className={css.ZipCode}
+                          type="text"
+                          id="zipCode"
+                          name="zipCode"
+                          placeholder={zipCodePlaceholder}
+                          validate={zipCodeRequired}
+                        />
+                      </div>
+                      {/* </div> */}
+                    </div>
+                  ) : (
+                    <div className={css.sectionContainer}>
+                      <h3 className={css.sectionTitle}>
+                        <FormattedMessage id="ProfileSettingsForm.address" />
+                      </h3>
+                      {/* <div className={css.nameContainer}> */}
+
+                      <div className={css.fromgroup}>
+                        <FieldSelect
+                          id="country"
+                          name="country"
+                          // label="Choose an option:"
+                          // validate={required}
+                        >
+                          <option value="">{countryPlaceHolder}</option>
+                          {this.state.countryData.map(m => (
+                            <option value={m.iso3} key={m.iso3}>
+                              {m.name}
+                            </option>
+                          ))}
+                        </FieldSelect>
+                      </div>
+                      <div className={css.fromgroup}>
+                        <FieldTextInput
+                          className={css.street}
+                          type="text"
+                          id="street"
+                          name="street"
+                          placeholder={streetPlaceholder}
+                          validate={streetRequired}
+                        />
+                      </div>
+                      <div className={css.fromgroup}>
+                        <FieldTextInput
+                          className={css.city}
+                          type="text"
+                          id="city"
+                          name="city"
+                          placeholder={cityPlaceholder}
+                          validate={cityRequired}
+                        />
+                      </div>
+                      <div className={css.fromgroup}>
+                        <FieldTextInput
+                          className={css.state}
+                          type="text"
+                          id="state"
+                          name="state"
+                          placeholder={statePlaceholder}
+                          validate={stateRequired}
+                        />
+                      </div>
+                      <div className={css.fromgroup}>
+                        <FieldTextInput
+                          className={css.zipCode}
+                          type="text"
+                          id="zipCode"
+                          name="zipCode"
+                          placeholder={zipCodePlaceholder}
+                          validate={zipCodeRequired}
+                        />
+                      </div>
+                      {/* </div> */}
+                    </div>
+                  )}
+                </div>
 
                 <div className={css.sectionContainer}>
                   <h3 className={css.sectionTitle}>
@@ -800,14 +951,14 @@ class ProfileSettingsFormComponent extends Component {
 
                 {user && !user?.attributes?.profile?.protectedData?.isLawyer ? (
                   <div className={css.client}>
-                    {user?.attributes?.profile?.publicData?.clientType === 'legalEntity' ? (
+                    {/* {user?.attributes?.profile?.publicData?.clientType === 'legalEntity' ? (
                       <div className={css.sectionContainer}>
                         <h3 className={css.sectionTitle}>
                           <FormattedMessage id="ProfileSettingsForm.companyDetail" />
                         </h3>
                         {/* <div className={css.nameContainer}> */}
 
-                        <div className={css.fromgroup}>
+                    {/* <div className={css.fromgroup}>
                           <FieldTextInput
                             className={css.companyName}
                             type="text"
@@ -883,7 +1034,7 @@ class ProfileSettingsFormComponent extends Component {
                           />
                         </div>
                         {/* </div> */}
-                      </div>
+                    {/* </div>
                     ) : (
                       <div className={css.sectionContainer}>
                         <h3 className={css.sectionTitle}>
@@ -891,7 +1042,7 @@ class ProfileSettingsFormComponent extends Component {
                         </h3>
                         {/* <div className={css.nameContainer}> */}
 
-                        <div className={css.fromgroup}>
+                    {/* <div className={css.fromgroup}>
                           <FieldSelect
                             id="country"
                             name="country"
@@ -947,8 +1098,8 @@ class ProfileSettingsFormComponent extends Component {
                           />
                         </div>
                         {/* </div> */}
-                      </div>
-                    )}
+                    {/* </div>
+                    )} */}
 
                     <div className={css.sectionContainer}>
                       <h3 className={css.sectionTitle}>

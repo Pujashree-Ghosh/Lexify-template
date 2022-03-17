@@ -250,8 +250,7 @@ const DailyPlan = props => {
                             <option value={s} key={s}>
                               {s}
                             </option>
-                          ))
-                          }
+                          ))}
                         </FieldSelect>
                       </div>
                     </div>

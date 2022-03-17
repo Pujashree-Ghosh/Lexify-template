@@ -88,10 +88,11 @@ const TopbarDesktop = props => {
       </MenuLabel>
       {currentUser?.attributes?.profile?.protectedData?.isLawyer ? (
         <MenuContent className={css.profileMenuContent}>
-          <MenuItem key="AppointmentPage">
+          <MenuItem key="MyAppointmentPage">
             <NamedLink
-              className={classNames(css.profileSettingsLink, currentPageClass('AppointmentPage'))}
-              name="AppointmentPage"
+              className={classNames(css.profileSettingsLink, currentPageClass('MyAppointmentPage'))}
+              name="MyAppointmentPage"
+              params={{ tab: 'pending' }}
             >
               <span className={css.menuItemBorder} />
               <FormattedMessage id="TopbarDesktop.appointmentsLink" />
@@ -158,6 +159,16 @@ const TopbarDesktop = props => {
         </MenuContent>
       ) : (
         <MenuContent className={css.profileMenuContent}>
+          <MenuItem key="MyAppointmentPage">
+            <NamedLink
+              className={classNames(css.profileSettingsLink, currentPageClass('MyAppointmentPage'))}
+              name="MyAppointmentPage"
+              params={{ tab: 'pending' }}
+            >
+              <span className={css.menuItemBorder} />
+              <FormattedMessage id="TopbarDesktop.appointmentsLink" />
+            </NamedLink>
+          </MenuItem>
           <MenuItem key="PromotionPage">
             <NamedLink
               className={classNames(css.promotionLink, currentPageClass('PromotionPage'))}

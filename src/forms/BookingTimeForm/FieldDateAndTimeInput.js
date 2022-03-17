@@ -29,6 +29,8 @@ import NextMonthIcon from './NextMonthIcon';
 import PreviousMonthIcon from './PreviousMonthIcon';
 import moment from 'moment';
 import css from './FieldDateAndTimeInput.module.css';
+import axios from 'axios';
+import { apiBaseUrl } from '../../util/api';
 
 // MAX_TIME_SLOTS_RANGE is the maximum number of days forwards during which a booking can be made.
 // This is limited due to Stripe holding funds up to 90 days from the
@@ -323,6 +325,32 @@ class FieldDateAndTimeInput extends Component {
   }
 
   onBookingStartDateChange = value => {
+    console.log(
+      value,
+      moment(value),
+      moment(value.date)
+        .clone()
+        .startOf('day')
+        .toDate(),
+      moment(value.date)
+        .clone()
+        .endOf('day')
+        .toDate()
+    );
+    axios
+      .post(`${apiBaseUrl()}/api/booking/getProviderBooking`, {
+        providerId: this.props?.listing?.author?.id.uuid,
+        start: moment(value.date)
+          .clone()
+          .startOf('day')
+          .toDate(),
+        end: moment(value.date)
+          .clone()
+          .endOf('day')
+          .toDate(),
+      })
+      .then(resp => console.log(resp.data))
+      .catch(err => console.log(err));
     const { monthlyTimeSlots, timeZone, intl, form, duration } = this.props;
     if (!value || !value.date) {
       form.batch(() => {

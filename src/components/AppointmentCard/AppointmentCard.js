@@ -2,121 +2,74 @@ import React, { useState, useEffect } from 'react';
 import { array, string, func } from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { LINE_ITEM_DAY, LINE_ITEM_NIGHT, propTypes } from '../../util/types';
 import { showUser } from '../../containers/ProfilePage/ProfilePage.duck';
 import { FormattedMessage, intlShape, injectIntl } from '../../util/reactIntl';
 import css from './AppointmentCard.module.css';
-import SectionAvatar from '../../containers/ListingPage/SectionAvatar';
-import { ensureUser } from '../../util/data';
-import routeConfiguration from '../../routeConfiguration';
-import { AvatarMedium, NamedLink } from '..';
+import { AvatarMedium } from '..';
 import biolocationIcon from '../../assets/material-location-on.svg';
-import config from '../../config';
-import { createResourceLocatorString } from '../../util/routes';
-import axios from 'axios';
-import { createSlug } from '../../util/urlHelpers';
-import ReadmoreButton from '../../containers/ReadmoreButton/ReadmoreButton';
-
+import moment from 'moment';
 function AppointmentCardComponent(props) {
-  //   const { listing, currentUser, onShowUser, history } = props;
-  // const [authorDetail, setAuthorDetail] = useState([]);
-  const [countryData, setCountryData] = useState([]);
-  const { data } = props;
-  console.log('first');
+  const { unitType, type, tx, intl, stateData } = props;
+  const provider = tx && tx.provider;
+  const listing = tx && tx.listing;
+  const booking = tx && tx.booking;
+  // const { provider, listing, booking } = tx;
 
-  //   useEffect(() => {
-  //     onShowUser(listing.author.id);
-  //     axios
-  //       .get('https://countriesnow.space/api/v0.1/countries/states')
-  //       .then(res => setCountryData(res.data.data))
-  //       .catch(err => console.log('somer error occurred', err));
-  //     console.log('in here');
-  //   }, []);
-
-  //   const ensuredUser = ensureUser(listing.author);
-  //   const state = countryData
-  //     ?.filter(c => c.iso3 === 'USA')[0]
-  //     ?.states?.filter(s =>
-  //       s.state_code === listing?.attributes?.publicData?.state?.length > 0
-  //         ? listing?.attributes?.publicData?.state[0]
-  //         : ''
-  //     )[0]?.name;
-  //   const city = listing?.attributes?.publicData?.city && listing?.attributes?.publicData?.city[0];
-  //   const country = countryData.filter(
-  //     c =>
-  //       c.iso3 ===
-  //       (listing?.attributes?.publicData?.country?.length > 0
-  //         ? listing?.attributes?.publicData?.country[0]
-  //         : '')
-  //   )[0]?.name;
-  // console.log(
-  //   666,
-  //   listing?.attributes?.publicData?.country?.length
-  //     ? listing?.attributes?.publicData?.country[0]
-  //     : '',
-  //   listing?.attributes?.publicData?.country,
-  //   // countryData.map(m => m),
-  //   countryData.filter(
-  //     c =>
-  //       c.iso3 ===
-  //       (listing?.attributes?.publicData?.country?.length
-  //         ? listing?.attributes?.publicData?.country[0]
-  //         : '')
-  //   )[0]?.name
-  // );
-  //   const slug = createSlug(listing?.attributes?.title);
-  //   console.log('first');
   return (
-    <div className={css.cardContainer} key={1}>
+    <div className={css.cardContainer}>
       <div className={css.dateInfo}>
-        <div className={css.weekDay}>{data.startDate.dayOfWeek}</div>
-        <div className={css.day}>{data.startDate.day}</div>
-        <div className={css.monthYear}>{`${data.startDate.month},${data.startDate.year}`}</div>
+        <span>{moment(booking?.attributes?.start).format('dddd')}</span>
+        <span className={css.stday}>{moment(booking?.attributes?.start).format('DD')}</span>
+        <span>{`${moment(booking?.attributes?.start).format('MMM')},${moment(
+          booking?.attributes?.start
+        ).format('YYYY')}`}</span>
       </div>
       <div className={css.horizontal}>
         <div className={css.statusContainer}>
-          {data.pending ? (
-            <p className={css.status}>'Pending Confimation'</p>
-          ) : data.upcoming ? (
-            <p className={css.status}>'Pending'</p>
-          ) : data.completed ? (
-            <p className={css.status}>'Completed'</p>
+          {stateData === 'pending' ? (
+            <p className={css.status}>Pending Confimation</p>
+          ) : stateData === 'upcoming' ? (
+            <p className={`${css.status} ${css.statuspending}`}>Pending</p>
+          ) : stateData === 'completed' ? (
+            <p className={`${css.status} ${css.statuscom}`}>Completed</p>
           ) : (
             ''
           )}
         </div>
         <div className={css.providerAndListing}>
           <div className={css.listingDurationDeadline}>
-            <div className={css.startTime}>6.00 PM</div>
-            <div className={css.listingInfo}>
-              <p className={css.listingTitle}>{data.listingTitle}</p>
-              {/* <p className={css.listingDescription}>
-                {listing.attributes.description.length > 150
-                    ? listing.attributes.description.slice(0, 150) + '...'
-                    : listing.attributes.description}
-                </p> */}
-              {/* <ReadmoreButton
-                description={
-                    'This is a consultation This is a consultation This is a consultation This is a consultation This is a consultation This is a consultation'
-                }
-                /> */}
+            <div className={css.startTime}>
+              <img src="/static/icons/timeicon.png" />
+              {moment(booking.attributes.start).format('hh:mm a')}
             </div>
+
+            <p className={css.listingInfo}>{listing?.attributes?.title}</p>
+
             <div className={css.durationDeadline}>
-              <div className={css.duration}>{`Duration: ${data.duration} Hour`}</div>
-              <div className={css.deadline}>Deadline: 12/12/1212</div>
+              {listing?.attributes?.publicData?.category !== 'customService' ? (
+                <span className={css.duration}>
+                  <span>Duration: </span>
+                  {listing?.attributes?.publicData?.durationHour > 0
+                    ? `${listing?.attributes?.publicData?.durationHour} Hour`
+                    : ''}
+                  {listing?.attributes?.publicData?.durationMinute > 0
+                    ? `${listing?.attributes?.publicData?.durationMinute} Minute`
+                    : ''}
+                </span>
+              ) : (
+                <span className={css.deadline}>
+                  <span>Deadline:</span> {listing?.attributes?.publicData?.deadline}
+                </span>
+              )}
             </div>
           </div>
           <div className={css.userContent}>
             <div className={css.SectionAvatarImg}>
               {/* <SectionAvatar user={listing.author} /> */}
-              <AvatarMedium
-                className={css.profileAvatar}
-                // user={listing.providerName}
-                disableProfileLink
-              />
+              <AvatarMedium className={css.profileAvatar} user={provider} disableProfileLink />
             </div>
             <div className={css.userInfo}>
-              <div className={css.userName}>{data.authorName}</div>
+              <div className={css.userName}>{provider?.attributes?.profile?.displayName}</div>
               {/* <div className={css.userLisence}>{listing.attributes.title}</div> */}
               <div className={css.userLocation}>
                 {false ? (
@@ -136,16 +89,12 @@ function AppointmentCardComponent(props) {
           </div>
         </div>
         <div className={css.bookingContent}>
-          {/* <div className={css.price}>${listing.attributes?.price?.amount / 100}.00</div> */}
-          {data.pending ? (
+          {stateData === 'pending' ? (
             <>
-              <div>
+              <div className={css.cctxtp}>
                 Please click on 'confirm' to confirm that you have recieved the consultation
               </div>
               <div className={css.profileBtnContainer}>
-                {/* <NamedLink name="ProfilePage" params={{ id: ensuredUser.id.uuid }}>
-            <FormattedMessage id="UserResultCard.ListingProfileLink" />
-            </NamedLink> */}
                 <button
                   className={css.profileBtn}
                   // onClick={() => {
@@ -196,11 +145,8 @@ AppointmentCardComponent.propTypes = {
   rootClassName: string,
   certificateConfig: array,
   intl: intlShape.isRequired,
-  //   listing: propTypes.listing.isRequired,
 
-  // Responsive image sizes hint
   renderSizes: string,
-  // country: array,
 
   setActiveListing: func,
 };
@@ -220,10 +166,8 @@ const mapDispatchToProps = dispatch => ({
   onShowListing: data => dispatch(showListing(data)),
 });
 
-// export default injectIntl(UserResultCardComponent);
 const AppointmentCard = compose(
   connect(mapStateToProps, mapDispatchToProps),
   injectIntl
 )(AppointmentCardComponent);
 export default AppointmentCard;
-// export default UserResultCardComponent;
