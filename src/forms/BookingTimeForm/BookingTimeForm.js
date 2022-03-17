@@ -116,6 +116,8 @@ export class BookingTimeFormComponent extends Component {
           const startTime = values && values.bookingStartTime ? values.bookingStartTime : null;
           const endTime = values && values.bookingEndTime ? values.bookingEndTime : null;
 
+          console.log(values);
+
           const bookingStartLabel = intl.formatMessage({
             id: 'BookingTimeForm.bookingStartTitle',
           });
@@ -129,7 +131,7 @@ export class BookingTimeFormComponent extends Component {
             this.props?.listing?.author?.attributes?.profile?.publicData?.beforeBufferTime || 0;
           const afterBufferTime =
             this.props?.listing?.author?.attributes?.profile?.publicData?.afterBufferTime || 0;
-          console.log(beforeBufferTime, afterBufferTime, beforeBufferTime + afterBufferTime);
+          // console.log(beforeBufferTime, afterBufferTime, beforeBufferTime + afterBufferTime);
 
           if (startDate && !moment(startDate).isSame(this.state.startDate)) {
             if (beforeBufferTime > 0 || afterBufferTime > 0) {
@@ -234,7 +236,7 @@ export class BookingTimeFormComponent extends Component {
             startDateInputProps,
             endDateInputProps,
           };
-          console.log(values);
+          // console.log(values);
 
           return (
             <Form onSubmit={handleSubmit} className={classes} enforcePagePreloadFor="CheckoutPage">
