@@ -401,6 +401,27 @@ class FieldDateAndTimeInput extends Component {
       this.setState({ timeSlots: getTimeSlots(timeSlots, this.state.startDate?.date, timeZone) });
     }
 
+    let allAvailableTime = [];
+    let allAvailableTime2 = [];
+
+    this.state.timeSlots.map(m => {
+      const start = moment(m.attributes.start).clone();
+      const end = moment(m.attributes.end).clone();
+      while (
+        start
+          .clone()
+          .add(5, 'm')
+          .isSameOrBefore(moment(end))
+      ) {
+        // let allAvailableTime = [];
+        allAvailableTime.push(start.format());
+        allAvailableTime2.push(start.format('HH:mm'));
+
+        start.add(5, 'm');
+      }
+    });
+    console.log(6967, allAvailableTime);
+
     if (providerId && prevState.startDate !== this.state.startDate) {
       axios
         .post(`${apiBaseUrl()}/api/booking/getProviderBooking`, {
@@ -423,74 +444,158 @@ class FieldDateAndTimeInput extends Component {
           this.setState({ bookedSlot: bk });
         });
     }
-
-    let availableTimeSlots = [];
-
-    this.state.timeSlots.map(a => {
-      let flag = false;
-      // this.state.bookedSlot.map(b => {
-      //   console.log(
-      //     55568,
-      //     moment(b.start).isBetween(moment(a.attributes.start), moment(a.attributes.end))
-      //   );
-      for (let i = 0; i < this.state.bookedSlot.length; i++) {
-        if (
-          moment(this.state.bookedSlot[i].start).isBetween(
-            moment(a.attributes.start),
-            moment(a.attributes.end)
-          )
-        ) {
-          if (
-            !availableTimeSlots.find(
-              f =>
-                (f.start === a.attributes.start && f.end === this.state.bookedSlot[i].start) ||
-                (f.start === this.state.bookedSlot[i].end && f.end === a.attributes.end)
-            )
-          ) {
-            availableTimeSlots.push(
-              { start: a.attributes.start, end: this.state.bookedSlot[i].start },
-              { start: this.state.bookedSlot[i].end, end: a.attributes.end }
-            );
-            console.log(109, availableTimeSlots);
-          }
-          flag = true;
-          break;
+    let allBookedSlot = [];
+    let allBookedSlot2 = [];
+    this.state.bookedSlot.map((b, i) => {
+      const start = moment(b.start).clone();
+      const end = moment(b.end)
+        .clone()
+        .subtract(1, 'm');
+      let count = 0;
+      while (
+        start
+          .clone()
+          .add(5, 'm')
+          .isSameOrBefore(moment(end))
+      ) {
+        if (count === 0) {
+          allBookedSlot.push(
+            start
+              .clone()
+              .add(1, 'm')
+              .format()
+          );
+          allBookedSlot2.push(
+            start
+              .clone()
+              .add(1, 'm')
+              .format('HH:mm')
+          );
         }
-        // else {
-        //   if (
-        //     !availableTimeSlots.find(
-        //       f => f.start === a.attributes.start && f.end === a.attributes.end
-        //     )
-        //   ) {
-        //     availableTimeSlots.push({ start: a.attributes.start, end: a.attributes.end });
-        //     console.log(1091, availableTimeSlots);
-        //   }
+        // else if (i === this.state.bookedSlot - 1) {
+        //   allBookedSlot.push(
+        //     start
+        //       .clone()
+        //       .subtract(1, 'm')
+        //       .format()
+        //   );
+        //   allBookedSlot2.push(
+        //     start
+        //       .clone()
+        //       .subtract(1, 'm')
+        //       .format('HH:mm')
+        //   );
         // }
-      }
-      if (flag === false) {
-        if (
-          !availableTimeSlots.find(
-            f => f.start === a.attributes.start && f.end === a.attributes.end
-          )
-        ) {
-          availableTimeSlots.push({ start: a.attributes.start, end: a.attributes.end });
-          console.log(1091, availableTimeSlots);
+        else {
+          allBookedSlot.push(start.format());
+          allBookedSlot2.push(start.format('HH:mm'));
         }
+        start.add(5, 'm');
+        count += 1;
       }
+      console.log(1001, allBookedSlot);
+      // allBookedSlot[count] = moment(allBookedSlot[count])
+      //   .clone()
+      //   .subtract(1, 'm')
+      //   .format();
     });
+    // console.log(69678, allBookedSlot);
+
+    let availableTimeSlots = allAvailableTime.filter(f => !allBookedSlot.includes(f));
+
+    console.log(
+      696785,
+      allAvailableTime2.filter(f => !allBookedSlot2.includes(f)),
+      availableTimeSlots,
+      allAvailableTime2,
+      allBookedSlot2
+    );
+
+    // this.state.timeSlots.map(a => {
+    //   let flag = false;
+    //   // this.state.bookedSlot.map(b => {
+    //   //   console.log(
+    //   //     55568,
+    //   //     moment(b.start).isBetween(moment(a.attributes.start), moment(a.attributes.end))
+    //   //   );
+    //   for (let i = 0; i < this.state.bookedSlot.length; i++) {
+    //     if (
+    //       moment(this.state.bookedSlot[i].start).isBetween(
+    //         moment(a.attributes.start),
+    //         moment(a.attributes.end)
+    //       )
+    //     ) {
+    //       if (
+    //         !availableTimeSlots.find(
+    //           f =>
+    //             (f.start === a.attributes.start && f.end === this.state.bookedSlot[i].start) ||
+    //             (f.start === this.state.bookedSlot[i].end && f.end === a.attributes.end)
+    //         )
+    //       ) {
+    //         availableTimeSlots.push(
+    //           { start: a.attributes.start, end: this.state.bookedSlot[i].start },
+    //           { start: this.state.bookedSlot[i].end, end: a.attributes.end }
+    //         );
+    //         console.log(109, availableTimeSlots);
+    //       }
+    //       flag = true;
+    //       break;
+    //     }
+    //     // else {
+    //     //   if (
+    //     //     !availableTimeSlots.find(
+    //     //       f => f.start === a.attributes.start && f.end === a.attributes.end
+    //     //     )
+    //     //   ) {
+    //     //     availableTimeSlots.push({ start: a.attributes.start, end: a.attributes.end });
+    //     //     console.log(1091, availableTimeSlots);
+    //     //   }
+    //     // }
+    //   }
+    //   if (flag === false) {
+    //     if (
+    //       !availableTimeSlots.find(
+    //         f => f.start === a.attributes.start && f.end === a.attributes.end
+    //       )
+    //     ) {
+    //       availableTimeSlots.push({ start: a.attributes.start, end: a.attributes.end });
+    //       console.log(1091, availableTimeSlots);
+    //     }
+    //   }
+    // });
     const allStartHour = [];
     availableTimeSlots.map(m => {
-      const start = moment(m.start).clone();
-      const end = moment(m.end).clone();
+      const start = moment(m).clone();
       const min = duration && duration.split('.')[1];
       const hour = duration && duration.split('.')[0];
 
-      while (
+      console.log(
+        6758,
+        availableTimeSlots,
+        start,
         start
           .clone()
           .add(hour, 'h')
           .add(min, 'm')
-          .isSameOrBefore(moment(end))
+          .format(),
+        availableTimeSlots.includes(
+          start
+            .clone()
+            .add(hour, 'h')
+            .add(min, 'm')
+            .format()
+        ),
+        allStartHour
+      );
+
+      if (
+        availableTimeSlots.includes(
+          start
+            .clone()
+            .add(hour, 'h')
+            .add(min, 'm')
+            .format()
+        )
       ) {
         allStartHour.push({
           timeOfDay: start.format('HH:mm'),
@@ -499,6 +604,26 @@ class FieldDateAndTimeInput extends Component {
         start.add(5, 'm');
       }
     });
+    // availableTimeSlots.map(m => {
+    //   const start = moment(m.start).clone();
+    //   const end = moment(m.end).clone();
+    //   const min = duration && duration.split('.')[1];
+    //   const hour = duration && duration.split('.')[0];
+
+    //   while (
+    //     start
+    //       .clone()
+    //       .add(hour, 'h')
+    //       .add(min, 'm')
+    //       .isSameOrBefore(moment(end))
+    //   ) {
+    //     allStartHour.push({
+    //       timeOfDay: start.format('HH:mm'),
+    //       timestamp: start.valueOf(),
+    //     });
+    //     start.add(5, 'm');
+    //   }
+    // });
     if (this.state.allStart.length !== allStartHour.length) {
       this.setState({ allStart: allStartHour });
     }
