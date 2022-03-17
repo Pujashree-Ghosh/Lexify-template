@@ -124,7 +124,7 @@ export const queryReviewsError = e => ({
 
 // ================ Thunks ================ //
 
-export const queryUserListings = (userId,practiceAreaSort) => (dispatch, getState, sdk) => {
+export const queryUserListings = (userId, practiceAreaSort) => (dispatch, getState, sdk) => {
   dispatch(queryListingsRequest(userId));
   return sdk.listings
     .query({
@@ -139,7 +139,7 @@ export const queryUserListings = (userId,practiceAreaSort) => (dispatch, getStat
     .then(response => {
       // Pick only the id and type properties from the response listings
       const listingRefs = response.data.data.map(({ id, type }) => ({ id, type }));
-      console.log(22,listingRefs, response.data);
+      console.log(22, listingRefs, response.data);
       // console.log(22,practiceAreaSort)
       dispatch(addMarketplaceEntities(response));
       dispatch(queryListingsSuccess(listingRefs));
@@ -182,7 +182,7 @@ export const showUser = userId => (dispatch, getState, sdk) => {
 export const loadData = params => (dispatch, getState, sdk) => {
   const userId = new UUID(params.id);
   const practiceAreaSort = params.practiceAreaSort;
-  console.log(990,params);
+  console.log(990, params);
   // Clear state so that previously loaded data is not visible
   // in case this page load fails.
   dispatch(setInitialState());
@@ -190,7 +190,7 @@ export const loadData = params => (dispatch, getState, sdk) => {
   return Promise.all([
     dispatch(fetchCurrentUser()),
     dispatch(showUser(userId)),
-    dispatch(queryUserListings(userId,practiceAreaSort)),
+    dispatch(queryUserListings(userId, practiceAreaSort)),
     dispatch(queryUserReviews(userId)),
   ]);
 };
