@@ -32,6 +32,8 @@ import {
   LayoutWrapperFooter,
   Footer,
 } from '../../components';
+import axios from 'axios';
+import { apiBaseUrl } from '../../util/api';
 import MenuIcon from '../../components/ManageListingCard/MenuIcon';
 import Overlay from '../../components/ManageListingCard/Overlay';
 import { TopbarContainer } from '../../containers';
@@ -76,8 +78,18 @@ export class ManageListingsPageComponent extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { listingMenuOpen: null, statusSort: '', practiceAreaSort: '', typeSort: '' };
+    this.state = {
+      listingMenuOpen: null,
+      statusSort: '',
+      practiceAreaSort: '',
+      typeSort: '',
+      listingsFromApi: [],
+      listingsFromApiLoaded: false,
+    };
     this.onToggleMenu = this.onToggleMenu.bind(this);
+  }
+  componentDidMount() {
+    // console.log(112, this.state.listingsFromApi);
   }
 
   onToggleMenu(listing) {
@@ -102,6 +114,7 @@ export class ManageListingsPageComponent extends Component {
       queryParams,
       scrollingDisabled,
       intl,
+      currentUser,
     } = this.props;
 
     console.log(444, this.state);
@@ -129,11 +142,11 @@ export class ManageListingsPageComponent extends Component {
       ) : null;
 
     const heading =
-      listingsAreLoaded && pagination.totalItems > 1 ? (
+      listingsAreLoaded && this.state.listingsFromApi.length > 1 ? (
         <h1 className={css.title}>
           <FormattedMessage
             id="ManageListingsPage.youHaveListings"
-            values={{ count: pagination.totalItems - 1 }}
+            values={{ count: this.state.listingsFromApi.length }}
           />
         </h1>
       ) : (
@@ -155,67 +168,99 @@ export class ManageListingsPageComponent extends Component {
     const closingErrorListingId = !!closingListingError && closingListingError.listingId;
     const openingErrorListingId = !!openingListingError && openingListingError.listingId;
 
+    const listingssss = params => {
+      const { states, category, areaOfLaw } = params;
+      axios
+        .post(`${apiBaseUrl()}/api/sortOwnListings`, {
+          authorId: this.props.currentUser?.id?.uuid,
+          states: states,
+          pub_category: category,
+          pub_areaOfLaw: areaOfLaw,
+        })
+        .then(res => {
+          console.log(114, res.data);
+          if (JSON.stringify(this.state.listingsFromApi) !== JSON.stringify(res?.data?.data)) {
+            this.setState({
+              listingsFromApi: res?.data?.data,
+            });
+          }
+        })
+        .catch();
+    };
     const statusOptions = [
-      { key: 'published', value: 'Published', label: 'Published' },
-      { key: 'unpublished', value: 'Unpublished', label: 'Unpublished' },
-      { key: 'closed', value: 'Closed', label: 'Closed' },
+      { key: 'published', value: 'published', label: 'Published' },
+      { key: 'draft', value: 'draft', label: 'Unpublished' },
+      { key: 'closed', value: 'closed', label: 'Closed' },
     ];
     const typeOptions = [
-      { key: 'publicOral', value: 'Public Oral', label: 'Public Oral' },
-      { key: 'customOral', value: 'Custom Oral', label: 'Customer Oral' },
-      { key: 'customService', value: 'Custom Service', label: 'Custome Service' },
+      { key: 'publicOral', value: 'publicOral', label: 'Public Oral' },
+      { key: 'customOral', value: 'customOral', label: 'Customer Oral' },
+      { key: 'customService', value: 'customService', label: 'Custom Service' },
     ];
     const practiceAreaOptions = [
       {
-        key: 'contractAndAgreements',
-        value: 'Contract And Agreements',
+        key: 'contractsAndAgreements',
+        value: 'contractsAndAgreements',
         label: 'Contract And Agreements',
       },
-      { key: 'employeeBenefits', value: 'Employee Benefits', label: 'Employee Benefits' },
-      { key: 'employmentAndLabour', value: 'Employment And Labor', label: 'Employment And Labor' },
+      { key: 'employeeBenefits', value: 'employeeBenefits', label: 'Employee Benefits' },
+      { key: 'employmentAndLabour', value: 'employmentAndLabor', label: 'Employment And Labor' },
     ];
     const sortSection = (
       <div className={css.lformrow}>
         <div className={css.lformcol}>
-          <label>Type of Listing</label>
+          <label>Category</label>
           <Select
-            value={this.state.typeSort}
+            value={this.state.typeSort?.key}
             isClearable={true}
             options={typeOptions}
             className={css.formcontrol}
             onChange={e => {
-              e === null ? this.setState({ typeSort: [] }) : this.setState({ typeSort: e });
+              e === null ? this.setState({ typeSort: '' }) : this.setState({ typeSort: e?.key });
+              listingssss({
+                category: e?.key,
+                states: this.state.statusSort,
+                areaOfLaw: this.state.practiceAreaSort,
+              });
             }}
           />
         </div>
         <div className={css.lformcol}>
           <label>Status</label>
           <Select
-            value={this.state.statusSort}
+            value={this.state.statusSort?.key}
             isClearable={true}
             options={statusOptions}
             className={css.formcontrol}
             onChange={e => {
-              e === null ? this.setState({ statusSort: [] }) : this.setState({ statusSort: e });
+              e === null
+                ? this.setState({ statusSort: '' })
+                : this.setState({ statusSort: e?.key });
+              listingssss({
+                category: this.state.typeSort,
+                states: e?.key,
+                areaOfLaw: this.state.practiceAreaSort,
+              });
             }}
           />
         </div>
-        <div className={css.lformcol}>
+        {/* <div className={css.lformcol}>
           <label>Practice Area</label>
           <Select
-            value={this.state.practiceAreaSort}
+            value={this.state.practiceAreaSort?.key}
             isClearable={true}
             options={practiceAreaOptions}
             className={css.formcontrol}
             onChange={e => {
               e === null
-                ? this.setState({ practiceAreaSort: [] })
-                : this.setState({ practiceAreaSort: e });
+                ? this.setState({ practiceAreaSort: '' })
+                : this.setState({ practiceAreaSort: e?.key });
             }}
           />
-        </div>
+        </div> */}
       </div>
     );
+
     const title = intl.formatMessage({ id: 'ManageListingsPage.title' });
 
     const panelWidth = 62.5;
@@ -238,6 +283,27 @@ export class ManageListingsPageComponent extends Component {
           </LayoutWrapperTopbar>
           <LayoutWrapperMain>
             <div>{sortSection}</div>
+            {this.state.typeSort === 'publicOral' ? (
+              <div className={css.lformcol}>
+                <label>Area of Law</label>
+                <Select
+                  value={this.state.practiceAreaSort?.key}
+                  isClearable={true}
+                  options={practiceAreaOptions}
+                  className={css.formcontrol}
+                  onChange={e => {
+                    e === null
+                      ? this.setState({ practiceAreaSort: '' })
+                      : this.setState({ practiceAreaSort: e?.key });
+                    listingssss({
+                      category: this.state.typeSort,
+                      states: this.state.statusSort,
+                      areaOfLaw: e?.key,
+                    });
+                  }}
+                />
+              </div>
+            ) : null}
             {queryInProgress ? loadingResults : null}
             {queryListingsError ? queryError : null}
 
@@ -266,7 +332,7 @@ export class ManageListingsPageComponent extends Component {
 
               <div>
                 <div className={css.listingrow}>
-                  {listings.map((m, i) => {
+                  {this.state.listingsFromApi.map((m, i) => {
                     const { price, state } = m.attributes;
                     const isDraft = state === LISTING_STATE_DRAFT;
                     const isClosed = state === LISTING_STATE_CLOSED;
@@ -274,7 +340,7 @@ export class ManageListingsPageComponent extends Component {
                       ? LISTING_PAGE_PARAM_TYPE_DRAFT
                       : LISTING_PAGE_PARAM_TYPE_EDIT;
 
-                    const { formattedPrice } = priceData(price, intl);
+                    // const { formattedPrice } = priceData(price, intl);
                     const id = m.id.uuid;
                     const slug = createSlug(m?.attributes?.title);
                     let listingOpen = null;
@@ -312,7 +378,7 @@ export class ManageListingsPageComponent extends Component {
                               <span className={css.span}> PUBLISHED</span>
                             )}
                           </div>
-                          <span className={css.price}> {formattedPrice} </span>
+                          {/* <span className={css.price}> {formattedPrice} </span> */}
                           <button
                             className={css.editbutton}
                             onClick={() =>
@@ -476,9 +542,11 @@ const mapStateToProps = state => {
     closingListingError,
   } = state.ManageListingsPage;
   const listings = getOwnListingsById(state, currentPageResultIds);
+  const { currentUser } = state.user;
   return {
     currentPageResultIds,
     listings,
+    currentUser,
     pagination,
     queryInProgress,
     queryListingsError,
