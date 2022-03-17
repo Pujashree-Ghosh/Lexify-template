@@ -514,7 +514,7 @@ class MainPanelComponent extends Component {
       history,
       currentUser,
     } = this.props;
-    // console.log("listing",listings)
+    
     const useHistoryPush = liveEdit || showAsPopup;
     //creating options for react-select component
     const practiceAreaOptions = areaOfLawOptions.map(c => ({
