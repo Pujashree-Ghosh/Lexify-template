@@ -18,6 +18,8 @@ import {
   TRANSITION_CANCEL,
   TRANSITION_CANCEL_PROVIDER,
   TRANSITION_CANCEL_CUSTOMER,
+  TRANSITION_RESCHEDULE_PROVIDER,
+  TRANSITION_RESCHEDULE_CUSTOMER,
   TRANSITION_COMPLETE,
   TRANSITION_DECLINE,
   TRANSITION_EXPIRE,
@@ -204,6 +206,10 @@ const resolveTransitionMessage = (
       return <FormattedMessage id="ActivityFeed.transitionCancelProvider" />;
     case TRANSITION_CANCEL_CUSTOMER:
       return <FormattedMessage id="ActivityFeed.transitionCancelCustomer" />;
+    case TRANSITION_RESCHEDULE_PROVIDER:
+      return <FormattedMessage id="ActivityFeed.transitionRescheduleProvider" />;
+    case TRANSITION_RESCHEDULE_CUSTOMER:
+      return <FormattedMessage id="ActivityFeed.transitionRescheduleCustomer" />;
     case TRANSITION_CANCEL:
       return <FormattedMessage id="ActivityFeed.transitionCancel" />;
     case TRANSITION_COMPLETE:

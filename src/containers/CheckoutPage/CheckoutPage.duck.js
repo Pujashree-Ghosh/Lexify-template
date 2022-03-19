@@ -165,6 +165,8 @@ export const stripeCustomerError = e => ({
 export const initiateOrder = (orderParams, transactionId) => (dispatch, getState, sdk) => {
   dispatch(initiateOrderRequest());
 
+  console.log(2025, orderParams);
+
   // If we already have a transaction ID, we should transition, not
   // initiate.
   const isTransition = !!transactionId;
