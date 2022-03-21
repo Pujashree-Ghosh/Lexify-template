@@ -1330,5 +1330,8 @@
   "MyAppointmentPage.upcomingTabTitle": "Upcoming",
   "MyAppointmentPage.completeTabTitle": "Complete",
   "TopbarMobileMenu.myAppointment": "My appointments",
-  "FieldDateAndTimeInputService.startDateLabel": "Start Date"
+  "FieldDateAndTimeInputService.startDateLabel": "Start Date",
+  "InboxPage.stateRescheduled": "Rescheduled",
+  "ActivityFeed.transitionRescheduleCustomer": "Rescheduled",
+  "ActivityFeed.transitionRescheduleProvider": "Rescheduled by provider"
 }

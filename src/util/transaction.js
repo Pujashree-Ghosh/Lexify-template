@@ -41,6 +41,8 @@ export const TRANSITION_EXPIRE = 'transition/expire';
 export const TRANSITION_CANCEL = 'transition/cancel';
 export const TRANSITION_CANCEL_PROVIDER = 'transition/cancel-provider';
 export const TRANSITION_CANCEL_CUSTOMER = 'transition/cancel-customer';
+export const TRANSITION_RESCHEDULE_PROVIDER = 'transition/reschedule-provider';
+export const TRANSITION_RESCHEDULE_CUSTOMER = 'transition/reschedule-customer';
 
 // The backend will mark the transaction completed.
 export const TRANSITION_COMPLETE = 'transition/complete';
@@ -92,6 +94,7 @@ const STATE_PREAUTHORIZED = 'preauthorized';
 const STATE_DECLINED = 'declined';
 const STATE_ACCEPTED = 'accepted';
 const STATE_CANCELED = 'canceled';
+const STATE_RESCHEDULE = 'rescheduled';
 const STATE_DELIVERED = 'delivered';
 const STATE_REVIEWED = 'reviewed';
 const STATE_REVIEWED_BY_CUSTOMER = 'reviewed-by-customer';
@@ -151,9 +154,13 @@ const stateDescription = {
         [TRANSITION_CANCEL]: STATE_CANCELED,
         [TRANSITION_CANCEL_PROVIDER]: STATE_CANCELED,
         [TRANSITION_CANCEL_CUSTOMER]: STATE_CANCELED,
+        [TRANSITION_RESCHEDULE_PROVIDER]: STATE_RESCHEDULE,
+        [TRANSITION_RESCHEDULE_CUSTOMER]: STATE_RESCHEDULE,
         [TRANSITION_COMPLETE]: STATE_DELIVERED,
       },
     },
+
+    [STATE_RESCHEDULE]: {},
 
     [STATE_CANCELED]: {},
     [STATE_DELIVERED]: {
@@ -241,6 +248,9 @@ export const txIsRequested = tx =>
 export const txIsAccepted = tx =>
   getTransitionsToState(STATE_ACCEPTED).includes(txLastTransition(tx));
 
+export const txIsRescheduled = tx =>
+  getTransitionsToState(STATE_RESCHEDULE).includes(txLastTransition(tx));
+
 export const txIsDeclined = tx =>
   getTransitionsToState(STATE_DECLINED).includes(txLastTransition(tx));
 
@@ -306,6 +316,8 @@ export const isRelevantPastTransition = transition => {
     TRANSITION_CANCEL,
     TRANSITION_CANCEL_PROVIDER,
     TRANSITION_CANCEL_CUSTOMER,
+    TRANSITION_RESCHEDULE_PROVIDER,
+    TRANSITION_RESCHEDULE_CUSTOMER,
     TRANSITION_COMPLETE,
     TRANSITION_CONFIRM_PAYMENT,
     TRANSITION_DECLINE,
