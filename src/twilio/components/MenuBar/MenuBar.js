@@ -16,7 +16,7 @@ import ToggleScreenShareButton from '../Buttons/ToogleScreenShareButton/ToggleSc
 import { ListingContext } from './../../../containers/MeetingNewPage/Meeting';
 import SignalHelper from '../../../util/signalHelper';
 import { print } from '../../../util/data';
-// import ChatButton from '../Buttons/ChatButton';
+import ChatButton from '../Buttons/ChatButton';
 import Chatbody from '../Buttons/Chatbody';
 const useStyles = makeStyles(theme =>
   createStyles({
@@ -109,7 +109,7 @@ export default function MenuBar({ isProvider, extendMeeting, isShortBooking, isE
               <Hidden smDown>
                 {<ToggleScreenShareButton disabled={isReconnecting} />}
 
-                {/* <ChatButton /> */}
+                <ChatButton />
 
                 {/* {!isSharingScreen && <ToggleScreenShareButton disabled={isReconnecting} />} */}
               </Hidden>
