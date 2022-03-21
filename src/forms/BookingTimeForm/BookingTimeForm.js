@@ -25,8 +25,8 @@ export class BookingTimeFormComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      bookingDetails: [],
-      startDate: '',
+      // bookingDetails: [],
+      // startDate: '',
       showDisclaimer: false,
     };
 
@@ -133,54 +133,54 @@ export class BookingTimeFormComponent extends Component {
             this.props?.listing?.author?.attributes?.profile?.publicData?.afterBufferTime || 0;
           // console.log(beforeBufferTime, afterBufferTime, beforeBufferTime + afterBufferTime);
 
-          if (startDate && !moment(startDate).isSame(this.state.startDate)) {
-            if (beforeBufferTime > 0 || afterBufferTime > 0) {
-              axios
-                .post(`${apiBaseUrl()}/api/booking/getBooking`, {
-                  providerId: this.props?.listing?.author?.id.uuid,
-                  start: moment(startDate)
-                    .clone()
-                    .subtract(beforeBufferTime + afterBufferTime - 1, 'm')
-                    .toDate(),
-                  end: moment(endDate)
-                    .clone()
-                    .add(beforeBufferTime + afterBufferTime - 1, 'm')
-                    .toDate(),
-                })
-                .then(resp => {
-                  this.setState({
-                    bookingDetails: resp.data,
-                    startDate: startDate,
-                  });
-                })
-                .catch(err => {
-                  console.log(err);
-                });
-            } else {
-              axios
-                .post(`${apiBaseUrl()}/api/booking/getBooking`, {
-                  providerId: this.props?.listing?.author?.id.uuid,
-                  start: moment(startDate)
-                    .clone()
-                    .add(1, 'm')
+          // if (startDate && !moment(startDate).isSame(this.state.startDate)) {
+          //   if (beforeBufferTime > 0 || afterBufferTime > 0) {
+          //     axios
+          //       .post(`${apiBaseUrl()}/api/booking/getBooking`, {
+          //         providerId: this.props?.listing?.author?.id.uuid,
+          //         start: moment(startDate)
+          //           .clone()
+          //           .subtract(beforeBufferTime + afterBufferTime - 1, 'm')
+          //           .toDate(),
+          //         end: moment(endDate)
+          //           .clone()
+          //           .add(beforeBufferTime + afterBufferTime - 1, 'm')
+          //           .toDate(),
+          //       })
+          //       .then(resp => {
+          //         this.setState({
+          //           bookingDetails: resp.data,
+          //           startDate: startDate,
+          //         });
+          //       })
+          //       .catch(err => {
+          //         console.log(err);
+          //       });
+          //   } else {
+          //     axios
+          //       .post(`${apiBaseUrl()}/api/booking/getBooking`, {
+          //         providerId: this.props?.listing?.author?.id.uuid,
+          //         start: moment(startDate)
+          //           .clone()
+          //           .add(1, 'm')
 
-                    .toDate(),
-                  end: moment(endDate)
-                    .clone()
-                    .subtract(1, 'm')
-                    .toDate(),
-                })
-                .then(resp => {
-                  this.setState({
-                    bookingDetails: resp.data,
-                    startDate: startDate,
-                  });
-                })
-                .catch(err => {
-                  console.log(err);
-                });
-            }
-          }
+          //           .toDate(),
+          //         end: moment(endDate)
+          //           .clone()
+          //           .subtract(1, 'm')
+          //           .toDate(),
+          //       })
+          //       .then(resp => {
+          //         this.setState({
+          //           bookingDetails: resp.data,
+          //           startDate: startDate,
+          //         });
+          //       })
+          //       .catch(err => {
+          //         console.log(err);
+          //       });
+          //   }
+          // }
 
           // This is the place to collect breakdown estimation data. See the
           // EstimatedBreakdownMaybe component to change the calculations
@@ -276,18 +276,20 @@ export class BookingTimeFormComponent extends Component {
                   timeZone={timeZone}
                   duration={duration}
                   listing={listing}
+                  afterBufferTime={afterBufferTime}
+                  beforeBufferTime={beforeBufferTime}
                 />
               ) : null}
-              {this.state.bookingDetails && this.state.bookingDetails.length > 0 ? (
+              {/* {this.state.bookingDetails && this.state.bookingDetails.length > 0 ? (
                 <span style={{ color: '#d92153' }}>
                   <FormattedMessage id="BookingTimeForm.slotNotAvailableMessage" />
                 </span>
               ) : (
-                <>
-                  {bookingInfoMaybe}
-                  {loadingSpinnerMaybe}
-                </>
-              )}
+                <> */}
+              {bookingInfoMaybe}
+              {loadingSpinnerMaybe}
+              {/* </>
+              )} */}
 
               {bookingInfoErrorMaybe}
 

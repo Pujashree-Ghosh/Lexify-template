@@ -64,59 +64,7 @@ const getAvailableStartTimes = (
     start: moment(t.attributes.start).toDate(),
     end: moment(t.attributes.end).toDate(),
   }));
-  // const booked = async () => {
-  //   let bk = [];
-  //   const { data } = await axios.post(`${apiBaseUrl()}/api/booking/getProviderBooking`, {
-  //     providerId: providerId,
-  //     start: moment(bookingStartDate)
-  //       .clone()
-  //       .startOf('day')
-  //       .toDate(),
-  //     end: moment(bookingStartDate)
-  //       .clone()
-  //       .endOf('day')
-  //       .toDate(),
-  //   });
 
-  //   data.map(r => bk.push({ start: moment(r.start).toDate(), end: moment(r.end).toDate() }));
-  //   // console.log(989890, bk);
-
-  //   // availableTimes.map(m=>{
-
-  //   // })
-
-  //   // console.log(989875, availableTimes, bk);
-
-  //   return bk;
-  //   // .then(resp => {
-  //   //   // console.log(9898, resp.data, timeSlotsOnSelectedDate)
-  //   //   resp.data.map(r =>
-  //   //     booked.push(`${moment(r.start).format('HH:mm')}-${moment(r.end).format('HH:mm')}`)
-  //   //   );
-  //   //   console.log(98989, booked);
-  //   // })
-  //   // .catch(err => console.log(err));
-  // };
-  let free = [];
-  // booked().then(r => {
-  //   availableTimes.map(a => {
-  //     r.map(b => {
-  //       console.log(989822, moment(b.start).isBetween(moment(a.start), moment(a.end)));
-
-  //       if ((989822, moment(b.start).isBetween(moment(a.start), moment(a.end)))) {
-  //         console.log(9898212, { start: a.start, end: b.start }, { start: b.end, end: a.end });
-  //       }
-  //     });
-  //   });
-  // });
-  console.log(
-    989855,
-    availableTimes
-    // timeSlotsOnSelectedDate.map(
-    //   t =>
-    //     `${moment(t.attributes.start).format('HH:mm')}-${moment(t.attributes.end).format('HH:mm')}`
-    // )
-  );
   let allStartHour = [];
 
   const allHours = timeSlotsOnSelectedDate.reduce((availableHours, t) => {
@@ -387,8 +335,9 @@ class FieldDateAndTimeInput extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     const providerId = this.props?.listing?.author?.id.uuid;
-    const { timeZone, monthlyTimeSlots, duration } = this.props;
+    const { timeZone, monthlyTimeSlots, duration, beforeBufferTime, afterBufferTime } = this.props;
     const timeSlots = getMonthlyTimeSlots(monthlyTimeSlots, this.state.currentMonth, timeZone);
+
     const getTimeSlots = (timeSlots, date, timeZone) => {
       return timeSlots && timeSlots[0]
         ? timeSlots.filter(t =>
@@ -397,7 +346,7 @@ class FieldDateAndTimeInput extends Component {
         : [];
     };
     if (this.state.startDate !== prevState.startDate) {
-      console.log(555900, getTimeSlots(timeSlots, this.state.startDate?.date, timeZone));
+      // console.log(555900, getTimeSlots(timeSlots, this.state.startDate?.date, timeZone));
       this.setState({ timeSlots: getTimeSlots(timeSlots, this.state.startDate?.date, timeZone) });
     }
 
@@ -420,7 +369,7 @@ class FieldDateAndTimeInput extends Component {
         start.add(5, 'm');
       }
     });
-    console.log(6967, allAvailableTime);
+    // console.log(6967, allAvailableTime);
 
     if (providerId && prevState.startDate !== this.state.startDate) {
       axios
@@ -436,21 +385,55 @@ class FieldDateAndTimeInput extends Component {
             .toDate(),
         })
         .then(result => {
-          console.log(5556, result);
+          // console.log(5556, result);
           let bk = [];
-          result?.data?.map(r =>
-            bk.push({ start: moment(r.start).toDate(), end: moment(r.end).toDate() })
-          );
+          // console.log(beforeBufferTime, afterBufferTime);
+          result?.data?.map((r, i) => {
+            if (beforeBufferTime > 0 || afterBufferTime > 0) {
+              if (moment(r.start).isSame(moment(allAvailableTime[0]))) {
+                bk.push({
+                  start: moment(r.start).toDate(),
+                  end: moment(r.end)
+                    .clone()
+                    .add(afterBufferTime, 'm')
+                    .toDate(),
+                });
+              } else if (
+                moment(r.end).isSame(moment(allAvailableTime[allAvailableTime.length - 1]))
+              ) {
+                bk.push({
+                  start: moment(r.start)
+                    .clone()
+                    .add(beforeBufferTime, 'm')
+                    .toDate(),
+                  end: moment(r.end).toDate(),
+                });
+              } else {
+                bk.push({
+                  start: moment(r.start)
+                    .clone()
+                    .add(beforeBufferTime, 'm')
+                    .toDate(),
+                  end: moment(r.end)
+                    .clone()
+                    .add(afterBufferTime, 'm')
+                    .toDate(),
+                });
+              }
+            } else {
+              bk.push({ start: moment(r.start).toDate(), end: moment(r.end).toDate() });
+            }
+          });
           this.setState({ bookedSlot: bk });
         });
     }
+    // console.log(this.state.bookedSlot);
     let allBookedSlot = [];
     let allBookedSlot2 = [];
     this.state.bookedSlot.map((b, i) => {
       const start = moment(b.start).clone();
-      const end = moment(b.end)
-        .clone()
-        .subtract(1, 'm');
+      const end = moment(b.end).clone();
+      // .subtract(1, 'm');
       let count = 0;
       while (
         start
@@ -471,122 +454,24 @@ class FieldDateAndTimeInput extends Component {
               .add(1, 'm')
               .format('HH:mm')
           );
-        }
-        // else if (i === this.state.bookedSlot - 1) {
-        //   allBookedSlot.push(
-        //     start
-        //       .clone()
-        //       .subtract(1, 'm')
-        //       .format()
-        //   );
-        //   allBookedSlot2.push(
-        //     start
-        //       .clone()
-        //       .subtract(1, 'm')
-        //       .format('HH:mm')
-        //   );
-        // }
-        else {
+        } else {
           allBookedSlot.push(start.format());
           allBookedSlot2.push(start.format('HH:mm'));
         }
         start.add(5, 'm');
         count += 1;
       }
-      console.log(1001, allBookedSlot);
-      // allBookedSlot[count] = moment(allBookedSlot[count])
-      //   .clone()
-      //   .subtract(1, 'm')
-      //   .format();
     });
-    // console.log(69678, allBookedSlot);
 
     let availableTimeSlots = allAvailableTime.filter(f => !allBookedSlot.includes(f));
 
-    console.log(
-      696785,
-      allAvailableTime2.filter(f => !allBookedSlot2.includes(f)),
-      availableTimeSlots,
-      allAvailableTime2,
-      allBookedSlot2
-    );
-
-    // this.state.timeSlots.map(a => {
-    //   let flag = false;
-    //   // this.state.bookedSlot.map(b => {
-    //   //   console.log(
-    //   //     55568,
-    //   //     moment(b.start).isBetween(moment(a.attributes.start), moment(a.attributes.end))
-    //   //   );
-    //   for (let i = 0; i < this.state.bookedSlot.length; i++) {
-    //     if (
-    //       moment(this.state.bookedSlot[i].start).isBetween(
-    //         moment(a.attributes.start),
-    //         moment(a.attributes.end)
-    //       )
-    //     ) {
-    //       if (
-    //         !availableTimeSlots.find(
-    //           f =>
-    //             (f.start === a.attributes.start && f.end === this.state.bookedSlot[i].start) ||
-    //             (f.start === this.state.bookedSlot[i].end && f.end === a.attributes.end)
-    //         )
-    //       ) {
-    //         availableTimeSlots.push(
-    //           { start: a.attributes.start, end: this.state.bookedSlot[i].start },
-    //           { start: this.state.bookedSlot[i].end, end: a.attributes.end }
-    //         );
-    //         console.log(109, availableTimeSlots);
-    //       }
-    //       flag = true;
-    //       break;
-    //     }
-    //     // else {
-    //     //   if (
-    //     //     !availableTimeSlots.find(
-    //     //       f => f.start === a.attributes.start && f.end === a.attributes.end
-    //     //     )
-    //     //   ) {
-    //     //     availableTimeSlots.push({ start: a.attributes.start, end: a.attributes.end });
-    //     //     console.log(1091, availableTimeSlots);
-    //     //   }
-    //     // }
-    //   }
-    //   if (flag === false) {
-    //     if (
-    //       !availableTimeSlots.find(
-    //         f => f.start === a.attributes.start && f.end === a.attributes.end
-    //       )
-    //     ) {
-    //       availableTimeSlots.push({ start: a.attributes.start, end: a.attributes.end });
-    //       console.log(1091, availableTimeSlots);
-    //     }
-    //   }
-    // });
     const allStartHour = [];
     availableTimeSlots.map(m => {
       const start = moment(m).clone();
       const min = duration && duration.split('.')[1];
       const hour = duration && duration.split('.')[0];
 
-      console.log(
-        6758,
-        availableTimeSlots,
-        start,
-        start
-          .clone()
-          .add(hour, 'h')
-          .add(min, 'm')
-          .format(),
-        availableTimeSlots.includes(
-          start
-            .clone()
-            .add(hour, 'h')
-            .add(min, 'm')
-            .format()
-        ),
-        allStartHour
-      );
+      const totalMin = hour * 60 + min * 1;
 
       if (
         availableTimeSlots.includes(
@@ -595,7 +480,16 @@ class FieldDateAndTimeInput extends Component {
             .add(hour, 'h')
             .add(min, 'm')
             .format()
-        )
+        ) &&
+        availableTimeSlots.indexOf(
+          start
+            .clone()
+            .add(hour, 'h')
+            .add(min, 'm')
+            .format()
+        ) -
+          availableTimeSlots.indexOf(start.clone().format()) ===
+          totalMin / 5
       ) {
         allStartHour.push({
           timeOfDay: start.format('HH:mm'),
@@ -604,30 +498,11 @@ class FieldDateAndTimeInput extends Component {
         start.add(5, 'm');
       }
     });
-    // availableTimeSlots.map(m => {
-    //   const start = moment(m.start).clone();
-    //   const end = moment(m.end).clone();
-    //   const min = duration && duration.split('.')[1];
-    //   const hour = duration && duration.split('.')[0];
 
-    //   while (
-    //     start
-    //       .clone()
-    //       .add(hour, 'h')
-    //       .add(min, 'm')
-    //       .isSameOrBefore(moment(end))
-    //   ) {
-    //     allStartHour.push({
-    //       timeOfDay: start.format('HH:mm'),
-    //       timestamp: start.valueOf(),
-    //     });
-    //     start.add(5, 'm');
-    //   }
-    // });
     if (this.state.allStart.length !== allStartHour.length) {
       this.setState({ allStart: allStartHour });
     }
-    console.log(5556, this.state, availableTimeSlots, this.state.allStart, allStartHour);
+    // console.log(5556, this.state, availableTimeSlots, this.state.allStart, allStartHour);
   }
 
   onMonthClick(monthFn) {
@@ -658,32 +533,7 @@ class FieldDateAndTimeInput extends Component {
 
   onBookingStartDateChange = value => {
     this.setState({ startDate: value });
-    // console.log(
-    //   value,
-    //   moment(value),
-    //   moment(value.date)
-    //     .clone()
-    //     .startOf('day')
-    //     .toDate(),
-    //   moment(value.date)
-    //     .clone()
-    //     .endOf('day')
-    //     .toDate()
-    // );
-    // axios
-    //   .post(`${apiBaseUrl()}/api/booking/getProviderBooking`, {
-    //     providerId: this.props?.listing?.author?.id.uuid,
-    //     start: moment(value.date)
-    //       .clone()
-    //       .startOf('day')
-    //       .toDate(),
-    //     end: moment(value.date)
-    //       .clone()
-    //       .endOf('day')
-    //       .toDate(),
-    //   })
-    //   .then(resp => console.log(resp.data))
-    //   .catch(err => console.log(err));
+
     const { monthlyTimeSlots, timeZone, intl, form, duration } = this.props;
     if (!value || !value.date) {
       form.batch(() => {
@@ -716,9 +566,9 @@ class FieldDateAndTimeInput extends Component {
     );
 
     form.batch(() => {
-      form.change('bookingStartTime', startTime);
+      // form.change('bookingStartTime', startTime);
       form.change('bookingEndDate', { date: endDate });
-      form.change('bookingEndTime', endTime);
+      // form.change('bookingEndTime', endTime);
     });
   };
 
@@ -740,7 +590,7 @@ class FieldDateAndTimeInput extends Component {
       providerId
     );
 
-    console.log(696, endDate, moment(endTime).toDate(), endTime, moment(value).toDate(), value);
+    // console.log(696, endDate, moment(endTime).toDate(), endTime, moment(value).toDate(), value);
 
     form.batch(() => {
       form.change('bookingEndDate', { date: endDate });
@@ -843,7 +693,7 @@ class FieldDateAndTimeInput extends Component {
       providerId
     );
 
-    console.log(availableStartTimes);
+    // console.log(availableStartTimes);
     const firstAvailableStartTime =
       availableStartTimes.length > 0 && availableStartTimes[0] && availableStartTimes[0].timestamp
         ? availableStartTimes[0].timestamp
@@ -854,7 +704,7 @@ class FieldDateAndTimeInput extends Component {
       timeZone,
       timeSlotsOnSelectedDate,
       bookingStartDate,
-      bookingStartTime || firstAvailableStartTime,
+      bookingStartTime, //|| firstAvailableStartTime,
       bookingEndDate || bookingStartDate,
       duration
     );
@@ -999,17 +849,19 @@ class FieldDateAndTimeInput extends Component {
           )} */}
           <div className={css.field}>
             <select
-              name="bookingStartTime1"
-              id={formId ? `${formId}.bookingStartTime1` : 'bookingStartTime1'}
+              name="bookingStartTime"
+              id={formId ? `${formId}.bookingStartTime` : 'bookingStartTime'}
               className={bookingStartDate ? css.fieldSelect : css.fieldSelectDisabled}
               selectClassName={bookingStartDate ? css.select : css.selectDisabled}
               label={startTimeLabel}
               disabled={startTimeDisabled}
               onChange={e => {
-                console.log(6967, e.target.value);
+                // console.log(6967, e.target.value);
                 this.onBookingStartTimeChange(e.target.value);
               }}
             >
+              <option>{'HH:MM'}</option>
+
               {bookingStartDate ? (
                 this.state.allStart.map(p => (
                   <option key={p.timeOfDay} value={p.timestamp}>
@@ -1026,7 +878,7 @@ class FieldDateAndTimeInput extends Component {
               ))} */}
             </select>
           </div>
-          <div className={bookingStartDate ? css.lineBetween : css.lineBetweenDisabled}>-</div>
+          {/* <div className={bookingStartDate ? css.lineBetween : css.lineBetweenDisabled}>-</div> */}
         </div>
       </div>
     );
