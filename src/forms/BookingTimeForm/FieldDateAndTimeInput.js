@@ -353,15 +353,28 @@ class FieldDateAndTimeInput extends Component {
     let allAvailableTime = [];
     let allAvailableTime2 = [];
 
+    // console.log(timeSlots);
+
     this.state.timeSlots.map(m => {
       const start = moment(m.attributes.start).clone();
       const end = moment(m.attributes.end).clone();
       while (
         start
           .clone()
-          .add(5, 'm')
+          // .add(5, 'm')
           .isSameOrBefore(moment(end))
       ) {
+        // console.log(
+        //   start
+        //     .clone()
+        //     .add(5, 'm')
+        //     .isSameOrBefore(moment(end)),
+        //   start
+        //     .clone()
+        //     .add(5, 'm')
+        //     .toDate(),
+        //   moment(end).toDate()
+        // );
         // let allAvailableTime = [];
         allAvailableTime.push(start.format());
         allAvailableTime2.push(start.format('HH:mm'));
@@ -464,6 +477,8 @@ class FieldDateAndTimeInput extends Component {
     });
 
     let availableTimeSlots = allAvailableTime.filter(f => !allBookedSlot.includes(f));
+
+    // console.log(allAvailableTime, allBookedSlot);
 
     const allStartHour = [];
     availableTimeSlots.map(m => {

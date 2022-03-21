@@ -96,7 +96,7 @@ module.exports.listingExceptionCreate = async (req, response) => {
                           availId: exceptionResp.data.data.id.uuid,
                         },
                       })
-                      .then()
+                      .then(resp => console.log('updated'))
                       .catch();
                   });
                 // .catch(err => console.log(err));
@@ -109,10 +109,8 @@ module.exports.listingExceptionCreate = async (req, response) => {
               .create(
                 {
                   listingId,
-                  start: new Date(
-                    moment(`${startDate} ${startTime}`, 'DD/MM/YYYY HH:mm:ss').format()
-                  ),
-                  end: new Date(moment(`${endDate} ${endTime}`, 'DD/MM/YYYY HH:mm:ss').format()),
+                  start: new Date(startDate),
+                  end: new Date(endDate),
                   seats: seats,
                 },
                 {

@@ -163,6 +163,8 @@ export const stripeCustomerError = e => ({
 /* ================ Thunks ================ */
 
 export const initiateOrder = (orderParams, transactionId) => (dispatch, getState, sdk) => {
+  const category = orderParams.category;
+
   dispatch(initiateOrderRequest());
 
   // If we already have a transaction ID, we should transition, not
@@ -199,13 +201,15 @@ export const initiateOrder = (orderParams, transactionId) => (dispatch, getState
     const order = entities[0];
     dispatch(initiateOrderSuccess(order));
     dispatch(fetchCurrentUserHasOrdersSuccess(true));
-    axios.post(`${apiBaseUrl()}/api/booking/setBooking`, {
-      orderId: order?.id.uuid,
-      providerId: orderParams.providerId,
-      customerId: orderParams.customerId,
-      start: orderParams.bookingStart,
-      end: orderParams.bookingEnd,
-    });
+    if (category !== 'customService') {
+      axios.post(`${apiBaseUrl()}/api/booking/setBooking`, {
+        orderId: order?.id.uuid,
+        providerId: orderParams.providerId,
+        customerId: orderParams.customerId,
+        start: orderParams.bookingStart,
+        end: orderParams.bookingEnd,
+      });
+    }
     return order;
   };
 

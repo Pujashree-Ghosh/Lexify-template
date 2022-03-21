@@ -433,6 +433,7 @@ export class CheckoutPageComponent extends Component {
 
     const orderParams = {
       listingId: pageData.listing.id,
+      category: pageData.listing.attributes.publicData.category,
       providerId,
       customerId,
       bookingStart: tx.booking.attributes.start,

@@ -1329,5 +1329,6 @@
   "MyAppointmentPage.pendingTabTitle": "Pending Confirmation",
   "MyAppointmentPage.upcomingTabTitle": "Upcoming",
   "MyAppointmentPage.completeTabTitle": "Complete",
-  "TopbarMobileMenu.myAppointment": "My appointments"
+  "TopbarMobileMenu.myAppointment": "My appointments",
+  "FieldDateAndTimeInputService.startDateLabel": "Start Date"
 }

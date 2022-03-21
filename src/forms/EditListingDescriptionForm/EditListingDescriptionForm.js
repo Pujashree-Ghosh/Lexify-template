@@ -154,7 +154,7 @@ const EditListingDescriptionFormComponent = props => (
             type="textarea"
             label={disclaimerMessage}
             placeholder={disclaimerPlaceholderMessage}
-            validate={composeValidators(required(disclaimerRequiredMessage))}
+            // validate={composeValidators(required(disclaimerRequiredMessage))}
           />
 
           {/* <CustomCertificateSelectFieldMaybe
