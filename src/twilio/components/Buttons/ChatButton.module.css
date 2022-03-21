@@ -1,0 +1,14 @@
+#first {
+  width: 50vw;
+}
+#sec {
+  display: flex;
+  justify-content: space-between;
+}
+#third {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  height: 50vh;
+}
