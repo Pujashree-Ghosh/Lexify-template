@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Select from 'react-select';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { compose } from 'redux';
@@ -33,6 +32,8 @@ import {
   LayoutWrapperFooter,
   Footer,
 } from '../../components';
+import axios from 'axios';
+import { apiBaseUrl } from '../../util/api';
 import MenuIcon from '../../components/ManageListingCard/MenuIcon';
 import Overlay from '../../components/ManageListingCard/Overlay';
 import { TopbarContainer } from '../../containers';
@@ -44,10 +45,11 @@ import {
   LISTING_PAGE_PARAM_TYPE_EDIT,
   createSlug,
 } from '../../util/urlHelpers';
-
+import Select from 'react-select';
 import { closeListing, openListing, getOwnListingsById } from './ManageListingsPage.duck';
 import css from './ManageListingsPage.module.css';
 import ReadmoreButton from '../ReadmoreButton/ReadmoreButton';
+import Money from 'js-money';
 
 const MENU_CONTENT_OFFSET = -12;
 
@@ -77,8 +79,36 @@ export class ManageListingsPageComponent extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { listingMenuOpen: null, selectedOption: '' };
+    this.state = {
+      listingMenuOpen: null,
+      statusSort: '',
+      practiceAreaSort: '',
+      typeSort: '',
+      listingsFromApi: [],
+      listingsFromApiLoaded: false,
+    };
     this.onToggleMenu = this.onToggleMenu.bind(this);
+  }
+  componentDidMount() {
+    axios
+      .post(`${apiBaseUrl()}/api/sortOwnListings`, {
+        authorId: this.props?.currentUser?.id?.uuid,
+        states: null,
+        pub_category: null,
+        pub_areaOfLaw: null,
+      })
+      .then(res => {
+        console.log(114, res.data.data.length);
+        this.setState({
+          listingsFromApi: res?.data?.data,
+        });
+        // if (JSON.stringify(this.state.listingsFromApi) !== JSON.stringify(res?.data?.data)) {
+        //   this.setState({
+        //     listingsFromApi: res?.data?.data,
+        //   });
+        // }
+      })
+      .catch();
   }
 
   onToggleMenu(listing) {
@@ -103,13 +133,10 @@ export class ManageListingsPageComponent extends Component {
       queryParams,
       scrollingDisabled,
       intl,
+      currentUser,
     } = this.props;
 
-    console.log(444, listings);
-    let res = listings.filter(f => {
-      return f?.attributes?.publicData?.category === 'customService';
-    });
-    console.log(666, res);
+    console.log(444, this.state);
 
     const hasPaginationInfo = !!pagination && pagination.totalItems != null;
     const listingsAreLoaded = !queryInProgress && hasPaginationInfo;
@@ -134,11 +161,11 @@ export class ManageListingsPageComponent extends Component {
       ) : null;
 
     const heading =
-      listingsAreLoaded && pagination.totalItems > 1 ? (
+      listingsAreLoaded && this.state.listingsFromApi.length > 1 ? (
         <h1 className={css.title}>
           <FormattedMessage
             id="ManageListingsPage.youHaveListings"
-            values={{ count: pagination.totalItems - 1 }}
+            values={{ count: this.state.listingsFromApi.length }}
           />
         </h1>
       ) : (
@@ -160,6 +187,104 @@ export class ManageListingsPageComponent extends Component {
     const closingErrorListingId = !!closingListingError && closingListingError.listingId;
     const openingErrorListingId = !!openingListingError && openingListingError.listingId;
 
+    const listingssss = params => {
+      const { states, category, areaOfLaw } = params;
+      axios
+        .post(`${apiBaseUrl()}/api/sortOwnListings`, {
+          authorId: this.props.currentUser?.id?.uuid,
+          states: states !== '' ? states : null,
+          pub_category: category !== '' ? category : null,
+          pub_areaOfLaw: areaOfLaw !== '' ? areaOfLaw : null,
+        })
+        .then(res => {
+          console.log(114, res.data);
+          if (JSON.stringify(this.state.listingsFromApi) !== JSON.stringify(res?.data?.data)) {
+            this.setState({
+              listingsFromApi: res?.data?.data,
+            });
+          }
+        })
+        .catch();
+    };
+    const statusOptions = [
+      { key: 'published', value: 'published', label: 'Published' },
+      { key: 'draft', value: 'draft', label: 'Unpublished' },
+      { key: 'closed', value: 'closed', label: 'Closed' },
+    ];
+    const typeOptions = [
+      { key: 'publicOral', value: 'publicOral', label: 'Public Oral' },
+      { key: 'customOral', value: 'customOral', label: 'Customer Oral' },
+      { key: 'customService', value: 'customService', label: 'Custom Service' },
+    ];
+    const practiceAreaOptions = [
+      {
+        key: 'contractsAndAgreements',
+        value: 'contractsAndAgreements',
+        label: 'Contract And Agreements',
+      },
+      { key: 'employeeBenefits', value: 'employeeBenefits', label: 'Employee Benefits' },
+      { key: 'employmentAndLabour', value: 'employmentAndLabor', label: 'Employment And Labor' },
+    ];
+    const sortSection = (
+      <div className={css.lformrow}>
+        <div className={css.lformcol}>
+          <label>Category</label>
+          <Select
+            value={this.state.typeSort?.key}
+            isClearable={true}
+            options={typeOptions}
+            className={css.formcontrol}
+            onChange={e => {
+              e === null ? this.setState({ typeSort: '' }) : this.setState({ typeSort: e?.key });
+              if (e?.key !== 'publicOral') {
+                this.setState({
+                  practiceAreaSort: '',
+                });
+              }
+              listingssss({
+                category: e?.key,
+                states: this.state.statusSort,
+                areaOfLaw: e?.key === 'publicOral' ? this.state.practiceAreaSort : null,
+              });
+            }}
+          />
+        </div>
+        <div className={css.lformcol}>
+          <label>Status</label>
+          <Select
+            value={this.state.statusSort?.key}
+            isClearable={true}
+            options={statusOptions}
+            className={css.formcontrol}
+            onChange={e => {
+              e === null
+                ? this.setState({ statusSort: '' })
+                : this.setState({ statusSort: e?.key });
+              listingssss({
+                category: this.state.typeSort,
+                states: e?.key,
+                areaOfLaw: this.state.practiceAreaSort,
+              });
+            }}
+          />
+        </div>
+        {/* <div className={css.lformcol}>
+          <label>Practice Area</label>
+          <Select
+            value={this.state.practiceAreaSort?.key}
+            isClearable={true}
+            options={practiceAreaOptions}
+            className={css.formcontrol}
+            onChange={e => {
+              e === null
+                ? this.setState({ practiceAreaSort: '' })
+                : this.setState({ practiceAreaSort: e?.key });
+            }}
+          />
+        </div> */}
+      </div>
+    );
+
     const title = intl.formatMessage({ id: 'ManageListingsPage.title' });
 
     const panelWidth = 62.5;
@@ -172,15 +297,6 @@ export class ManageListingsPageComponent extends Component {
     const menuItemClasses = classNames(css.menuItem, {
       [css.menuItemDisabled]: !!actionsInProgressListingId,
     });
-    const categoryoptions = [
-      { label: 'CustomOral', value: 'customOral' },
-      { label: 'CustomService', value: 'customService' },
-      { label: 'PublicOral', value: 'publicOral' },
-    ];
-    categoryoptions.map(m => m.value);
-    let handleChange = selectedOption => {
-      this.setState(selectedOption);
-    };
 
     return (
       <Page title={title} scrollingDisabled={scrollingDisabled}>
@@ -190,20 +306,32 @@ export class ManageListingsPageComponent extends Component {
             <UserNav selectedPageName="ManageListingsPage" />
           </LayoutWrapperTopbar>
           <LayoutWrapperMain>
+            <div>{sortSection}</div>
+            {this.state.typeSort === 'publicOral' ? (
+              <div className={css.lformcol}>
+                <label>Area of Law</label>
+                <Select
+                  value={this.state.practiceAreaSort?.key}
+                  isClearable={true}
+                  options={practiceAreaOptions}
+                  className={css.formcontrol}
+                  onChange={e => {
+                    e === null
+                      ? this.setState({ practiceAreaSort: '' })
+                      : this.setState({ practiceAreaSort: e?.key });
+                    listingssss({
+                      category: this.state.typeSort,
+                      states: this.state.statusSort,
+                      areaOfLaw: e?.key,
+                    });
+                  }}
+                />
+              </div>
+            ) : null}
             {queryInProgress ? loadingResults : null}
             {queryListingsError ? queryError : null}
 
             <div className={css.listingPanel}>
-              <Select
-                closeMenuOnSelect={false}
-                className={css.reactSelect}
-                isSearchable={true}
-                name="category"
-                placeholder=" "
-                isMulti
-                options={categoryoptions}
-              />
-              <button onClick={() => changeList()}>change </button>
               <div className={css.heading}>{heading}</div>
               {/*  */}
               {/* <div className={css.listingCards}>
@@ -227,72 +355,78 @@ export class ManageListingsPageComponent extends Component {
               </div> */}
 
               <div>
-                <div>
-                  {listings
-                    .filter(f => f?.attributes?.publicData?.category === 'customService')
-                    .map((m, i) => {
-                      const { price, state } = m.attributes;
-                      const isDraft = state === LISTING_STATE_DRAFT;
-                      const isClosed = state === LISTING_STATE_CLOSED;
-                      const editListingLinkType = isDraft
-                        ? LISTING_PAGE_PARAM_TYPE_DRAFT
-                        : LISTING_PAGE_PARAM_TYPE_EDIT;
+                <div className={css.listingrow}>
+                  {this.state.listingsFromApi.map((m, i) => {
+                    const { price, state } = m.attributes;
+                    const isDraft = state === LISTING_STATE_DRAFT;
+                    const isClosed = state === LISTING_STATE_CLOSED;
+                    const editListingLinkType = isDraft
+                      ? LISTING_PAGE_PARAM_TYPE_DRAFT
+                      : LISTING_PAGE_PARAM_TYPE_EDIT;
 
-                      const { formattedPrice } = priceData(price, intl);
-                      const id = m.id.uuid;
-                      const slug = createSlug(m?.attributes?.title);
-                      let listingOpen = null;
-                      const ensuredUser = ensureUser(m.author);
+                    // const { formattedPrice } = priceData(() => {
+                    //   if (price !== null && price instanceof Money) {
+                    //     return price;
+                    //   }
+                    // }, intl);
+                    // const { formattedPrice } = priceData(price, intl);
+                    const formattedPrice =
+                      typeof price !== undefined ? '$' + price?.amount / 100 + '.00' : '';
+                    console.log('FP', typeof formattedPrice);
+                    const id = m.id.uuid;
+                    const slug = createSlug(m?.attributes?.title);
+                    let listingOpen = null;
+                    const ensuredUser = ensureUser(m.author);
 
-                      return (
-                        <div className={css.horizontalcard} key={id}>
-                          {/* leftdiv */}
-                          <div className={css.lefthorizontal}>
-                            {isDraft ? (
-                              <div className={css.lefttitle}>{m?.attributes?.title}</div>
-                            ) : (
-                              <NamedLink
-                                className={css.manageLink}
-                                name="ListingPage"
-                                params={{ id, slug }}
-                              >
-                                <div className={css.lefttitle}> {m?.attributes?.title}</div>
-                              </NamedLink>
-                            )}
-
-                            <ReadmoreButton
-                              // className={css.description}
-                              description={m?.attributes?.description}
-                            />
-                          </div>
-                          {/* rightdiv */}
-                          <div className={css.righthorizontal}>
-                            {/* rightlowerdiv */}
-
-                            <div>
-                              {isDraft ? (
-                                <span className={css.span}>UNPUBLISHED</span>
-                              ) : (
-                                <span className={css.span}> PUBLISHED</span>
-                              )}
-                            </div>
-                            <span className={css.price}> {formattedPrice} </span>
-                            <button
-                              className={css.editbutton}
-                              onClick={() =>
-                                history.push(
-                                  createResourceLocatorString(
-                                    'EditListingPage',
-                                    routeConfiguration(),
-                                    { id, slug, type: editListingLinkType, tab: 'description' },
-                                    {}
-                                  )
-                                )
-                              }
+                    return (
+                      <div className={css.horizontalcard} key={id}>
+                        {/* leftdiv */}
+                        <div className={css.lefthorizontal}>
+                          {isDraft ? (
+                            <div className={css.lefttitle}>{m?.attributes?.title}</div>
+                          ) : (
+                            <NamedLink
+                              className={css.manageLink}
+                              name="ListingPage"
+                              params={{ id, slug }}
                             >
-                              <MdModeEditOutline />{' '}
-                              <FormattedMessage id="ManageListingCard.editListing" />
-                              {/* <NamedLink
+                              <div className={css.lefttitle}> {m?.attributes?.title}</div>
+                            </NamedLink>
+                          )}
+
+                          <ReadmoreButton
+                            // className={css.description}
+                            description={m?.attributes?.description}
+                          />
+                        </div>
+                        {/* rightdiv */}
+                        <div className={css.righthorizontal}>
+                          {/* rightlowerdiv */}
+
+                          <div>
+                            {isDraft ? (
+                              <span className={css.span}>UNPUBLISHED</span>
+                            ) : (
+                              <span className={css.span}> PUBLISHED</span>
+                            )}
+                          </div>
+                          <span className={css.price}> {formattedPrice} </span>
+                          <button
+                            className={css.editbutton}
+                            onClick={() =>
+                              history.push(
+                                createResourceLocatorString(
+                                  'EditListingPage',
+                                  routeConfiguration(),
+                                  { id, slug, type: editListingLinkType, tab: 'description' },
+                                  {}
+                                )
+                              )
+                            }
+                          >
+                            <MdModeEditOutline />{' '}
+                            <FormattedMessage id="ManageListingCard.editListing" />
+                            {/* <NamedLink
                               // className={css.manageLink}
                               className={css.linkcolor}
                               name="EditListingPage"
@@ -301,81 +435,81 @@ export class ManageListingsPageComponent extends Component {
                               <MdModeEditOutline />{' '}
                               <FormattedMessage id="ManageListingCard.editListing" />
                             </NamedLink> */}
-                            </button>
-                          </div>
-                          {!isDraft ? (
-                            <Menu
-                              className={classNames(css.menu, css.togglemenu, {
-                                [css.cardIsOpen]: !isClosed,
-                              })}
-                              contentPlacementOffset={MENU_CONTENT_OFFSET}
-                              contentPosition="left"
-                              useArrow={false}
-                              onToggleActive={isOpen => {
-                                listingOpen = isOpen ? m : null;
-                                console.log(listingOpen);
-                                this.onToggleMenu(listingOpen);
-                              }}
-                              // isMenuOpen={!!listingMenuOpen && listingMenuOpen.id.uuid === l.id.uuid}
-                              // onToggleMenu={listingOpen}
-                              isOpen={!!listingMenuOpen && listingMenuOpen.id.uuid === m.id.uuid}
-                            >
-                              <MenuLabel
-                                className={css.menuLabel}
-                                isOpenClassName={css.listingMenuIsOpen}
-                              >
-                                <div className={css.iconWrapper}>
-                                  <MenuIcon className={css.menuIcon} isActive={isMenuOpen} />
-                                </div>
-                              </MenuLabel>
-                              <MenuContent rootClassName={css.menuContent}>
-                                <MenuItem key="close-listing">
-                                  <div className={css.inlinebutton}>
-                                    <IoMdClose />
-                                    <InlineTextButton
-                                      className={css.buttontext}
-                                      // rootClassName={menuItemClasses}
-                                      onClick={event => {
-                                        event.preventDefault();
-                                        event.stopPropagation();
-                                        if (!actionsInProgressListingId) {
-                                          this.onToggleMenu(null);
-                                          onCloseListing(m.id);
-                                        }
-                                      }}
-                                    >
-                                      <FormattedMessage id="ManageListingCard.closeListing" />
-                                    </InlineTextButton>
-                                  </div>
-                                </MenuItem>
-                              </MenuContent>
-                            </Menu>
-                          ) : null}
-                          {isClosed ? (
-                            <Overlay
-                              message={intl.formatMessage(
-                                { id: 'ManageListingCard.closedListing' },
-                                { listingTitle: title }
-                              )}
-                            >
-                              <button
-                                className={css.openListingButton}
-                                disabled={!!actionsInProgressListingId}
-                                onClick={event => {
-                                  event.preventDefault();
-                                  event.stopPropagation();
-                                  if (!actionsInProgressListingId) {
-                                    onOpenListing(m.id);
-                                  }
-                                }}
-                              >
-                                <FormattedMessage id="ManageListingCard.openListing" />
-                              </button>
-                            </Overlay>
-                          ) : null}
+                          </button>
                         </div>
-                      );
-                    })}
+                        {!isDraft ? (
+                          <Menu
+                            className={classNames(css.menu, css.togglemenu, {
+                              [css.cardIsOpen]: !isClosed,
+                            })}
+                            contentPlacementOffset={MENU_CONTENT_OFFSET}
+                            contentPosition="left"
+                            useArrow={false}
+                            onToggleActive={isOpen => {
+                              listingOpen = isOpen ? m : null;
+                              console.log(listingOpen);
+                              this.onToggleMenu(listingOpen);
+                            }}
+                            // isMenuOpen={!!listingMenuOpen && listingMenuOpen.id.uuid === l.id.uuid}
+                            // onToggleMenu={listingOpen}
+                            isOpen={!!listingMenuOpen && listingMenuOpen.id.uuid === m.id.uuid}
+                          >
+                            <MenuLabel
+                              className={css.menuLabel}
+                              isOpenClassName={css.listingMenuIsOpen}
+                            >
+                              <div className={css.iconWrapper}>
+                                <MenuIcon className={css.menuIcon} isActive={isMenuOpen} />
+                              </div>
+                            </MenuLabel>
+                            <MenuContent rootClassName={css.menuContent}>
+                              <MenuItem key="close-listing">
+                                <div className={css.inlinebutton}>
+                                  <IoMdClose />
+                                  <InlineTextButton
+                                    className={css.buttontext}
+                                    // rootClassName={menuItemClasses}
+                                    onClick={event => {
+                                      event.preventDefault();
+                                      event.stopPropagation();
+                                      if (!actionsInProgressListingId) {
+                                        this.onToggleMenu(null);
+                                        onCloseListing(m.id);
+                                      }
+                                    }}
+                                  >
+                                    <FormattedMessage id="ManageListingCard.closeListing" />
+                                  </InlineTextButton>
+                                </div>
+                              </MenuItem>
+                            </MenuContent>
+                          </Menu>
+                        ) : null}
+                        {isClosed ? (
+                          <Overlay
+                            message={intl.formatMessage(
+                              { id: 'ManageListingCard.closedListing' },
+                              { listingTitle: title }
+                            )}
+                          >
+                            <button
+                              className={css.openListingButton}
+                              disabled={!!actionsInProgressListingId}
+                              onClick={event => {
+                                event.preventDefault();
+                                event.stopPropagation();
+                                if (!actionsInProgressListingId) {
+                                  onOpenListing(m.id);
+                                }
+                              }}
+                            >
+                              <FormattedMessage id="ManageListingCard.openListing" />
+                            </button>
+                          </Overlay>
+                        ) : null}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
               {paginationLinks}
@@ -440,9 +574,11 @@ const mapStateToProps = state => {
     closingListingError,
   } = state.ManageListingsPage;
   const listings = getOwnListingsById(state, currentPageResultIds);
+  const { currentUser } = state.user;
   return {
     currentPageResultIds,
     listings,
+    currentUser,
     pagination,
     queryInProgress,
     queryListingsError,
