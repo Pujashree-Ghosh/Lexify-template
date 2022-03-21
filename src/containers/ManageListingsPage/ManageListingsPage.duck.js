@@ -223,7 +223,7 @@ export const queryOwnListings = queryParams => (dispatch, getState, sdk) => {
   dispatch(queryListingsRequest(queryParams));
 
   const { perPage, ...rest } = queryParams;
-  const params = { ...rest, per_page: perPage, pub_category: 'customService' };
+  const params = { ...rest, per_page: perPage };
 
   return sdk.ownListings
     .query(params)

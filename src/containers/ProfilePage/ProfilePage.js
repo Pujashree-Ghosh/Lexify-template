@@ -142,11 +142,6 @@ export class ProfilePageComponent extends Component {
     } = this.props;
     const ensuredCurrentUser = ensureCurrentUser(currentUser);
     const profileUser = ensureUser(user);
-    console.log(
-      'first',
-      listings.map(l => l.attributes.publicData.areaOfLaw)
-    );
-    console.log('state', this.state);
     const isCurrentUser =
       ensuredCurrentUser.id && profileUser.id && ensuredCurrentUser.id.uuid === profileUser.id.uuid;
     const displayName = profileUser.attributes.profile.displayName;
@@ -155,7 +150,7 @@ export class ProfilePageComponent extends Component {
     const isMobileLayout = viewport.width < MAX_MOBILE_SCREEN_WIDTH;
     const publicData = user?.attributes?.profile?.publicData;
 
-    // console.log(profileUser, currentUser);
+    console.log(111, this.state.practiceAreaSort);
 
     const page = queryParams ? queryParams.page : 1;
     const hasPaginationInfo = !!pagination && pagination.totalItems != null;
@@ -176,22 +171,12 @@ export class ProfilePageComponent extends Component {
         value={this.state.practiceAreaSort.key}
         options={practiceAreaOptions}
         isClearable={true}
-        // isMulti={true}
+        isMulti={true}
         onChange={e => {
-          // let res;
-          // res = e.reduce((pre, curnt) => (pre ? pre + `,[${curnt.key}` : curnt.key), '');
-          // if (e.length > 1) {
-          //   e.slice(1).forEach(_ => (res += ']'));
-          // }
-          // console.log(999, `has_any:${res}`);
-          // console.log(
-          //   'event',
-          //   e.map(e => e.key)
-          // );
-          this.setState({ practiceAreaSort: e?.key });
+          this.setState({ practiceAreaSort: e?.map(e => e.key) });
           onLoadData({
             id: user.id.uuid,
-            practiceAreaSort: e?.key,
+            practiceAreaSort: e?.map(e => e.key),
           });
         }}
       ></Select>

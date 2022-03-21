@@ -49,10 +49,21 @@ import Select from 'react-select';
 import { closeListing, openListing, getOwnListingsById } from './ManageListingsPage.duck';
 import css from './ManageListingsPage.module.css';
 import ReadmoreButton from '../ReadmoreButton/ReadmoreButton';
-import Money from 'js-money';
+import { types as sdkTypes } from '../../util/sdkLoader';
+// import Money from 'js-money';
+// import config from '../../config';
+import {
+  isSafeNumber,
+  unitDivisor,
+  convertUnitToSubUnit,
+  convertMoneyToNumber,
+  ensureDotSeparator,
+  ensureSeparator,
+  truncateToSubUnitPrecision,
+} from '../../util/currency';
 
 const MENU_CONTENT_OFFSET = -12;
-
+const { Money } = sdkTypes;
 const priceData = (price, intl) => {
   if (price && price.currency === config.currency) {
     const formattedPrice = formatMoney(intl, price);
@@ -77,7 +88,7 @@ const priceData = (price, intl) => {
 
 export class ManageListingsPageComponent extends Component {
   constructor(props) {
-    super(props);
+    super();
 
     this.state = {
       listingMenuOpen: null,
@@ -85,28 +96,31 @@ export class ManageListingsPageComponent extends Component {
       practiceAreaSort: '',
       typeSort: '',
       listingsFromApi: [],
+      metaFromApi: [],
       listingsFromApiLoaded: false,
     };
     this.onToggleMenu = this.onToggleMenu.bind(this);
   }
-  componentDidMount() {
+  componentDidUpdate() {
     axios
       .post(`${apiBaseUrl()}/api/sortOwnListings`, {
-        authorId: this.props?.currentUser?.id?.uuid,
-        states: null,
-        pub_category: null,
-        pub_areaOfLaw: null,
+        authorId: this.props.currentUser?.id?.uuid,
+        states: this.state.statusSort ? this.state.statusSort : null,
+        pub_category: this.state.typeSort ? this.state.typeSort : null,
+        pub_areaOfLaw:
+          this.state.practiceAreaSort.length !== 0 ? this.state.practiceAreaSort : null,
       })
       .then(res => {
-        console.log(114, res.data.data.length);
-        this.setState({
-          listingsFromApi: res?.data?.data,
-        });
-        // if (JSON.stringify(this.state.listingsFromApi) !== JSON.stringify(res?.data?.data)) {
-        //   this.setState({
-        //     listingsFromApi: res?.data?.data,
-        //   });
-        // }
+        if (
+          JSON.stringify(res?.data?.data) !== JSON.stringify(this.state.listingsFromApi) ||
+          this.state.listingsFromApi.length === 0
+        ) {
+          this.setState({
+            listingsFromApi: res?.data?.data,
+            metaFromApi: res?.data?.meta,
+            listingsFromApiLoaded: true,
+          });
+        }
       })
       .catch();
   }
@@ -137,9 +151,9 @@ export class ManageListingsPageComponent extends Component {
     } = this.props;
 
     console.log(444, this.state);
-
-    const hasPaginationInfo = !!pagination && pagination.totalItems != null;
-    const listingsAreLoaded = !queryInProgress && hasPaginationInfo;
+    const customPagination = this.state.metaFromApi;
+    const hasPaginationInfo = !!customPagination && customPagination.totalItems != null;
+    const listingsAreLoaded = this.state.listingsFromApiLoaded && hasPaginationInfo;
 
     const loadingResults = (
       <h2>
@@ -154,32 +168,32 @@ export class ManageListingsPageComponent extends Component {
     );
 
     const noResults =
-      listingsAreLoaded && pagination.totalItems <= 1 ? (
+      listingsAreLoaded && customPagination.totalItems < 1 ? (
         <h1 className={css.title}>
           <FormattedMessage id="ManageListingsPage.noResults" />
         </h1>
       ) : null;
 
     const heading =
-      listingsAreLoaded && this.state.listingsFromApi.length > 1 ? (
+      listingsAreLoaded && customPagination.totalItems >= 1 ? (
         <h1 className={css.title}>
           <FormattedMessage
             id="ManageListingsPage.youHaveListings"
-            values={{ count: this.state.listingsFromApi.length }}
+            values={{ count: customPagination.totalItems }}
           />
         </h1>
       ) : (
         noResults
       );
 
-    const page = queryParams ? queryParams.page : 1;
+    const page = this.state.metaFromApi ? this.state.metaFromApi.page : 1;
     const paginationLinks =
-      listingsAreLoaded && pagination && pagination.totalPages > 1 ? (
+      listingsAreLoaded && customPagination && customPagination.totalPages > 1 ? (
         <PaginationLinks
           className={css.pagination}
           pageName="ManageListingsPage"
           pageSearchParams={{ page }}
-          pagination={pagination}
+          pagination={customPagination}
         />
       ) : null;
 
@@ -191,7 +205,7 @@ export class ManageListingsPageComponent extends Component {
       const { states, category, areaOfLaw } = params;
       axios
         .post(`${apiBaseUrl()}/api/sortOwnListings`, {
-          authorId: this.props.currentUser?.id?.uuid,
+          authorId: currentUser?.id?.uuid,
           states: states !== '' ? states : null,
           pub_category: category !== '' ? category : null,
           pub_areaOfLaw: areaOfLaw !== '' ? areaOfLaw : null,
@@ -241,11 +255,11 @@ export class ManageListingsPageComponent extends Component {
                   practiceAreaSort: '',
                 });
               }
-              listingssss({
-                category: e?.key,
-                states: this.state.statusSort,
-                areaOfLaw: e?.key === 'publicOral' ? this.state.practiceAreaSort : null,
-              });
+              // listingssss({
+              //   category: e?.key,
+              //   states: this.state.statusSort,
+              //   areaOfLaw: e?.key === 'publicOral' ? this.state.practiceAreaSort : null,
+              // });
             }}
           />
         </div>
@@ -260,11 +274,11 @@ export class ManageListingsPageComponent extends Component {
               e === null
                 ? this.setState({ statusSort: '' })
                 : this.setState({ statusSort: e?.key });
-              listingssss({
-                category: this.state.typeSort,
-                states: e?.key,
-                areaOfLaw: this.state.practiceAreaSort,
-              });
+              // listingssss({
+              //   category: this.state.typeSort,
+              //   states: e?.key,
+              //   areaOfLaw: this.state.practiceAreaSort,
+              // });
             }}
           />
         </div>
@@ -297,7 +311,6 @@ export class ManageListingsPageComponent extends Component {
     const menuItemClasses = classNames(css.menuItem, {
       [css.menuItemDisabled]: !!actionsInProgressListingId,
     });
-
     return (
       <Page title={title} scrollingDisabled={scrollingDisabled}>
         <LayoutSingleColumn>
@@ -315,20 +328,21 @@ export class ManageListingsPageComponent extends Component {
                   isClearable={true}
                   options={practiceAreaOptions}
                   className={css.formcontrol}
+                  isMulti={true}
                   onChange={e => {
                     e === null
                       ? this.setState({ practiceAreaSort: '' })
-                      : this.setState({ practiceAreaSort: e?.key });
-                    listingssss({
-                      category: this.state.typeSort,
-                      states: this.state.statusSort,
-                      areaOfLaw: e?.key,
-                    });
+                      : this.setState({ practiceAreaSort: e?.map(e => e?.key) });
+                    // listingssss({
+                    //   category: this.state.typeSort,
+                    //   states: this.state.statusSort,
+                    //   areaOfLaw: e?.key,
+                    // });
                   }}
                 />
               </div>
             ) : null}
-            {queryInProgress ? loadingResults : null}
+            {!this.state.listingsFromApiLoaded ? loadingResults : null}
             {queryListingsError ? queryError : null}
 
             <div className={css.listingPanel}>
@@ -363,21 +377,20 @@ export class ManageListingsPageComponent extends Component {
                     const editListingLinkType = isDraft
                       ? LISTING_PAGE_PARAM_TYPE_DRAFT
                       : LISTING_PAGE_PARAM_TYPE_EDIT;
-
-                    // const { formattedPrice } = priceData(() => {
-                    //   if (price !== null && price instanceof Money) {
-                    //     return price;
-                    //   }
-                    // }, intl);
-                    // const { formattedPrice } = priceData(price, intl);
-                    const formattedPrice =
-                      typeof price !== undefined ? '$' + price?.amount / 100 + '.00' : '';
-                    console.log('FP', typeof formattedPrice);
+                    const convertedPrice =
+                      price &&
+                      new Money(
+                        convertUnitToSubUnit(
+                          price?.amount / 100,
+                          unitDivisor(config.currencyConfig.currency)
+                        ),
+                        config.currencyConfig.currency
+                      );
+                    const { formattedPrice } = priceData(convertedPrice, intl);
                     const id = m.id.uuid;
                     const slug = createSlug(m?.attributes?.title);
                     let listingOpen = null;
                     const ensuredUser = ensureUser(m.author);
-
                     return (
                       <div className={css.horizontalcard} key={id}>
                         {/* leftdiv */}
@@ -410,7 +423,10 @@ export class ManageListingsPageComponent extends Component {
                               <span className={css.span}> PUBLISHED</span>
                             )}
                           </div>
-                          <span className={css.price}> {formattedPrice} </span>
+                          <span className={css.price}>
+                            {typeof formattedPrice === 'undefined' ? '' : formattedPrice}{' '}
+                          </span>
+
                           <button
                             className={css.editbutton}
                             onClick={() =>
