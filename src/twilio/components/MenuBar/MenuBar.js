@@ -12,11 +12,11 @@ import { Typography, Grid, Hidden } from '@material-ui/core';
 import ToggleAudioButton from '../Buttons/ToggleAudioButton/ToggleAudioButton';
 import ToggleVideoButton from '../Buttons/ToggleVideoButton/ToggleVideoButton';
 import ToggleScreenShareButton from '../Buttons/ToogleScreenShareButton/ToggleScreenShareButton';
-import ChatScreen from './../../../containers/MeetingNewPage/Chat';
+// import ChatScreen from './../../../containers/MeetingNewPage/Chat';
 import { ListingContext } from './../../../containers/MeetingNewPage/Meeting';
 import SignalHelper from '../../../util/signalHelper';
 import { print } from '../../../util/data';
-import ChatButton from '../Buttons/ChatButton';
+// import ChatButton from '../Buttons/ChatButton';
 import Chatbody from '../Buttons/Chatbody';
 const useStyles = makeStyles(theme =>
   createStyles({
@@ -90,18 +90,6 @@ export default function MenuBar({ isProvider, extendMeeting, isShortBooking, isE
           <Button onClick={() => toggleScreenShare()}>Stop Sharing</Button>
         </Grid>
       )}
-      {/* <div
-        style={{
-          backgroundColor: 'blue',
-          right: '0',
-          top: '0px',
-          position: 'fixed',
-          height: '100vh',
-          width: '20vw',
-        }}
-      >
-        <Chatbody />
-      </div> */}
 
       <footer className={`${classes.container} footer-mod`}>
         <Grid container justify="space-around" alignItems="center">
@@ -121,7 +109,7 @@ export default function MenuBar({ isProvider, extendMeeting, isShortBooking, isE
               <Hidden smDown>
                 {<ToggleScreenShareButton disabled={isReconnecting} />}
 
-                <ChatButton />
+                {/* <ChatButton /> */}
 
                 {/* {!isSharingScreen && <ToggleScreenShareButton disabled={isReconnecting} />} */}
               </Hidden>
