@@ -108,7 +108,6 @@ export class ManageListingsPageComponent extends Component {
   }
   componentDidUpdate() {
     const queryParams = parse(this.props.location.search);
-    console.log(142536, queryParams);
     const page = queryParams.page || 1;
     axios
       .post(`${apiBaseUrl()}/api/sortOwnListings`, {
