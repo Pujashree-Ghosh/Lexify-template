@@ -896,14 +896,14 @@ export class CheckoutPageComponent extends Component {
           </div>
 
           <div className={css.detailsContainerDesktop}>
-            <div className={css.detailsAspectWrapper}>
+            {/* <div className={css.detailsAspectWrapper}>
               <ResponsiveImage
                 rootClassName={css.rootForImage}
                 alt={listingTitle}
                 image={firstImage}
                 variants={['landscape-crop', 'landscape-crop2x']}
               />
-            </div>
+            </div> */}
             <div className={css.avatarWrapper}>
               <AvatarMedium user={currentAuthor} disableProfileLink />
             </div>

@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import {
   TRANSITION_REQUEST_PAYMENT_AFTER_ENQUIRY,
   txIsAccepted,
+  txIsRescheduled,
   txIsCanceled,
   txIsDeclined,
   txIsEnquired,
@@ -47,6 +48,7 @@ import PanelHeading, {
   HEADING_PAYMENT_EXPIRED,
   HEADING_REQUESTED,
   HEADING_ACCEPTED,
+  HEADING_RESCHEDULED,
   HEADING_DECLINED,
   HEADING_CANCELED,
   HEADING_DELIVERED,
@@ -441,6 +443,13 @@ export class TransactionPanelComponent extends Component {
           showAddress: isCustomer,
           showCalendar: true,
         };
+      } else if (txIsRescheduled(tx)) {
+        return {
+          headingState: HEADING_RESCHEDULED,
+          showDetailCardHeadings: isCustomer,
+          showAddress: isCustomer,
+          showCalendar: true,
+        };
       } else if (txIsDeclined(tx)) {
         return {
           headingState: HEADING_DECLINED,
@@ -748,7 +757,8 @@ export class TransactionPanelComponent extends Component {
 
               {category !== 'customService' ? (
                 <div className={css.jnbtncon}>
-                  {stateData.headingState === 'accepted' ? (
+                  {stateData.headingState === 'accepted' ||
+                  stateData.headingState === 'rescheduled' ? (
                     <PrimaryButton
                       // inProgress={joinMeetingProgress}
                       className={css.joinMeetingBtn}
@@ -944,7 +954,8 @@ export class TransactionPanelComponent extends Component {
                 />
                 {category !== 'customService' ? (
                   <div className={css.jnbtncon}>
-                    {stateData.headingState === 'accepted' ? (
+                    {stateData.headingState === 'accepted' ||
+                    stateData.headingState === 'rescheduled' ? (
                       <PrimaryButton
                         // inProgress={joinMeetingProgress}
                         className={css.joinMeetingBtn}
