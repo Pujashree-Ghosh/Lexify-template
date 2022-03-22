@@ -170,7 +170,7 @@
 
   @media (--viewportLarge) {
     margin: 50px auto;
-    max-width: 1040px;
+    max-width: 1200px;
   }
   /* background: #ffffff 0% 0% no-repeat padding-box;
   border: 1px solid #707070;
@@ -180,7 +180,7 @@
   flex-direction: row;
   /* margin-left: 490px;
   margin-right: 490px; */
-  justify-content: space-between;
+  justify-content: space-around;
 }
 .statusFilter {
   top: 286px;
