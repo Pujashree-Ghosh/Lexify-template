@@ -82,6 +82,7 @@ const EditListingClientIdPanel = props => {
               endDate: moment(endDate.date).format(),
               startHour,
               endHour,
+              alreadyBooked: [],
             },
             availabilityPlan:
               type !== 'unsolicited'

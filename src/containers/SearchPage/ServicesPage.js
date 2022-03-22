@@ -68,7 +68,7 @@ function ServicesPageComponent(props) {
   const validQueryParams = validURLParamsForExtendedData(searchInURL, filterConfig);
   const [loading, setLoading] = useState(true);
 
-  // console.log(listings);
+  console.log('list', listings);
   const routes = routeConfiguration();
   const title = intl.formatMessage({ id: 'ServicesPage.title' });
   const type = validQueryParams && validQueryParams?.pub_type;

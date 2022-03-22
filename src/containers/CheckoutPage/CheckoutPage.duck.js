@@ -10,9 +10,17 @@ import {
   isPrivileged,
 } from '../../util/transaction';
 import * as log from '../../util/log';
-import { fetchCurrentUserHasOrdersSuccess, fetchCurrentUser } from '../../ducks/user.duck';
+import {
+  fetchCurrentUserHasOrdersSuccess,
+  fetchCurrentUser,
+  currentUserShowError,
+} from '../../ducks/user.duck';
 import axios from 'axios';
-
+const flexIntegrationSdk = require('sharetribe-flex-integration-sdk');
+const integrationSdk = flexIntegrationSdk.createInstance({
+  clientId: '66ce8e58-5769-4f62-81d7-19073cfab535',
+  clientSecret: '73f5d2b697f7a9aa9372c8a601826c37cabbbab7',
+});
 // ================ Action types ================ //
 
 export const SET_INITIAL_VALUES = 'app/CheckoutPage/SET_INITIAL_VALUES';
@@ -164,7 +172,6 @@ export const stripeCustomerError = e => ({
 
 export const initiateOrder = (orderParams, transactionId) => (dispatch, getState, sdk) => {
   dispatch(initiateOrderRequest());
-
   // If we already have a transaction ID, we should transition, not
   // initiate.
   const isTransition = !!transactionId;
@@ -205,6 +212,18 @@ export const initiateOrder = (orderParams, transactionId) => (dispatch, getState
       customerId: orderParams.customerId,
       start: orderParams.bookingStart,
       end: orderParams.bookingEnd,
+    });
+    integrationSdk.listings.update({
+      id: orderParams.listingId.uuid,
+      publicData: {
+        alreadyBooked: orderParams?.currentUserEmail,
+        clientId:
+          orderParams &&
+          orderParams.listing &&
+          orderParams.listing.attributes.publicData.clientId.filter(
+            e => e !== orderParams.currentUserEmail
+          ),
+      },
     });
     return order;
   };

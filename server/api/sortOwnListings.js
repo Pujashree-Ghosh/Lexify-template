@@ -5,8 +5,10 @@ const integrationSdk = flexIntegrationSdk.createInstance({
   clientId: '66ce8e58-5769-4f62-81d7-19073cfab535',
   clientSecret: '73f5d2b697f7a9aa9372c8a601826c37cabbbab7',
 });
-module.exports = async (req, response) => {
+
+module.exports = async (req, response, search) => {
   const { authorId, states, pub_category, pub_areaOfLaw } = req.body;
+
   return new Promise((resolve, reject) => {
     integrationSdk.listings
       .query({
@@ -15,6 +17,7 @@ module.exports = async (req, response) => {
         pub_category,
         pub_areaOfLaw,
         perPage: RESULT_PAGE_SIZE,
+        // page,
       })
       .then(res => {
         return response.status(200).send(res.data);
