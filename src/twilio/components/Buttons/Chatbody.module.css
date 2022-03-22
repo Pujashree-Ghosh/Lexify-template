@@ -1,0 +1,18 @@
+.chat {
+  background-color: white;
+  position: fixed;
+  z-index: -1;
+  width: 26vw;
+  height: 85vh;
+  top: 0px;
+  right: 0%;
+}
+.chatopen {
+  background-color: white;
+  position: fixed;
+  z-index: 10;
+  width: 26vw;
+  height: 90vh;
+  top: 0px;
+  right: 0%;
+}

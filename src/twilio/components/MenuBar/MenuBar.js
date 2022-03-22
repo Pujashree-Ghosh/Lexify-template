@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
 import Button from '@material-ui/core/Button';
@@ -8,7 +8,7 @@ import Menu from './Menu/Menu';
 
 import useRoomState from '../../hooks/useRoomState/useRoomState';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
-import { Typography, Grid, Hidden } from '@material-ui/core';
+import { Typography, Grid, Hidden, Backdrop } from '@material-ui/core';
 import ToggleAudioButton from '../Buttons/ToggleAudioButton/ToggleAudioButton';
 import ToggleVideoButton from '../Buttons/ToggleVideoButton/ToggleVideoButton';
 import ToggleScreenShareButton from '../Buttons/ToogleScreenShareButton/ToggleScreenShareButton';
@@ -18,6 +18,7 @@ import SignalHelper from '../../../util/signalHelper';
 import { print } from '../../../util/data';
 import ChatButton from '../Buttons/ChatButton';
 import Chatbody from '../Buttons/Chatbody';
+import Back from '../Buttons/Back';
 const useStyles = makeStyles(theme =>
   createStyles({
     container: {
@@ -82,6 +83,10 @@ export default function MenuBar({ isProvider, extendMeeting, isShortBooking, isE
       if (timerData.status == 'waiting_duration') room.disconnect();
     });
   }, [room]);
+  const [sideChat, setSidechat] = useState(false);
+  const toggleChat = () => {
+    setSidechat(prevState => !prevState);
+  };
   return (
     <>
       {isSharingScreen && (
@@ -90,6 +95,8 @@ export default function MenuBar({ isProvider, extendMeeting, isShortBooking, isE
           <Button onClick={() => toggleScreenShare()}>Stop Sharing</Button>
         </Grid>
       )}
+      <Chatbody sideChat={sideChat} />
+      <Back sideChat={sideChat} />
 
       <footer className={`${classes.container} footer-mod`}>
         <Grid container justify="space-around" alignItems="center">
@@ -109,7 +116,7 @@ export default function MenuBar({ isProvider, extendMeeting, isShortBooking, isE
               <Hidden smDown>
                 {<ToggleScreenShareButton disabled={isReconnecting} />}
 
-                <ChatButton />
+                <ChatButton openChatbar={toggleChat} />
 
                 {/* {!isSharingScreen && <ToggleScreenShareButton disabled={isReconnecting} />} */}
               </Hidden>
