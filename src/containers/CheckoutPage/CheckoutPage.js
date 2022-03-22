@@ -581,7 +581,9 @@ export class CheckoutPageComponent extends Component {
       retrievePaymentIntentError,
       stripeCustomerFetched,
     } = this.props;
-    console.log(1234, currentUser);
+    const clientIdx = 'dibya@client.com';
+    // const any = .push(clientIdx);
+    console.log(1234, this.state.pageData?.listing?.attributes?.publicData?.alreadyBooked);
     // Since the listing data is already given from the ListingPage
     // and stored to handle refreshes, it might not have the possible
     // deleted or closed information in it. If the transaction

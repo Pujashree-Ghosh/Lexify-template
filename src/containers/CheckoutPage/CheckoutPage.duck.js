@@ -207,6 +207,9 @@ export const initiateOrder = (orderParams, transactionId) => (dispatch, getState
   const handleSucces = response => {
     const entities = denormalisedResponseEntities(response);
     const order = entities[0];
+    orderParams?.listing?.attributes?.publicData?.alreadyBooked?.push(
+      orderParams?.currentUserEmail
+    );
     dispatch(initiateOrderSuccess(order));
     dispatch(fetchCurrentUserHasOrdersSuccess(true));
     if (category !== 'customService') {
@@ -221,7 +224,7 @@ export const initiateOrder = (orderParams, transactionId) => (dispatch, getState
     integrationSdk.listings.update({
       id: orderParams.listingId.uuid,
       publicData: {
-        alreadyBooked: orderParams?.currentUserEmail,
+        alreadyBooked: orderParams?.listing?.attributes?.publicData?.alreadyBooked,
         clientId:
           orderParams &&
           orderParams.listing &&
