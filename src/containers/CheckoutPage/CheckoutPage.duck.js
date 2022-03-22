@@ -171,7 +171,10 @@ export const stripeCustomerError = e => ({
 /* ================ Thunks ================ */
 
 export const initiateOrder = (orderParams, transactionId) => (dispatch, getState, sdk) => {
+  const category = orderParams.category;
+
   dispatch(initiateOrderRequest());
+
   // If we already have a transaction ID, we should transition, not
   // initiate.
   const isTransition = !!transactionId;
@@ -206,13 +209,15 @@ export const initiateOrder = (orderParams, transactionId) => (dispatch, getState
     const order = entities[0];
     dispatch(initiateOrderSuccess(order));
     dispatch(fetchCurrentUserHasOrdersSuccess(true));
-    axios.post(`${apiBaseUrl()}/api/booking/setBooking`, {
-      orderId: order?.id.uuid,
-      providerId: orderParams.providerId,
-      customerId: orderParams.customerId,
-      start: orderParams.bookingStart,
-      end: orderParams.bookingEnd,
-    });
+    if (category !== 'customService') {
+      axios.post(`${apiBaseUrl()}/api/booking/setBooking`, {
+        orderId: order?.id.uuid,
+        providerId: orderParams.providerId,
+        customerId: orderParams.customerId,
+        start: orderParams.bookingStart,
+        end: orderParams.bookingEnd,
+      });
+    }
     integrationSdk.listings.update({
       id: orderParams.listingId.uuid,
       publicData: {
@@ -225,6 +230,7 @@ export const initiateOrder = (orderParams, transactionId) => (dispatch, getState
           ),
       },
     });
+
     return order;
   };
 

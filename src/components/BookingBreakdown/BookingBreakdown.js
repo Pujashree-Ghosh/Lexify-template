@@ -29,6 +29,8 @@ import Button from '../Button/Button';
 import {
   cancelSaleCustomer,
   cancelSaleProvider,
+  rescheduleCustomer,
+  rescheduleProvider,
 } from '../../containers/TransactionPage/TransactionPage.duck';
 
 import css from './BookingBreakdown.module.css';
@@ -49,8 +51,10 @@ export const BookingBreakdownComponent = props => {
     timeZone,
     onCancelSaleCustomer,
     onCancelSaleProvider,
+    onRescheduleCustomer,
+    onRescheduleProvider,
   } = props;
-  // console.log(666, transaction);
+  console.log(666, transaction);
   const isCustomer = userRole === 'customer';
   const isProvider = userRole === 'provider';
 
@@ -168,6 +172,23 @@ export const BookingBreakdownComponent = props => {
       ) : (
         ''
       )}
+      {transaction?.attributes?.lastTransition === 'transition/accept' ||
+      transaction?.attributes?.lastTransition === 'transition/reschedule-customer' ||
+      transaction?.attributes?.lastTransition === 'transition/reschedule-provider' ? (
+        isCustomer ? (
+          <Button className={css.bkcnclbtn} onClick={() => onRescheduleCustomer(transaction.id)}>
+            {' '}
+            Reschedule
+          </Button>
+        ) : (
+          <Button className={css.bkcnclbtn} onClick={() => onRescheduleProvider(transaction.id)}>
+            {' '}
+            Reschedule
+          </Button>
+        )
+      ) : (
+        ''
+      )}
     </div>
   );
 };
@@ -192,7 +213,7 @@ BookingBreakdownComponent.propTypes = {
   booking: propTypes.booking.isRequired,
   dateType: propTypes.dateType,
   timeZone: string,
-  onCancelSaleCustomer: func.isRequired,
+  // onCancelSaleCustomer: func.isRequired,
 
   // from injectIntl
   intl: intlShape.isRequired,
@@ -202,6 +223,8 @@ const mapDispatchToProps = dispatch => {
   return {
     onCancelSaleCustomer: transactionId => dispatch(cancelSaleCustomer(transactionId)),
     onCancelSaleProvider: transactionId => dispatch(cancelSaleProvider(transactionId)),
+    onRescheduleCustomer: transactionId => dispatch(rescheduleCustomer(transactionId)),
+    onRescheduleProvider: transactionId => dispatch(rescheduleProvider(transactionId)),
   };
 };
 

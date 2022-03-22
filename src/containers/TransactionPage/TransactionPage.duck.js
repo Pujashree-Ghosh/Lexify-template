@@ -13,6 +13,8 @@ import {
   TRANSITION_DECLINE,
   TRANSITION_CANCEL_PROVIDER,
   TRANSITION_CANCEL_CUSTOMER,
+  TRANSITION_RESCHEDULE_PROVIDER,
+  TRANSITION_RESCHEDULE_CUSTOMER,
 } from '../../util/transaction';
 import { apiBaseUrl, transactionLineItems } from '../../util/api';
 import * as log from '../../util/log';
@@ -63,6 +65,14 @@ export const CANCEL_SALE_CUSTOMER_REQUEST = 'app/TransactionPage/CANCEL_SALE_CUS
 export const CANCEL_SALE_CUSTOMER_SUCCESS = 'app/TransactionPage/CANCEL_SALE_CUSTOMER_SUCCESS';
 export const CANCEL_SALE_CUSTOMER_ERROR = 'app/TransactionPage/CANCEL_SALE_CUSTOMER_ERROR';
 
+export const RESCHEDULE_CUSTOMER_REQUEST = 'app/TransactionPage/RESCHEDULE_CUSTOMER_REQUEST';
+export const RESCHEDULE_CUSTOMER_SUCCESS = 'app/TransactionPage/RESCHEDULE_CUSTOMER_SUCCESS';
+export const RESCHEDULE_CUSTOMER_ERROR = 'app/TransactionPage/RESCHEDULE_CUSTOMER_ERROR';
+
+export const RESCHEDULE_PROVIDER_REQUEST = 'app/TransactionPage/RESCHEDULE_PROVIDER_REQUEST';
+export const RESCHEDULE_PROVIDER_SUCCESS = 'app/TransactionPage/RESCHEDULE_PROVIDER_SUCCESS';
+export const RESCHEDULE_PROVIDER_ERROR = 'app/TransactionPage/RESCHEDULE_PROVIDER_ERROR';
+
 export const FETCH_MESSAGES_REQUEST = 'app/TransactionPage/FETCH_MESSAGES_REQUEST';
 export const FETCH_MESSAGES_SUCCESS = 'app/TransactionPage/FETCH_MESSAGES_SUCCESS';
 export const FETCH_MESSAGES_ERROR = 'app/TransactionPage/FETCH_MESSAGES_ERROR';
@@ -96,6 +106,10 @@ const initialState = {
   cancelProviderInProgress: false,
   cancelSaleCustomerError: null,
   cancelSaleProviderError: null,
+  rescheduleCustomerInProgress: false,
+  rescheduleProviderInProgress: false,
+  rescheduleCustomerError: null,
+  rescheduleProviderError: null,
   declineSaleError: null,
   fetchMessagesInProgress: false,
   fetchMessagesError: null,
@@ -204,6 +218,34 @@ export default function checkoutPageReducer(state = initialState, action = {}) {
       return { ...state, cancelProviderInProgress: false };
     case CANCEL_SALE_PROVIDER_ERROR:
       return { ...state, cancelProviderInProgress: false, cancelSaleProviderError: payload };
+
+    case RESCHEDULE_CUSTOMER_REQUEST:
+      return {
+        ...state,
+        rescheduleCustomerInProgress: true,
+      };
+    case RESCHEDULE_CUSTOMER_SUCCESS:
+      return { ...state, rescheduleCustomerInProgress: false };
+    case RESCHEDULE_CUSTOMER_ERROR:
+      return {
+        ...state,
+        rescheduleCustomerInProgress: false,
+        rescheduleSaleCustomerError: payload,
+      };
+
+    case RESCHEDULE_PROVIDER_REQUEST:
+      return {
+        ...state,
+        rescheduleProviderInProgress: true,
+      };
+    case RESCHEDULE_PROVIDER_SUCCESS:
+      return { ...state, rescheduleProviderInProgress: false };
+    case RESCHEDULE_PROVIDER_ERROR:
+      return {
+        ...state,
+        rescheduleProviderInProgress: false,
+        rescheduleSaleProviderError: payload,
+      };
 
     case FETCH_MESSAGES_REQUEST:
       return { ...state, fetchMessagesInProgress: true, fetchMessagesError: null };
@@ -345,6 +387,21 @@ const cancelSaleCustomerError = e => ({
   payload: e,
 });
 
+const rescheduleCustomerRequest = () => ({ type: RESCHEDULE_CUSTOMER_REQUEST });
+const rescheduleCustomerSuccess = () => ({ type: RESCHEDULE_CUSTOMER_SUCCESS });
+const rescheduleCustomerError = e => ({
+  type: RESCHEDULE_CUSTOMER_ERROR,
+  error: true,
+  payload: e,
+});
+
+const rescheduleProviderRequest = () => ({ type: RESCHEDULE_PROVIDER_REQUEST });
+const rescheduleProviderSuccess = () => ({ type: RESCHEDULE_PROVIDER_SUCCESS });
+const rescheduleProviderError = e => ({
+  type: RESCHEDULE_PROVIDER_ERROR,
+  error: true,
+  payload: e,
+});
 const fetchMessagesRequest = () => ({ type: FETCH_MESSAGES_REQUEST });
 const fetchMessagesSuccess = (messages, pagination) => ({
   type: FETCH_MESSAGES_SUCCESS,
@@ -619,6 +676,88 @@ export const cancelSaleProvider = id => (dispatch, getState, sdk) => {
       log.error(e, 'cancel-sale-provider-failed', {
         txId: id,
         transition: TRANSITION_CANCEL_PROVIDER,
+      });
+      throw e;
+    });
+};
+
+export const rescheduleCustomer = id => (dispatch, getState, sdk) => {
+  if (acceptOrDeclineInProgress(getState())) {
+    return Promise.reject(new Error('Accept or decline already in progress'));
+  }
+  dispatch(rescheduleCustomerRequest());
+
+  return sdk.transactions
+    .transition(
+      {
+        id,
+        transition: TRANSITION_RESCHEDULE_CUSTOMER,
+        params: {
+          bookingStart: '2022-03-29T21:00:00.000Z',
+          bookingEnd: '2022-03-29T22:00:00.000Z',
+          // bookingStart: 'Wed Apr 27 2022 01:15:00 GMT+0530',
+          // bookingEnd: 'Wed Apr 27 2022 02:30:00 GMT+0530',
+          // bookingDisplayStart: 'Wed Apr 27 2022 01:15:00 GMT+0530',
+          // bookingDisplayEnd: 'Wed Apr 27 2022 02:30:00 GMT+0530',
+          // seats: 5,
+        },
+      },
+      { expand: true }
+    )
+    .then(response => {
+      // axios.delete(`${apiBaseUrl()}/api/booking/deleteBooking`, {
+      //   orderId: response.data.data.id.uuid,
+      // });
+      dispatch(addMarketplaceEntities(response));
+      dispatch(rescheduleCustomerSuccess());
+      dispatch(fetchCurrentUserNotifications());
+      return response;
+    })
+    .catch(e => {
+      dispatch(rescheduleCustomerError(storableError(e)));
+      log.error(e, 'reschedule-customer-failed', {
+        txId: id,
+        transition: TRANSITION_RESCHEDULE_CUSTOMER,
+      });
+      throw e;
+    });
+};
+
+export const rescheduleProvider = id => (dispatch, getState, sdk) => {
+  if (acceptOrDeclineInProgress(getState())) {
+    return Promise.reject(new Error('Accept or decline already in progress'));
+  }
+  dispatch(rescheduleProviderRequest());
+
+  console.log('asche', id);
+
+  return sdk.transactions
+    .transition(
+      {
+        id,
+        transition: TRANSITION_RESCHEDULE_PROVIDER,
+        params: {
+          // bookingStart: 'Tue Apr 29 2022 01:00:00 GMT+0530',
+          // bookingEnd: 'Tue Apr 29 2022 01:00:00 GMT+0530',
+        },
+      },
+      { expand: true }
+    )
+    .then(response => {
+      // axios.delete(`${apiBaseUrl()}/api/booking/deleteBooking`, {
+      //   orderId: response.data.data.id.uuid,
+      // });
+      console.log(response);
+      dispatch(addMarketplaceEntities(response));
+      dispatch(rescheduleProviderSuccess());
+      dispatch(fetchCurrentUserNotifications());
+      return response;
+    })
+    .catch(e => {
+      dispatch(rescheduleProviderError(storableError(e)));
+      log.error(e, 'reschedule-provider-failed', {
+        txId: id,
+        transition: TRANSITION_RESCHEDULE_PROVIDER,
       });
       throw e;
     });

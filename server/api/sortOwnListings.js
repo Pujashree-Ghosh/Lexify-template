@@ -7,7 +7,7 @@ const integrationSdk = flexIntegrationSdk.createInstance({
 });
 
 module.exports = async (req, response, search) => {
-  const { authorId, states, pub_category, pub_areaOfLaw } = req.body;
+  const { authorId, states, pub_category, pub_areaOfLaw, page } = req.body;
 
   return new Promise((resolve, reject) => {
     integrationSdk.listings
@@ -17,7 +17,7 @@ module.exports = async (req, response, search) => {
         pub_category,
         pub_areaOfLaw,
         perPage: RESULT_PAGE_SIZE,
-        // page,
+        page,
       })
       .then(res => {
         return response.status(200).send(res.data);

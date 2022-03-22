@@ -40,7 +40,7 @@ module.exports = async (req, response) => {
               },
             })
             .then(res => {
-              console.log('listing updated');
+              // console.log('listing updated');
               response.send('success');
               return resolve('success');
             })

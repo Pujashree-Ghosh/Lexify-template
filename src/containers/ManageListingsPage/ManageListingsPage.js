@@ -107,13 +107,9 @@ export class ManageListingsPageComponent extends Component {
     this.onToggleMenu = this.onToggleMenu.bind(this);
   }
   componentDidUpdate() {
-    const { mapSearch, page, ...searchInURL } = parse(this.props.location.search, {
-      latlng: ['origin'],
-      latlngBounds: ['bounds'],
-    });
-    // const urlQueryParams = validURLParamForExtendedData(...searchInURL,);
-    // const queryParams = parse(search);
-    // const page = queryParams.page || 1;
+    const queryParams = parse(this.props.location.search);
+    console.log(142536, queryParams);
+    const page = queryParams.page || 1;
     axios
       .post(`${apiBaseUrl()}/api/sortOwnListings`, {
         authorId: this.props.currentUser?.id?.uuid,
@@ -121,7 +117,7 @@ export class ManageListingsPageComponent extends Component {
         pub_category: this.state.typeSort ? this.state.typeSort : null,
         pub_areaOfLaw:
           this.state.practiceAreaSort.length !== 0 ? this.state.practiceAreaSort : null,
-        // page: page
+        page: page,
       })
       .then(res => {
         if (

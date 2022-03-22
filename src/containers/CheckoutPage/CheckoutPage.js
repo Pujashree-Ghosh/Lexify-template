@@ -197,6 +197,7 @@ export class CheckoutPageComponent extends Component {
         pageData.listing.author.attributes.profile.displayName;
       const l_title = pageData.listing.attributes.title.replace(/\s/g, '-');
 
+      const category = pageData.listing.attributes.publicData.category;
       const customerToken =
         config.canonicalRootURL +
         '/videoconference/' +
@@ -242,18 +243,29 @@ export class CheckoutPageComponent extends Component {
       // Fetch speculated transaction for showing price in booking breakdown
       // NOTE: if unit type is line-item/units, quantity needs to be added.
       // The way to pass it to checkout page is through pageData.bookingData
-      fetchSpeculatedTransaction(
-        {
-          listingId,
-          bookingStart,
-          bookingEnd,
-          protectedData: {
-            customerToken,
-            providerToken,
+      if (category === 'customService') {
+        fetchSpeculatedTransaction(
+          {
+            listingId,
+            bookingStart,
+            bookingEnd,
           },
-        },
-        transactionId
-      );
+          transactionId
+        );
+      } else {
+        fetchSpeculatedTransaction(
+          {
+            listingId,
+            bookingStart,
+            bookingEnd,
+            protectedData: {
+              customerToken,
+              providerToken,
+            },
+          },
+          transactionId
+        );
+      }
     }
 
     this.setState({ pageData: pageData || {}, dataLoaded: true });
@@ -435,6 +447,7 @@ export class CheckoutPageComponent extends Component {
       listingId: pageData.listing.id,
       listing: pageData.listing,
       currentUserEmail: this.props.currentUser && this.props.currentUser?.attributes?.email,
+      category: pageData.listing.attributes.publicData.category,
       providerId,
       customerId,
       bookingStart: tx.booking.attributes.start,

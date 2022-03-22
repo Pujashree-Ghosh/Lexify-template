@@ -70,7 +70,11 @@ module.exports.getProviderBooking = async (req, res) => {
   console.log(providerId, start, end);
 
   try {
-    const result = await Booking.find({ providerId, start: { $gte: start }, end: { $lte: end } });
+    const result = await Booking.find({
+      providerId,
+      start: { $gte: start },
+      end: { $lte: end },
+    }).sort({ start: 1 });
 
     res.status(200).send(result);
   } catch (error) {
