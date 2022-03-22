@@ -141,6 +141,20 @@
   font-size: 17px;
   padding: 5px;
 }
+.loading {
+  width: 100%;
+  margin: 24px auto;
+  /* overflow-x: hidden; */
+
+  @media (--viewportMedium) {
+    margin: 48px auto;
+  }
+
+  @media (--viewportLarge) {
+    margin: 50px auto;
+    max-width: 1040px;
+  }
+}
 .lformrow {
   /* top: 286px;
   left: 64px;

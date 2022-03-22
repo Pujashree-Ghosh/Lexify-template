@@ -51,8 +51,10 @@ const EditListingDescriptionPanel = props => {
     state?.user.currentUser?.attributes?.profile?.publicData.industry.map(m => m.industryName)
   );
 
-  const languagesObject = useSelector(state =>
-    JSON.parse(state?.user?.currentUser?.attributes?.profile?.publicData?.languages)
+  const languagesObject = useSelector(
+    state =>
+      state.user.currentUser &&
+      JSON.parse(state?.user?.currentUser?.attributes?.profile?.publicData?.languages)
   );
 
   const globalAvailabilityPlan = useSelector(
