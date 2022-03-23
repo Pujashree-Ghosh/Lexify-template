@@ -147,7 +147,7 @@ export default function MenuBar({ isProvider, extendMeeting, isShortBooking, isE
             </Grid>
           </Grid> */}
 
-          <ChatButton openChatbar={toggleChat} />
+          {/* <ChatButton openChatbar={toggleChat} /> */}
           <Hidden smDown>
             <Grid style={{ flex: 1 }}>
               <Grid container justify="flex-end">
