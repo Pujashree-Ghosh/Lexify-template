@@ -81,7 +81,7 @@ function PromotionPageComponent(props) {
     // console.log(ensuredCurrentUser);
     if (type !== 'unsolicited' || clientId !== email || email !== undefined) {
       // setLoading(true);
-      setTimeout(() => {
+      let timer = setTimeout(() => {
         history.push(
           createResourceLocatorString(
             'PromotionPage',
@@ -92,6 +92,9 @@ function PromotionPageComponent(props) {
         );
         setLoading(false);
       }, 2000);
+      return () => {
+        clearTimeout(timer);
+      };
     }
   }, [type, email]);
   // useEffect(() => {

@@ -83,7 +83,7 @@ function ServicesPageComponent(props) {
     // console.log(ensuredCurrentUser);
     if (type !== 'solicited' || clientId !== email || email !== undefined) {
       // setLoading(true);
-      setTimeout(() => {
+      let timer = setTimeout(() => {
         history.push(
           createResourceLocatorString(
             'ServicesPage',
@@ -94,6 +94,9 @@ function ServicesPageComponent(props) {
         );
         setLoading(false);
       }, 2000);
+      return () => {
+        clearTimeout(timer);
+      };
     }
     // setTimeout(() => {
     //   history.push(
@@ -108,6 +111,7 @@ function ServicesPageComponent(props) {
   //   }, 3000);
   // }, []);
   // console.log(searchParams, searchInProgress);
+
   return (
     <Page className={css.root} title={title} scrollingDisabled={scrollingDisabled}>
       <LayoutSingleColumn>
