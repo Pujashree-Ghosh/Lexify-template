@@ -81,7 +81,7 @@ function ServicesPageComponent(props) {
     // const email =
     //   ensuredCurrentUser && ensuredCurrentUser.attributes && ensuredCurrentUser.attributes.email;
     // console.log(ensuredCurrentUser);
-    if (type !== 'solicited' || clientId !== email || email !== undefined) {
+    if (type !== 'solicited' || clientId !== email) {
       // setLoading(true);
       let timer = setTimeout(() => {
         history.push(
@@ -131,7 +131,7 @@ function ServicesPageComponent(props) {
           searchInProgress ? (
             <div>Loading Result..</div>
           ) : (
-            !loading &&
+            // !loading &&
             validQueryParams &&
             ensuredCurrentUser &&
             ensuredCurrentUser.id &&

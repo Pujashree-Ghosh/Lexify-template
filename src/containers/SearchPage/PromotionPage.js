@@ -79,7 +79,7 @@ function PromotionPageComponent(props) {
   const title = intl.formatMessage({ id: 'PromotionPage.title' });
   useEffect(() => {
     // console.log(ensuredCurrentUser);
-    if (type !== 'unsolicited' || clientId !== email || email !== undefined) {
+    if (type !== 'unsolicited' || clientId !== email) {
       // setLoading(true);
       let timer = setTimeout(() => {
         history.push(
@@ -91,7 +91,7 @@ function PromotionPageComponent(props) {
           )
         );
         setLoading(false);
-      }, 2000);
+      }, 1000);
       return () => {
         clearTimeout(timer);
       };
@@ -121,7 +121,7 @@ function PromotionPageComponent(props) {
           searchInProgress ? (
             <div>Loading Result..</div>
           ) : (
-            !loading &&
+            // !loading &&
             validQueryParams &&
             ensuredCurrentUser &&
             ensuredCurrentUser.id &&
