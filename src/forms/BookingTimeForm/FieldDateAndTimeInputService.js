@@ -74,13 +74,30 @@ class FieldDateAndTimeInputServiceComponent extends Component {
               }
             }}
             isDayBlocked={day => {
-              // console.log(
-              //   moment(day).isSameOrBefore(serviceEndDate) &&
-              //     moment(day).isSameOrAfter(serviceStartDate)
-              // );
+              console.log(
+                moment(day).isSameOrBefore(moment(serviceEndDate)),
+                moment(day).isSameOrAfter(moment(serviceStartDate)),
+                day.toDate(),
+                serviceEndDate,
+                serviceStartDate
+              );
               return !(
-                moment(day).isSameOrBefore(serviceEndDate) &&
-                moment(day).isSameOrAfter(serviceStartDate)
+                moment(day)
+                  .clone()
+                  .startOf('day')
+                  .isSameOrBefore(
+                    moment(serviceEndDate)
+                      .clone()
+                      .startOf('day')
+                  ) &&
+                moment(day)
+                  .clone()
+                  .startOf('day')
+                  .isSameOrAfter(
+                    moment(serviceStartDate)
+                      .clone()
+                      .startOf('day')
+                  )
               );
             }}
             //   isOutsideRange={day => this.isOutsideRange(true)}

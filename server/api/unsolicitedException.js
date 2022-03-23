@@ -97,10 +97,13 @@ module.exports.listingExceptionCreate = async (req, response) => {
                         },
                       })
                       .then(resp => console.log('updated'))
-                      .catch();
-                  });
-                // .catch(err => console.log(err));
+                      .catch(er => console.log(err));
+                  })
+                  .catch(err => console.log('if create error', err));
               }
+            })
+            .catch(e => {
+              console.log('first delete err', e);
             });
         } else {
           if (res.data.data.attributes.publicData.type === 'unsolicited') {
@@ -125,10 +128,10 @@ module.exports.listingExceptionCreate = async (req, response) => {
                       availId: exceptionResp.data.data.id.uuid,
                     },
                   })
-                  .then()
-                  .catch();
-              });
-            // .catch(err => console.log(err));
+                  .then(resp => console.log(resp))
+                  .catch(err => console.log(err));
+              })
+              .catch(err => console.log('else create error', err));
           }
         }
 
@@ -170,7 +173,8 @@ module.exports.listingExceptionDelete = async (req, response) => {
             )
             .then(() => {
               console.log('deleted');
-            });
+            })
+            .catch(e => console.log('delete error', e));
         }
 
         return response.status(200).send('updated');

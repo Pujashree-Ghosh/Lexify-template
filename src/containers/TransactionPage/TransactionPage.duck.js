@@ -109,6 +109,8 @@ const initialState = {
   rescheduleCustomerInProgress: false,
   rescheduleProviderInProgress: false,
   rescheduleCustomerError: null,
+  rescheduleProviderSuccess: false,
+  rescheduleCustomerSuccess: false,
   rescheduleProviderError: null,
   declineSaleError: null,
   fetchMessagesInProgress: false,
@@ -225,11 +227,12 @@ export default function checkoutPageReducer(state = initialState, action = {}) {
         rescheduleCustomerInProgress: true,
       };
     case RESCHEDULE_CUSTOMER_SUCCESS:
-      return { ...state, rescheduleCustomerInProgress: false };
+      return { ...state, rescheduleCustomerInProgress: false, rescheduleCustomerSuccess: false };
     case RESCHEDULE_CUSTOMER_ERROR:
       return {
         ...state,
         rescheduleCustomerInProgress: false,
+        rescheduleCustomerSuccess: false,
         rescheduleSaleCustomerError: payload,
       };
 
@@ -239,11 +242,12 @@ export default function checkoutPageReducer(state = initialState, action = {}) {
         rescheduleProviderInProgress: true,
       };
     case RESCHEDULE_PROVIDER_SUCCESS:
-      return { ...state, rescheduleProviderInProgress: false };
+      return { ...state, rescheduleProviderInProgress: false, rescheduleProviderSuccess: true };
     case RESCHEDULE_PROVIDER_ERROR:
       return {
         ...state,
         rescheduleProviderInProgress: false,
+        rescheduleProviderSuccess: false,
         rescheduleSaleProviderError: payload,
       };
 
@@ -681,7 +685,10 @@ export const cancelSaleProvider = id => (dispatch, getState, sdk) => {
     });
 };
 
-export const rescheduleCustomer = id => (dispatch, getState, sdk) => {
+export const rescheduleCustomer = (id, params) => (dispatch, getState, sdk) => {
+  const bookingStartTime = params.bookingStartTime;
+  const bookingEndTime = params.bookingEndTime;
+  // console.log(bookingEndTime, new Date(bookingEndTime).toISOString);
   if (acceptOrDeclineInProgress(getState())) {
     return Promise.reject(new Error('Accept or decline already in progress'));
   }
@@ -693,25 +700,24 @@ export const rescheduleCustomer = id => (dispatch, getState, sdk) => {
         id,
         transition: TRANSITION_RESCHEDULE_CUSTOMER,
         params: {
-          bookingStart: '2022-03-29T21:00:00.000Z',
-          bookingEnd: '2022-03-29T22:00:00.000Z',
-          // bookingStart: 'Wed Apr 27 2022 01:15:00 GMT+0530',
-          // bookingEnd: 'Wed Apr 27 2022 02:30:00 GMT+0530',
-          // bookingDisplayStart: 'Wed Apr 27 2022 01:15:00 GMT+0530',
-          // bookingDisplayEnd: 'Wed Apr 27 2022 02:30:00 GMT+0530',
-          // seats: 5,
+          bookingStart: bookingStartTime,
+          bookingEnd: bookingEndTime,
         },
       },
       { expand: true }
     )
     .then(response => {
-      // axios.delete(`${apiBaseUrl()}/api/booking/deleteBooking`, {
-      //   orderId: response.data.data.id.uuid,
-      // });
+      axios.patch(`${apiBaseUrl()}/api/booking/updateBooking`, {
+        orderId: response.data.data.id.uuid,
+        start: bookingStartTime,
+        end: bookingEndTime,
+      });
       dispatch(addMarketplaceEntities(response));
       dispatch(rescheduleCustomerSuccess());
       dispatch(fetchCurrentUserNotifications());
-      return response;
+      return new Promise((resolve, reject) => {
+        resolve(response);
+      });
     })
     .catch(e => {
       dispatch(rescheduleCustomerError(storableError(e)));
@@ -723,35 +729,38 @@ export const rescheduleCustomer = id => (dispatch, getState, sdk) => {
     });
 };
 
-export const rescheduleProvider = id => (dispatch, getState, sdk) => {
+export const rescheduleProvider = (id, params) => (dispatch, getState, sdk) => {
   if (acceptOrDeclineInProgress(getState())) {
     return Promise.reject(new Error('Accept or decline already in progress'));
   }
   dispatch(rescheduleProviderRequest());
 
-  console.log('asche', id);
-
+  const bookingStartTime = params.bookingStartTime;
+  const bookingEndTime = params.bookingEndTime;
   return sdk.transactions
     .transition(
       {
         id,
         transition: TRANSITION_RESCHEDULE_PROVIDER,
         params: {
-          // bookingStart: 'Tue Apr 29 2022 01:00:00 GMT+0530',
-          // bookingEnd: 'Tue Apr 29 2022 01:00:00 GMT+0530',
+          bookingStart: bookingStartTime,
+          bookingEnd: bookingEndTime,
         },
       },
       { expand: true }
     )
     .then(response => {
-      // axios.delete(`${apiBaseUrl()}/api/booking/deleteBooking`, {
-      //   orderId: response.data.data.id.uuid,
-      // });
-      console.log(response);
+      axios.patch(`${apiBaseUrl()}/api/booking/updateBooking`, {
+        orderId: response.data.data.id.uuid,
+        start: bookingStartTime,
+        end: bookingEndTime,
+      });
       dispatch(addMarketplaceEntities(response));
       dispatch(rescheduleProviderSuccess());
       dispatch(fetchCurrentUserNotifications());
-      return response;
+      return new Promise((resolve, reject) => {
+        resolve(response);
+      });
     })
     .catch(e => {
       dispatch(rescheduleProviderError(storableError(e)));

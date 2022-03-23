@@ -28,6 +28,7 @@ const {
   getAllBooking,
   deleteBooking,
   getProviderBooking,
+  updateBooking,
 } = require('./api/booking');
 
 const createProviderListing = require('./api/create-provider-listing');
@@ -72,6 +73,7 @@ router.use((req, res, next) => {
 router.post('/user', sendOtp);
 router.post('/user/verify', verifyOtp);
 router.post('/booking/setBooking', setBooking);
+router.patch('/booking/updateBooking', updateBooking);
 router.post('/booking/getBooking', getBooking);
 router.get('/booking/getBooking', getAllBooking);
 router.post('/booking/getProviderBooking', getProviderBooking);

@@ -100,6 +100,8 @@ module.exports = async (req, response) => {
     integrationSdk.listings
       .query({
         authorId,
+        states: 'published',
+        pub_category: 'publicOral,customOral',
       })
       .then(res => {
         integrationSdk.users
@@ -107,8 +109,7 @@ module.exports = async (req, response) => {
           .then(user => {
             let availabilityPlan = user.data.data.attributes.profile.protectedData.availabilityPlan;
             const publishedListings = res.data.data.filter(
-              l =>
-                l.attributes.state === 'published' && l.attributes.publicData.type !== 'unsolicited'
+              l => l.attributes.publicData.type !== 'unsolicited'
             );
             publishedListings.map(l => {
               const durationHour = l.attributes.publicData.durationHour;
@@ -129,8 +130,9 @@ module.exports = async (req, response) => {
                   startTime: start.format('HH:mm'),
                   endTime: end.format('HH:mm'),
                 });
+                console.log(l.attributes.state, l.attributes.publicData.category);
 
-                console.log(newEntreis);
+                // console.log(newEntreis);
 
                 //   while (
                 //     start.isSameOrBefore(end) &&
@@ -176,13 +178,14 @@ module.exports = async (req, response) => {
                 //   //   : 1,
                 //   newEntreis
                 // );
-                // integrationSdk.listings.update({
-                //   id: l.id.uuid,
-                //   availabilityPlan: {
-                //     entries: newEntreis,
-                //     timezone: availabilityPlan.timezone,
-                //     type: availabilityPlan.type,
-                //   },
+                integrationSdk.listings.update({
+                  id: l.id.uuid,
+                  availabilityPlan: {
+                    entries: newEntreis,
+                    timezone: availabilityPlan.timezone,
+                    type: availabilityPlan.type,
+                  },
+                });
               });
             });
             return response.status(200).send(availabilityPlan);
