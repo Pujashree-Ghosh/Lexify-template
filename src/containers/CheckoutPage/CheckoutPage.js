@@ -56,6 +56,7 @@ import {
 import { storeData, storedData, clearData } from './CheckoutPageSessionHelpers';
 import css from './CheckoutPage.module.css';
 import moment from 'moment';
+import { getListingsById } from '../../ducks/marketplaceData.duck';
 const jwt = require('jsonwebtoken');
 
 const STORAGE_KEY = 'CheckoutPage';
@@ -442,9 +443,10 @@ export class CheckoutPageComponent extends Component {
 
     const providerId = pageData?.listing?.author?.id.uuid;
     const customerId = ensuredCurrentUser?.id.uuid;
-
     const orderParams = {
       listingId: pageData.listing.id,
+      listing: pageData.listing,
+      currentUserEmail: this.props.currentUser && this.props.currentUser?.attributes?.email,
       category: pageData.listing.attributes.publicData.category,
       providerId,
       customerId,
@@ -579,7 +581,9 @@ export class CheckoutPageComponent extends Component {
       retrievePaymentIntentError,
       stripeCustomerFetched,
     } = this.props;
-
+    const clientIdx = 'dibya@client.com';
+    // const any = .push(clientIdx);
+    console.log(1234, this.state.pageData?.listing?.attributes?.publicData?.alreadyBooked);
     // Since the listing data is already given from the ListingPage
     // and stored to handle refreshes, it might not have the possible
     // deleted or closed information in it. If the transaction

@@ -140,6 +140,10 @@ export class ProfilePageComponent extends Component {
       areaOfLawOptions,
       onLoadData,
     } = this.props;
+    console.log(
+      456,
+      listings.map(m => m?.attributes?.publicData?.areaOfLaw)
+    );
     const ensuredCurrentUser = ensureCurrentUser(currentUser);
     const profileUser = ensureUser(user);
     const isCurrentUser =
@@ -149,8 +153,6 @@ export class ProfilePageComponent extends Component {
     const hasBio = !!bio;
     const isMobileLayout = viewport.width < MAX_MOBILE_SCREEN_WIDTH;
     const publicData = user?.attributes?.profile?.publicData;
-
-    console.log(111, this.state.practiceAreaSort);
 
     const page = queryParams ? queryParams.page : 1;
     const hasPaginationInfo = !!pagination && pagination.totalItems != null;

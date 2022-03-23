@@ -10,9 +10,17 @@ import {
   isPrivileged,
 } from '../../util/transaction';
 import * as log from '../../util/log';
-import { fetchCurrentUserHasOrdersSuccess, fetchCurrentUser } from '../../ducks/user.duck';
+import {
+  fetchCurrentUserHasOrdersSuccess,
+  fetchCurrentUser,
+  currentUserShowError,
+} from '../../ducks/user.duck';
 import axios from 'axios';
-
+const flexIntegrationSdk = require('sharetribe-flex-integration-sdk');
+const integrationSdk = flexIntegrationSdk.createInstance({
+  clientId: '66ce8e58-5769-4f62-81d7-19073cfab535',
+  clientSecret: '73f5d2b697f7a9aa9372c8a601826c37cabbbab7',
+});
 // ================ Action types ================ //
 
 export const SET_INITIAL_VALUES = 'app/CheckoutPage/SET_INITIAL_VALUES';
@@ -167,8 +175,6 @@ export const initiateOrder = (orderParams, transactionId) => (dispatch, getState
 
   dispatch(initiateOrderRequest());
 
-  console.log(2025, orderParams);
-
   // If we already have a transaction ID, we should transition, not
   // initiate.
   const isTransition = !!transactionId;
@@ -201,6 +207,16 @@ export const initiateOrder = (orderParams, transactionId) => (dispatch, getState
   const handleSucces = response => {
     const entities = denormalisedResponseEntities(response);
     const order = entities[0];
+    const alreadyBooked = [];
+    if (
+      orderParams?.listing &&
+      typeof orderParams?.listing?.attributes?.publicData?.alreadyBooked === 'undefined'
+    ) {
+      alreadyBooked.push(orderParams?.currentUserEmail);
+    }
+    orderParams?.listing?.attributes?.publicData?.alreadyBooked?.push(
+      orderParams?.currentUserEmail
+    );
     dispatch(initiateOrderSuccess(order));
     dispatch(fetchCurrentUserHasOrdersSuccess(true));
     if (category !== 'customService') {
@@ -212,6 +228,22 @@ export const initiateOrder = (orderParams, transactionId) => (dispatch, getState
         end: orderParams.bookingEnd,
       });
     }
+    integrationSdk.listings.update({
+      id: orderParams.listingId.uuid,
+      publicData: {
+        alreadyBooked:
+          alreadyBooked.length === 0
+            ? orderParams?.listing?.attributes?.publicData?.alreadyBooked
+            : alreadyBooked,
+        clientId:
+          orderParams &&
+          orderParams.listing &&
+          orderParams.listing.attributes.publicData.clientId.filter(
+            e => e !== orderParams.currentUserEmail
+          ),
+      },
+    });
+
     return order;
   };
 

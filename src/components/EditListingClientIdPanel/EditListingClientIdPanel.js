@@ -65,9 +65,7 @@ const EditListingClientIdPanel = props => {
     state => state?.user?.currentUser?.attributes?.profile?.protectedData?.availabilityPlan
   );
   const availabilityPlan = currentListing?.attributes?.availabilityPlan;
-
-  // console.log(type);
-  // console.log(availabilityPlan);
+  console.log(525, clientId);
 
   return (
     <div className={classes}>
@@ -85,6 +83,7 @@ const EditListingClientIdPanel = props => {
               endDate: moment(endDate.date).format(),
               startHour,
               endHour,
+              alreadyBooked: [],
             },
             availabilityPlan:
               type !== 'unsolicited'

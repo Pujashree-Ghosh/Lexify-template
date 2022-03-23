@@ -52,7 +52,7 @@ const EditListingClientIdFormComponent = props => (
       } = formRenderProps;
 
       const userId = useSelector(state => state?.user?.currentUser?.id.uuid);
-      console.log(999, userId, currentListing);
+      console.log(999, values.clientId);
 
       const printTimeStrings = t => {
         const m = t % 60;
@@ -180,7 +180,6 @@ const EditListingClientIdFormComponent = props => (
                 .format(),
             })
             .then(resp => {
-              console.log(resp.data, resp.data.length);
               if (resp.data.length > 0) {
                 setBookinError(true);
               } else {
@@ -192,7 +191,6 @@ const EditListingClientIdFormComponent = props => (
             });
         }
       });
-      console.log(bookingError);
 
       return (
         <Form

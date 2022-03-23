@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { MdModeEditOutline } from 'react-icons/md';
 import { IoMdClose } from 'react-icons/io';
 import { withRouter } from 'react-router-dom';
-
+import { parse } from '../../util/urlHelpers';
 import config from '../../config';
 import { FormattedMessage, injectIntl, intlShape } from '../../util/reactIntl';
 import { propTypes, LISTING_STATE_DRAFT, LISTING_STATE_CLOSED } from '../../util/types';
@@ -31,6 +31,7 @@ import {
   LayoutWrapperMain,
   LayoutWrapperFooter,
   Footer,
+  IconSpinner,
 } from '../../components';
 import axios from 'axios';
 import { apiBaseUrl } from '../../util/api';
@@ -61,6 +62,11 @@ import {
   ensureSeparator,
   truncateToSubUnitPrecision,
 } from '../../util/currency';
+import {
+  pickSearchParamsOnly,
+  validURLParamForExtendedData,
+} from '../SearchPage/SearchPage.helpers';
+import { sortConfig } from '../../marketplace-custom-config';
 
 const MENU_CONTENT_OFFSET = -12;
 const { Money } = sdkTypes;
@@ -102,6 +108,8 @@ export class ManageListingsPageComponent extends Component {
     this.onToggleMenu = this.onToggleMenu.bind(this);
   }
   componentDidUpdate() {
+    const queryParams = parse(this.props.location.search);
+    const page = queryParams.page || 1;
     axios
       .post(`${apiBaseUrl()}/api/sortOwnListings`, {
         authorId: this.props.currentUser?.id?.uuid,
@@ -109,6 +117,7 @@ export class ManageListingsPageComponent extends Component {
         pub_category: this.state.typeSort ? this.state.typeSort : null,
         pub_areaOfLaw:
           this.state.practiceAreaSort.length !== 0 ? this.state.practiceAreaSort : null,
+        page: page,
       })
       .then(res => {
         if (
@@ -150,15 +159,18 @@ export class ManageListingsPageComponent extends Component {
       currentUser,
     } = this.props;
 
-    console.log(444, this.state);
+    console.log(444, sortConfig);
     const customPagination = this.state.metaFromApi;
     const hasPaginationInfo = !!customPagination && customPagination.totalItems != null;
     const listingsAreLoaded = this.state.listingsFromApiLoaded && hasPaginationInfo;
 
     const loadingResults = (
-      <h2>
-        <FormattedMessage id="ManageListingsPage.loadingOwnListings" />
-      </h2>
+      <div className={css.loading}>
+        <h2>
+          <FormattedMessage id="ManageListingsPage.loadingOwnListings" />
+        </h2>
+        <IconSpinner />
+      </div>
     );
 
     const queryError = (
@@ -185,8 +197,7 @@ export class ManageListingsPageComponent extends Component {
       ) : (
         noResults
       );
-
-    const page = this.state.metaFromApi ? this.state.metaFromApi.page : 1;
+    const page = customPagination ? customPagination.page : 1;
     const paginationLinks =
       listingsAreLoaded && customPagination && customPagination.totalPages > 1 ? (
         <PaginationLinks
@@ -227,7 +238,7 @@ export class ManageListingsPageComponent extends Component {
     ];
     const typeOptions = [
       { key: 'publicOral', value: 'publicOral', label: 'Public Oral' },
-      { key: 'customOral', value: 'customOral', label: 'Customer Oral' },
+      { key: 'customOral', value: 'customOral', label: 'Custom Oral' },
       { key: 'customService', value: 'customService', label: 'Custom Service' },
     ];
     const practiceAreaOptions = [
@@ -241,8 +252,8 @@ export class ManageListingsPageComponent extends Component {
     ];
     const sortSection = (
       <div className={css.lformrow}>
-        <div className={css.lformcol}>
-          <label>Category</label>
+        <div className={css.categoryFilter}>
+          <label className={css.label}>Category</label>
           <Select
             value={this.state.typeSort?.key}
             isClearable={true}
@@ -263,8 +274,8 @@ export class ManageListingsPageComponent extends Component {
             }}
           />
         </div>
-        <div className={css.lformcol}>
-          <label>Status</label>
+        <div className={css.statusFilter}>
+          <label className={css.label}>Status</label>
           <Select
             value={this.state.statusSort?.key}
             isClearable={true}
@@ -282,20 +293,28 @@ export class ManageListingsPageComponent extends Component {
             }}
           />
         </div>
-        {/* <div className={css.lformcol}>
-          <label>Practice Area</label>
-          <Select
-            value={this.state.practiceAreaSort?.key}
-            isClearable={true}
-            options={practiceAreaOptions}
-            className={css.formcontrol}
-            onChange={e => {
-              e === null
-                ? this.setState({ practiceAreaSort: '' })
-                : this.setState({ practiceAreaSort: e?.key });
-            }}
-          />
-        </div> */}
+        {this.state.typeSort === 'publicOral' ? (
+          <div className={css.areaOfLawFilter}>
+            <label className={css.label}>Area of Law</label>
+            <Select
+              value={this.state.practiceAreaSort?.key}
+              isClearable={true}
+              options={practiceAreaOptions}
+              className={css.formcontrol}
+              isMulti={true}
+              onChange={e => {
+                e === null
+                  ? this.setState({ practiceAreaSort: '' })
+                  : this.setState({ practiceAreaSort: e?.map(e => e?.key) });
+                // listingssss({
+                //   category: this.state.typeSort,
+                //   states: this.state.statusSort,
+                //   areaOfLaw: e?.key,
+                // });
+              }}
+            />
+          </div>
+        ) : null}
       </div>
     );
 
@@ -319,29 +338,8 @@ export class ManageListingsPageComponent extends Component {
             <UserNav selectedPageName="ManageListingsPage" />
           </LayoutWrapperTopbar>
           <LayoutWrapperMain>
-            <div>{sortSection}</div>
-            {this.state.typeSort === 'publicOral' ? (
-              <div className={css.lformcol}>
-                <label>Area of Law</label>
-                <Select
-                  value={this.state.practiceAreaSort?.key}
-                  isClearable={true}
-                  options={practiceAreaOptions}
-                  className={css.formcontrol}
-                  isMulti={true}
-                  onChange={e => {
-                    e === null
-                      ? this.setState({ practiceAreaSort: '' })
-                      : this.setState({ practiceAreaSort: e?.map(e => e?.key) });
-                    // listingssss({
-                    //   category: this.state.typeSort,
-                    //   states: this.state.statusSort,
-                    //   areaOfLaw: e?.key,
-                    // });
-                  }}
-                />
-              </div>
-            ) : null}
+            {sortSection}
+
             {!this.state.listingsFromApiLoaded ? loadingResults : null}
             {queryListingsError ? queryError : null}
 
