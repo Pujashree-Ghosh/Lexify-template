@@ -1,3 +1,21 @@
-.button {
-  border: 0px;
+.chbtntw {
+}
+.chbtntw .button {
+  padding: 10px 8px;
+  border: 0;
+  color: rgba(0, 0, 0, 0.87);
+  text-transform: uppercase;
+  font-weight: 500;
+  font-size: 0.875rem;
+  cursor: pointer;
+  letter-spacing: 0.02857em;
+}
+.chbtntw .button:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+.chbtntw .button svg {
+  fill: #707578;
+  height: 20px;
+  width: 20px;
+  margin: 0 5px 0 0;
 }

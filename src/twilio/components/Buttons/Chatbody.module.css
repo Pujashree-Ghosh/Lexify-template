@@ -11,10 +11,14 @@
   background-color: white;
   position: relative;
   margin-left: auto;
-  width: 26vw;
-  height: 90vh;
-  top: 0px;
-  right: 0%;
+  width: 360px;
+  height: 100vh;
+  right: 0;
+  /* padding: 15px; */
+
+  @media (max-width: 575px) {
+    width: 300px;
+  }
 }
 .backdrop {
   background-color: rgba(0, 0, 0, 0.6);
@@ -30,22 +34,82 @@
 }
 .close {
   font-size: 1.5rem;
-  display: flex;
-  justify-content: flex-end;
-  padding-right: 4px;
-  padding-top: 4px;
+  position: absolute;
+  right: 5px;
+  cursor: pointer;
 }
 .insidechat {
   display: flex;
   flex-direction: column;
 }
 .visible {
-  display: flex;
-  padding-top: 22px;
-  justify-content: center;
-  align-items: center;
+  font-size: 14px;
+  padding: 8px 20px 8px 8px;
+  line-height: 18px;
+  color: #a91722;
+  font-weight: 500;
+  border-bottom: 1px solid #cbc9c9;
+  background: #eee;
 }
 .chatDetail {
   display: flex;
   flex-direction: column;
+  margin: 0 0 15px;
+  /* background: #eee; */
+  padding: 10px;
+  border-radius: 6px;
+}
+.chatinput {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+.chatinput form {
+  display: flex;
+}
+.chatinput input {
+  padding: 8px 10px;
+  font-size: 13px;
+  font-weight: 400;
+  background: #eee;
+  border: 0;
+}
+.chatinput button {
+  background: var(--marketplaceColor);
+  border: 0;
+  padding: 0 20px;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+}
+.chatboxvs {
+  padding: 15px;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
+}
+.aut {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 18px;
+  word-break: break-all;
+  color: var(--marketplaceColor);
+}
+.msgcnt {
+  font-size: 13px;
+  word-break: break-all;
+  line-height: 18px;
+  margin: 10px 0;
+  font-weight: 600;
+}
+.datetm {
+  font-size: 11px;
+  text-align: right;
+  line-height: 12px;
+  color: #6c6c6c;
+}
+.chatDetailme {
+  background: #b2ddbb;
+}
+.chatDetailyou {
+  background: #b2c3dd;
 }

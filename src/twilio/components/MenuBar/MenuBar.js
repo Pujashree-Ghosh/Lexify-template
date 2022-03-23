@@ -119,13 +119,13 @@ export default function MenuBar({ isProvider, extendMeeting, isShortBooking, isE
             <Grid container justify="center" className="mob-inline">
               <ToggleAudioButton disabled={isReconnecting} />
               <ToggleVideoButton disabled={isReconnecting} />
+
               <Hidden smDown>
                 {<ToggleScreenShareButton disabled={isReconnecting} />}
 
-                <ChatButton openChatbar={toggleChat} />
-
                 {/* {!isSharingScreen && <ToggleScreenShareButton disabled={isReconnecting} />} */}
               </Hidden>
+              <ChatButton openChatbar={toggleChat} />
               <FlipCameraButton />
 
               {/* <button className="MuiButtonBase-root MuiButton-root MuiButton-text ct-btn">

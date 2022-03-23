@@ -14,19 +14,19 @@ function Chat({ sideChat, closeChat, updateText, sendMessage, text, messages }) 
           <div className={css.visible}>
             Masseges can only be seen by people in the call and are deleted when the call ends.
           </div>
-          <div>
+          <div className={css.chatboxvs}>
             {messages.length === 0
-              ? 'show your messeges'
+              ? ''
               : messages.map(m => (
-                  <div className={css.chatDetail}>
-                    <div>{m.text}</div>
-                    <div>{m.author}</div>
-                    <div>{m.dateUpdated}</div>
+                  <div className={`${css.chatDetail} ${css.chatDetailme}`}>
+                    <div className={css.aut}>{m.author}</div>
+                    <div className={css.msgcnt}>{m.text}</div>
+                    <div className={css.datetm}>{m.dateUpdated}</div>
                   </div>
                 ))}
           </div>
         </div>
-        <div>
+        <div className={css.chatinput}>
           <form className={css.input} onSubmit={sendMessage}>
             <input
               type="text"
