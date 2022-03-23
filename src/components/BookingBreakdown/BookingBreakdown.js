@@ -2,9 +2,10 @@
  * This component will show the booking info and calculated total price.
  * I.e. dates and other details related to payment decision in receipt format.
  */
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
+import { Form, Field } from 'react-final-form';
 import { oneOf, string } from 'prop-types';
 import { FormattedMessage, intlShape, injectIntl } from '../../util/reactIntl';
 import classNames from 'classnames';
@@ -13,7 +14,15 @@ import {
   LINE_ITEM_CUSTOMER_COMMISSION,
   LINE_ITEM_PROVIDER_COMMISSION,
 } from '../../util/types';
-
+import {
+  sendEnquiry,
+  setInitialValues,
+  fetchTimeSlots,
+  fetchTransactionLineItems,
+  loadData,
+} from '../../containers/ListingPage/ListingPage.duck';
+import routeConfiguration from '../../routeConfiguration';
+import { createResourceLocatorString } from '../../util/routes';
 import LineItemBookingPeriod from './LineItemBookingPeriod';
 import LineItemBasePriceMaybe from './LineItemBasePriceMaybe';
 import LineItemUnitPriceMaybe from './LineItemUnitPriceMaybe';
@@ -29,12 +38,18 @@ import Button from '../Button/Button';
 import {
   cancelSaleCustomer,
   cancelSaleProvider,
+  rescheduleCustomer,
+  rescheduleProvider,
 } from '../../containers/TransactionPage/TransactionPage.duck';
 
 import css from './BookingBreakdown.module.css';
 import LineItemTaxMaybe from './LineItemTaxMaybe';
 import axios from 'axios';
 import { apiBaseUrl } from '../../util/api';
+import Modal from '../Modal/Modal';
+import FieldDateAndTimeInput from '../../forms/BookingTimeForm/FieldDateAndTimeInput';
+import { withRouter } from 'react-router-dom';
+import moment from 'moment';
 
 export const BookingBreakdownComponent = props => {
   const {
@@ -49,10 +64,26 @@ export const BookingBreakdownComponent = props => {
     timeZone,
     onCancelSaleCustomer,
     onCancelSaleProvider,
+    onRescheduleCustomer,
+    onRescheduleProvider,
+    onFetchTimeSlots,
+    monthlyTimeSlots,
+    onLoadListingData,
+    rescheduleCustomerInProgress,
+    rescheduleProviderInProgress,
+    rescheduleCustomerSuccess,
+    rescheduleProviderSuccess,
+    history,
   } = props;
-  // console.log(666, transaction);
+  // console.log(666, transaction, monthlyTimeSlots);
   const isCustomer = userRole === 'customer';
   const isProvider = userRole === 'provider';
+  const [showBookingPanel, setShowBookingPanel] = useState(false);
+  useEffect(() => {
+    if (transaction.attributes.lastTransition === 'transition/accept') {
+      onLoadListingData(transaction?.listing?.id.uuid);
+    }
+  }, [transaction?.listing?.id.uuid]);
 
   const hasCommissionLineItem = transaction.attributes.lineItems.find(item => {
     const hasCustomerCommission = isCustomer && item.code === LINE_ITEM_CUSTOMER_COMMISSION;
@@ -100,8 +131,45 @@ export const BookingBreakdownComponent = props => {
    *
    */
 
+  const bookingStartLabel = intl.formatMessage({
+    id: 'BookingBreakdown.bookingStartLabel',
+  });
+  const TODAY = new Date();
+  const dateFormattingOptions = { month: 'short', day: 'numeric', weekday: 'short' };
+  const startDatePlaceholder = intl.formatDate(TODAY, dateFormattingOptions);
+
+  const startDateInputProps = {
+    label: bookingStartLabel,
+    placeholderText: startDatePlaceholder,
+  };
+  const endDateInputProps = {
+    label: 'bookingEndLabel',
+    placeholderText: 'endDatePlaceholder',
+  };
+
+  const dateInputProps = {
+    startDateInputProps,
+    endDateInputProps,
+  };
+
+  const durationHour = transaction?.listing?.attributes?.publicData?.durationHour;
+  const durationMinute = transaction?.listing?.attributes?.publicData?.durationMinute;
+  const duration = durationHour && durationMinute ? `${durationHour}.${durationMinute}` : '1';
+  const tStart = transaction?.booking?.attributes?.start;
+
+  const onSubmit = () => {
+    // console.log('clicked');
+  };
+
   return (
     <div className={classes}>
+      {/* <Modal
+        id="boolingPageDisclaimer"
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        usePortal
+        onManageDisableScrolling={() => {}}
+      ></Modal> */}
       <LineItemBookingPeriod
         booking={booking}
         unitType={unitType}
@@ -153,17 +221,127 @@ export const BookingBreakdownComponent = props => {
           <FormattedMessage id="BookingBreakdown.commissionFeeNote" />
         </span>
       ) : null}
-      {transaction?.attributes?.lastTransition === 'transition/accept' ? (
-        isCustomer ? (
-          <Button className={css.bkcnclbtn} onClick={() => onCancelSaleCustomer(transaction.id)}>
+      {!showBookingPanel ? (
+        transaction?.attributes?.lastTransition === 'transition/accept' ||
+        transaction?.attributes?.lastTransition === 'transition/reschedule-customer' ||
+        transaction?.attributes?.lastTransition === 'transition/reschedule-provider' ? (
+          isCustomer ? (
+            <Button className={css.bkcnclbtn} onClick={() => onCancelSaleCustomer(transaction.id)}>
+              {' '}
+              Cancel
+            </Button>
+          ) : (
+            <Button className={css.bkcnclbtn} onClick={() => onCancelSaleProvider(transaction.id)}>
+              {' '}
+              Cancel
+            </Button>
+          )
+        ) : (
+          ''
+        )
+      ) : (
+        ''
+      )}
+      {/* <MyForm /> */}
+
+      {showBookingPanel ? (
+        <Form
+          onSubmit={onSubmit}
+          //  validate={validate}
+
+          render={fieldRenderProps => {
+            const { handleSubmit, values, form, pristine } = fieldRenderProps;
+            // console.log(values);
+            return (
+              <form onSubmit={handleSubmit}>
+                <h2>Choose date to reschedule</h2>
+                <FieldDateAndTimeInput
+                  {...dateInputProps}
+                  className={css.bookingDates}
+                  listingId={transaction?.listing?.id.uuid}
+                  bookingStartLabel={'bookingStartLabel'}
+                  onFetchTimeSlots={onFetchTimeSlots}
+                  monthlyTimeSlots={monthlyTimeSlots}
+                  values={values}
+                  intl={intl}
+                  form={form}
+                  pristine={pristine}
+                  timeZone={timeZone}
+                  duration={duration}
+                  listing={transaction?.listing}
+                />
+                {isCustomer ? (
+                  <Button
+                    className={css.bkcnclbtn}
+                    onClick={() =>
+                      onRescheduleCustomer(transaction.id, {
+                        bookingStartTime: new Date(values.bookingStartTime * 1).toISOString(),
+                        bookingEndTime: new Date(values.bookingEndTime * 1).toISOString(),
+                      }).then(resp => {
+                        // console.log(resp);
+                        history.push(
+                          createResourceLocatorString(
+                            'OrderPage',
+                            routeConfiguration(),
+                            { id: resp.data.data.id.uuid },
+                            {}
+                          )
+                        );
+                      })
+                    }
+                    inProgress={rescheduleCustomerInProgress}
+                    ready={rescheduleCustomerSuccess}
+                    disabled={!values.bookingStartDate || !values.bookingStartTime}
+                  >
+                    {' '}
+                    Update
+                  </Button>
+                ) : (
+                  <Button
+                    className={css.bkcnclbtn}
+                    onClick={() =>
+                      onRescheduleProvider(transaction.id, {
+                        bookingStartTime: new Date(values.bookingStartTime * 1).toISOString(),
+                        bookingEndTime: new Date(values.bookingEndTime * 1).toISOString(),
+                      }).then(resp => {
+                        // console.log(resp);
+                        history.push(
+                          createResourceLocatorString(
+                            'SalePage',
+                            routeConfiguration(),
+                            { id: resp.data.data.id.uuid },
+                            {}
+                          )
+                        );
+                      })
+                    }
+                    inProgress={rescheduleProviderInProgress}
+                    ready={rescheduleProviderSuccess}
+                    disabled={!values.bookingStartDate || !values.bookingStartTime}
+                  >
+                    {' '}
+                    Update
+                  </Button>
+                )}
+              </form>
+            );
+          }}
+        />
+      ) : (
+        ''
+      )}
+
+      {!showBookingPanel ? (
+        transaction?.attributes?.lastTransition === 'transition/accept' &&
+        moment()
+          .add(24, 'h')
+          .isBefore(moment(tStart)) ? (
+          <Button className={css.bkcnclbtn} onClick={() => setShowBookingPanel(true)}>
             {' '}
-            Cancel
+            Reschedule
           </Button>
         ) : (
-          <Button className={css.bkcnclbtn} onClick={() => onCancelSaleProvider(transaction.id)}>
-            {' '}
-            Cancel
-          </Button>
+          ''
         )
       ) : (
         ''
@@ -192,21 +370,54 @@ BookingBreakdownComponent.propTypes = {
   booking: propTypes.booking.isRequired,
   dateType: propTypes.dateType,
   timeZone: string,
-  onCancelSaleCustomer: func.isRequired,
+  // onCancelSaleCustomer: func.isRequired,
 
   // from injectIntl
   intl: intlShape.isRequired,
+};
+const mapStateToProps = state => {
+  const { monthlyTimeSlots } = state.ListingPage;
+  const {
+    cancelCustomerInProgress,
+    cancelProviderInProgress,
+
+    rescheduleCustomerInProgress,
+    rescheduleProviderInProgress,
+
+    rescheduleProviderSuccess,
+    rescheduleCustomerSuccess,
+  } = state.TransactionPage;
+
+  return {
+    monthlyTimeSlots,
+    cancelCustomerInProgress,
+    cancelProviderInProgress,
+
+    rescheduleCustomerInProgress,
+    rescheduleProviderInProgress,
+
+    rescheduleProviderSuccess,
+    rescheduleCustomerSuccess,
+  };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     onCancelSaleCustomer: transactionId => dispatch(cancelSaleCustomer(transactionId)),
     onCancelSaleProvider: transactionId => dispatch(cancelSaleProvider(transactionId)),
+    onRescheduleCustomer: (transactionId, param) =>
+      dispatch(rescheduleCustomer(transactionId, param)),
+    onRescheduleProvider: (transactionId, param) =>
+      dispatch(rescheduleProvider(transactionId, param)),
+    onLoadListingData: listingId => dispatch(loadData({ id: listingId })),
+    onFetchTimeSlots: (listingId, start, end, timeZone) =>
+      dispatch(fetchTimeSlots(listingId, start, end, timeZone)),
   };
 };
 
 const BookingBreakdown = compose(
-  connect(null, mapDispatchToProps),
+  withRouter,
+  connect(mapStateToProps, mapDispatchToProps),
   injectIntl
 )(BookingBreakdownComponent);
 // const BookingBreakdown = injectIntl(BookingBreakdownComponent);

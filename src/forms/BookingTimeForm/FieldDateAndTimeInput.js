@@ -53,12 +53,19 @@ const getAvailableStartTimes = (
   timeZone,
   bookingStart,
   timeSlotsOnSelectedDate,
-  duration
+  duration,
+  providerId
 ) => {
   if (timeSlotsOnSelectedDate.length === 0 || !timeSlotsOnSelectedDate[0] || !bookingStart) {
     return [];
   }
   const bookingStartDate = resetToStartOfDay(bookingStart, timeZone);
+  const availableTimes = timeSlotsOnSelectedDate.map(t => ({
+    start: moment(t.attributes.start).toDate(),
+    end: moment(t.attributes.end).toDate(),
+  }));
+
+  let allStartHour = [];
 
   const allHours = timeSlotsOnSelectedDate.reduce((availableHours, t) => {
     const startDate = t.attributes.start;
@@ -76,7 +83,27 @@ const getAvailableStartTimes = (
     const hours = getStartHours(intl, timeZone, startLimit, endLimit, '0.5');
     return availableHours.concat(hours);
   }, []);
-  return allHours;
+  timeSlotsOnSelectedDate.map(m => {
+    const start = moment(m.attributes.start).clone();
+    const end = moment(m.attributes.end).clone();
+    const min = duration && duration.split('.')[1];
+    const hour = duration && duration.split('.')[0];
+
+    while (
+      start
+        .clone()
+        .add(hour, 'h')
+        .add(min, 'm')
+        .isSameOrBefore(moment(end))
+    ) {
+      allStartHour.push({
+        timeOfDay: start.format('HH:mm'),
+        timestamp: start.valueOf(),
+      });
+      start.add(5, 'm');
+    }
+  });
+  return allStartHour;
 };
 
 const getAvailableEndTimes = (
@@ -138,7 +165,8 @@ const getAllTimeValues = (
   startDate,
   selectedStartTime,
   selectedEndDate,
-  duration
+  duration,
+  providerId
 ) => {
   const startTimes = selectedStartTime
     ? []
@@ -147,7 +175,8 @@ const getAllTimeValues = (
         timeZone,
         startDate,
         getTimeSlots(timeSlots, startDate, timeZone),
-        duration
+        duration,
+        providerId
       );
 
   // console.log(9725, startTimes);
@@ -231,6 +260,12 @@ class FieldDateAndTimeInput extends Component {
 
     this.state = {
       currentMonth: getMonthStartInTimeZone(TODAY, props.timeZone),
+      startDate: null,
+      globalAvailability: [],
+      bookedSlot: [],
+      timeSlots: [],
+      availableTimeSlots: [],
+      allStart: [],
     };
 
     this.fetchMonthData = this.fetchMonthData.bind(this);
@@ -298,6 +333,193 @@ class FieldDateAndTimeInput extends Component {
     );
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    const providerId = this.props?.listing?.author?.id.uuid;
+    const { timeZone, monthlyTimeSlots, duration, beforeBufferTime, afterBufferTime } = this.props;
+    const timeSlots = getMonthlyTimeSlots(monthlyTimeSlots, this.state.currentMonth, timeZone);
+
+    const getTimeSlots = (timeSlots, date, timeZone) => {
+      return timeSlots && timeSlots[0]
+        ? timeSlots.filter(t =>
+            isInRange(date, t.attributes.start, t.attributes.end, 'day', timeZone)
+          )
+        : [];
+    };
+    if (this.state.startDate !== prevState.startDate) {
+      // console.log(555900, getTimeSlots(timeSlots, this.state.startDate?.date, timeZone));
+      this.setState({ timeSlots: getTimeSlots(timeSlots, this.state.startDate?.date, timeZone) });
+    }
+
+    let allAvailableTime = [];
+    let allAvailableTime2 = [];
+
+    // console.log(timeSlots);
+
+    this.state.timeSlots.map(m => {
+      const start = moment(m.attributes.start).clone();
+      const end = moment(m.attributes.end).clone();
+      while (
+        start
+          .clone()
+          // .add(5, 'm')
+          .isSameOrBefore(moment(end))
+      ) {
+        // console.log(
+        //   start
+        //     .clone()
+        //     .add(5, 'm')
+        //     .isSameOrBefore(moment(end)),
+        //   start
+        //     .clone()
+        //     .add(5, 'm')
+        //     .toDate(),
+        //   moment(end).toDate()
+        // );
+        // let allAvailableTime = [];
+        allAvailableTime.push(start.format());
+        allAvailableTime2.push(start.format('HH:mm'));
+
+        start.add(5, 'm');
+      }
+    });
+    // console.log(6967, allAvailableTime);
+
+    if (providerId && prevState.startDate !== this.state.startDate) {
+      axios
+        .post(`${apiBaseUrl()}/api/booking/getProviderBooking`, {
+          providerId: providerId,
+          start: moment(resetToStartOfDay(this.state.startDate.date, timeZone))
+            .clone()
+            .startOf('day')
+            .toDate(),
+          end: moment(resetToStartOfDay(this.state.startDate.date, timeZone))
+            .clone()
+            .endOf('day')
+            .toDate(),
+        })
+        .then(result => {
+          // console.log(5556, result);
+          let bk = [];
+          // console.log(beforeBufferTime, afterBufferTime);
+          result?.data?.map((r, i) => {
+            if (beforeBufferTime > 0 || afterBufferTime > 0) {
+              if (moment(r.start).isSame(moment(allAvailableTime[0]))) {
+                bk.push({
+                  start: moment(r.start).toDate(),
+                  end: moment(r.end)
+                    .clone()
+                    .add(afterBufferTime, 'm')
+                    .toDate(),
+                });
+              } else if (
+                moment(r.end).isSame(moment(allAvailableTime[allAvailableTime.length - 1]))
+              ) {
+                bk.push({
+                  start: moment(r.start)
+                    .clone()
+                    .add(beforeBufferTime, 'm')
+                    .toDate(),
+                  end: moment(r.end).toDate(),
+                });
+              } else {
+                bk.push({
+                  start: moment(r.start)
+                    .clone()
+                    .add(beforeBufferTime, 'm')
+                    .toDate(),
+                  end: moment(r.end)
+                    .clone()
+                    .add(afterBufferTime, 'm')
+                    .toDate(),
+                });
+              }
+            } else {
+              bk.push({ start: moment(r.start).toDate(), end: moment(r.end).toDate() });
+            }
+          });
+          this.setState({ bookedSlot: bk });
+        });
+    }
+    // console.log(this.state.bookedSlot);
+    let allBookedSlot = [];
+    let allBookedSlot2 = [];
+    this.state.bookedSlot.map((b, i) => {
+      const start = moment(b.start).clone();
+      const end = moment(b.end).clone();
+      // .subtract(1, 'm');
+      let count = 0;
+      while (
+        start
+          .clone()
+          .add(5, 'm')
+          .isSameOrBefore(moment(end))
+      ) {
+        if (count === 0) {
+          allBookedSlot.push(
+            start
+              .clone()
+              .add(1, 'm')
+              .format()
+          );
+          allBookedSlot2.push(
+            start
+              .clone()
+              .add(1, 'm')
+              .format('HH:mm')
+          );
+        } else {
+          allBookedSlot.push(start.format());
+          allBookedSlot2.push(start.format('HH:mm'));
+        }
+        start.add(5, 'm');
+        count += 1;
+      }
+    });
+
+    let availableTimeSlots = allAvailableTime.filter(f => !allBookedSlot.includes(f));
+
+    // console.log(allAvailableTime, allBookedSlot);
+
+    const allStartHour = [];
+    availableTimeSlots.map(m => {
+      const start = moment(m).clone();
+      const min = duration && duration.split('.')[1];
+      const hour = duration && duration.split('.')[0];
+
+      const totalMin = hour * 60 + min * 1;
+
+      if (
+        availableTimeSlots.includes(
+          start
+            .clone()
+            .add(hour, 'h')
+            .add(min, 'm')
+            .format()
+        ) &&
+        availableTimeSlots.indexOf(
+          start
+            .clone()
+            .add(hour, 'h')
+            .add(min, 'm')
+            .format()
+        ) -
+          availableTimeSlots.indexOf(start.clone().format()) ===
+          totalMin / 5
+      ) {
+        allStartHour.push({
+          timeOfDay: start.format('HH:mm'),
+          timestamp: start.valueOf(),
+        });
+        start.add(5, 'm');
+      }
+    });
+
+    if (this.state.allStart.length !== allStartHour.length) {
+      this.setState({ allStart: allStartHour });
+    }
+    // console.log(5556, this.state, availableTimeSlots, this.state.allStart, allStartHour);
+  }
+
   onMonthClick(monthFn) {
     const { onMonthChanged, timeZone } = this.props;
 
@@ -325,32 +547,8 @@ class FieldDateAndTimeInput extends Component {
   }
 
   onBookingStartDateChange = value => {
-    console.log(
-      value,
-      moment(value),
-      moment(value.date)
-        .clone()
-        .startOf('day')
-        .toDate(),
-      moment(value.date)
-        .clone()
-        .endOf('day')
-        .toDate()
-    );
-    axios
-      .post(`${apiBaseUrl()}/api/booking/getProviderBooking`, {
-        providerId: this.props?.listing?.author?.id.uuid,
-        start: moment(value.date)
-          .clone()
-          .startOf('day')
-          .toDate(),
-        end: moment(value.date)
-          .clone()
-          .endOf('day')
-          .toDate(),
-      })
-      .then(resp => console.log(resp.data))
-      .catch(err => console.log(err));
+    this.setState({ startDate: value });
+
     const { monthlyTimeSlots, timeZone, intl, form, duration } = this.props;
     if (!value || !value.date) {
       form.batch(() => {
@@ -369,6 +567,7 @@ class FieldDateAndTimeInput extends Component {
     const startDate = timeOfDayFromLocalToTimeZone(value.date, timeZone);
     const timeSlots = getMonthlyTimeSlots(monthlyTimeSlots, this.state.currentMonth, timeZone);
     const timeSlotsOnSelectedDate = getTimeSlots(timeSlots, startDate, timeZone);
+    const providerId = this.props?.listing?.author?.id.uuid;
 
     const { startTime, endDate, endTime } = getAllTimeValues(
       intl,
@@ -377,13 +576,14 @@ class FieldDateAndTimeInput extends Component {
       startDate,
       null,
       null,
-      duration
+      duration,
+      providerId
     );
 
     form.batch(() => {
-      form.change('bookingStartTime', startTime);
+      // form.change('bookingStartTime', startTime);
       form.change('bookingEndDate', { date: endDate });
-      form.change('bookingEndTime', endTime);
+      // form.change('bookingEndTime', endTime);
     });
   };
 
@@ -392,6 +592,7 @@ class FieldDateAndTimeInput extends Component {
     const timeSlots = getMonthlyTimeSlots(monthlyTimeSlots, this.state.currentMonth, timeZone);
     const startDate = values.bookingStartDate.date;
     const timeSlotsOnSelectedDate = getTimeSlots(timeSlots, startDate, timeZone);
+    const providerId = this.props?.listing?.author?.id.uuid;
 
     const { endDate, endTime } = getAllTimeValues(
       intl,
@@ -400,12 +601,16 @@ class FieldDateAndTimeInput extends Component {
       startDate,
       value,
       null,
-      duration
+      duration,
+      providerId
     );
+
+    // console.log(696, endDate, moment(endTime).toDate(), endTime, moment(value).toDate(), value);
 
     form.batch(() => {
       form.change('bookingEndDate', { date: endDate });
       form.change('bookingEndTime', endTime);
+      form.change('bookingStartTime', value);
     });
   };
 
@@ -467,9 +672,11 @@ class FieldDateAndTimeInput extends Component {
       timeZone,
       intl,
       duration,
+      listing,
     } = this.props;
 
     const classes = classNames(rootClassName || css.root, className);
+    const providerId = listing?.author?.id.uuid;
 
     const bookingStartDate =
       values.bookingStartDate && values.bookingStartDate.date ? values.bookingStartDate.date : null;
@@ -497,9 +704,11 @@ class FieldDateAndTimeInput extends Component {
       timeZone,
       bookingStartDate,
       timeSlotsOnSelectedDate,
-      duration
+      duration,
+      providerId
     );
 
+    // console.log(availableStartTimes);
     const firstAvailableStartTime =
       availableStartTimes.length > 0 && availableStartTimes[0] && availableStartTimes[0].timestamp
         ? availableStartTimes[0].timestamp
@@ -510,7 +719,7 @@ class FieldDateAndTimeInput extends Component {
       timeZone,
       timeSlotsOnSelectedDate,
       bookingStartDate,
-      bookingStartTime || firstAvailableStartTime,
+      bookingStartTime, //|| firstAvailableStartTime,
       bookingEndDate || bookingStartDate,
       duration
     );
@@ -638,19 +847,38 @@ class FieldDateAndTimeInput extends Component {
               showLabelAsDisabled={endDateDisabled}
             />
           </div>
-
+          {/* {this.state.allStart.length > 10 ? (
+            <select>
+              {this.state.allStart.length > 10 ? (
+                this.state.allStart.map(p => (
+                  <option key={p.timeOfDay} value={p.timestamp}>
+                    {p.timeOfDay}
+                  </option>
+                ))
+              ) : (
+                <option>{placeholderTime}</option>
+              )}
+            </select>
+          ) : (
+            ''
+          )} */}
           <div className={css.field}>
-            <FieldSelect
+            <select
               name="bookingStartTime"
               id={formId ? `${formId}.bookingStartTime` : 'bookingStartTime'}
               className={bookingStartDate ? css.fieldSelect : css.fieldSelectDisabled}
               selectClassName={bookingStartDate ? css.select : css.selectDisabled}
               label={startTimeLabel}
               disabled={startTimeDisabled}
-              onChange={this.onBookingStartTimeChange}
+              onChange={e => {
+                // console.log(6967, e.target.value);
+                this.onBookingStartTimeChange(e.target.value);
+              }}
             >
+              <option>{'HH:MM'}</option>
+
               {bookingStartDate ? (
-                availableStartTimes.map(p => (
+                this.state.allStart.map(p => (
                   <option key={p.timeOfDay} value={p.timestamp}>
                     {p.timeOfDay}
                   </option>
@@ -663,49 +891,9 @@ class FieldDateAndTimeInput extends Component {
                   {p}
                 </option>
               ))} */}
-            </FieldSelect>
+            </select>
           </div>
-
-          <div className={bookingStartDate ? css.lineBetween : css.lineBetweenDisabled}>-</div>
-
-          <div className={css.field}>
-            <FieldSelect
-              name="bookingEndTime"
-              id={formId ? `${formId}.bookingEndTime` : 'bookingEndTime'}
-              className={bookingStartDate ? css.fieldSelect : css.fieldSelectDisabled}
-              selectClassName={bookingStartDate ? css.select : css.selectDisabled}
-              label={endTimeLabel}
-              disabled={endTimeDisabled}
-            >
-              {bookingStartDate && (bookingStartTime || startTime) ? (
-                // availableEndTimes.map(p => (
-                //   <option key={p.timeOfDay === '00:00' ? '24:00' : p.timeOfDay} value={p.timestamp}>
-                //     {p.timeOfDay === '00:00' ? '24:00' : p.timeOfDay}
-                //   </option>
-                // ))
-                <option
-                  key={
-                    availableEndTimes[0]?.timeOfDay === '00:00'
-                      ? '24:00'
-                      : availableEndTimes[0]?.timeOfDay
-                  }
-                  value={availableEndTimes[0]?.timeOfDay}
-                >
-                  {availableEndTimes[0]?.timeOfDay === '00:00'
-                    ? '24:00'
-                    : availableEndTimes[0]?.timeOfDay}
-                </option>
-              ) : (
-                <option>{placeholderTime}</option>
-              )}
-
-              {/* {ALL_START_HOURS.map(p => (
-                <option key={p} value={p}>
-                  {p}
-                </option>
-              ))} */}
-            </FieldSelect>
-          </div>
+          {/* <div className={bookingStartDate ? css.lineBetween : css.lineBetweenDisabled}>-</div> */}
         </div>
       </div>
     );

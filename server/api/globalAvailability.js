@@ -100,6 +100,8 @@ module.exports = async (req, response) => {
     integrationSdk.listings
       .query({
         authorId,
+        states: 'published',
+        pub_category: 'publicOral,customOral',
       })
       .then(res => {
         integrationSdk.users
@@ -107,8 +109,7 @@ module.exports = async (req, response) => {
           .then(user => {
             let availabilityPlan = user.data.data.attributes.profile.protectedData.availabilityPlan;
             const publishedListings = res.data.data.filter(
-              l =>
-                l.attributes.state === 'published' && l.attributes.publicData.type !== 'unsolicited'
+              l => l.attributes.publicData.type !== 'unsolicited'
             );
             publishedListings.map(l => {
               const durationHour = l.attributes.publicData.durationHour;
@@ -118,64 +119,73 @@ module.exports = async (req, response) => {
                   ? parseInt(durationHour) * 60 + parseInt(durationMinute)
                   : 60;
               // const bufferTime = 15;
-              console.log(totalDurationMinute);
+              // console.log(totalDurationMinute);
               let newEntreis = [];
               availabilityPlan.entries.map(e => {
                 let start = moment(e.startTime, 'HH:mm').clone();
                 let end = moment(e.endTime, 'HH:mm').clone();
-                console.log(start, end);
+                newEntreis.push({
+                  dayOfWeek: e.dayOfWeek,
+                  seats: 1,
+                  startTime: start.format('HH:mm'),
+                  endTime: end.format('HH:mm'),
+                });
+                console.log(l.attributes.state, l.attributes.publicData.category);
 
-                while (
-                  start.isSameOrBefore(end) &&
-                  start
-                    .clone()
-                    .add(totalDurationMinute, 'm')
-                    // .add(totalDurationMinute + bufferTime, 'm')
-                    .isSameOrBefore(end)
-                ) {
-                  console.log(
-                    start
-                      .clone()
-                      .add(totalDurationMinute, 'm')
-                      // .add(totalDurationMinute + bufferTime, 'm')
-                      .format('HH:mm'),
-                    end.format('HH:mm'),
-                    totalDurationMinute,
-                    // bufferTime,
-                    start
-                      .clone()
-                      .add(totalDurationMinute, 'm')
-                      // .add(totalDurationMinute + bufferTime, 'm')
-                      .isSameOrBefore(end)
-                  );
-                  newEntreis.push({
-                    dayOfWeek: e.dayOfWeek,
-                    seats: 1,
-                    startTime: start.format('HH:mm'),
-                    endTime: start
-                      .clone()
-                      .add(totalDurationMinute, 'm')
-                      .format('HH:mm'),
-                  });
-                  start = start.add(totalDurationMinute, 'm');
-                  // start = start.add(totalDurationMinute + bufferTime, 'm');
-                }
-              });
-              console.log(
-                // durationHour,
-                // durationMinute,
-                // durationHour && durationMinute
-                //   ? parseInt(durationHour) * 60 + parseInt(durationMinute)
-                //   : 1,
-                newEntreis
-              );
-              integrationSdk.listings.update({
-                id: l.id.uuid,
-                availabilityPlan: {
-                  entries: newEntreis,
-                  timezone: availabilityPlan.timezone,
-                  type: availabilityPlan.type,
-                },
+                // console.log(newEntreis);
+
+                //   while (
+                //     start.isSameOrBefore(end) &&
+                //     start
+                //       .clone()
+                //       .add(totalDurationMinute, 'm')
+                //       // .add(totalDurationMinute + bufferTime, 'm')
+                //       .isSameOrBefore(end)
+                //   ) {
+                //     // console.log(
+                //     //   start
+                //     //     .clone()
+                //     //     .add(totalDurationMinute, 'm')
+                //     //     // .add(totalDurationMinute + bufferTime, 'm')
+                //     //     .format('HH:mm'),
+                //     //   end.format('HH:mm'),
+                //     //   totalDurationMinute,
+                //     //   // bufferTime,
+                //     //   start
+                //     //     .clone()
+                //     //     .add(totalDurationMinute, 'm')
+                //     //     // .add(totalDurationMinute + bufferTime, 'm')
+                //     //     .isSameOrBefore(end)
+                //     // );
+                //     newEntreis.push({
+                //       dayOfWeek: e.dayOfWeek,
+                //       seats: 1,
+                //       startTime: start.format('HH:mm'),
+                //       endTime: start
+                //         .clone()
+                //         .add(totalDurationMinute, 'm')
+                //         .format('HH:mm'),
+                //     });
+                //     start = start.add(totalDurationMinute, 'm');
+                //     // start = start.add(totalDurationMinute + bufferTime, 'm');
+                //   }
+                // });
+                // console.log(
+                //   // durationHour,
+                //   // durationMinute,
+                //   // durationHour && durationMinute
+                //   //   ? parseInt(durationHour) * 60 + parseInt(durationMinute)
+                //   //   : 1,
+                //   newEntreis
+                // );
+                integrationSdk.listings.update({
+                  id: l.id.uuid,
+                  availabilityPlan: {
+                    entries: newEntreis,
+                    timezone: availabilityPlan.timezone,
+                    type: availabilityPlan.type,
+                  },
+                });
               });
             });
             return response.status(200).send(availabilityPlan);

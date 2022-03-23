@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import {
   TRANSITION_REQUEST_PAYMENT_AFTER_ENQUIRY,
   txIsAccepted,
+  txIsRescheduled,
   txIsCanceled,
   txIsDeclined,
   txIsEnquired,
@@ -47,6 +48,7 @@ import PanelHeading, {
   HEADING_PAYMENT_EXPIRED,
   HEADING_REQUESTED,
   HEADING_ACCEPTED,
+  HEADING_RESCHEDULED,
   HEADING_DECLINED,
   HEADING_CANCELED,
   HEADING_DELIVERED,
@@ -441,6 +443,13 @@ export class TransactionPanelComponent extends Component {
           showAddress: isCustomer,
           showCalendar: true,
         };
+      } else if (txIsRescheduled(tx)) {
+        return {
+          headingState: HEADING_RESCHEDULED,
+          showDetailCardHeadings: isCustomer,
+          showAddress: isCustomer,
+          showCalendar: true,
+        };
       } else if (txIsDeclined(tx)) {
         return {
           headingState: HEADING_DECLINED,
@@ -704,6 +713,8 @@ export class TransactionPanelComponent extends Component {
       // }
     };
 
+    const category = currentListing.attributes.publicData.category;
+
     return (
       <div className={classes}>
         <div className={css.container}>
@@ -744,40 +755,45 @@ export class TransactionPanelComponent extends Component {
               />
               <BreakdownMaybe transaction={currentTransaction} transactionRole={transactionRole} />
 
-              <div className={css.jnbtncon}>
-                {stateData.headingState === 'accepted' ? (
-                  <PrimaryButton
-                    // inProgress={joinMeetingProgress}
-                    className={css.joinMeetingBtn}
-                    onClick={() => {
-                      //   if (stateData.isShortBooking) {
-                      //     onJoinShortMeeting(currentTransaction.id, isCustomer)
-                      //       .then(res => {
-                      //         this.goToConference(currentTransaction);
-                      //         console.log('onJoinShortMeeting', res);
-                      //       })
-                      //       .catch(e => console.error(e));
-                      //   } else {
-                      //     onJoinMeeting(currentTransaction.id, isCustomer)
-                      //       .then(res => {
-                      //         this.goToConference(currentTransaction);
-                      //         console.log('onJoinMeeting', res);
-                      //       })
-                      //       .catch(e => {
-                      //         console.log('557. err in page', e);
-                      //         console.error(e);
-                      //       });
-                      //   }
-                      //
-                      this.goToConference(currentTransaction);
-                    }}
-                  >
-                    Join Meeting
-                  </PrimaryButton>
-                ) : (
-                  ''
-                )}
-              </div>
+              {category !== 'customService' ? (
+                <div className={css.jnbtncon}>
+                  {stateData.headingState === 'accepted' ||
+                  stateData.headingState === 'rescheduled' ? (
+                    <PrimaryButton
+                      // inProgress={joinMeetingProgress}
+                      className={css.joinMeetingBtn}
+                      onClick={() => {
+                        //   if (stateData.isShortBooking) {
+                        //     onJoinShortMeeting(currentTransaction.id, isCustomer)
+                        //       .then(res => {
+                        //         this.goToConference(currentTransaction);
+                        //         console.log('onJoinShortMeeting', res);
+                        //       })
+                        //       .catch(e => console.error(e));
+                        //   } else {
+                        //     onJoinMeeting(currentTransaction.id, isCustomer)
+                        //       .then(res => {
+                        //         this.goToConference(currentTransaction);
+                        //         console.log('onJoinMeeting', res);
+                        //       })
+                        //       .catch(e => {
+                        //         console.log('557. err in page', e);
+                        //         console.error(e);
+                        //       });
+                        //   }
+                        //
+                        this.goToConference(currentTransaction);
+                      }}
+                    >
+                      Join Meeting
+                    </PrimaryButton>
+                  ) : (
+                    ''
+                  )}
+                </div>
+              ) : (
+                ''
+              )}
             </div>
 
             {savePaymentMethodFailed ? (
@@ -936,40 +952,45 @@ export class TransactionPanelComponent extends Component {
                   transaction={currentTransaction}
                   transactionRole={transactionRole}
                 />
-                <div className={css.jnbtncon}>
-                  {stateData.headingState === 'accepted' ? (
-                    <PrimaryButton
-                      // inProgress={joinMeetingProgress}
-                      className={css.joinMeetingBtn}
-                      onClick={() => {
-                        //   if (stateData.isShortBooking) {
-                        //     onJoinShortMeeting(currentTransaction.id, isCustomer)
-                        //       .then(res => {
-                        //         this.goToConference(currentTransaction);
-                        //         console.log('onJoinShortMeeting', res);
-                        //       })
-                        //       .catch(e => console.error(e));
-                        //   } else {
-                        //     onJoinMeeting(currentTransaction.id, isCustomer)
-                        //       .then(res => {
-                        //         this.goToConference(currentTransaction);
-                        //         console.log('onJoinMeeting', res);
-                        //       })
-                        //       .catch(e => {
-                        //         console.log('557. err in page', e);
-                        //         console.error(e);
-                        //       });
-                        //   }
-                        //
-                        this.goToConference(currentTransaction);
-                      }}
-                    >
-                      Join Meeting
-                    </PrimaryButton>
-                  ) : (
-                    ''
-                  )}
-                </div>
+                {category !== 'customService' ? (
+                  <div className={css.jnbtncon}>
+                    {stateData.headingState === 'accepted' ||
+                    stateData.headingState === 'rescheduled' ? (
+                      <PrimaryButton
+                        // inProgress={joinMeetingProgress}
+                        className={css.joinMeetingBtn}
+                        onClick={() => {
+                          //   if (stateData.isShortBooking) {
+                          //     onJoinShortMeeting(currentTransaction.id, isCustomer)
+                          //       .then(res => {
+                          //         this.goToConference(currentTransaction);
+                          //         console.log('onJoinShortMeeting', res);
+                          //       })
+                          //       .catch(e => console.error(e));
+                          //   } else {
+                          //     onJoinMeeting(currentTransaction.id, isCustomer)
+                          //       .then(res => {
+                          //         this.goToConference(currentTransaction);
+                          //         console.log('onJoinMeeting', res);
+                          //       })
+                          //       .catch(e => {
+                          //         console.log('557. err in page', e);
+                          //         console.error(e);
+                          //       });
+                          //   }
+                          //
+                          this.goToConference(currentTransaction);
+                        }}
+                      >
+                        Join Meeting
+                      </PrimaryButton>
+                    ) : (
+                      ''
+                    )}
+                  </div>
+                ) : (
+                  ''
+                )}
               </div>
               {/* <button
                 // onClick={

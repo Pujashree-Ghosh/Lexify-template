@@ -96,11 +96,14 @@ module.exports.listingExceptionCreate = async (req, response) => {
                           availId: exceptionResp.data.data.id.uuid,
                         },
                       })
-                      .then()
-                      .catch();
-                  });
-                // .catch(err => console.log(err));
+                      .then(resp => console.log('updated'))
+                      .catch(er => console.log(err));
+                  })
+                  .catch(err => console.log('if create error', err));
               }
+            })
+            .catch(e => {
+              console.log('first delete err', e);
             });
         } else {
           if (res.data.data.attributes.publicData.type === 'unsolicited') {
@@ -109,10 +112,8 @@ module.exports.listingExceptionCreate = async (req, response) => {
               .create(
                 {
                   listingId,
-                  start: new Date(
-                    moment(`${startDate} ${startTime}`, 'DD/MM/YYYY HH:mm:ss').format()
-                  ),
-                  end: new Date(moment(`${endDate} ${endTime}`, 'DD/MM/YYYY HH:mm:ss').format()),
+                  start: new Date(startDate),
+                  end: new Date(endDate),
                   seats: seats,
                 },
                 {
@@ -127,10 +128,10 @@ module.exports.listingExceptionCreate = async (req, response) => {
                       availId: exceptionResp.data.data.id.uuid,
                     },
                   })
-                  .then()
-                  .catch();
-              });
-            // .catch(err => console.log(err));
+                  .then(resp => console.log(resp))
+                  .catch(err => console.log(err));
+              })
+              .catch(err => console.log('else create error', err));
           }
         }
 
@@ -172,7 +173,8 @@ module.exports.listingExceptionDelete = async (req, response) => {
             )
             .then(() => {
               console.log('deleted');
-            });
+            })
+            .catch(e => console.log('delete error', e));
         }
 
         return response.status(200).send('updated');

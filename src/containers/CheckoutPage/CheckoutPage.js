@@ -56,6 +56,7 @@ import {
 import { storeData, storedData, clearData } from './CheckoutPageSessionHelpers';
 import css from './CheckoutPage.module.css';
 import moment from 'moment';
+import { getListingsById } from '../../ducks/marketplaceData.duck';
 const jwt = require('jsonwebtoken');
 
 const STORAGE_KEY = 'CheckoutPage';
@@ -196,6 +197,7 @@ export class CheckoutPageComponent extends Component {
         pageData.listing.author.attributes.profile.displayName;
       const l_title = pageData.listing.attributes.title.replace(/\s/g, '-');
 
+      const category = pageData.listing.attributes.publicData.category;
       const customerToken =
         config.canonicalRootURL +
         '/videoconference/' +
@@ -241,18 +243,29 @@ export class CheckoutPageComponent extends Component {
       // Fetch speculated transaction for showing price in booking breakdown
       // NOTE: if unit type is line-item/units, quantity needs to be added.
       // The way to pass it to checkout page is through pageData.bookingData
-      fetchSpeculatedTransaction(
-        {
-          listingId,
-          bookingStart,
-          bookingEnd,
-          protectedData: {
-            customerToken,
-            providerToken,
+      if (category === 'customService') {
+        fetchSpeculatedTransaction(
+          {
+            listingId,
+            bookingStart,
+            bookingEnd,
           },
-        },
-        transactionId
-      );
+          transactionId
+        );
+      } else {
+        fetchSpeculatedTransaction(
+          {
+            listingId,
+            bookingStart,
+            bookingEnd,
+            protectedData: {
+              customerToken,
+              providerToken,
+            },
+          },
+          transactionId
+        );
+      }
     }
 
     this.setState({ pageData: pageData || {}, dataLoaded: true });
@@ -430,9 +443,11 @@ export class CheckoutPageComponent extends Component {
 
     const providerId = pageData?.listing?.author?.id.uuid;
     const customerId = ensuredCurrentUser?.id.uuid;
-
     const orderParams = {
       listingId: pageData.listing.id,
+      listing: pageData.listing,
+      currentUserEmail: this.props.currentUser && this.props.currentUser?.attributes?.email,
+      category: pageData.listing.attributes.publicData.category,
       providerId,
       customerId,
       bookingStart: tx.booking.attributes.start,
@@ -566,7 +581,9 @@ export class CheckoutPageComponent extends Component {
       retrievePaymentIntentError,
       stripeCustomerFetched,
     } = this.props;
-
+    const clientIdx = 'dibya@client.com';
+    // const any = .push(clientIdx);
+    console.log(1234, this.state.pageData?.listing?.attributes?.publicData?.alreadyBooked);
     // Since the listing data is already given from the ListingPage
     // and stored to handle refreshes, it might not have the possible
     // deleted or closed information in it. If the transaction
@@ -883,14 +900,14 @@ export class CheckoutPageComponent extends Component {
           </div>
 
           <div className={css.detailsContainerDesktop}>
-            <div className={css.detailsAspectWrapper}>
+            {/* <div className={css.detailsAspectWrapper}>
               <ResponsiveImage
                 rootClassName={css.rootForImage}
                 alt={listingTitle}
                 image={firstImage}
                 variants={['landscape-crop', 'landscape-crop2x']}
               />
-            </div>
+            </div> */}
             <div className={css.avatarWrapper}>
               <AvatarMedium user={currentAuthor} disableProfileLink />
             </div>

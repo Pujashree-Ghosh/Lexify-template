@@ -11,7 +11,27 @@ module.exports.setBooking = async (req, res) => {
     const result = await Booking.create({ orderId, providerId, customerId, start, end });
     res.status(200).send('Result Saved' + result);
   } catch (error) {
-    console.log(error);
+    // console.log(error);
+    return res.status(404).send(error);
+  }
+};
+
+module.exports.updateBooking = async (req, res) => {
+  try {
+    const { orderId, start, end } = req.body;
+    if (!orderId) return res.status(404).send('OrderId is required');
+    if (!start) return res.status(404).send('Booking start is required');
+    if (!end) return res.status(404).send('Booking end date is required');
+    const result = await Booking.findOneAndUpdate(
+      { orderId },
+      { start, end },
+      {
+        returnOriginal: false,
+      }
+    );
+    res.status(200).send('Result Saved' + result);
+  } catch (error) {
+    // console.log(error);
     return res.status(404).send(error);
   }
 };
@@ -70,7 +90,11 @@ module.exports.getProviderBooking = async (req, res) => {
   console.log(providerId, start, end);
 
   try {
-    const result = await Booking.find({ providerId, start: { $gte: start }, end: { $lte: end } });
+    const result = await Booking.find({
+      providerId,
+      start: { $gte: start },
+      end: { $lte: end },
+    }).sort({ start: 1 });
 
     res.status(200).send(result);
   } catch (error) {

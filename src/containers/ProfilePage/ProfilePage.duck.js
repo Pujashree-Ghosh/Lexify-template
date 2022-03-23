@@ -130,7 +130,8 @@ export const queryUserListings = (userId, practiceAreaSort) => (dispatch, getSta
     .query({
       author_id: userId,
       pub_category: 'publicOral',
-      pub_areaOfLaw: practiceAreaSort ? practiceAreaSort : null,
+      // pub_areaOfLaw: practiceAreaSort && practiceAreaSort.length !== 0 ? practiceAreaSort : null,
+      pub_areaOfLaw: practiceAreaSort,
       // page: 2,
       // per_page: 10,
       include: ['author', 'images'],
@@ -139,7 +140,6 @@ export const queryUserListings = (userId, practiceAreaSort) => (dispatch, getSta
     .then(response => {
       // Pick only the id and type properties from the response listings
       const listingRefs = response.data.data.map(({ id, type }) => ({ id, type }));
-      // console.log(22,practiceAreaSort)
       dispatch(addMarketplaceEntities(response));
       dispatch(queryListingsSuccess(listingRefs));
       return response;

@@ -68,7 +68,7 @@ function ServicesPageComponent(props) {
   const validQueryParams = validURLParamsForExtendedData(searchInURL, filterConfig);
   const [loading, setLoading] = useState(true);
 
-  // console.log(listings);
+  console.log('list', listings);
   const routes = routeConfiguration();
   const title = intl.formatMessage({ id: 'ServicesPage.title' });
   const type = validQueryParams && validQueryParams?.pub_type;
@@ -83,7 +83,7 @@ function ServicesPageComponent(props) {
     // console.log(ensuredCurrentUser);
     if (type !== 'solicited' || clientId !== email) {
       // setLoading(true);
-      setTimeout(() => {
+      let timer = setTimeout(() => {
         history.push(
           createResourceLocatorString(
             'ServicesPage',
@@ -93,7 +93,10 @@ function ServicesPageComponent(props) {
           )
         );
         setLoading(false);
-      }, 3000);
+      }, 2000);
+      return () => {
+        clearTimeout(timer);
+      };
     }
     // setTimeout(() => {
     //   history.push(
@@ -107,7 +110,8 @@ function ServicesPageComponent(props) {
   //     setLoading(false);
   //   }, 3000);
   // }, []);
-  console.log(searchParams, searchInProgress);
+  // console.log(searchParams, searchInProgress);
+
   return (
     <Page className={css.root} title={title} scrollingDisabled={scrollingDisabled}>
       <LayoutSingleColumn>
@@ -127,7 +131,7 @@ function ServicesPageComponent(props) {
           searchInProgress ? (
             <div>Loading Result..</div>
           ) : (
-            !loading &&
+            // !loading &&
             validQueryParams &&
             ensuredCurrentUser &&
             ensuredCurrentUser.id &&

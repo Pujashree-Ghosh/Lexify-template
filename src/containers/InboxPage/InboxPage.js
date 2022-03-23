@@ -6,6 +6,7 @@ import { FormattedMessage, injectIntl, intlShape } from '../../util/reactIntl';
 import classNames from 'classnames';
 import {
   txIsAccepted,
+  txIsRescheduled,
   txIsCanceled,
   txIsDeclined,
   txIsEnquired,
@@ -54,7 +55,7 @@ const formatDate = (intl, date) => {
 // Translated name of the state of the given transaction
 export const txState = (intl, tx, type) => {
   const isOrder = type === 'order';
-  console.log(txIsAccepted(tx), txIsRequested(tx));
+  // console.log(txIsAccepted(tx), txIsRequested(tx));
 
   if (txIsEnquired(tx)) {
     return {
@@ -126,6 +127,16 @@ export const txState = (intl, tx, type) => {
       stateClassName: css.stateSucces,
       state: intl.formatMessage({
         id: 'InboxPage.stateAccepted',
+      }),
+    };
+  } else if (txIsRescheduled(tx)) {
+    return {
+      nameClassName: css.nameNotEmphasized,
+      bookingClassName: css.bookingNoActionNeeded,
+      lastTransitionedAtClassName: css.lastTransitionedAtNotEmphasized,
+      stateClassName: css.stateSucces,
+      state: intl.formatMessage({
+        id: 'InboxPage.stateRescheduled',
       }),
     };
   } else if (txIsCanceled(tx)) {
