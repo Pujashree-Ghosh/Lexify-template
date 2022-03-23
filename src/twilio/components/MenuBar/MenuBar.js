@@ -122,8 +122,6 @@ export default function MenuBar({ isProvider, extendMeeting, isShortBooking, isE
               <Hidden smDown>
                 {<ToggleScreenShareButton disabled={isReconnecting} />}
 
-                <ChatButton openChatbar={toggleChat} />
-
                 {/* {!isSharingScreen && <ToggleScreenShareButton disabled={isReconnecting} />} */}
               </Hidden>
               <FlipCameraButton />
@@ -146,6 +144,8 @@ export default function MenuBar({ isProvider, extendMeeting, isShortBooking, isE
               <ChatScreen />
             </Grid>
           </Grid> */}
+
+          <ChatButton openChatbar={toggleChat} />
           <Hidden smDown>
             <Grid style={{ flex: 1 }}>
               <Grid container justify="flex-end">
