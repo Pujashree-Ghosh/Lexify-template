@@ -279,7 +279,7 @@ export class BookingTimeFormComponent extends Component {
                 </PrimaryButton>
               </Modal>
               {monthlyTimeSlots && timeZone ? (
-                category === 'customService' && type === 'unsolicited' ? (
+                type === 'unsolicited' ? (
                   <FieldDateAndTimeInputService
                     {...dateInputProps}
                     className={css.bookingDates}
