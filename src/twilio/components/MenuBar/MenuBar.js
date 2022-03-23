@@ -18,6 +18,7 @@ import SignalHelper from '../../../util/signalHelper';
 import { print } from '../../../util/data';
 import ChatButton from '../Buttons/ChatButton';
 import Chatbody from '../Buttons/Chatbody';
+import Chat from '../../../containers/MeetingNewPage/Chat';
 // import Back from '../Buttons/Back';
 const useStyles = makeStyles(theme =>
   createStyles({
@@ -100,7 +101,7 @@ export default function MenuBar({ isProvider, extendMeeting, isShortBooking, isE
           <Button onClick={() => toggleScreenShare()}>Stop Sharing</Button>
         </Grid>
       )}
-      <Chatbody sideChat={sideChat} closeChat={closeChat} />
+      <Chat sideChat={sideChat} closeChat={closeChat} />
       {/* <Back sideChat={sideChat} /> */}
 
       <footer className={`${classes.container} footer-mod`}>

@@ -2,7 +2,8 @@ import React from 'react';
 import css from './Chatbody.module.css';
 import { RiCloseFill } from 'react-icons/ri';
 
-function Chat({ sideChat, closeChat }) {
+function Chat({ sideChat, closeChat, updateText, sendMessage, text, messages }) {
+  console.log(777, messages);
   return (
     <div className={sideChat ? css.backdrop : css.disable}>
       <div className={css.chatopen}>
@@ -13,11 +14,27 @@ function Chat({ sideChat, closeChat }) {
           <div className={css.visible}>
             Masseges can only be seen by people in the call and are deleted when the call ends.
           </div>
-          <div>show your messages here</div>
+          <div>
+            {messages.length === 0
+              ? 'show your messeges'
+              : messages.map(m => (
+                  <div className={css.chatDetail}>
+                    <div>{m.text}</div>
+                    <div>{m.author}</div>
+                    <div>{m.dateUpdated}</div>
+                  </div>
+                ))}
+          </div>
         </div>
         <div>
-          <form className={css.input}>
-            <input type="text" id="chat" placeholder="enter your text here"></input>
+          <form className={css.input} onSubmit={sendMessage}>
+            <input
+              type="text"
+              id="chat"
+              placeholder="enter your text here"
+              onChange={updateText}
+              value={text}
+            ></input>
             <button type="submit">send</button>
           </form>
         </div>
