@@ -41,6 +41,7 @@ class FieldDateAndTimeInputServiceComponent extends Component {
       intl,
       className,
       rootClassName,
+      expiry,
     } = this.props;
     const startDateLabel = intl.formatMessage({
       id: 'FieldDateAndTimeInputService.startDateLabel',
@@ -81,24 +82,14 @@ class FieldDateAndTimeInputServiceComponent extends Component {
                 serviceEndDate,
                 serviceStartDate
               );
-              return !(
-                moment(day)
-                  .clone()
-                  .startOf('day')
-                  .isSameOrBefore(
-                    moment(serviceEndDate)
-                      .clone()
-                      .startOf('day')
-                  ) &&
-                moment(day)
-                  .clone()
-                  .startOf('day')
-                  .isSameOrAfter(
-                    moment(serviceStartDate)
-                      .clone()
-                      .startOf('day')
-                  )
-              );
+              return !moment(day)
+                .clone()
+                .startOf('day')
+                .isSameOrBefore(
+                  moment(expiry)
+                    .clone()
+                    .startOf('day')
+                );
             }}
             //   isOutsideRange={day => this.isOutsideRange(true)}
             // myClass={true}
