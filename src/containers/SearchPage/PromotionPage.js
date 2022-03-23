@@ -79,7 +79,7 @@ function PromotionPageComponent(props) {
   const title = intl.formatMessage({ id: 'PromotionPage.title' });
   useEffect(() => {
     // console.log(ensuredCurrentUser);
-    if (type !== 'unsolicited' || clientId !== email) {
+    if (type !== 'unsolicited' || clientId !== email || email !== undefined) {
       // setLoading(true);
       setTimeout(() => {
         history.push(

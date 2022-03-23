@@ -81,7 +81,7 @@ function ServicesPageComponent(props) {
     // const email =
     //   ensuredCurrentUser && ensuredCurrentUser.attributes && ensuredCurrentUser.attributes.email;
     // console.log(ensuredCurrentUser);
-    if (type !== 'solicited' || clientId !== email) {
+    if (type !== 'solicited' || clientId !== email || email !== undefined) {
       // setLoading(true);
       setTimeout(() => {
         history.push(
@@ -93,7 +93,7 @@ function ServicesPageComponent(props) {
           )
         );
         setLoading(false);
-      }, 3000);
+      }, 2000);
     }
     // setTimeout(() => {
     //   history.push(
@@ -107,7 +107,7 @@ function ServicesPageComponent(props) {
   //     setLoading(false);
   //   }, 3000);
   // }, []);
-  console.log(searchParams, searchInProgress);
+  // console.log(searchParams, searchInProgress);
   return (
     <Page className={css.root} title={title} scrollingDisabled={scrollingDisabled}>
       <LayoutSingleColumn>
