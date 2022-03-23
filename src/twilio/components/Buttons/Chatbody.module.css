@@ -9,10 +9,43 @@
 }
 .chatopen {
   background-color: white;
-  position: fixed;
-  z-index: 10;
+  position: relative;
+  margin-left: auto;
   width: 26vw;
   height: 90vh;
   top: 0px;
   right: 0%;
+}
+.backdrop {
+  background-color: rgba(0, 0, 0, 0.6);
+  position: fixed;
+  z-index: 100;
+  width: 100vw;
+  height: 100vh;
+  top: 0px;
+  left: 0%;
+}
+.disable {
+  display: none;
+}
+.close {
+  font-size: 1.5rem;
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 4px;
+  padding-top: 4px;
+}
+.insidechat {
+  display: flex;
+  flex-direction: column;
+}
+.visible {
+  display: flex;
+  padding-top: 22px;
+  justify-content: center;
+  align-items: center;
+}
+.footerdiv {
+  display: flex;
+  align-items: flex-end;
 }

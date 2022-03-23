@@ -18,7 +18,7 @@ import SignalHelper from '../../../util/signalHelper';
 import { print } from '../../../util/data';
 import ChatButton from '../Buttons/ChatButton';
 import Chatbody from '../Buttons/Chatbody';
-import Back from '../Buttons/Back';
+// import Back from '../Buttons/Back';
 const useStyles = makeStyles(theme =>
   createStyles({
     container: {
@@ -87,16 +87,21 @@ export default function MenuBar({ isProvider, extendMeeting, isShortBooking, isE
   const toggleChat = () => {
     setSidechat(prevState => !prevState);
   };
+  const closeChat = () => {
+    setSidechat(!sideChat);
+    console.log(999, sideChat);
+  };
   return (
     <>
+      {/* <Back sideChat={sideChat}> */}
       {isSharingScreen && (
         <Grid container justify="center" alignItems="center" className={classes.screenShareBanner}>
           <Typography variant="h6">You are sharing your screen</Typography>
           <Button onClick={() => toggleScreenShare()}>Stop Sharing</Button>
         </Grid>
       )}
-      <Chatbody sideChat={sideChat} />
-      <Back sideChat={sideChat} />
+      <Chatbody sideChat={sideChat} closeChat={closeChat} />
+      {/* <Back sideChat={sideChat} /> */}
 
       <footer className={`${classes.container} footer-mod`}>
         <Grid container justify="space-around" alignItems="center">
@@ -150,6 +155,7 @@ export default function MenuBar({ isProvider, extendMeeting, isShortBooking, isE
           </Hidden>
         </Grid>
       </footer>
+      {/* </Back> */}
     </>
   );
 }
