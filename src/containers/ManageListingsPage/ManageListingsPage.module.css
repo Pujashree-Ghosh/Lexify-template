@@ -151,19 +151,30 @@
   padding: 5px;
 }
 .lformrow {
-  top: 286px;
+  /* top: 286px;
   left: 64px;
   width: 1040px;
-  height: 51px;
+  height: 51px; */
+  width: 100%;
+  margin: 24px auto;
+  /* overflow-x: hidden; */
 
+  @media (--viewportMedium) {
+    margin: 48px auto;
+  }
+
+  @media (--viewportLarge) {
+    margin: 50px auto;
+    max-width: 1040px;
+  }
   /* background: #ffffff 0% 0% no-repeat padding-box;
   border: 1px solid #707070;
   border-radius: 5px;
   opacity: 1; */
   display: flex;
   flex-direction: row;
-  margin-left: 490px;
-  margin-right: 490px;
+  /* margin-left: 490px;
+  margin-right: 490px; */
   justify-content: space-between;
 }
 .statusFilter {
