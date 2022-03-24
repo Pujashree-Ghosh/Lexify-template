@@ -117,7 +117,7 @@ export class ManageListingsPageComponent extends Component {
         pub_category: this.state.typeSort ? this.state.typeSort : null,
         pub_areaOfLaw:
           this.state.practiceAreaSort.length !== 0 ? this.state.practiceAreaSort : null,
-        page: page,
+        page,
       })
       .then(res => {
         if (
@@ -338,7 +338,7 @@ export class ManageListingsPageComponent extends Component {
             <UserNav selectedPageName="ManageListingsPage" />
           </LayoutWrapperTopbar>
           <LayoutWrapperMain>
-            {sortSection}
+            <div>{sortSection}</div>
 
             {!this.state.listingsFromApiLoaded ? loadingResults : null}
             {queryListingsError ? queryError : null}

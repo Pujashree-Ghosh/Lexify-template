@@ -89,11 +89,17 @@
   ;;   {:name :action/stripe-refund-payment}],
   ;;  :from :state/preauthorized,
   ;;  :to :state/declined}
-  {:name :transition/complete,
+  {:name :transition/pending-confirmation,
    :at {:fn/timepoint [:time/booking-end]},
-   :actions [{:name :action/stripe-create-payout}],
+   :actions [],
    :from :state/accepted,
+   :to :state/pending-confirmation}
+  {:name :transition/complete,
+   :actor :actor.role/customer,
+   :actions [{:name :action/stripe-create-payout}],
+   :from :state/pending-confirmation,
    :to :state/delivered}
+
   {:name :transition/cancel,
    :actor :actor.role/operator,
    :actions

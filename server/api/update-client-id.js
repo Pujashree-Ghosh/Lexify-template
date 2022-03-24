@@ -6,19 +6,18 @@ const integrationSdk = flexIntegrationSdk.createInstance({
   clientSecret: '73f5d2b697f7a9aa9372c8a601826c37cabbbab7',
 });
 module.exports = async (req, response) => {
-  const { authorId, states, pub_category, pub_areaOfLaw, page } = req.body;
+  const { id, alreadyBooked, clientId } = req.body;
   return new Promise((resolve, reject) => {
     integrationSdk.listings
-      .query({
-        authorId,
-        states,
-        pub_category,
-        pub_areaOfLaw,
-        perPage: RESULT_PAGE_SIZE,
-        page,
+      .update({
+        id,
+        publicData: {
+          alreadyBooked,
+          clientId,
+        },
       })
       .then(res => {
-        return response.status(200).send(res.data);
+        return response.status(200).send('updated');
       })
       .catch(err => {
         console.log(err);

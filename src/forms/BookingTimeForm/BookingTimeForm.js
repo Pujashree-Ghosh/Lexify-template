@@ -119,11 +119,12 @@ export class BookingTimeFormComponent extends Component {
 
           const category = listing?.attributes?.publicData?.category;
           const type = listing?.attributes?.publicData?.type;
-          console.log(type, category);
+          // console.log(type, category);
           const listingStartDate = listing?.attributes?.publicData?.startDate;
           const listingStartTime = listing?.attributes?.publicData?.startHour;
           const listingeEndDate = listing?.attributes?.publicData?.endDate;
           const listingeEndTime = listing?.attributes?.publicData?.endHour;
+          const expTime = listing?.attributes?.publicData?.expiry;
           const serviceStartDate = moment(
             `${moment(listingStartDate).format('DD/MM/YYYY')} ${listingStartTime}`,
             'DD/MM/YYYY HH:mm:ss'
@@ -132,7 +133,8 @@ export class BookingTimeFormComponent extends Component {
             `${moment(listingeEndDate).format('DD/MM/YYYY')} ${listingeEndTime}`,
             'DD/MM/YYYY HH:mm:ss'
           ).format();
-          // console.log(listing, serviceEndDate, serviceStartDate);
+          const expiry = moment(expTime).toDate();
+          console.log(moment(expTime).toDate());
           const bookingStartLabel = intl.formatMessage({
             id: 'BookingTimeForm.bookingStartTitle',
           });
@@ -296,6 +298,7 @@ export class BookingTimeFormComponent extends Component {
                     listing={listing}
                     serviceStartDate={serviceStartDate}
                     serviceEndDate={serviceEndDate}
+                    expiry={expiry}
                   />
                 ) : (
                   <FieldDateAndTimeInput

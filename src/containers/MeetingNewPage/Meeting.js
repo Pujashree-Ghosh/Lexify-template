@@ -136,7 +136,7 @@ const Meeting = props => {
   // const meetingTimeDuration = moment().isSameOrBefore(startTime)
   //   ? moment(endTime).diff(moment(startTime), 'm')
   //   : moment(endTime).diff(moment(startTime).add(5, 'm'), 'm');
-  const roomName = listingId + transactionId;
+  const roomName = listingId;
 
   // let estEndTime = moment(actualStartTime).add(meetingTimeDuration, 'm');
   // console.log(
