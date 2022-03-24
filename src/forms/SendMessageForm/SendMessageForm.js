@@ -12,6 +12,7 @@ import { FiSend } from 'react-icons/fi';
 import { IoMdClose } from 'react-icons/io';
 import { apiBaseUrl } from '../../util/api';
 import Axios from 'axios';
+import { BsPlusLg } from 'react-icons/bs';
 
 import css from './SendMessageForm.module.css';
 
@@ -193,28 +194,58 @@ class SendMessageFormComponent extends Component {
                     onBlur={this.handleBlur}
                   />
                 )}
-                <div className={css.icons}>
-                  {this.state.selectedFile ? (
-                    <span className={css.fileClearIcon}>
-                      <IoMdClose
-                        size={25}
-                        className={css.discardIcon}
-                        onClick={() =>
-                          this.setState({
-                            selectedFile: null,
-                          })
-                        }
-                      />
-                    </span>
-                  ) : (
-                    <AiOutlineCloudUpload
-                      size={25}
-                      className={css.uploadIcon}
-                      onClick={() => {
-                        this.fileInputRef.current.click();
-                      }}
-                    />
-                  )}
+
+                {/* </div> */}
+              </div>
+
+              <div className={css.message}>
+                {this.state.fileUploadSuccess ? (
+                  <div className={css.successMessage}>File uploaded Successfully</div>
+                ) : null}
+                {this.state.fileUploadError ? (
+                  <div className={css.failMessage}>{this.state.fileUploadError}</div>
+                ) : null}
+              </div>
+
+              <div className={css.submitContainer}>
+                <div className={css.errorContainer}>
+                  {sendMessageError ? (
+                    <p className={css.error}>
+                      <FormattedMessage id="SendMessageForm.sendFailed" />
+                    </p>
+                  ) : null}
+                </div>
+              </div>
+              <div className={css.icons}>
+                <div className={css.upbtnrow}>
+                  <div
+                    className={css.uploadbtn}
+                    onClick={() => {
+                      this.fileInputRef.current.click();
+                    }}
+                  >
+                    {this.state.selectedFile ? (
+                      <span className={css.fileClearIcon}>
+                        <IoMdClose
+                          size={25}
+                          className={css.discardIcon}
+                          onClick={() =>
+                            this.setState({
+                              selectedFile: null,
+                            })
+                          }
+                        />
+                        <p>Click here to clear attachment...</p>
+                      </span>
+                    ) : (
+                      <span>
+                        <div>
+                          <BsPlusLg size={25} className={css.uploadIcon} />
+                          <p>Click here to add attachment...</p>
+                        </div>
+                      </span>
+                    )}
+                  </div>
 
                   <span
                     className={css.sendIconContainer}
@@ -225,6 +256,7 @@ class SendMessageFormComponent extends Component {
                     }
                   >
                     <IconSendMessage />
+                    <p>Send Message</p>
                   </span>
 
                   <input
@@ -234,8 +266,9 @@ class SendMessageFormComponent extends Component {
                     // accept=".doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document, .png, .jpg, .jpeg, .pdf, .xlsx"
                     onChange={this.onFileUpload}
                   />
+                </div>
 
-                  {/* <SecondaryButton
+                {/* <SecondaryButton
                     rootClassName={css.submitButton}
                     inProgress={submitInProgress}
                     disabled={submitDisabled}
@@ -245,25 +278,7 @@ class SendMessageFormComponent extends Component {
                     <IconSendMessage />
                     <FormattedMessage id="SendMessageForm.sendMessage" />
                   </SecondaryButton> */}
-                </div>
-                {/* </div> */}
-              </div>
-              <div className={css.message}>
-                {this.state.fileUploadSuccess ? (
-                  <div className={css.successMessage}>File uploaded Successfully</div>
-                ) : null}
-                {this.state.fileUploadError ? (
-                  <div className={css.failMessage}>{this.state.fileUploadError}</div>
-                ) : null}
-              </div>
-              <div className={css.submitContainer}>
-                <div className={css.errorContainer}>
-                  {sendMessageError ? (
-                    <p className={css.error}>
-                      <FormattedMessage id="SendMessageForm.sendFailed" />
-                    </p>
-                  ) : null}
-                </div>
+                <p className={css.frmttxt}>.PDF, .JPG, .GIF, or .PNG, Max. 10MB</p>
               </div>
             </Form>
           );
