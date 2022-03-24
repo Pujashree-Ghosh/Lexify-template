@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { MdModeEditOutline } from 'react-icons/md';
 import { IoMdClose } from 'react-icons/io';
 import { withRouter } from 'react-router-dom';
-
+import { parse } from '../../util/urlHelpers';
 import config from '../../config';
 import { FormattedMessage, injectIntl, intlShape } from '../../util/reactIntl';
 import { propTypes, LISTING_STATE_DRAFT, LISTING_STATE_CLOSED } from '../../util/types';
@@ -102,6 +102,8 @@ export class ManageListingsPageComponent extends Component {
     this.onToggleMenu = this.onToggleMenu.bind(this);
   }
   componentDidUpdate() {
+    const queryParams = parse(this.props.location.search);
+    const page = queryParams.page || 1;
     axios
       .post(`${apiBaseUrl()}/api/sortOwnListings`, {
         authorId: this.props.currentUser?.id?.uuid,
@@ -109,6 +111,7 @@ export class ManageListingsPageComponent extends Component {
         pub_category: this.state.typeSort ? this.state.typeSort : null,
         pub_areaOfLaw:
           this.state.practiceAreaSort.length !== 0 ? this.state.practiceAreaSort : null,
+        page,
       })
       .then(res => {
         if (
@@ -186,7 +189,7 @@ export class ManageListingsPageComponent extends Component {
         noResults
       );
 
-    const page = this.state.metaFromApi ? this.state.metaFromApi.page : 1;
+    const page = customPagination ? customPagination.page : 1;
     const paginationLinks =
       listingsAreLoaded && customPagination && customPagination.totalPages > 1 ? (
         <PaginationLinks
