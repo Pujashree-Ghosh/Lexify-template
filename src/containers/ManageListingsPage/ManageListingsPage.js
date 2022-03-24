@@ -241,8 +241,8 @@ export class ManageListingsPageComponent extends Component {
     ];
     const sortSection = (
       <div className={css.lformrow}>
-        <div className={css.lformcol}>
-          <label>Category</label>
+        <div className={css.categoryFilter}>
+          <label className={css.label}>Category</label>
           <Select
             value={this.state.typeSort?.key}
             isClearable={true}
@@ -263,8 +263,8 @@ export class ManageListingsPageComponent extends Component {
             }}
           />
         </div>
-        <div className={css.lformcol}>
-          <label>Status</label>
+        <div className={css.statusFilter}>
+          <label className={css.label}>Status</label>
           <Select
             value={this.state.statusSort?.key}
             isClearable={true}
@@ -282,20 +282,28 @@ export class ManageListingsPageComponent extends Component {
             }}
           />
         </div>
-        {/* <div className={css.lformcol}>
-          <label>Practice Area</label>
-          <Select
-            value={this.state.practiceAreaSort?.key}
-            isClearable={true}
-            options={practiceAreaOptions}
-            className={css.formcontrol}
-            onChange={e => {
-              e === null
-                ? this.setState({ practiceAreaSort: '' })
-                : this.setState({ practiceAreaSort: e?.key });
-            }}
-          />
-        </div> */}
+        {this.state.typeSort === 'publicOral' ? (
+          <div className={css.areaOfLawFilter}>
+            <label className={css.label}>Area of Law</label>
+            <Select
+              value={this.state.practiceAreaSort?.key}
+              isClearable={true}
+              options={practiceAreaOptions}
+              className={css.formcontrol}
+              isMulti={true}
+              onChange={e => {
+                e === null
+                  ? this.setState({ practiceAreaSort: '' })
+                  : this.setState({ practiceAreaSort: e?.map(e => e?.key) });
+                // listingssss({
+                //   category: this.state.typeSort,
+                //   states: this.state.statusSort,
+                //   areaOfLaw: e?.key,
+                // });
+              }}
+            />
+          </div>
+        ) : null}
       </div>
     );
 
@@ -320,28 +328,7 @@ export class ManageListingsPageComponent extends Component {
           </LayoutWrapperTopbar>
           <LayoutWrapperMain>
             <div>{sortSection}</div>
-            {this.state.typeSort === 'publicOral' ? (
-              <div className={css.lformcol}>
-                <label>Area of Law</label>
-                <Select
-                  value={this.state.practiceAreaSort?.key}
-                  isClearable={true}
-                  options={practiceAreaOptions}
-                  className={css.formcontrol}
-                  isMulti={true}
-                  onChange={e => {
-                    e === null
-                      ? this.setState({ practiceAreaSort: '' })
-                      : this.setState({ practiceAreaSort: e?.map(e => e?.key) });
-                    // listingssss({
-                    //   category: this.state.typeSort,
-                    //   states: this.state.statusSort,
-                    //   areaOfLaw: e?.key,
-                    // });
-                  }}
-                />
-              </div>
-            ) : null}
+
             {!this.state.listingsFromApiLoaded ? loadingResults : null}
             {queryListingsError ? queryError : null}
 
