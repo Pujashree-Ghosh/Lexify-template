@@ -225,22 +225,25 @@ export const initiateOrder = (orderParams, transactionId) => (dispatch, getState
         end: orderParams.bookingEnd,
       });
     }
-    axios
-      .post(`${apiBaseUrl()}/api/updateClientId`, {
-        id: orderParams?.listingId?.uuid,
-        alreadyBooked:
-          alreadyBooked.length === 0
-            ? orderParams?.listing?.attributes?.publicData?.alreadyBooked
-            : alreadyBooked,
-        clientId:
-          orderParams &&
-          orderParams.listing &&
-          orderParams.listing?.attributes?.publicData?.clientId?.filter(
-            e => e !== orderParams?.currentUserEmail
-          ),
-      })
-      .then(e => console.log(e))
-      .catch(e => console.log(e));
+    if (category !== 'publicOral') {
+      axios
+        .post(`${apiBaseUrl()}/api/updateClientId`, {
+          id: orderParams?.listingId?.uuid,
+          alreadyBooked:
+            alreadyBooked.length === 0
+              ? orderParams?.listing?.attributes?.publicData?.alreadyBooked
+              : alreadyBooked,
+          clientId:
+            orderParams &&
+            orderParams.listing &&
+            orderParams.listing?.attributes?.publicData?.clientId?.filter(
+              e => e !== orderParams?.currentUserEmail
+            ),
+        })
+        .then(e => console.log(e))
+        .catch(e => console.log(e));
+    }
+
     return order;
   };
 

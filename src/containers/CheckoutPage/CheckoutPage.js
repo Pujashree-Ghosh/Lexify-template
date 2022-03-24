@@ -830,14 +830,14 @@ export class CheckoutPageComponent extends Component {
       <Page {...pageProps}>
         {topbar}
         <div className={css.contentContainer}>
-          <div className={css.aspectWrapper}>
+          {/* <div className={css.aspectWrapper}>
             <ResponsiveImage
               rootClassName={css.rootForImage}
               alt={listingTitle}
               image={firstImage}
               variants={['landscape-crop', 'landscape-crop2x']}
             />
-          </div>
+          </div> */}
           <div className={classNames(css.avatarWrapper, css.avatarMobile)}>
             <AvatarMedium user={currentAuthor} disableProfileLink />
           </div>
