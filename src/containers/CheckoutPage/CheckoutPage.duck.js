@@ -206,6 +206,16 @@ export const initiateOrder = (orderParams, transactionId) => (dispatch, getState
   const handleSucces = response => {
     const entities = denormalisedResponseEntities(response);
     const order = entities[0];
+    const alreadyBooked = [];
+    if (
+      orderParams?.listing &&
+      typeof orderParams?.listing?.attributes?.publicData?.alreadyBooked === 'undefined'
+    ) {
+      alreadyBooked.push(orderParams?.currentUserEmail);
+    }
+    orderParams?.listing?.attributes?.publicData?.alreadyBooked?.push(
+      orderParams?.currentUserEmail
+    );
     dispatch(initiateOrderSuccess(order));
     dispatch(fetchCurrentUserHasOrdersSuccess(true));
     if (category !== 'customService') {
@@ -220,7 +230,10 @@ export const initiateOrder = (orderParams, transactionId) => (dispatch, getState
     integrationSdk.listings.update({
       id: orderParams.listingId.uuid,
       publicData: {
-        alreadyBooked: orderParams?.currentUserEmail,
+        alreadyBooked:
+          alreadyBooked.length === 0
+            ? orderParams?.listing?.attributes?.publicData?.alreadyBooked
+            : alreadyBooked,
         clientId:
           orderParams &&
           orderParams.listing &&
