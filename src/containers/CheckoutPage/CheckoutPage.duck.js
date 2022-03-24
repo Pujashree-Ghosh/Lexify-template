@@ -227,20 +227,18 @@ export const initiateOrder = (orderParams, transactionId) => (dispatch, getState
         end: orderParams.bookingEnd,
       });
     }
-    integrationSdk.listings.update({
+    axios.post(`${apiBaseUrl()}/api/updateClientId`, {
       id: orderParams?.listingId?.uuid,
-      publicData: {
-        alreadyBooked:
-          alreadyBooked.length === 0
-            ? orderParams?.listing?.attributes?.publicData?.alreadyBooked
-            : alreadyBooked,
-        clientId:
-          orderParams &&
-          orderParams.listing &&
-          orderParams.listing?.attributes?.publicData?.clientId.filter(
-            e => e !== orderParams?.currentUserEmail
-          ),
-      },
+      alreadyBooked:
+        alreadyBooked.length === 0
+          ? orderParams?.listing?.attributes?.publicData?.alreadyBooked
+          : alreadyBooked,
+      clientId:
+        orderParams &&
+        orderParams.listing &&
+        orderParams.listing?.attributes?.publicData?.clientId?.filter(
+          e => e !== orderParams?.currentUserEmail
+        ),
     });
     return order;
   };
