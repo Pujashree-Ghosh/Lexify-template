@@ -16,11 +16,6 @@ import {
   currentUserShowError,
 } from '../../ducks/user.duck';
 import axios from 'axios';
-const flexIntegrationSdk = require('sharetribe-flex-integration-sdk');
-const integrationSdk = flexIntegrationSdk.createInstance({
-  clientId: '66ce8e58-5769-4f62-81d7-19073cfab535',
-  clientSecret: '73f5d2b697f7a9aa9372c8a601826c37cabbbab7',
-});
 // ================ Action types ================ //
 
 export const SET_INITIAL_VALUES = 'app/CheckoutPage/SET_INITIAL_VALUES';
@@ -213,10 +208,12 @@ export const initiateOrder = (orderParams, transactionId) => (dispatch, getState
       typeof orderParams?.listing?.attributes?.publicData?.alreadyBooked === 'undefined'
     ) {
       alreadyBooked.push(orderParams?.currentUserEmail);
+    } else {
+      orderParams?.listing?.attributes?.publicData?.alreadyBooked?.push(
+        orderParams?.currentUserEmail
+      );
     }
-    orderParams?.listing?.attributes?.publicData?.alreadyBooked?.push(
-      orderParams?.currentUserEmail
-    );
+
     dispatch(initiateOrderSuccess(order));
     dispatch(fetchCurrentUserHasOrdersSuccess(true));
     if (category !== 'customService') {
@@ -228,9 +225,9 @@ export const initiateOrder = (orderParams, transactionId) => (dispatch, getState
         end: orderParams.bookingEnd,
       });
     }
-    integrationSdk.listings.update({
-      id: orderParams.listingId.uuid,
-      publicData: {
+    axios
+      .post(`${apiBaseUrl()}/api/updateClientId`, {
+        id: orderParams?.listingId?.uuid,
         alreadyBooked:
           alreadyBooked.length === 0
             ? orderParams?.listing?.attributes?.publicData?.alreadyBooked
@@ -238,12 +235,12 @@ export const initiateOrder = (orderParams, transactionId) => (dispatch, getState
         clientId:
           orderParams &&
           orderParams.listing &&
-          orderParams.listing.attributes.publicData.clientId.filter(
-            e => e !== orderParams.currentUserEmail
+          orderParams.listing?.attributes?.publicData?.clientId?.filter(
+            e => e !== orderParams?.currentUserEmail
           ),
-      },
-    });
-
+      })
+      .then(e => console.log(e))
+      .catch(e => console.log(e));
     return order;
   };
 
