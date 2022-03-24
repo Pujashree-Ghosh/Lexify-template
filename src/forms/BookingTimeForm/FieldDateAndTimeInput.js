@@ -356,7 +356,38 @@ class FieldDateAndTimeInput extends Component {
     // console.log(timeSlots);
 
     this.state.timeSlots.map(m => {
-      const start = moment(m.attributes.start).clone();
+      let start = moment();
+      console.log(start);
+      if (
+        Number(
+          moment(m.attributes.start)
+            .clone()
+            .format('mm')
+        ) % 5
+      ) {
+        const min = moment(m.attributes.start)
+          .clone()
+          .format('mm');
+        const minToAdd = 5 * (parseInt(min / 5) + 1);
+
+        start = moment(m.attributes.start)
+          .clone()
+          .startOf('hour')
+          .add(minToAdd, 'm');
+
+        console.log(
+          min,
+          minToAdd,
+          parseInt(min / 5) + 1,
+          moment(m.attributes.start)
+            .clone()
+            .startOf('hour')
+            .add(minToAdd, 'm')
+            .toDate()
+        );
+      } else {
+        start = moment(m.attributes.start).clone();
+      }
       const end = moment(m.attributes.end).clone();
       while (
         start
@@ -517,6 +548,7 @@ class FieldDateAndTimeInput extends Component {
     if (this.state.allStart.length !== allStartHour.length) {
       this.setState({ allStart: allStartHour });
     }
+    // console.log(allStartHour, availableTimeSlots, timeSlots);
     // console.log(5556, this.state, availableTimeSlots, this.state.allStart, allStartHour);
   }
 
@@ -867,7 +899,7 @@ class FieldDateAndTimeInput extends Component {
               name="bookingStartTime"
               id={formId ? `${formId}.bookingStartTime` : 'bookingStartTime'}
               className={bookingStartDate ? css.fieldSelect : css.fieldSelectDisabled}
-              selectClassName={bookingStartDate ? css.select : css.selectDisabled}
+              selectclassname={bookingStartDate ? css.select : css.selectDisabled}
               label={startTimeLabel}
               disabled={startTimeDisabled}
               onChange={e => {
