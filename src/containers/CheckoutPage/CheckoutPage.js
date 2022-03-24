@@ -581,9 +581,6 @@ export class CheckoutPageComponent extends Component {
       retrievePaymentIntentError,
       stripeCustomerFetched,
     } = this.props;
-    const clientIdx = 'dibya@client.com';
-    // const any = .push(clientIdx);
-    console.log(1234, this.state.pageData?.listing?.attributes?.publicData?.alreadyBooked);
     // Since the listing data is already given from the ListingPage
     // and stored to handle refreshes, it might not have the possible
     // deleted or closed information in it. If the transaction
@@ -833,14 +830,14 @@ export class CheckoutPageComponent extends Component {
       <Page {...pageProps}>
         {topbar}
         <div className={css.contentContainer}>
-          <div className={css.aspectWrapper}>
+          {/* <div className={css.aspectWrapper}>
             <ResponsiveImage
               rootClassName={css.rootForImage}
               alt={listingTitle}
               image={firstImage}
               variants={['landscape-crop', 'landscape-crop2x']}
             />
-          </div>
+          </div> */}
           <div className={classNames(css.avatarWrapper, css.avatarMobile)}>
             <AvatarMedium user={currentAuthor} disableProfileLink />
           </div>

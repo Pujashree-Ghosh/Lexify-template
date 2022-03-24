@@ -126,6 +126,7 @@
 }
 
 .avatarMobile {
+  margin-top: 5px;
   @media (--viewportLarge) {
     display: none;
   }

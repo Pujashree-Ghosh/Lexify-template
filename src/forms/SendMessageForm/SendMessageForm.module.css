@@ -30,7 +30,7 @@
   border-bottom-width: 2px;
   border-bottom-color: var(--attentionColor);
   background-color: transparent;
-  position: absolute;
+  /* position: absolute; */
   /* position: absolute; */
 
   @media (--viewportMedium) {
@@ -74,7 +74,7 @@
   display: block;
   flex: 1;
   text-align: right;
-  padding: 26px 24px 0 0;
+  /* padding: 26px 24px 0 0; */
 }
 
 .error {
@@ -106,18 +106,24 @@
 } */
 
 .msgContainer {
-  display: flex;
+  /* display: flex;
   flex-direction: row;
-  position: relative;
+  position: relative; */
 }
 .icons {
+  margin: 20px 0 0;
+}
+.frmttxt {
+  margin: 6px 0 0;
+  font-size: 14px;
+}
+.upbtnrow {
   display: flex;
   flex-direction: row;
-  margin: 0 0 0 auto;
 }
 .uploadIcon {
-  cursor: pointer;
   margin: auto 5px auto 10px;
+  height: 18px;
 }
 .discardIcon {
   cursor: pointer;
@@ -126,9 +132,28 @@
 }
 
 .sendIconContainer {
-  margin: auto;
   cursor: pointer;
+  flex-basis: 36%;
+  max-width: 36%;
+  margin: 0 0 0 10px;
+  background: #fff;
+  border: 1px solid #bdbdbd;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+.sendIconContainer p {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 200;
+
+  @media (max-width: 575px) {
+    font-size: 12px;
+    line-height: 14px;
+  }
+}
+
 .fileSelector {
   display: flex;
   width: 100%;
@@ -138,5 +163,40 @@
 }
 
 .sendIcon {
-  margin: -3px 5px 0 10px;
+  margin: 0 5px 0 0;
+  height: 16px;
+}
+.uploadbtn {
+  background: #f1f1f1;
+  flex-basis: 70%;
+  max-width: 70%;
+  padding: 5px 8px;
+  display: flex;
+  justify-content: center;
+  border: 1px dashed #b5b5b5;
+  border-radius: 6px;
+  cursor: pointer;
+  align-items: center;
+  @media (max-width: 767px) {
+    padding: 8px;
+  }
+}
+.uploadbtn span div {
+  display: flex;
+}
+.uploadbtn span p {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 400;
+  @media (max-width: 575px) {
+    font-size: 12px;
+    line-height: 14px;
+  }
+}
+.fileClearIcon {
+  display: flex;
+  align-items: center;
+}
+.fileClearIcon p {
+  color: var(--attentionColor);
 }
