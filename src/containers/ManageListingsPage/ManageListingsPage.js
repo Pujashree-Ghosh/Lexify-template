@@ -31,6 +31,7 @@ import {
   LayoutWrapperMain,
   LayoutWrapperFooter,
   Footer,
+  IconSpinner,
 } from '../../components';
 import axios from 'axios';
 import { apiBaseUrl } from '../../util/api';
@@ -159,9 +160,12 @@ export class ManageListingsPageComponent extends Component {
     const listingsAreLoaded = this.state.listingsFromApiLoaded && hasPaginationInfo;
 
     const loadingResults = (
-      <h2>
-        <FormattedMessage id="ManageListingsPage.loadingOwnListings" />
-      </h2>
+      <div className={css.loading}>
+        <h2>
+          <FormattedMessage id="ManageListingsPage.loadingOwnListings" />
+        </h2>
+        <IconSpinner />
+      </div>
     );
 
     const queryError = (
