@@ -18,7 +18,13 @@ function Chat({ sideChat, closeChat, updateText, sendMessage, text, messages }) 
             {messages.length === 0
               ? ''
               : messages.map(m => (
-                  <div className={`${css.chatDetail} ${css.chatDetailme}`}>
+                  <div
+                    className={
+                      m.type
+                        ? `${css.chatDetail} ${css.chatDetailme}`
+                        : `${css.chatDetail} ${css.chatDetailyou}`
+                    }
+                  >
                     <div className={css.aut}>{m.author}</div>
                     <div className={css.msgcnt}>{m.text}</div>
                     <div className={css.datetm}>{m.dateUpdated}</div>

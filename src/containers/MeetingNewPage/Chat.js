@@ -68,7 +68,11 @@ class ChatSreen extends React.Component {
   sendMessage = e => {
     e.preventDefault();
     const { currentUser } = this.props;
+    console.log(333, currentUser);
+    const type = currentUser?.attributes?.profile?.protectedData?.isLawyer;
+    console.log(555, type);
     const displayName = currentUser && currentUser.attributes.profile.displayName;
+
     const email = currentUser && currentUser.attributes.email;
     const { text, channel } = this.state;
     // console.log('111 sendMessage>>>', this.state);
@@ -77,7 +81,12 @@ class ChatSreen extends React.Component {
       //   channel.sendMessage(String(text).trim());
       // this.handleMessageAdded(text);
       window.socket &&
-        window.socket.emit('meeting-message', { author: email, text, dateUpdated: new Date() });
+        window.socket.emit('meeting-message', {
+          author: displayName,
+          text,
+          dateUpdated: new Date(),
+          type: type,
+        });
       this.setState({ text: '', loading: false });
     }
   };
