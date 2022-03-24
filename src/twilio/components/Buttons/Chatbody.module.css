@@ -28,6 +28,7 @@
   height: 100vh;
   top: 0px;
   left: 0%;
+  overflow: hidden;
 }
 .disable {
   display: none;
@@ -73,6 +74,7 @@
   font-weight: 400;
   background: #eee;
   border: 0;
+  margin-left: 14px;
 }
 .chatinput button {
   background: var(--marketplaceColor);
@@ -81,6 +83,7 @@
   color: #fff;
   font-size: 14px;
   cursor: pointer;
+  margin-right: 14px;
 }
 .chatboxvs {
   padding: 15px;

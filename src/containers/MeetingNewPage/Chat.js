@@ -1,9 +1,6 @@
 import React from 'react';
 import css from '../MeetingNewPage/Meeting.css';
-import { Backdrop, CircularProgress, Grid, IconButton, List, Drawer } from '@material-ui/core';
-import { Send } from '@material-ui/icons';
-import ChatItem from './ChatItem';
-// import Twilio from 'twilio-chat';
+
 import { FormattedMessage, intlShape, injectIntl } from '../../util/reactIntl';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
