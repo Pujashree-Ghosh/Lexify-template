@@ -445,6 +445,8 @@ export class CheckoutPageComponent extends Component {
 
     const orderParams = {
       listingId: pageData.listing.id,
+      listing: pageData.listing,
+      currentUserEmail: this.props.currentUser && this.props.currentUser?.attributes?.email,
       category: pageData.listing.attributes.publicData.category,
       providerId,
       customerId,
