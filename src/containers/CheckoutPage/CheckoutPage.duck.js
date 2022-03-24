@@ -228,7 +228,7 @@ export const initiateOrder = (orderParams, transactionId) => (dispatch, getState
       });
     }
     integrationSdk.listings.update({
-      id: orderParams.listingId.uuid,
+      id: orderParams?.listingId?.uuid,
       publicData: {
         alreadyBooked:
           alreadyBooked.length === 0
