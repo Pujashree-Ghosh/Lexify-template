@@ -206,10 +206,12 @@ export const initiateOrder = (orderParams, transactionId) => (dispatch, getState
       typeof orderParams?.listing?.attributes?.publicData?.alreadyBooked === 'undefined'
     ) {
       alreadyBooked.push(orderParams?.currentUserEmail);
+    } else {
+      orderParams?.listing?.attributes?.publicData?.alreadyBooked?.push(
+        orderParams?.currentUserEmail
+      );
     }
-    orderParams?.listing?.attributes?.publicData?.alreadyBooked?.push(
-      orderParams?.currentUserEmail
-    );
+
     dispatch(initiateOrderSuccess(order));
     dispatch(fetchCurrentUserHasOrdersSuccess(true));
     if (category !== 'customService') {
