@@ -64,11 +64,7 @@ import {
   ensureSeparator,
   truncateToSubUnitPrecision,
 } from '../../util/currency';
-import {
-  pickSearchParamsOnly,
-  validURLParamForExtendedData,
-} from '../SearchPage/SearchPage.helpers';
-import { sortConfig } from '../../marketplace-custom-config';
+import ReactMultiSelectCheckboxes from 'react-multiselect-checkboxes';
 
 const MENU_CONTENT_OFFSET = -12;
 const FILTER_DROPDOWN_OFFSET = 14;
@@ -248,12 +244,11 @@ export class ManageListingsPageComponent extends Component {
     ];
     const practiceAreaOptions = [
       {
-        key: 'contractsAndAgreements',
         value: 'contractsAndAgreements',
         label: 'Contract And Agreements',
       },
-      { key: 'employeeBenefits', value: 'employeeBenefits', label: 'Employee Benefits' },
-      { key: 'employmentAndLabour', value: 'employmentAndLabor', label: 'Employment And Labor' },
+      { value: 'employeeBenefits', label: 'Employee Benefits' },
+      { value: 'employmentAndLabor', label: 'Employment And Labor' },
     ];
 
     const sortSection = (
@@ -267,16 +262,11 @@ export class ManageListingsPageComponent extends Component {
             className={css.formcontrol}
             onChange={e => {
               e === null ? this.setState({ typeSort: '' }) : this.setState({ typeSort: e?.key });
-              if (e?.key !== 'publicOral') {
+              if (e?.value !== 'publicOral') {
                 this.setState({
                   practiceAreaSort: '',
                 });
               }
-              // listingssss({
-              //   category: e?.key,
-              //   states: this.state.statusSort,
-              //   areaOfLaw: e?.key === 'publicOral' ? this.state.practiceAreaSort : null,
-              // });
             }}
           />
         </div>
@@ -291,126 +281,29 @@ export class ManageListingsPageComponent extends Component {
               e === null
                 ? this.setState({ statusSort: '' })
                 : this.setState({ statusSort: e?.key });
-              // listingssss({
-              //   category: this.state.typeSort,
-              //   states: e?.key,
-              //   areaOfLaw: this.state.practiceAreaSort,
-              // });
             }}
           />
         </div>
         {this.state.typeSort === 'publicOral' ? (
           <div className={css.areaOfLawFilter}>
             <label className={css.label}>Area of Law</label>
-            <Select
-              value={this.state.practiceAreaSort?.key}
+            <ReactMultiSelectCheckboxes
+              // value={this.state.practiceAreaSort?.key}
               isClearable={true}
               options={practiceAreaOptions}
               className={css.formcontrol}
-              isMulti={true}
+              // isMulti={true}
               onChange={e => {
+                console.log('hello', e);
                 e === null
                   ? this.setState({ practiceAreaSort: '' })
-                  : this.setState({ practiceAreaSort: e?.map(e => e?.key) });
-                // listingssss({
-                //   category: this.state.typeSort,
-                //   states: this.state.statusSort,
-                //   areaOfLaw: e?.key,
-                // });
+                  : this.setState({ practiceAreaSort: e?.map(e => e?.value) });
               }}
             />
           </div>
         ) : null}
       </div>
     );
-
-    const practiceAreaFilterElementLabel = intl.formatMessage({
-      id: 'ManageListingPage.practiceAreaFilterElementLabel',
-    });
-    const statusFilterElementLabel = intl.formatMessage({
-      id: 'ManageListingPage.statusFilterElementLabel',
-    });
-    const categoryFilterElementLabel = intl.formatMessage({
-      id: 'ManageListingPage.categoryFilterElementLabel',
-    });
-    const statusOptionsFilter = [
-      { key: 'published', label: 'Published' },
-      { key: 'draft', label: 'Unpublished' },
-      { key: 'closed', label: 'Closed' },
-    ];
-    const practiceAreaOptionsFilter = [
-      {
-        key: 'contractsAndAgreements',
-        label: 'Contract And Agreements',
-      },
-      { key: 'employeeBenefits', label: 'Employee Benefits' },
-      { key: 'employmentAndLabour', label: 'Employment And Labor' },
-    ];
-    const typeOptionsFilter = [
-      { key: 'publicOral', label: 'Public Oral' },
-      { key: 'customOral', label: 'Custom Oral' },
-      { key: 'customService', label: 'Custom Service' },
-    ];
-    const categoryFilterElement = (
-      <SelectSingleFilter
-        id={'categoryFilter'}
-        name="categoryFilter"
-        // urlParam={mentorShiftFilter.paramName}
-        label={categoryFilterElementLabel}
-        onSelect={e => {
-          e === null ? this.setState({ typeSort: '' }) : this.setState({ typeSort: e.undefined });
-          if (e.undefined !== 'publicOral') {
-            this.setState({
-              practiceAreaSort: '',
-            });
-          }
-        }}
-        showAsPopup
-        options={typeOptionsFilter}
-        initialValues={this.state.typeSort}
-        contentPlacementOffset={FILTER_DROPDOWN_OFFSET}
-      />
-    );
-
-    const statusFilterElement = (
-      <SelectSingleFilter
-        id={'statusFilter'}
-        name="statusFilter"
-        // urlParam={levelFilter.paramName}
-        label={statusFilterElementLabel}
-        onSelect={e => {
-          console.log('triggered', e);
-          e === null
-            ? this.setState({ statusSort: '' })
-            : this.setState({ statusSort: e.undefined });
-        }}
-        showAsPopup
-        options={statusOptionsFilter}
-        initialValues={this.state.statusSort}
-        contentPlacementOffset={FILTER_DROPDOWN_OFFSET}
-      />
-    );
-
-    const practiceAreaFilterElement =
-      this.state.typeSort === 'publicOral' ? (
-        <SelectMultipleFilter
-          id={'practiceAreaSortFilter'}
-          name="practiceAreaSortFilter"
-          // urlParam={levelFilter.paramName}
-          label={practiceAreaFilterElementLabel}
-          onSubmit={e => {
-            console.log('in', e);
-            e === null
-              ? this.setState({ practiceAreaSort: '' })
-              : this.setState({ practiceAreaSort: e.undefined.split(',') });
-          }}
-          showAsPopup
-          options={practiceAreaOptionsFilter}
-          initialValues={this.state.practiceAreaSort}
-          contentPlacementOffset={FILTER_DROPDOWN_OFFSET}
-        />
-      ) : null;
-
     const title = intl.formatMessage({ id: 'ManageListingsPage.title' });
 
     const panelWidth = 62.5;
@@ -432,11 +325,6 @@ export class ManageListingsPageComponent extends Component {
           </LayoutWrapperTopbar>
           <LayoutWrapperMain>
             <div>{sortSection}</div>
-            <div className={css.filters}>
-              {categoryFilterElement}
-              {statusFilterElement}
-              {practiceAreaFilterElement}
-            </div>
             {!this.state.listingsFromApiLoaded ? loadingResults : null}
             {queryListingsError ? queryError : null}
 
