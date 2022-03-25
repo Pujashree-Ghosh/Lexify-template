@@ -245,7 +245,7 @@
 }
 
 .statuscom {
-  background-color: #c4c4c4;
+  background-color: var(--successColor);
   color: #4e4e4e;
 }
 .statusContainer {
@@ -338,7 +338,7 @@
     flex-basis: 100%;
   }
 }
-.profileBtn {
+.confirmBtn {
   background-color: var(--marketplaceColor);
   color: var(--matterColorLight);
   padding: 7px 15px;
@@ -352,8 +352,28 @@
   border: 0;
   max-width: 200px;
   line-height: 20px;
+  min-height: 0px;
 }
-.profileBtn:hover {
+.joinBtn {
+  background-color: var(--successColorDark);
+  color: var(--matterColorLight);
+  padding: 7px 15px;
+  text-align: center;
+  display: block;
+  border-radius: 5px;
+  width: 100%;
+  font-size: 15px;
+  font-weight: 300;
+  cursor: pointer;
+  border: 0;
+  max-width: 200px;
+  line-height: 20px;
+  min-height: 0px;
+}
+.joinBtn:hover {
+  background-color: var(--successColorDark);
+}
+.confirmBtn:hover {
   background-color: var(--marketplaceColorDark);
 }
 .locationIconContainer {
