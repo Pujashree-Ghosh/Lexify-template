@@ -37,7 +37,7 @@ export default function EndCallButton(props) {
       className={`${clsx(classes.button, props.className)} vid-end-btn`}
       data-cy-disconnect
     >
-      <FcEndCall />
+      <FcEndCall size={26} />
       {/* End */}
     </Button>
   );
