@@ -182,6 +182,26 @@
   margin-right: 490px; */
   justify-content: space-around;
 }
+.filters {
+  margin-right: 15px;
+  margin-left: 15px;
+  /* top: 286px;
+  left: 558px;
+  width: 464px;
+  height: 51px; */
+  width: 100%;
+  margin: 24px auto;
+  /* overflow-x: hidden; */
+
+  @media (--viewportMedium) {
+    margin: 48px auto;
+  }
+
+  @media (--viewportLarge) {
+    margin: 50px auto;
+    max-width: 1040px;
+  }
+}
 .statusFilter {
   top: 286px;
   left: 558px;

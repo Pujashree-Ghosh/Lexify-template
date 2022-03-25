@@ -32,6 +32,8 @@ import {
   LayoutWrapperFooter,
   Footer,
   IconSpinner,
+  SelectSingleFilter,
+  SelectMultipleFilter,
 } from '../../components';
 import axios from 'axios';
 import { apiBaseUrl } from '../../util/api';
@@ -69,6 +71,7 @@ import {
 import { sortConfig } from '../../marketplace-custom-config';
 
 const MENU_CONTENT_OFFSET = -12;
+const FILTER_DROPDOWN_OFFSET = 14;
 const { Money } = sdkTypes;
 const priceData = (price, intl) => {
   if (price && price.currency === config.currency) {
@@ -110,28 +113,30 @@ export class ManageListingsPageComponent extends Component {
   componentDidUpdate() {
     const queryParams = parse(this.props.location.search);
     const page = queryParams.page || 1;
-    axios
-      .post(`${apiBaseUrl()}/api/sortOwnListings`, {
-        authorId: this.props.currentUser?.id?.uuid,
-        states: this.state.statusSort ? this.state.statusSort : null,
-        pub_category: this.state.typeSort ? this.state.typeSort : null,
-        pub_areaOfLaw:
-          this.state.practiceAreaSort.length !== 0 ? this.state.practiceAreaSort : null,
-        page,
-      })
-      .then(res => {
-        if (
-          JSON.stringify(res?.data?.data) !== JSON.stringify(this.state.listingsFromApi) ||
-          this.state.listingsFromApi.length === 0
-        ) {
-          this.setState({
-            listingsFromApi: res?.data?.data,
-            metaFromApi: res?.data?.meta,
-            listingsFromApiLoaded: true,
-          });
-        }
-      })
-      .catch();
+    if (this.props.currentUser !== null) {
+      axios
+        .post(`${apiBaseUrl()}/api/sortOwnListings`, {
+          authorId: this.props.currentUser && this.props.currentUser?.id?.uuid,
+          states: this.state.statusSort ? this.state.statusSort : null,
+          pub_category: this.state.typeSort ? this.state.typeSort : null,
+          pub_areaOfLaw:
+            this.state.practiceAreaSort.length !== 0 ? this.state.practiceAreaSort : null,
+          page: page !== null ? page : null,
+        })
+        .then(res => {
+          if (
+            JSON.stringify(res?.data?.data) !== JSON.stringify(this.state.listingsFromApi) ||
+            this.state.listingsFromApi.length === 0
+          ) {
+            this.setState({
+              listingsFromApi: res?.data?.data,
+              metaFromApi: res?.data?.meta,
+              listingsFromApiLoaded: true,
+            });
+          }
+        })
+        .catch();
+    }
   }
 
   onToggleMenu(listing) {
@@ -159,7 +164,7 @@ export class ManageListingsPageComponent extends Component {
       currentUser,
     } = this.props;
 
-    console.log(444, sortConfig);
+    console.log(444, this.state);
     const customPagination = this.state.metaFromApi;
     const hasPaginationInfo = !!customPagination && customPagination.totalItems != null;
     const listingsAreLoaded = this.state.listingsFromApiLoaded && hasPaginationInfo;
@@ -250,6 +255,7 @@ export class ManageListingsPageComponent extends Component {
       { key: 'employeeBenefits', value: 'employeeBenefits', label: 'Employee Benefits' },
       { key: 'employmentAndLabour', value: 'employmentAndLabor', label: 'Employment And Labor' },
     ];
+
     const sortSection = (
       <div className={css.lformrow}>
         <div className={css.categoryFilter}>
@@ -318,6 +324,93 @@ export class ManageListingsPageComponent extends Component {
       </div>
     );
 
+    const practiceAreaFilterElementLabel = intl.formatMessage({
+      id: 'ManageListingPage.practiceAreaFilterElementLabel',
+    });
+    const statusFilterElementLabel = intl.formatMessage({
+      id: 'ManageListingPage.statusFilterElementLabel',
+    });
+    const categoryFilterElementLabel = intl.formatMessage({
+      id: 'ManageListingPage.categoryFilterElementLabel',
+    });
+    const statusOptionsFilter = [
+      { key: 'published', label: 'Published' },
+      { key: 'draft', label: 'Unpublished' },
+      { key: 'closed', label: 'Closed' },
+    ];
+    const practiceAreaOptionsFilter = [
+      {
+        key: 'contractsAndAgreements',
+        label: 'Contract And Agreements',
+      },
+      { key: 'employeeBenefits', label: 'Employee Benefits' },
+      { key: 'employmentAndLabour', label: 'Employment And Labor' },
+    ];
+    const typeOptionsFilter = [
+      { key: 'publicOral', label: 'Public Oral' },
+      { key: 'customOral', label: 'Custom Oral' },
+      { key: 'customService', label: 'Custom Service' },
+    ];
+    const categoryFilterElement = (
+      <SelectSingleFilter
+        id={'categoryFilter'}
+        name="categoryFilter"
+        // urlParam={mentorShiftFilter.paramName}
+        label={categoryFilterElementLabel}
+        onSelect={e => {
+          e === null ? this.setState({ typeSort: '' }) : this.setState({ typeSort: e.undefined });
+          if (e.undefined !== 'publicOral') {
+            this.setState({
+              practiceAreaSort: '',
+            });
+          }
+        }}
+        showAsPopup
+        options={typeOptionsFilter}
+        initialValues={this.state.typeSort}
+        contentPlacementOffset={FILTER_DROPDOWN_OFFSET}
+      />
+    );
+
+    const statusFilterElement = (
+      <SelectSingleFilter
+        id={'statusFilter'}
+        name="statusFilter"
+        // urlParam={levelFilter.paramName}
+        label={statusFilterElementLabel}
+        onSelect={e => {
+          console.log('triggered', e);
+          e === null
+            ? this.setState({ statusSort: '' })
+            : this.setState({ statusSort: e.undefined });
+        }}
+        showAsPopup
+        options={statusOptionsFilter}
+        initialValues={this.state.statusSort}
+        contentPlacementOffset={FILTER_DROPDOWN_OFFSET}
+      />
+    );
+
+    const practiceAreaFilterElement =
+      this.state.typeSort === 'publicOral' ? (
+        <SelectMultipleFilter
+          id={'practiceAreaSortFilter'}
+          name="practiceAreaSortFilter"
+          // urlParam={levelFilter.paramName}
+          label={practiceAreaFilterElementLabel}
+          onSubmit={e => {
+            console.log('in', e);
+            e === null
+              ? this.setState({ practiceAreaSort: '' })
+              : this.setState({ practiceAreaSort: e.undefined.split(',') });
+          }}
+          showAsPopup
+          options={practiceAreaOptionsFilter}
+          initialValues={this.state.practiceAreaSort}
+          contentPlacementOffset={FILTER_DROPDOWN_OFFSET}
+        />
+      ) : null;
+
     const title = intl.formatMessage({ id: 'ManageListingsPage.title' });
 
     const panelWidth = 62.5;
@@ -339,7 +432,11 @@ export class ManageListingsPageComponent extends Component {
           </LayoutWrapperTopbar>
           <LayoutWrapperMain>
             <div>{sortSection}</div>
-
+            <div className={css.filters}>
+              {categoryFilterElement}
+              {statusFilterElement}
+              {practiceAreaFilterElement}
+            </div>
             {!this.state.listingsFromApiLoaded ? loadingResults : null}
             {queryListingsError ? queryError : null}
 
