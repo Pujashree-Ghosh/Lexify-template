@@ -35,7 +35,7 @@ class ChatSreen extends React.Component {
 
   handleMessageAdded = message => {
     const { messages } = this.state;
-    // console.log('111 handleMessageAdded', this.state);
+
     this.setState(
       {
         messages: [...messages, message],
@@ -51,6 +51,7 @@ class ChatSreen extends React.Component {
     if (typeof window !== 'undefined') {
       window.socket &&
         window.socket.on('meeting-message', message => {
+          this.props.setNewmessage(true);
           this.setState(
             { isNewMessage: true, messages: [...this.state.messages, message] },
             this.scrollToBottom
@@ -67,18 +68,17 @@ class ChatSreen extends React.Component {
   sendMessage = e => {
     e.preventDefault();
     const { currentUser } = this.props;
-    console.log(333, currentUser);
+
     const type = currentUser?.attributes?.profile?.protectedData?.isLawyer;
-    console.log(555, type);
+
     const displayName = currentUser && currentUser.attributes.profile.displayName;
 
     const email = currentUser && currentUser.attributes.email;
     const { text, channel } = this.state;
-    // console.log('111 sendMessage>>>', this.state);
+
     if (text) {
       this.setState({ loading: true });
-      //   channel.sendMessage(String(text).trim());
-      // this.handleMessageAdded(text);
+
       if (typeof window !== 'undefined') {
         window.socket &&
           window.socket.emit('meeting-message', {
@@ -88,6 +88,7 @@ class ChatSreen extends React.Component {
             type: type,
           });
         this.setState({ text: '', loading: false });
+        // this.props.setNewmessage(false);
       }
     }
   };
@@ -100,7 +101,6 @@ class ChatSreen extends React.Component {
   };
 
   render() {
-    // console.log('111 props>', this.props);
     const { currentUser } = this.props;
     const displayName = currentUser && currentUser.attributes.profile.displayName;
     const email = currentUser && currentUser.attributes.email;
@@ -113,6 +113,7 @@ class ChatSreen extends React.Component {
         closeChat={this.props.closeChat}
         text={this.state.text}
         messages={this.state.messages}
+        isNewMessage={this.state.isNewMessage}
       />
     );
   }

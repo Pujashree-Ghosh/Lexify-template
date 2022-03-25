@@ -3,7 +3,7 @@ import css from './Chatbody.module.css';
 import { RiCloseFill } from 'react-icons/ri';
 
 function Chat({ sideChat, closeChat, updateText, sendMessage, text, messages }) {
-  console.log(777, messages);
+  // console.log(777, messages);
   return (
     <div className={sideChat ? css.backdrop : css.disable}>
       <div className={css.chatopen}>

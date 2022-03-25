@@ -63,7 +63,7 @@ export default function ToggleScreenShareButton(props) {
           startIcon={isSharingScreen ? <StopScreenShareIcon /> : <ScreenShareIcon />}
           data-cy-share-screen
         >
-          {isSharingScreen ? STOP_SCREEN_SHARE_TEXT : SCREEN_SHARE_TEXT}
+          {/* {isSharingScreen ? STOP_SCREEN_SHARE_TEXT : SCREEN_SHARE_TEXT} */}
         </Button>
       </span>
     </Tooltip>

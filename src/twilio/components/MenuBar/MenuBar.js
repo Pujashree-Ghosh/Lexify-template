@@ -15,9 +15,9 @@ import ToggleScreenShareButton from '../Buttons/ToogleScreenShareButton/ToggleSc
 // import ChatScreen from './../../../containers/MeetingNewPage/Chat';
 import { ListingContext } from './../../../containers/MeetingNewPage/Meeting';
 import SignalHelper from '../../../util/signalHelper';
-import { print } from '../../../util/data';
+// import { print } from '../../../util/data';
 import ChatButton from '../Buttons/ChatButton';
-import Chatbody from '../Buttons/Chatbody';
+
 import Chat from '../../../containers/MeetingNewPage/Chat';
 // import Back from '../Buttons/Back';
 const useStyles = makeStyles(theme =>
@@ -76,9 +76,9 @@ export default function MenuBar({ isProvider, extendMeeting, isShortBooking, isE
   const isReconnecting = roomState === 'reconnecting';
   const { room } = useVideoContext();
   const { listingTitle, listingId, transactionId } = useContext(ListingContext);
+  const [newmessage, setNewmessage] = useState(false);
   useEffect(() => {
     SignalHelper.on('timer', data => {
-      // console.log('timer', data);
       const timerData = JSON.parse(data);
       if (timerData.status == 'meeting_duration') room.disconnect();
       if (timerData.status == 'waiting_duration') room.disconnect();
@@ -88,22 +88,23 @@ export default function MenuBar({ isProvider, extendMeeting, isShortBooking, isE
   const toggleChat = () => {
     document.body.setAttribute('style', 'overflow:hidden');
     setSidechat(prevState => !prevState);
+    setNewmessage(false);
   };
   const closeChat = () => {
     document.body.setAttribute('style', '');
     setSidechat(!sideChat);
-    console.log(999, sideChat);
+
+    setNewmessage(false);
   };
   return (
     <>
-      {/* <Back sideChat={sideChat}> */}
       {isSharingScreen && (
         <Grid container justify="center" alignItems="center" className={classes.screenShareBanner}>
           <Typography variant="h6">You are sharing your screen</Typography>
           <Button onClick={() => toggleScreenShare()}>Stop Sharing</Button>
         </Grid>
       )}
-      <Chat sideChat={sideChat} closeChat={closeChat} />
+      <Chat sideChat={sideChat} closeChat={closeChat} setNewmessage={setNewmessage} />
       {/* <Back sideChat={sideChat} /> */}
 
       <footer className={`${classes.container} footer-mod`}>
@@ -127,7 +128,7 @@ export default function MenuBar({ isProvider, extendMeeting, isShortBooking, isE
 
                 {/* {!isSharingScreen && <ToggleScreenShareButton disabled={isReconnecting} />} */}
               </Hidden>
-              <ChatButton openChatbar={toggleChat} />
+              <ChatButton openChatbar={toggleChat} newmessage={newmessage} sideChat={sideChat} />
               <FlipCameraButton />
 
               {/* <button className="MuiButtonBase-root MuiButton-root MuiButton-text ct-btn">
@@ -149,7 +150,6 @@ export default function MenuBar({ isProvider, extendMeeting, isShortBooking, isE
             </Grid>
           </Grid> */}
 
-          {/* <ChatButton openChatbar={toggleChat} /> */}
           <Hidden smDown>
             <Grid style={{ flex: 1 }}>
               <Grid container justify="flex-end">
@@ -160,7 +160,6 @@ export default function MenuBar({ isProvider, extendMeeting, isShortBooking, isE
           </Hidden>
         </Grid>
       </footer>
-      {/* </Back> */}
     </>
   );
 }

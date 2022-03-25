@@ -30,12 +30,12 @@ export default function Menu(props) {
       >
         {isMobile ? (
           <>
-            Settings
+            {/* Settings */}
             <MoreIcon />
           </>
         ) : (
           <>
-            Settings
+            {/* Settings */}
             <ExpandMoreIcon />
           </>
         )}
