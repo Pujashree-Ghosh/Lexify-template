@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
 import { Button } from '@material-ui/core';
-import { FcEndCall } from 'react-icons/fc';
+import { ImPhoneHangUp } from 'react-icons/im';
 
 import useVideoContext from '../../../hooks/useVideoContext/useVideoContext';
 // import SignalHelper from '../../../../util/signalHelper';
@@ -37,7 +37,7 @@ export default function EndCallButton(props) {
       className={`${clsx(classes.button, props.className)} vid-end-btn`}
       data-cy-disconnect
     >
-      <FcEndCall size={26} />
+      <ImPhoneHangUp />
       {/* End */}
     </Button>
   );

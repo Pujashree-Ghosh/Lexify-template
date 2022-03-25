@@ -1,7 +1,7 @@
 .chbtntw {
 }
 .chbtntw .button {
-  padding: 10px 8px;
+  padding: 14px 15px;
   border: 0;
   color: rgba(0, 0, 0, 0.87);
   text-transform: uppercase;
@@ -14,8 +14,8 @@
   background-color: rgba(0, 0, 0, 0.04);
 }
 .chbtntw .button svg {
-  fill: #707578;
-  height: 20px;
-  width: 20px;
-  margin: 0 5px 0 0;
+  fill: #000;
+  height: 24px;
+  width: 22px;
+  margin: 0;
 }

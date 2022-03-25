@@ -120,8 +120,8 @@ export default function MenuBar({ isProvider, extendMeeting, isShortBooking, isE
           </Hidden>
           <Grid item className="mob-wid">
             <Grid container justify="center" className="mob-inline">
-              <ToggleAudioButton disabled={isReconnecting} />
-              <ToggleVideoButton disabled={isReconnecting} />
+              <ToggleAudioButton className="btnmod" disabled={isReconnecting} />
+              <ToggleVideoButton className="btnmod" disabled={isReconnecting} />
 
               <Hidden smDown>
                 {<ToggleScreenShareButton disabled={isReconnecting} />}

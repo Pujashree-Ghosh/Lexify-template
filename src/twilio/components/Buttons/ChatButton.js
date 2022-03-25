@@ -1,7 +1,7 @@
 import React from 'react';
 import css from './ChatButton.module.css';
 import ChatIcon from '../../icons/ChatIcon';
-import { RiWechatLine } from 'react-icons/ri';
+import { BsChatText } from 'react-icons/bs';
 
 function ChatButton({ openChatbar, newmessage, sideChat }) {
   return (
@@ -12,7 +12,7 @@ function ChatButton({ openChatbar, newmessage, sideChat }) {
             *
           </span>
         ) : null}
-        <RiWechatLine />
+        <BsChatText />
         {/* chat */}
       </button>
     </div>
