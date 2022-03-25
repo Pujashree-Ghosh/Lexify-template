@@ -48,13 +48,15 @@ class ChatSreen extends React.Component {
     if (this.messagesEndRef.current) this.messagesEndRef.current.scrollIntoView();
   };
   componentDidMount = async () => {
-    window.socket &&
-      window.socket.on('meeting-message', message => {
-        this.setState(
-          { isNewMessage: true, messages: [...this.state.messages, message] },
-          this.scrollToBottom
-        );
-      });
+    if (typeof window !== 'undefined') {
+      window.socket &&
+        window.socket.on('meeting-message', message => {
+          this.setState(
+            { isNewMessage: true, messages: [...this.state.messages, message] },
+            this.scrollToBottom
+          );
+        });
+    }
   };
 
   updateText = e => {
@@ -77,14 +79,16 @@ class ChatSreen extends React.Component {
       this.setState({ loading: true });
       //   channel.sendMessage(String(text).trim());
       // this.handleMessageAdded(text);
-      window.socket &&
-        window.socket.emit('meeting-message', {
-          author: displayName,
-          text,
-          dateUpdated: new Date(),
-          type: type,
-        });
-      this.setState({ text: '', loading: false });
+      if (typeof window !== 'undefined') {
+        window.socket &&
+          window.socket.emit('meeting-message', {
+            author: displayName,
+            text,
+            dateUpdated: new Date(),
+            type: type,
+          });
+        this.setState({ text: '', loading: false });
+      }
     }
   };
   toggleDrawer = () => event => {
