@@ -11,6 +11,7 @@ import {
   txIsDeclined,
   txIsEnquired,
   txIsRequested,
+  txIsPendingConfirmation,
   txHasBeenDelivered,
   txIsPaymentExpired,
   txIsPaymentPending,
@@ -139,6 +140,16 @@ export const txState = (intl, tx, type) => {
         id: 'InboxPage.stateRescheduled',
       }),
     };
+  } else if (txIsPendingConfirmation(tx)) {
+    return {
+      nameClassName: css.nameNotEmphasized,
+      bookingClassName: css.bookingNoActionNeeded,
+      lastTransitionedAtClassName: css.lastTransitionedAtNotEmphasized,
+      stateClassName: css.stateSucces,
+      state: intl.formatMessage({
+        id: 'InboxPage.statePendingConfirmation',
+      }),
+    };
   } else if (txIsCanceled(tx)) {
     return {
       nameClassName: css.nameNotEmphasized,
@@ -262,6 +273,7 @@ export const InboxItem = props => {
           <div className={classNames(css.itemUsername, stateData.nameClassName)}>
             {otherUserDisplayName}
           </div>
+          <span>{tx.id.uuid}</span>
           <BookingInfoMaybe
             bookingClassName={stateData.bookingClassName}
             intl={intl}

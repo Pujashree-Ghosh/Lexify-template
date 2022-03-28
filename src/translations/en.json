@@ -1337,5 +1337,6 @@
   "FieldDateAndTimeInputService.startDateLabel": "Start Date",
   "InboxPage.stateRescheduled": "Rescheduled",
   "ActivityFeed.transitionRescheduleCustomer": "Rescheduled",
-  "ActivityFeed.transitionRescheduleProvider": "Rescheduled by provider"
+  "ActivityFeed.transitionRescheduleProvider": "Rescheduled by provider",
+  "InboxPage.statePendingConfirmation": "Pending Confirmation"
 }

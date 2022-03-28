@@ -4,16 +4,111 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { showUser } from '../../containers/ProfilePage/ProfilePage.duck';
 import { FormattedMessage, intlShape, injectIntl } from '../../util/reactIntl';
+import routeConfiguration from '../../routeConfiguration';
+import { createResourceLocatorString } from '../../util/routes';
+import { withRouter } from 'react-router-dom';
 import css from './AppointmentCard.module.css';
 import { AvatarMedium } from '..';
 import biolocationIcon from '../../assets/material-location-on.svg';
 import moment from 'moment';
+import jsonwebtoken from 'jsonwebtoken';
+import config from '../../config';
+import Button, { PrimaryButton } from '../Button/Button';
 function AppointmentCardComponent(props) {
-  const { unitType, type, tx, intl, stateData } = props;
+  const {
+    unitType,
+    type,
+    tx,
+    intl,
+    stateData,
+    onConfirmConsultation,
+    confirmConsultationInProgress,
+    confirmConsultationSuccess,
+    history,
+  } = props;
   const provider = tx && tx.provider;
   const listing = tx && tx.listing;
   const booking = tx && tx.booking;
-  // const { provider, listing, booking } = tx;
+  const category = listing?.attributes?.publicData?.category;
+  const [progress, setProgress] = useState(false);
+
+  const goToConference = async transaction => {
+    let startTime = transaction?.booking?.attributes?.start;
+    let endTime = transaction?.booking?.attributes?.end;
+    let transactionId = transaction?.id?.uuid;
+    let listingId = transaction?.listing?.id?.uuid;
+    let listingTitle = transaction?.listing?.attributes?.title;
+    let transaction_customer_id = transaction?.customer?.id?.uuid;
+    let transaction_provider_id = transaction?.provider?.id?.uuid;
+    let role = 'CUSTOMER';
+
+    let actualStartTime;
+    let customerJoinTime;
+
+    // [{"transition":"transition/request-payment","createdAt":"2021-06-09T08:50:22.829Z","by":"customer"},{"transition":"transition/confirm-payment","createdAt":"2021-06-09T08:50:25.122Z","by":"customer"},{"transition":"transition/accept-short-booking","createdAt":"2021-06-09T09:01:02.036Z","by":"provider"},{"transition":"transition/short-booking-provider-join-1","createdAt":"2021-06-09T09:04:02.847Z","by":"provider"},{"transition":"transition/short-booking-customer-join-2","createdAt":"2021-06-09T09:04:06.660Z","by":"customer"}]
+
+    let { transitions } = transaction?.attributes;
+    // const isShortBooking =
+    //   transaction &&
+    //   transaction.attributes.protectedData &&
+    //   transaction.attributes.protectedData.shortBooking;
+
+    // let findActualStartTime =
+    // // isShortBooking ? [TRANSITION_SHORT_BOOKING_PROVIDER_JOIN_2, TRANSITION_SHORT_BOOKING_CUSTOMER_JOIN_2]:
+    //   [TRANSITION_PROVIDER_JOIN_1, TRANSITION_PROVIDER_JOIN_2];
+
+    // Array.isArray(transitions) &&
+    //   transitions.length &&
+    //   transitions.forEach(item => {
+    //     if (findActualStartTime.includes(item.transition)) {
+    //       actualStartTime = item.createdAt;
+    //     }
+    //   });
+
+    // let findCustomerJoinTime =
+    // // isShortBooking ? [TRANSITION_SHORT_BOOKING_CUSTOMER_JOIN_1, TRANSITION_SHORT_BOOKING_CUSTOMER_JOIN_2] :
+    //  [TRANSITION_CUSTOMER_JOIN_1, TRANSITION_CUSTOMER_JOIN_2];
+
+    // Array.isArray(transitions) &&
+    //   transitions.length &&
+    //   transitions.forEach(item => {
+    //     if (findCustomerJoinTime.includes(item.transition)) {
+    //       customerJoinTime = item.createdAt;
+    //     }
+    //   });
+
+    // console.log({ actualStartTime, customerJoinTime });
+
+    if (!transactionId) {
+      return;
+    }
+    const beforeBufferTime =
+      transaction?.provider?.attributes?.profile?.publicData?.beforeBufferTime || 0;
+    const afterBufferTime =
+      transaction?.provider?.attributes?.profile?.publicData?.afterBufferTime || 0;
+
+    let jwtToken = jsonwebtoken.sign(
+      {
+        startTime,
+        endTime,
+        transactionId,
+        listingId,
+        listingTitle,
+        transaction_customer_id,
+        transaction_provider_id,
+        role,
+        beforeBufferTime,
+        afterBufferTime,
+      },
+      config.secretCode
+    );
+    window.open(`/meeting-new/${jwtToken}`);
+    // this.props.history.push(`/meeting-new/${jwtToken}`);
+    // console.log('555 token', jwtToken);
+    // console.log('555 conf URL', config.canonicalRootURL + '/meeting-new/' + jwtToken);
+  };
+
+  // console.log(stateData, tx);
 
   return (
     <div className={css.cardContainer}>
@@ -29,8 +124,8 @@ function AppointmentCardComponent(props) {
           {stateData === 'pending' ? (
             <p className={css.status}>Pending Confimation</p>
           ) : stateData === 'upcoming' ? (
-            <p className={`${css.status} ${css.statuspending}`}>Pending</p>
-          ) : stateData === 'completed' ? (
+            <p className={`${css.status} ${css.statuspending}`}>Accepted</p>
+          ) : stateData === 'complete' ? (
             <p className={`${css.status} ${css.statuscom}`}>Completed</p>
           ) : (
             ''
@@ -46,7 +141,7 @@ function AppointmentCardComponent(props) {
             <p className={css.listingInfo}>{listing?.attributes?.title}</p>
 
             <div className={css.durationDeadline}>
-              {listing?.attributes?.publicData?.category !== 'customService' ? (
+              {category !== 'customService' ? (
                 <span className={css.duration}>
                   <span>Duration: </span>
                   {listing?.attributes?.publicData?.durationHour > 0
@@ -95,8 +190,24 @@ function AppointmentCardComponent(props) {
                 Please click on 'confirm' to confirm that you have recieved the consultation
               </div>
               <div className={css.profileBtnContainer}>
-                <button
-                  className={css.profileBtn}
+                <Button
+                  className={css.confirmBtn}
+                  inProgress={progress}
+                  // ready={ready}
+                  onClick={() => {
+                    setProgress(false);
+                    onConfirmConsultation(tx.id.uuid).then(resp => {
+                      // console.log(resp);
+                      history.push(
+                        createResourceLocatorString(
+                          'MyAppoinmentBasePage',
+                          routeConfiguration(),
+                          // { id: resp.data.data.id.uuid },
+                          {}
+                        )
+                      );
+                    });
+                  }}
                   // onClick={() => {
                   //   if (listing?.attributes?.publicData?.isProviderType) {
                   //     history.push(
@@ -120,7 +231,47 @@ function AppointmentCardComponent(props) {
                   // }}
                 >
                   <FormattedMessage id="AppointmentCard.confirmButton" />
-                </button>
+                </Button>
+              </div>
+            </>
+          ) : stateData === 'upcoming' ? (
+            <>
+              <div className={css.cctxtp}>Video Join button will appear here on time.</div>
+              <div className={css.profileBtnContainer}>
+                {category !== 'customService' ? (
+                  <div className={css.profileBtn}>
+                    <PrimaryButton
+                      // inProgress={joinMeetingProgress}
+                      className={css.joinBtn}
+                      onClick={() => {
+                        //   if (stateData.isShortBooking) {
+                        //     onJoinShortMeeting(currentTransaction.id, isCustomer)
+                        //       .then(res => {
+                        //         this.goToConference(currentTransaction);
+                        //         console.log('onJoinShortMeeting', res);
+                        //       })
+                        //       .catch(e => console.error(e));
+                        //   } else {
+                        //     onJoinMeeting(currentTransaction.id, isCustomer)
+                        //       .then(res => {
+                        //         this.goToConference(currentTransaction);
+                        //         console.log('onJoinMeeting', res);
+                        //       })
+                        //       .catch(e => {
+                        //         console.log('557. err in page', e);
+                        //         console.error(e);
+                        //       });
+                        //   }
+                        //
+                        goToConference(tx);
+                      }}
+                    >
+                      Join Meeting
+                    </PrimaryButton>
+                  </div>
+                ) : (
+                  ''
+                )}
               </div>
             </>
           ) : (
@@ -167,6 +318,7 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const AppointmentCard = compose(
+  withRouter,
   connect(mapStateToProps, mapDispatchToProps),
   injectIntl
 )(AppointmentCardComponent);

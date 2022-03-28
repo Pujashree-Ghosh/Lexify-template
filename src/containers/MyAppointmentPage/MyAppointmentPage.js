@@ -9,10 +9,12 @@ import {
   txIsCanceled,
   txIsDeclined,
   txIsEnquired,
+  txIsRescheduled,
   txIsRequested,
   txHasBeenDelivered,
   txIsPaymentExpired,
   txIsPaymentPending,
+  txIsPendingConfirmation,
 } from '../../util/transaction';
 import { propTypes, DATE_TYPE_DATETIME } from '../../util/types';
 import { createSlug, stringify } from '../../util/urlHelpers';
@@ -42,6 +44,7 @@ import config from '../../config';
 
 import css from './MyAppointmentPage.module.css';
 import AppointmentCard from '../../components/AppointmentCard/AppointmentCard';
+import { confirmConsultation } from '../TransactionPage/TransactionPage.duck';
 
 const formatDate = (intl, date) => {
   return {
@@ -59,27 +62,12 @@ export const txState = (intl, tx, type) => {
 
   if (txIsAccepted(tx)) {
     return 'upcoming';
-  }
-
-  /*********************************************** 
-
-commentout section needs to be changed later acoording to confirm state
-
-*********************************************** */
-
-  //    else if (txIsCanceled(tx)) {
-  //     return {
-  //       nameClassName: css.nameNotEmphasized,
-  //       bookingClassName: css.bookingNoActionNeeded,
-  //       lastTransitionedAtClassName: css.lastTransitionedAtNotEmphasized,
-  //       stateClassName: css.stateNoActionNeeded,
-  //       state: intl.formatMessage({
-  //         id: 'InboxPage.stateCanceled',
-  //       }),
-  //     };
-  //   }
-  else if (txHasBeenDelivered(tx)) {
-    return 'completed';
+  } else if (txIsPendingConfirmation(tx)) {
+    return 'pending';
+  } else if (txHasBeenDelivered(tx)) {
+    return 'complete';
+  } else if (txIsRescheduled(tx)) {
+    return 'complete';
   } else {
     console.warn('This transition is unknown:', tx.attributes.lastTransition);
     return null;
@@ -144,7 +132,13 @@ export const MyAppointmentPageComponent = props => {
     providerNotificationCount,
     scrollingDisabled,
     transactions,
+    onConfirmConsultation,
+    confirmConsultationInProgress,
+    confirmConsultationSuccess,
+    confirmConsultationError,
   } = props;
+
+  // console.log(confirmConsultationSuccess);
   const { tab } = params;
   const ensuredCurrentUser = ensureCurrentUser(currentUser);
 
@@ -175,6 +169,9 @@ export const MyAppointmentPageComponent = props => {
           tx={tx}
           intl={intl}
           stateData={stateData}
+          onConfirmConsultation={onConfirmConsultation}
+          confirmConsultationInProgress={confirmConsultationInProgress}
+          confirmConsultationSuccess={confirmConsultationSuccess}
         />
       </div>
     ) : null;
@@ -326,6 +323,11 @@ const mapStateToProps = state => {
     currentUserListing,
     currentUserNotificationCount: providerNotificationCount,
   } = state.user;
+  const {
+    confirmConsultationInProgress,
+    confirmConsultationSuccess,
+    confirmConsultationError,
+  } = state.TransactionPage;
   return {
     currentUser,
     currentUserListing,
@@ -335,9 +337,21 @@ const mapStateToProps = state => {
     providerNotificationCount,
     scrollingDisabled: isScrollingDisabled(state),
     transactions: getMarketplaceEntities(state, transactionRefs),
+    confirmConsultationInProgress,
+    confirmConsultationSuccess,
+    confirmConsultationError,
   };
 };
 
-const MyAppointmentPage = compose(connect(mapStateToProps), injectIntl)(MyAppointmentPageComponent);
+const mapDispatchToProps = dispatch => {
+  return {
+    onConfirmConsultation: transactionId => dispatch(confirmConsultation(transactionId)),
+  };
+};
+
+const MyAppointmentPage = compose(
+  connect(mapStateToProps, mapDispatchToProps),
+  injectIntl
+)(MyAppointmentPageComponent);
 
 export default MyAppointmentPage;
