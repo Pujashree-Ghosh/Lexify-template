@@ -113,7 +113,7 @@ class ChatSreen extends React.Component {
         closeChat={this.props.closeChat}
         text={this.state.text}
         messages={this.state.messages}
-        isNewMessage={this.state.isNewMessage}
+        // isNewMessage={this.state.isNewMessage}
       />
     );
   }
