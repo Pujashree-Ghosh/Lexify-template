@@ -11,6 +11,7 @@ import {
   txIsInFirstReviewBy,
   TRANSITION_ACCEPT,
   TRANSITION_DECLINE,
+  TRANSITION_COMPLETE,
   TRANSITION_CANCEL_PROVIDER,
   TRANSITION_CANCEL_CUSTOMER,
   TRANSITION_RESCHEDULE_PROVIDER,
@@ -73,6 +74,10 @@ export const RESCHEDULE_PROVIDER_REQUEST = 'app/TransactionPage/RESCHEDULE_PROVI
 export const RESCHEDULE_PROVIDER_SUCCESS = 'app/TransactionPage/RESCHEDULE_PROVIDER_SUCCESS';
 export const RESCHEDULE_PROVIDER_ERROR = 'app/TransactionPage/RESCHEDULE_PROVIDER_ERROR';
 
+export const CONFIRM_CONSULTATION_REQUEST = 'app/TransactionPage/CONFIRM_CONSULTATION_REQUEST';
+export const CONFIRM_CONSULTATION_SUCCESS = 'app/TransactionPage/CONFIRM_CONSULTATION_SUCCESS';
+export const CONFIRM_CONSULTATION_ERROR = 'app/TransactionPage/CONFIRM_CONSULTATION_ERROR';
+
 export const FETCH_MESSAGES_REQUEST = 'app/TransactionPage/FETCH_MESSAGES_REQUEST';
 export const FETCH_MESSAGES_SUCCESS = 'app/TransactionPage/FETCH_MESSAGES_SUCCESS';
 export const FETCH_MESSAGES_ERROR = 'app/TransactionPage/FETCH_MESSAGES_ERROR';
@@ -109,9 +114,12 @@ const initialState = {
   rescheduleCustomerInProgress: false,
   rescheduleProviderInProgress: false,
   rescheduleCustomerError: null,
+  rescheduleProviderError: null,
   rescheduleProviderSuccess: false,
   rescheduleCustomerSuccess: false,
-  rescheduleProviderError: null,
+  confirmConsultationSuccess: false,
+  confirmConsultationError: false,
+  confirmConsultationInProgress: false,
   declineSaleError: null,
   fetchMessagesInProgress: false,
   fetchMessagesError: null,
@@ -248,7 +256,22 @@ export default function checkoutPageReducer(state = initialState, action = {}) {
         ...state,
         rescheduleProviderInProgress: false,
         rescheduleProviderSuccess: false,
-        rescheduleSaleProviderError: payload,
+        rescheduleProviderError: payload,
+      };
+
+    case CONFIRM_CONSULTATION_REQUEST:
+      return {
+        ...state,
+        confirmConsultationInProgress: true,
+      };
+    case CONFIRM_CONSULTATION_SUCCESS:
+      return { ...state, confirmConsultationInProgress: false, confirmConsultationSuccess: true };
+    case CONFIRM_CONSULTATION_ERROR:
+      return {
+        ...state,
+        confirmConsultationInProgress: false,
+        confirmConsultationSuccess: false,
+        confirmConsultationError: payload,
       };
 
     case FETCH_MESSAGES_REQUEST:
@@ -406,6 +429,15 @@ const rescheduleProviderError = e => ({
   error: true,
   payload: e,
 });
+
+const confirmConsultationRequest = () => ({ type: CONFIRM_CONSULTATION_REQUEST });
+const confirmConsultationSuccess = () => ({ type: CONFIRM_CONSULTATION_SUCCESS });
+const confirmConsultationError = e => ({
+  type: CONFIRM_CONSULTATION_ERROR,
+  error: true,
+  payload: e,
+});
+
 const fetchMessagesRequest = () => ({ type: FETCH_MESSAGES_REQUEST });
 const fetchMessagesSuccess = (messages, pagination) => ({
   type: FETCH_MESSAGES_SUCCESS,
@@ -680,6 +712,44 @@ export const cancelSaleProvider = id => (dispatch, getState, sdk) => {
       log.error(e, 'cancel-sale-provider-failed', {
         txId: id,
         transition: TRANSITION_CANCEL_PROVIDER,
+      });
+      throw e;
+    });
+};
+
+export const confirmConsultation = id => (dispatch, getState, sdk) => {
+  if (acceptOrDeclineInProgress(getState())) {
+    return Promise.reject(new Error('Accept or decline already in progress'));
+  }
+  dispatch(confirmConsultationRequest());
+
+  return sdk.transactions
+    .transition(
+      {
+        id,
+        transition: TRANSITION_COMPLETE,
+        params: {},
+      },
+      { expand: true }
+    )
+    .then(response => {
+      // axios.patch(`${apiBaseUrl()}/api/booking/updateBooking`, {
+      //   orderId: response.data.data.id.uuid,
+      //   start: bookingStartTime,
+      //   end: bookingEndTime,
+      // });
+      dispatch(addMarketplaceEntities(response));
+      dispatch(confirmConsultationSuccess());
+      dispatch(fetchCurrentUserNotifications());
+      return new Promise((resolve, reject) => {
+        resolve(response);
+      });
+    })
+    .catch(e => {
+      dispatch(confirmConsultationError(storableError(e)));
+      log.error(e, 'confirm-consultation-failed', {
+        txId: id,
+        transition: TRANSITION_COMPLETE,
       });
       throw e;
     });

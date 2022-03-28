@@ -1,13 +1,11 @@
 import React from 'react';
 import css from '../MeetingNewPage/Meeting.css';
-import { Backdrop, CircularProgress, Grid, IconButton, List, Drawer } from '@material-ui/core';
-import { Send } from '@material-ui/icons';
-import ChatItem from './ChatItem';
-// import Twilio from 'twilio-chat';
+
 import { FormattedMessage, intlShape, injectIntl } from '../../util/reactIntl';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
+import Chatbody from '../../twilio/components/Buttons/Chatbody';
 
 // import { resolve } from 'url';
 
@@ -37,7 +35,7 @@ class ChatSreen extends React.Component {
 
   handleMessageAdded = message => {
     const { messages } = this.state;
-    // console.log('111 handleMessageAdded', this.state);
+
     this.setState(
       {
         messages: [...messages, message],
@@ -50,13 +48,16 @@ class ChatSreen extends React.Component {
     if (this.messagesEndRef.current) this.messagesEndRef.current.scrollIntoView();
   };
   componentDidMount = async () => {
-    window.socket &&
-      window.socket.on('meeting-message', message => {
-        this.setState(
-          { isNewMessage: true, messages: [...this.state.messages, message] },
-          this.scrollToBottom
-        );
-      });
+    if (typeof window !== 'undefined') {
+      window.socket &&
+        window.socket.on('meeting-message', message => {
+          this.props.setNewmessage(true);
+          this.setState(
+            { isNewMessage: true, messages: [...this.state.messages, message] },
+            this.scrollToBottom
+          );
+        });
+    }
   };
 
   updateText = e => {
@@ -64,18 +65,31 @@ class ChatSreen extends React.Component {
       text: e.target.value,
     });
   };
-  sendMessage = () => {
+  sendMessage = e => {
+    e.preventDefault();
     const { currentUser } = this.props;
+
+    const type = currentUser?.attributes?.profile?.protectedData?.isLawyer;
+
     const displayName = currentUser && currentUser.attributes.profile.displayName;
+
     const email = currentUser && currentUser.attributes.email;
     const { text, channel } = this.state;
-    // console.log('111 sendMessage>>>', this.state);
+
     if (text) {
       this.setState({ loading: true });
-      //   channel.sendMessage(String(text).trim());
-      window.socket &&
-        window.socket.emit('meeting-message', { author: email, text, dateUpdated: new Date() });
-      this.setState({ text: '', loading: false });
+
+      if (typeof window !== 'undefined') {
+        window.socket &&
+          window.socket.emit('meeting-message', {
+            author: displayName,
+            text,
+            dateUpdated: new Date(),
+            type: type,
+          });
+        this.setState({ text: '', loading: false });
+        // this.props.setNewmessage(false);
+      }
     }
   };
   toggleDrawer = () => event => {
@@ -85,80 +99,22 @@ class ChatSreen extends React.Component {
     // setIsChatOpen(!isChatOpen);
     this.setState({ ...this.state, isChatOpen: !this.state.isChatOpen, isNewMessage: false });
   };
+
   render() {
-    // console.log('111 props>', this.props);
     const { currentUser } = this.props;
     const displayName = currentUser && currentUser.attributes.profile.displayName;
     const email = currentUser && currentUser.attributes.email;
     const { anchor, isChatOpen, loading, messages, text, isNewMessage } = this.state;
     return (
-      <div>
-        <button
-          type="button"
-          onClick={this.toggleDrawer()}
-          className="MuiButtonBase-root MuiButton-root MuiButton-text ct-btn"
-        >
-          <span>
-            <i class="fas fa-comment-alt"></i>
-            {isNewMessage && <sup>*</sup>}
-          </span>
-          {/* <ChatScreen /> */}
-          Chat{' '}
-          {isNewMessage && (
-            <span className="msgpop" style={{ fontSize: '20px' }}>
-              *
-            </span>
-          )}
-        </button>
-        <Drawer anchor={anchor} open={isChatOpen} onClose={this.toggleDrawer()}>
-          {/* <Container component="main" maxWidth="md"> */}
-          <Backdrop open={loading} style={{ zIndex: 99999 }}>
-            <CircularProgress style={{ color: 'white' }} />
-          </Backdrop>
-
-          <Grid container direction="column" style={styles.mainGrid}>
-            <Grid item style={styles.gridItemChatList}>
-              <List dense={true}>
-                {messages &&
-                  messages.map((message, index) => (
-                    <ChatItem key={index} message={message} email={email} />
-                  ))}
-                <div ref={this.messagesEndRef} />
-              </List>
-            </Grid>
-
-            <Grid item className={css.chatinput} style={styles.gridItemMessage}>
-              <Grid container direction="row" justify="center" alignItems="center">
-                <Grid item style={styles.textFieldContainer}>
-                  <input
-                    type="text"
-                    placeholder="Enter message"
-                    id="textMessage"
-                    name="textMessage"
-                    value={text}
-                    onChange={event => {
-                      this.updateText(event);
-                    }}
-                    onKeyPress={e => {
-                      if (e.key === 'Enter' && e.shiftKey == false) {
-                        e.preventDefault();
-                        this.sendMessage();
-                      }
-                    }}
-                  />
-                </Grid>
-
-                <Grid item>
-                  <IconButton style={styles.sendButton} onClick={() => this.sendMessage()}>
-                    <Send style={styles.sendIcon} />
-                  </IconButton>
-                </Grid>
-              </Grid>
-            </Grid>
-          </Grid>
-          {/* </Container> */}
-        </Drawer>
-      </div>
+      <Chatbody
+        updateText={this.updateText}
+        sendMessage={this.sendMessage}
+        sideChat={this.props.sideChat}
+        closeChat={this.props.closeChat}
+        text={this.state.text}
+        messages={this.state.messages}
+        // isNewMessage={this.state.isNewMessage}
+      />
     );
   }
 }

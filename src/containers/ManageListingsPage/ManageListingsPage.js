@@ -291,7 +291,7 @@ export class ManageListingsPageComponent extends Component {
               // value={this.state.practiceAreaSort?.key}
               isClearable={true}
               options={practiceAreaOptions}
-              className={css.formcontrol}
+              className={css.aofftd}
               // isMulti={true}
               onChange={e => {
                 console.log('hello', e);

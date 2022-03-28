@@ -143,7 +143,7 @@
   margin: 20px 0;
   border-left: 7px solid #a91722;
   position: relative;
-  min-height: 100%;
+  /* min-height: 100%; */
   @media (max-width: 575px) {
     flex-direction: column;
   }
@@ -263,23 +263,22 @@
 }
 .durationDeadline {
   display: flex;
-  margin: 50px 0 0;
+  margin: 10px 0 0;
   @media (max-width: 767px) {
     margin: 0 0 15px;
   }
 }
 .durationDeadline span {
   font-size: 14px;
-  flex-basis: 45%;
-  padding: 0 10px 0 0;
+  flex-basis: 100%;
+  padding: 0 0;
   font-weight: 400;
 
   @media (max-width: 991px) {
     font-size: 12px;
   }
   @media (max-width: 575px) {
-    flex-basis: 50%;
-    padding: 0 5px 0 0;
+    flex-basis: 100%;
   }
 }
 .durationDeadline span span {
@@ -338,7 +337,7 @@
     flex-basis: 100%;
   }
 }
-.profileBtn {
+.confirmBtn {
   background-color: var(--marketplaceColor);
   color: var(--matterColorLight);
   padding: 7px 15px;
@@ -352,8 +351,28 @@
   border: 0;
   max-width: 200px;
   line-height: 20px;
+  min-height: 0px;
 }
-.profileBtn:hover {
+.joinBtn {
+  background-color: var(--successColorDark);
+  color: var(--matterColorLight);
+  padding: 7px 15px;
+  text-align: center;
+  display: block;
+  border-radius: 5px;
+  width: 100%;
+  font-size: 15px;
+  font-weight: 300;
+  cursor: pointer;
+  border: 0;
+  max-width: 200px;
+  line-height: 20px;
+  min-height: 0px;
+}
+.joinBtn:hover {
+  background-color: var(--successColorDark);
+}
+.confirmBtn:hover {
   background-color: var(--marketplaceColorDark);
 }
 .locationIconContainer {

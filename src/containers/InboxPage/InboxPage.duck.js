@@ -113,11 +113,9 @@ export const loadData = (params, search) => (dispatch, getState, sdk) => {
     page,
     per_page: INBOX_PAGE_SIZE,
   };
-  console.log(TRANSITIONS);
   return sdk.transactions
     .query(apiQueryParams)
     .then(response => {
-      console.log(response);
       dispatch(addMarketplaceEntities(response));
       dispatch(fetchOrdersOrSalesSuccess(response));
       return response;
