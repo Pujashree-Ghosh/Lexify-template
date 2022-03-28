@@ -7,6 +7,7 @@ import { loadData as EditListingPageLoader } from './EditListingPage/EditListing
 import { loadData as EmailVerificationPageLoader } from './EmailVerificationPage/EmailVerificationPage.duck';
 import { loadData as InboxPageLoader } from './InboxPage/InboxPage.duck';
 import { loadData as MyAppointmentPageLoader } from './MyAppointmentPage/MyAppointmentPage.duck';
+import { loadData as SalespageLoader } from './Salespage/Salespage.duck';
 import { loadData as ListingPageLoader } from './ListingPage/ListingPage.duck';
 import { loadData as ManageListingsPageLoader } from './ManageListingsPage/ManageListingsPage.duck';
 import { loadData as PaymentMethodsPageLoader } from './PaymentMethodsPage/PaymentMethodsPage.duck';
@@ -38,6 +39,9 @@ const getPageDataLoadingAPI = () => {
     },
     MyAppointmentPage: {
       loadData: MyAppointmentPageLoader,
+    },
+    Salespage: {
+      loadData: SalespageLoader,
     },
     ListingPage: {
       loadData: ListingPageLoader,

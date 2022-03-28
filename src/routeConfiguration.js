@@ -18,6 +18,8 @@ const ContactDetailsPage = loadable(() => import(/* webpackChunkName: "ContactDe
 const EditListingPage = loadable(() => import(/* webpackChunkName: "EditListingPage" */ './containers/EditListingPage/EditListingPage'));
 const EmailVerificationPage = loadable(() => import(/* webpackChunkName: "EmailVerificationPage" */ './containers/EmailVerificationPage/EmailVerificationPage'));
 const InboxPage = loadable(() => import(/* webpackChunkName: "InboxPage" */ './containers/InboxPage/InboxPage'));
+const Salespage = loadable(() => import(/* webpackChunkName: "Salespage" */ './containers/Salespage/Salespage'));
+
 const MyAppointmentPage = loadable(() => import(/* webpackChunkName: "MyAppointmentPage" */ './containers/MyAppointmentPage/MyAppointmentPage'));
 const LandingPage = loadable(() => import(/* webpackChunkName: "LandingPage" */ './containers/LandingPage/LandingPage'));
 const ListingPage = loadable(() => import(/* webpackChunkName: "ListingPage" */ /* webpackPrefetch: true */ './containers/ListingPage/ListingPage'));
@@ -317,6 +319,21 @@ const routeConfiguration = () => {
       authPage: 'LoginPage',
       component: InboxPage,
       loadData: pageDataLoadingAPI.InboxPage.loadData,
+    },
+    {
+      path: '/sale',
+      name: 'SalesBasepage',
+      auth: true,
+      authPage: 'LoginPage',
+      component: () => <NamedRedirect name="Salespage" params={{ tab: 'pending' }} />,
+    },
+    {
+      path: '/sale/:tab',
+      name: 'Salespage',
+      auth: true,
+      authPage: 'LoginPage',
+      component: Salespage,
+      loadData: pageDataLoadingAPI.Salespage.loadData,
     },
     {
       path: '/appointment',
