@@ -181,6 +181,7 @@ export const initiateOrder = (orderParams, transactionId) => (dispatch, getState
   const bookingData = {
     startDate: orderParams.bookingStart,
     endDate: orderParams.bookingEnd,
+    hasVat: orderParams.hasVat,
   };
 
   const bodyParams = isTransition
@@ -207,7 +208,7 @@ export const initiateOrder = (orderParams, transactionId) => (dispatch, getState
       orderParams?.listing &&
       typeof orderParams?.listing?.attributes?.publicData?.alreadyBooked === 'undefined'
     ) {
-      alreadyBooked.push(orderParams?.currentUserEmail);
+      alreadyBooked?.push(orderParams?.currentUserEmail);
     } else {
       orderParams?.listing?.attributes?.publicData?.alreadyBooked?.push(
         orderParams?.currentUserEmail
@@ -358,6 +359,7 @@ export const speculateTransaction = (orderParams, transactionId) => (dispatch, g
   const bookingData = {
     startDate: orderParams.bookingStart,
     endDate: orderParams.bookingEnd,
+    vatData: orderParams.hasVat,
   };
 
   const params = {

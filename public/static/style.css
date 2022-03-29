@@ -17,6 +17,14 @@
     font-size: 18px;
         
 }
+.css-1vr111p-option {
+  display: flex !important;
+  font-size: 14px !important;
+  align-items: center !important;
+}
+.css-1vr111p-option input {
+  width: 16px;
+}
 @media (min-width: 1440px) {
  
 }

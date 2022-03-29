@@ -120,7 +120,7 @@ export class TransactionPanelComponent extends Component {
         clientId: 'c5c3ffe8-8b3e-49a5-8e88-920a883c826f',
 
         authority: 'https://login.microsoftonline.com/common/',
-        redirectUri: 'https://lexify-dev.herokuapp.com/',
+        redirectUri: 'https://lexify-dev-bitcanny.herokuapp.com/',
         // redirectUri: 'http://localhost:3000/',
       },
       cache: {
@@ -1009,9 +1009,9 @@ export class TransactionPanelComponent extends Component {
                 This is a button
               </button> */}
 
-              {stateData.showSaleButtons ? (
+              {/* {stateData.showSaleButtons ? (
                 <div className={css.desktopActionButtons}>{saleButtons}</div>
-              ) : null}
+              ) : null} */}
             </div>
           </div>
         </div>

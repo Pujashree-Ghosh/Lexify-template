@@ -67,7 +67,7 @@ export const txState = (intl, tx, type) => {
   } else if (txHasBeenDelivered(tx)) {
     return 'complete';
   } else if (txIsRescheduled(tx)) {
-    return 'complete';
+    return 'upcoming';
   } else {
     console.warn('This transition is unknown:', tx.attributes.lastTransition);
     return null;
@@ -158,7 +158,6 @@ export const MyAppointmentPageComponent = props => {
   const toTxItem = tx => {
     const type = isPending ? 'pending' : isUpcoming ? 'upcoming' : 'complete';
     const stateData = txState(intl, tx, type);
-    console.log(tx);
 
     // Render InboxItem only if the latest transition of the transaction is handled in the `txState` function.
     return stateData ? (
@@ -268,7 +267,7 @@ export const MyAppointmentPageComponent = props => {
             {!fetchInProgress ? (
               transactions.map(toTxItem)
             ) : (
-              <li className={css.listItemsLoading}>
+              <li className={css.listItemsLoading}>  
                 <IconSpinner />
               </li>
             )}

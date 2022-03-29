@@ -69,25 +69,34 @@ export const txState = (intl, tx, type) => {
       }),
     };
   } else if (txIsRequested(tx)) {
-    const requested = isOrder
-      ? {
-          nameClassName: css.nameNotEmphasized,
-          bookingClassName: css.bookingNoActionNeeded,
-          lastTransitionedAtClassName: css.lastTransitionedAtEmphasized,
-          stateClassName: css.stateActionNeeded,
-          state: intl.formatMessage({
-            id: 'InboxPage.stateRequested',
-          }),
-        }
-      : {
-          nameClassName: css.nameEmphasized,
-          bookingClassName: css.bookingActionNeeded,
-          lastTransitionedAtClassName: css.lastTransitionedAtEmphasized,
-          stateClassName: css.stateActionNeeded,
-          state: intl.formatMessage({
-            id: 'InboxPage.statePending',
-          }),
-        };
+    const requested = {
+      nameClassName: css.nameNotEmphasized,
+      bookingClassName: css.bookingNoActionNeeded,
+      lastTransitionedAtClassName: css.lastTransitionedAtNotEmphasized,
+      stateClassName: css.stateSucces,
+      state: intl.formatMessage({
+        id: 'InboxPage.stateAccepted',
+      }),
+    };
+    // isOrder
+    //   ? {
+    //       nameClassName: css.nameNotEmphasized,
+    //       bookingClassName: css.bookingNoActionNeeded,
+    //       lastTransitionedAtClassName: css.lastTransitionedAtEmphasized,
+    //       stateClassName: css.stateActionNeeded,
+    //       state: intl.formatMessage({
+    //         id: 'InboxPage.stateRequested',
+    //       }),
+    //     }
+    //   : {
+    //       nameClassName: css.nameEmphasized,
+    //       bookingClassName: css.bookingActionNeeded,
+    //       lastTransitionedAtClassName: css.lastTransitionedAtEmphasized,
+    //       stateClassName: css.stateActionNeeded,
+    //       state: intl.formatMessage({
+    //         id: 'InboxPage.statePending',
+    //       }),
+    //     };
 
     return requested;
   } else if (txIsPaymentPending(tx)) {
@@ -140,17 +149,19 @@ export const txState = (intl, tx, type) => {
         id: 'InboxPage.stateRescheduled',
       }),
     };
-  } else if (txIsPendingConfirmation(tx)) {
-    return {
-      nameClassName: css.nameNotEmphasized,
-      bookingClassName: css.bookingNoActionNeeded,
-      lastTransitionedAtClassName: css.lastTransitionedAtNotEmphasized,
-      stateClassName: css.stateSucces,
-      state: intl.formatMessage({
-        id: 'InboxPage.statePendingConfirmation',
-      }),
-    };
-  } else if (txIsCanceled(tx)) {
+  }
+  // else if (txIsPendingConfirmation(tx)) {
+  //   return {
+  //     nameClassName: css.nameNotEmphasized,
+  //     bookingClassName: css.bookingNoActionNeeded,
+  //     lastTransitionedAtClassName: css.lastTransitionedAtNotEmphasized,
+  //     stateClassName: css.stateSucces,
+  //     state: intl.formatMessage({
+  //       id: 'InboxPage.statePendingConfirmation',
+  //     }),
+  //   };
+  // }
+  else if (txIsCanceled(tx)) {
     return {
       nameClassName: css.nameNotEmphasized,
       bookingClassName: css.bookingNoActionNeeded,
