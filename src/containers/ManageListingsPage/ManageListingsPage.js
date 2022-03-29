@@ -32,6 +32,8 @@ import {
   LayoutWrapperFooter,
   Footer,
   IconSpinner,
+  SelectSingleFilter,
+  SelectMultipleFilter,
 } from '../../components';
 import axios from 'axios';
 import { apiBaseUrl } from '../../util/api';
@@ -62,13 +64,10 @@ import {
   ensureSeparator,
   truncateToSubUnitPrecision,
 } from '../../util/currency';
-import {
-  pickSearchParamsOnly,
-  validURLParamForExtendedData,
-} from '../SearchPage/SearchPage.helpers';
-import { sortConfig } from '../../marketplace-custom-config';
+import ReactMultiSelectCheckboxes from 'react-multiselect-checkboxes';
 
 const MENU_CONTENT_OFFSET = -12;
+const FILTER_DROPDOWN_OFFSET = 14;
 const { Money } = sdkTypes;
 const priceData = (price, intl) => {
   if (price && price.currency === config.currency) {
@@ -110,28 +109,30 @@ export class ManageListingsPageComponent extends Component {
   componentDidUpdate() {
     const queryParams = parse(this.props.location.search);
     const page = queryParams.page || 1;
-    axios
-      .post(`${apiBaseUrl()}/api/sortOwnListings`, {
-        authorId: this.props.currentUser?.id?.uuid,
-        states: this.state.statusSort ? this.state.statusSort : null,
-        pub_category: this.state.typeSort ? this.state.typeSort : null,
-        pub_areaOfLaw:
-          this.state.practiceAreaSort.length !== 0 ? this.state.practiceAreaSort : null,
-        page,
-      })
-      .then(res => {
-        if (
-          JSON.stringify(res?.data?.data) !== JSON.stringify(this.state.listingsFromApi) ||
-          this.state.listingsFromApi.length === 0
-        ) {
-          this.setState({
-            listingsFromApi: res?.data?.data,
-            metaFromApi: res?.data?.meta,
-            listingsFromApiLoaded: true,
-          });
-        }
-      })
-      .catch();
+    if (this.props.currentUser !== null) {
+      axios
+        .post(`${apiBaseUrl()}/api/sortOwnListings`, {
+          authorId: this.props.currentUser && this.props.currentUser?.id?.uuid,
+          states: this.state.statusSort ? this.state.statusSort : null,
+          pub_category: this.state.typeSort ? this.state.typeSort : null,
+          pub_areaOfLaw:
+            this.state.practiceAreaSort.length !== 0 ? this.state.practiceAreaSort : null,
+          page: page !== null ? page : null,
+        })
+        .then(res => {
+          if (
+            JSON.stringify(res?.data?.data) !== JSON.stringify(this.state.listingsFromApi) ||
+            this.state.listingsFromApi.length === 0
+          ) {
+            this.setState({
+              listingsFromApi: res?.data?.data,
+              metaFromApi: res?.data?.meta,
+              listingsFromApiLoaded: true,
+            });
+          }
+        })
+        .catch();
+    }
   }
 
   onToggleMenu(listing) {
@@ -159,7 +160,7 @@ export class ManageListingsPageComponent extends Component {
       currentUser,
     } = this.props;
 
-    console.log(444, sortConfig);
+    console.log(444, this.state);
     const customPagination = this.state.metaFromApi;
     const hasPaginationInfo = !!customPagination && customPagination.totalItems != null;
     const listingsAreLoaded = this.state.listingsFromApiLoaded && hasPaginationInfo;
@@ -243,13 +244,13 @@ export class ManageListingsPageComponent extends Component {
     ];
     const practiceAreaOptions = [
       {
-        key: 'contractsAndAgreements',
         value: 'contractsAndAgreements',
         label: 'Contract And Agreements',
       },
-      { key: 'employeeBenefits', value: 'employeeBenefits', label: 'Employee Benefits' },
-      { key: 'employmentAndLabour', value: 'employmentAndLabor', label: 'Employment And Labor' },
+      { value: 'employeeBenefits', label: 'Employee Benefits' },
+      { value: 'employmentAndLabor', label: 'Employment And Labor' },
     ];
+
     const sortSection = (
       <div className={css.lformrow}>
         <div className={css.categoryFilter}>
@@ -261,16 +262,11 @@ export class ManageListingsPageComponent extends Component {
             className={css.formcontrol}
             onChange={e => {
               e === null ? this.setState({ typeSort: '' }) : this.setState({ typeSort: e?.key });
-              if (e?.key !== 'publicOral') {
+              if (e?.value !== 'publicOral') {
                 this.setState({
                   practiceAreaSort: '',
                 });
               }
-              // listingssss({
-              //   category: e?.key,
-              //   states: this.state.statusSort,
-              //   areaOfLaw: e?.key === 'publicOral' ? this.state.practiceAreaSort : null,
-              // });
             }}
           />
         </div>
@@ -285,39 +281,29 @@ export class ManageListingsPageComponent extends Component {
               e === null
                 ? this.setState({ statusSort: '' })
                 : this.setState({ statusSort: e?.key });
-              // listingssss({
-              //   category: this.state.typeSort,
-              //   states: e?.key,
-              //   areaOfLaw: this.state.practiceAreaSort,
-              // });
             }}
           />
         </div>
         {this.state.typeSort === 'publicOral' ? (
           <div className={css.areaOfLawFilter}>
             <label className={css.label}>Area of Law</label>
-            <Select
-              value={this.state.practiceAreaSort?.key}
+            <ReactMultiSelectCheckboxes
+              // value={this.state.practiceAreaSort?.key}
               isClearable={true}
               options={practiceAreaOptions}
-              className={css.formcontrol}
-              isMulti={true}
+              className={css.aofftd}
+              // isMulti={true}
               onChange={e => {
+                console.log('hello', e);
                 e === null
                   ? this.setState({ practiceAreaSort: '' })
-                  : this.setState({ practiceAreaSort: e?.map(e => e?.key) });
-                // listingssss({
-                //   category: this.state.typeSort,
-                //   states: this.state.statusSort,
-                //   areaOfLaw: e?.key,
-                // });
+                  : this.setState({ practiceAreaSort: e?.map(e => e?.value) });
               }}
             />
           </div>
         ) : null}
       </div>
     );
-
     const title = intl.formatMessage({ id: 'ManageListingsPage.title' });
 
     const panelWidth = 62.5;
@@ -339,7 +325,6 @@ export class ManageListingsPageComponent extends Component {
           </LayoutWrapperTopbar>
           <LayoutWrapperMain>
             <div>{sortSection}</div>
-
             {!this.state.listingsFromApiLoaded ? loadingResults : null}
             {queryListingsError ? queryError : null}
 
