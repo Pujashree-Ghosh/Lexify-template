@@ -110,7 +110,7 @@
   "BookingTimeForm.youWontBeChargedInfo": "You won't be charged yet",
   "CheckoutPage.bookingTimeNotAvailableMessage": "Unfortunately, the requested time is already booked.",
   "CheckoutPage.chargeDisabledMessage": "This provider's payout information is incomplete so the session cannot be booked. Please contact the marketplace administrators.",
-  "CheckoutPage.errorlistingLinkText": "the teacher profile page",
+  "CheckoutPage.errorlistingLinkText": "the lawyer profile page",
   "CheckoutPage.goToLandingPage": "Go to homepage",
   "CheckoutPage.hostedBy": "Hosted by {name}",
   "CheckoutPage.initiateOrderAmountTooLow": "We are unable to process this payment since the payment amount is too low. Please contact the marketplace administrator.",

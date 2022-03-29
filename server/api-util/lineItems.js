@@ -1,4 +1,9 @@
-const { calculateQuantityFromHours, calculateTotalFromLineItems } = require('./lineItemHelpers');
+const {
+  calculateQuantityFromHours,
+  calculateTotalFromLineItems,
+  resolveVatPrice,
+  calculateCommission,
+} = require('./lineItemHelpers');
 const { types } = require('sharetribe-flex-sdk');
 const { Money } = types;
 
@@ -30,6 +35,9 @@ const PROVIDER_COMMISSION_PERCENTAGE = -10;
 exports.transactionLineItems = (listing, bookingData) => {
   const unitPrice = listing.attributes.price;
   const { startDate, endDate } = bookingData;
+  const vatData = listing.attributes.publicData.vatData;
+  const hasVat =
+    listing.attributes.publicData.vatData && listing.attributes.publicData.vatData[0]?.vat;
 
   /**
    * If you want to use pre-defined component and translations for printing the lineItems base price for booking,
@@ -46,15 +54,47 @@ exports.transactionLineItems = (listing, bookingData) => {
     quantity: 1, //calculateQuantityFromHours(startDate, endDate),
     includeFor: ['customer', 'provider'],
   };
+  let vat = [];
+  if (hasVat) {
+    vatData.forEach(v => {
+      const item = {
+        code: `line-item/${v.vatType} ${v.vat}%`,
+        unitPrice: resolveVatPrice(unitPrice, v),
+        quantity: 1,
+        includeFor: ['customer', 'provider'],
+      };
+      vat.push(item);
+    });
+  }
+  // const vatPrice = hasVat ? resolveVatPrice(unitPrice, listing) : null;
+  // const vat = vatPrice
+  //   ? [
+  //       {
+  //         code: 'line-item/vat',
+  //         unitPrice: vatPrice,
+  //         quantity: 1,
+  //         includeFor: ['customer', 'provider'],
+  //       },
+  //       {
+  //         code: 'line-item/vat2',
+  //         unitPrice: vatPrice,
+  //         quantity: 1,
+  //         includeFor: ['customer', 'provider'],
+  //       },
+  //     ]
+  //   : [];
 
   const providerCommission = {
     code: 'line-item/provider-commission',
-    unitPrice: calculateTotalFromLineItems([booking]),
-    percentage: PROVIDER_COMMISSION_PERCENTAGE,
+    // unitPrice: calculateTotalFromLineItems([booking, ...vat]),
+    unitPrice: calculateCommission([booking, ...vat]),
+    // percentage: PROVIDER_COMMISSION_PERCENTAGE,
+    quantity: 1,
     includeFor: ['provider'],
   };
 
-  const lineItems = [booking, providerCommission];
+  // const lineItems = [booking, providerCommission];
+  const lineItems = [booking, ...vat, providerCommission];
 
   return lineItems;
 };

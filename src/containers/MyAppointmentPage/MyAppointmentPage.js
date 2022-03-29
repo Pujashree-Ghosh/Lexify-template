@@ -67,7 +67,7 @@ export const txState = (intl, tx, type) => {
   } else if (txHasBeenDelivered(tx)) {
     return 'complete';
   } else if (txIsRescheduled(tx)) {
-    return 'complete';
+    return 'upcoming';
   } else {
     console.warn('This transition is unknown:', tx.attributes.lastTransition);
     return null;

@@ -39,7 +39,21 @@ import {
   NamedRedirect,
   Page,
   ResponsiveImage,
+  Avatar,
+  BookingTimeInfo,
+  NotificationBadge,
+  PaginationLinks,
+  TabNav,
+  LayoutSideNavigation,
+  LayoutWrapperMain,
+  LayoutWrapperTopbar,
+  LayoutWrapperFooter,
+  LayoutSingleColumn,
+  Footer,
+  BookingPanel,
 } from '../../components';
+import { TopbarContainer, NotFoundPage } from '../../containers';
+
 import { StripePaymentForm } from '../../forms';
 import { isScrollingDisabled } from '../../ducks/UI.duck';
 import { confirmCardPayment, retrievePaymentIntent } from '../../ducks/stripe.duck';
@@ -249,6 +263,7 @@ export class CheckoutPageComponent extends Component {
             listingId,
             bookingStart,
             bookingEnd,
+            hasVat: pageData.listing.attributes.publicData.vatData,
           },
           transactionId
         );
@@ -258,6 +273,7 @@ export class CheckoutPageComponent extends Component {
             listingId,
             bookingStart,
             bookingEnd,
+            hasVat: pageData.listing.attributes.publicData.vatData,
             protectedData: {
               customerToken,
               providerToken,
@@ -454,6 +470,7 @@ export class CheckoutPageComponent extends Component {
       bookingEnd: tx.booking.attributes.end,
       protectedData: tx.attributes.protectedData,
       quantity: pageData.bookingData ? pageData.bookingData.quantity : null,
+      hasVat: pageData.listing.attributes.publicData.vatData,
       ...optionalPaymentParams,
     };
 
@@ -603,22 +620,23 @@ export class CheckoutPageComponent extends Component {
     const title = intl.formatMessage({ id: 'CheckoutPage.title' }, { listingTitle });
 
     const pageProps = { title, scrollingDisabled };
-    const topbar = (
-      <div className={css.topbar}>
-        <NamedLink className={css.home} name="LandingPage">
-          <Logo
-            className={css.logoMobile}
-            title={intl.formatMessage({ id: 'CheckoutPage.goToLandingPage' })}
-            format="mobile"
-          />
-          <Logo
-            className={css.logoDesktop}
-            alt={intl.formatMessage({ id: 'CheckoutPage.goToLandingPage' })}
-            format="desktop"
-          />
-        </NamedLink>
-      </div>
-    );
+    const topbar = <TopbarContainer />;
+    // (
+    //   <div className={css.topbar}>
+    //     <NamedLink className={css.home} name="LandingPage">
+    //       {/* <Logo
+    //         className={css.logoMobile}
+    //         title={intl.formatMessage({ id: 'CheckoutPage.goToLandingPage' })}
+    //         format="mobile"
+    //       /> */}
+    //       <Logo
+    //         className={css.logoDesktop}
+    //         alt={intl.formatMessage({ id: 'CheckoutPage.goToLandingPage' })}
+    //         format="desktop"
+    //       />
+    //     </NamedLink>
+    //   </div>
+    // );
 
     if (isLoading) {
       return <Page {...pageProps}>{topbar}</Page>;
@@ -828,9 +846,11 @@ export class CheckoutPageComponent extends Component {
 
     return (
       <Page {...pageProps}>
-        {topbar}
-        <div className={css.contentContainer}>
-          {/* <div className={css.aspectWrapper}>
+        <LayoutSingleColumn className={css.pageRoot}>
+          <LayoutWrapperTopbar>{topbar}</LayoutWrapperTopbar>
+          <LayoutWrapperMain>
+            <div className={css.contentContainer}>
+              {/* <div className={css.aspectWrapper}>
             <ResponsiveImage
               rootClassName={css.rootForImage}
               alt={listingTitle}
@@ -838,66 +858,68 @@ export class CheckoutPageComponent extends Component {
               variants={['landscape-crop', 'landscape-crop2x']}
             />
           </div> */}
-          <div className={classNames(css.avatarWrapper, css.avatarMobile)}>
-            <AvatarMedium user={currentAuthor} disableProfileLink />
-          </div>
-          <div className={css.bookListingContainer}>
-            <div className={css.heading}>
-              <h1 className={css.title}>{title}</h1>
-            </div>
+              <div className={classNames(css.avatarWrapper, css.avatarMobile)}>
+                <AvatarMedium user={currentAuthor} disableProfileLink />
+              </div>
+              <div className={css.bookListingContainer}>
+                <div className={css.heading}>
+                  <h1 className={css.title}>{title}</h1>
+                </div>
 
-            <div className={css.priceBreakdownContainer}>
-              {speculateTransactionErrorMessage}
-              {breakdown}
-            </div>
+                <div className={css.priceBreakdownContainer}>
+                  {speculateTransactionErrorMessage}
+                  {breakdown}
+                </div>
 
-            <section className={css.paymentContainer}>
-              {initiateOrderErrorMessage}
-              {listingNotFoundErrorMessage}
-              {speculateErrorMessage}
-              {retrievePaymentIntentError ? (
-                <p className={css.orderError}>
-                  <FormattedMessage
-                    id="CheckoutPage.retrievingStripePaymentIntentFailed"
-                    values={{ listingLink }}
-                  />
-                </p>
-              ) : null}
-              {showPaymentForm ? (
-                <StripePaymentForm
-                  className={css.paymentForm}
-                  onSubmit={this.handleSubmit}
-                  inProgress={this.state.submitting}
-                  formId="CheckoutPagePaymentForm"
-                  paymentInfo={intl.formatMessage({ id: 'CheckoutPage.paymentInfo' })}
-                  authorDisplayName={currentAuthor.attributes.profile.displayName}
-                  showInitialMessageInput={showInitialMessageInput}
-                  initialValues={initalValuesForStripePayment}
-                  initiateOrderError={initiateOrderError}
-                  confirmCardPaymentError={confirmCardPaymentError}
-                  confirmPaymentError={confirmPaymentError}
-                  hasHandledCardPayment={hasPaymentIntentUserActionsDone}
-                  loadingData={!stripeCustomerFetched}
-                  defaultPaymentMethod={
-                    hasDefaultPaymentMethod ? currentUser.stripeCustomer.defaultPaymentMethod : null
-                  }
-                  paymentIntent={paymentIntent}
-                  onStripeInitialized={this.onStripeInitialized}
-                />
-              ) : null}
-              {isPaymentExpired ? (
-                <p className={css.orderError}>
-                  <FormattedMessage
-                    id="CheckoutPage.paymentExpiredMessage"
-                    values={{ listingLink }}
-                  />
-                </p>
-              ) : null}
-            </section>
-          </div>
+                <section className={css.paymentContainer}>
+                  {initiateOrderErrorMessage}
+                  {listingNotFoundErrorMessage}
+                  {speculateErrorMessage}
+                  {retrievePaymentIntentError ? (
+                    <p className={css.orderError}>
+                      <FormattedMessage
+                        id="CheckoutPage.retrievingStripePaymentIntentFailed"
+                        values={{ listingLink }}
+                      />
+                    </p>
+                  ) : null}
+                  {showPaymentForm ? (
+                    <StripePaymentForm
+                      className={css.paymentForm}
+                      onSubmit={this.handleSubmit}
+                      inProgress={this.state.submitting}
+                      formId="CheckoutPagePaymentForm"
+                      paymentInfo={intl.formatMessage({ id: 'CheckoutPage.paymentInfo' })}
+                      authorDisplayName={currentAuthor.attributes.profile.displayName}
+                      showInitialMessageInput={showInitialMessageInput}
+                      initialValues={initalValuesForStripePayment}
+                      initiateOrderError={initiateOrderError}
+                      confirmCardPaymentError={confirmCardPaymentError}
+                      confirmPaymentError={confirmPaymentError}
+                      hasHandledCardPayment={hasPaymentIntentUserActionsDone}
+                      loadingData={!stripeCustomerFetched}
+                      defaultPaymentMethod={
+                        hasDefaultPaymentMethod
+                          ? currentUser.stripeCustomer.defaultPaymentMethod
+                          : null
+                      }
+                      paymentIntent={paymentIntent}
+                      onStripeInitialized={this.onStripeInitialized}
+                    />
+                  ) : null}
+                  {isPaymentExpired ? (
+                    <p className={css.orderError}>
+                      <FormattedMessage
+                        id="CheckoutPage.paymentExpiredMessage"
+                        values={{ listingLink }}
+                      />
+                    </p>
+                  ) : null}
+                </section>
+              </div>
 
-          <div className={css.detailsContainerDesktop}>
-            {/* <div className={css.detailsAspectWrapper}>
+              <div className={css.detailsContainerDesktop}>
+                {/* <div className={css.detailsAspectWrapper}>
               <ResponsiveImage
                 rootClassName={css.rootForImage}
                 alt={listingTitle}
@@ -905,17 +927,22 @@ export class CheckoutPageComponent extends Component {
                 variants={['landscape-crop', 'landscape-crop2x']}
               />
             </div> */}
-            <div className={css.avatarWrapper}>
-              <AvatarMedium user={currentAuthor} disableProfileLink />
+                <div className={css.avatarWrapper}>
+                  <AvatarMedium user={currentAuthor} disableProfileLink />
+                </div>
+                <div className={css.detailsHeadings}>
+                  <h2 className={css.detailsTitle}>{listingTitle}</h2>
+                  <p className={css.detailsSubtitle}>{detailsSubTitle}</p>
+                </div>
+                {speculateTransactionErrorMessage}
+                {breakdown}
+              </div>
             </div>
-            <div className={css.detailsHeadings}>
-              <h2 className={css.detailsTitle}>{listingTitle}</h2>
-              <p className={css.detailsSubtitle}>{detailsSubTitle}</p>
-            </div>
-            {speculateTransactionErrorMessage}
-            {breakdown}
-          </div>
-        </div>
+          </LayoutWrapperMain>
+          <LayoutWrapperFooter>
+            <Footer />
+          </LayoutWrapperFooter>
+        </LayoutSingleColumn>
       </Page>
     );
   }

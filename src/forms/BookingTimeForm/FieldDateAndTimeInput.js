@@ -357,7 +357,7 @@ class FieldDateAndTimeInput extends Component {
 
     this.state.timeSlots.map(m => {
       let start = moment();
-      console.log(start);
+      // console.log(start);
       if (
         Number(
           moment(m.attributes.start)

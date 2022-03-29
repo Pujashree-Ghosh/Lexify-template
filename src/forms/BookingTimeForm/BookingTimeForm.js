@@ -134,7 +134,6 @@ export class BookingTimeFormComponent extends Component {
             'DD/MM/YYYY HH:mm:ss'
           ).format();
           const expiry = moment(expTime).toDate();
-          console.log(moment(expTime).toDate());
           const bookingStartLabel = intl.formatMessage({
             id: 'BookingTimeForm.bookingStartTitle',
           });
