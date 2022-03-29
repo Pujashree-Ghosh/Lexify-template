@@ -267,7 +267,7 @@ export const MyAppointmentPageComponent = props => {
             {!fetchInProgress ? (
               transactions.map(toTxItem)
             ) : (
-              <li className={css.listItemsLoading}>
+              <li className={css.listItemsLoading}>  
                 <IconSpinner />
               </li>
             )}
