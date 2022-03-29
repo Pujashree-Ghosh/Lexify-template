@@ -57,13 +57,13 @@ export default function ToggleScreenShareButton(props) {
         {/* The span element is needed because a disabled button will not emit hover events and we want to display
           a tooltip when screen sharing is disabled */}
         <Button
-          className={classes.button}
+          className={`${classes.button} btnmod shareicon`}
           onClick={toggleScreenShare}
           disabled={isDisabled}
           startIcon={isSharingScreen ? <StopScreenShareIcon /> : <ScreenShareIcon />}
           data-cy-share-screen
         >
-          {isSharingScreen ? STOP_SCREEN_SHARE_TEXT : SCREEN_SHARE_TEXT}
+          {/* {isSharingScreen ? STOP_SCREEN_SHARE_TEXT : SCREEN_SHARE_TEXT} */}
         </Button>
       </span>
     </Tooltip>

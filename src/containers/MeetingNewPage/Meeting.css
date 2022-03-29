@@ -48,4 +48,27 @@
   position: absolute;
   z-index: 99;
   padding: 20px 8px;
+  @media (max-width: 991px) {
+    top: 30px;
+  }
+}
+.btnmod span span {
+  margin-right: 0;
+}
+/* .btnmod span span svg {
+  height: 28px;
+  width: 30px;
+} */
+.shareicon {
+  margin: 0 !important;
+  padding: 14px 0 !important;
+}
+button.vid-end-btn {
+  background: red;
+  color: #fff;
+  border-radius: 30px;
+  font-size: 22px;
+  @media (max-width: 959px) {
+    margin: 15px 0;
+  }
 }
