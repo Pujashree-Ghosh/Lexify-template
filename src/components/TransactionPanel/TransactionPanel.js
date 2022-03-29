@@ -1009,9 +1009,9 @@ export class TransactionPanelComponent extends Component {
                 This is a button
               </button> */}
 
-              {stateData.showSaleButtons ? (
+              {/* {stateData.showSaleButtons ? (
                 <div className={css.desktopActionButtons}>{saleButtons}</div>
-              ) : null}
+              ) : null} */}
             </div>
           </div>
         </div>
