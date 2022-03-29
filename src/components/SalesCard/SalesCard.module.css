@@ -241,11 +241,11 @@
 
 .statuspending {
   background-color: #fbebb3;
-  color: #d6a700;
+  color: #836701;
 }
 
 .statuscom {
-  background-color: var(--successColor);
+  background-color: #c4c4c4;
   color: #4e4e4e;
 }
 .statusContainer {
