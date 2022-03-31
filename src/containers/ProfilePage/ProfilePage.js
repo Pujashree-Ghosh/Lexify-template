@@ -55,7 +55,7 @@ import biolocationIcon from '../../assets/material-location-on.svg';
 import biowebsite from '../../assets/feather-globe.svg';
 import biophone from '../../assets/zocial-call.svg';
 import biolinkedin from '../../assets/awesome-linkedin-in.svg';
-
+import ReactMultiSelectCheckboxes from 'react-multiselect-checkboxes';
 import css from './ProfilePage.module.css';
 import { loadData } from './ProfilePage.duck';
 // import CustomPaginate from '../CustomPaginate/CustomPaginate';
@@ -144,6 +144,7 @@ export class ProfilePageComponent extends Component {
       456,
       listings.map(m => m?.attributes?.publicData?.areaOfLaw)
     );
+    console.log(123, this.state.practiceAreaSort);
     const ensuredCurrentUser = ensureCurrentUser(currentUser);
     const profileUser = ensureUser(user);
     const isCurrentUser =
@@ -157,32 +158,37 @@ export class ProfilePageComponent extends Component {
     const page = queryParams ? queryParams.page : 1;
     const hasPaginationInfo = !!pagination && pagination.totalItems != null;
     const listingsAreLoaded = !queryInProgress && hasPaginationInfo;
-
-    const practiceAreaOptions = [
+    const practiceAreaCheckBoxOptions = [
       {
-        value: 'Contracts and Agreements',
-        label: 'Contracts and Agreements',
-        key: 'contractsAndAgreements',
+        value: 'contractsAndAgreements',
+        label: 'Contract And Agreements',
       },
-      { key: 'employeeBenefits', value: 'Employee Benefits', label: 'Employee Benefits' },
-      { key: 'employmentAndLabor', value: 'Employment And Labor', label: 'Employment And Labor' },
+      { value: 'employeeBenefits', label: 'Employee Benefits' },
+      { value: 'employmentAndLabor', label: 'Employment And Labor' },
     ];
 
-    const practiceAreaSortSelect = (
-      <Select
-        value={this.state.practiceAreaSort.key}
-        options={practiceAreaOptions}
-        isClearable={true}
-        isMulti={true}
-        onChange={e => {
-          this.setState({ practiceAreaSort: e?.map(e => e.key) });
-          onLoadData({
-            id: user.id.uuid,
-            practiceAreaSort: e?.map(e => e.key),
-          });
-        }}
-      ></Select>
+    const practiceAreaSortSelectCheckbox = (
+      <div className={css.areaOfLawFilter}>
+        <label className={css.label}>Area of Law</label>
+        <ReactMultiSelectCheckboxes
+          // value={this.state.practiceAreaSort?.key}
+          isClearable={true}
+          options={practiceAreaCheckBoxOptions}
+          className={css.aofftd}
+          // isMulti={true}
+          onChange={e => {
+            e === null
+              ? this.setState({ practiceAreaSort: '' })
+              : this.setState({ practiceAreaSort: e?.map(e => e?.value) });
+            onLoadData({
+              id: user.id.uuid,
+              practiceAreaSort: e?.map(e => e?.value),
+            });
+          }}
+        />
+      </div>
     );
+
     const noResults =
       listingsAreLoaded && pagination.totalItems <= 1 ? (
         <h1 className={css.title}>
@@ -562,14 +568,14 @@ export class ProfilePageComponent extends Component {
                 </div>
               ) : (
                 <div className={listingsContainerClasses}>
-                  <h2 className={css.listingsTitle}>
+                  <h1 className={css.listingsTitle}>
                     {/* <FormattedMessage
                       id="ProfilePage.listingsTitle"
                       values={{ count: listings.length }}
                     /> */}
                     Consultations provided by {user?.attributes?.profile?.displayName}
-                  </h2>
-                  {practiceAreaSortSelect}
+                  </h1>
+                  {practiceAreaSortSelectCheckbox}
                   {/* {queryInProgress ? loadingResults : null}
                   {queryListingsError ? queryError : null} */}
 

@@ -296,6 +296,26 @@
   border-radius: 6px;
   color: #4e4e4e;
 }
+.areaOfLawFilter {
+  flex-basis: 33%;
+  max-width: 33%;
+  @media (max-width: 767px) {
+    flex-basis: 100%;
+    max-width: 100%;
+  }
+}
+.areaOfLawFilter button {
+  width: 100%;
+  min-height: 46px;
+  border: 1px solid hsl(0, 0%, 80%);
+  border-radius: 4px;
+  font-size: 15px;
+  box-shadow: none;
+  padding-top: 3px;
+  @media (max-width: 767px) {
+    min-height: 38px;
+  }
+}
 .cncol1 {
   display: flex;
   margin: 0 0 30px;
@@ -350,6 +370,11 @@
 .sectionprofin label {
   color: #000;
   font-size: 16px;
+}
+.label {
+  text-shadow: #4a4a4a;
+  font-size: 14px;
+  padding: 5px;
 }
 .profDetail {
   @media (max-width: 575px) {
