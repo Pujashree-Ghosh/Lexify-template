@@ -9,7 +9,7 @@ import SignalHelper from '../../../util/signalHelper';
 export default function useParticipants() {
   const { room } = useVideoContext();
   const dominantSpeaker = useDominantSpeaker();
-  const [participants, setParticipants] = useState(Array.from(room.participants.values()));
+  const [participants, setParticipants] = useState(Array.from(room?.participants?.values()));
   const stateData = useContext(ListingContext);
   // When the dominant speaker changes, they are moved to the front of the participants array.
   // This means that the most recent dominant speakers will always be near the top of the

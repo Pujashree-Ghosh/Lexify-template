@@ -16,31 +16,31 @@ const SelectedParticipantProviderProps = {
 };
 
 export function SelectedParticipantProvider({ room, children }) {
-  // const [selectedParticipant, _setSelectedParticipant] = (useState < Participant) | (null > null);
-  // const setSelectedParticipant = participant =>
-  //   _setSelectedParticipant(prevParticipant =>
-  //     prevParticipant === participant ? null : participant
-  //   );
+  const [selectedParticipant, _setSelectedParticipant] = useState(null);
+  const setSelectedParticipant = participant =>
+    _setSelectedParticipant(prevParticipant =>
+      prevParticipant === participant ? null : participant
+    );
 
-  // useEffect(() => {
-  //   const onDisconnect = () => _setSelectedParticipant(null);
-  //   const handleParticipantDisconnected = participant =>
-  //     _setSelectedParticipant(prevParticipant =>
-  //       prevParticipant === participant ? null : prevParticipant
-  //     );
+  useEffect(() => {
+    const onDisconnect = () => _setSelectedParticipant(null);
+    const handleParticipantDisconnected = participant =>
+      _setSelectedParticipant(prevParticipant =>
+        prevParticipant === participant ? null : prevParticipant
+      );
 
-  //   room.on('disconnected', onDisconnect);
-  //   room.on('participantDisconnected', handleParticipantDisconnected);
-  //   return () => {
-  //     room.off('disconnected', onDisconnect);
-  //     room.off('participantDisconnected', handleParticipantDisconnected);
-  //   };
-  // }, [room]);
+    room.on('disconnected', onDisconnect);
+    room.on('participantDisconnected', handleParticipantDisconnected);
+    return () => {
+      room.off('disconnected', onDisconnect);
+      room.off('participantDisconnected', handleParticipantDisconnected);
+    };
+  }, [room]);
 
   return (
-    // <selectedParticipantContext.Provider value={[selectedParticipant, setSelectedParticipant]}>
-    //   {children}
-    // </selectedParticipantContext.Provider>
-    <div>{children}</div>
+    <selectedParticipantContext.Provider value={[selectedParticipant, setSelectedParticipant]}>
+      {children}
+    </selectedParticipantContext.Provider>
+    // <div>{children}</div>
   );
 }
