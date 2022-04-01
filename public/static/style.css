@@ -17,12 +17,15 @@
     font-size: 18px;
         
 }
-.css-1vr111p-option {
+.css-1vr111p-option,
+.css-1qprcsu-option {
   display: flex !important;
   font-size: 14px !important;
   align-items: center !important;
+  font-weight: 400 !important;
 }
-.css-1vr111p-option input {
+.css-1vr111p-option input,
+.css-1qprcsu-option input  {
   width: 16px;
 }
 @media (min-width: 1440px) {

@@ -1,9 +1,9 @@
 import React from 'react';
 import css from './Chatbody.module.css';
 import { RiCloseFill } from 'react-icons/ri';
+import moment from 'moment-timezone';
 
 function Chat({ sideChat, closeChat, updateText, sendMessage, text, messages }) {
-  // console.log(777, messages);
   return (
     <div className={sideChat ? css.backdrop : css.disable}>
       <div className={css.chatopen}>
@@ -27,7 +27,8 @@ function Chat({ sideChat, closeChat, updateText, sendMessage, text, messages }) 
                   >
                     <div className={css.aut}>{m.author}</div>
                     <div className={css.msgcnt}>{m.text}</div>
-                    <div className={css.datetm}>{m.dateUpdated}</div>
+
+                    <div className={css.datetm}>{moment(m.dateUpdated).format('lll')}</div>
                   </div>
                 ))}
           </div>

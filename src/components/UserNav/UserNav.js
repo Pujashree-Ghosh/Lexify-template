@@ -68,19 +68,20 @@ const UserNav = props => {
         },
       },
       {
-        text: <FormattedMessage id="UserNav.yourListings" />,
-        selected: selectedPageName === 'ManageListingsPage',
-        linkProps: {
-          name: 'ManageListingsPage',
-        },
-      },
-      {
         text: <FormattedMessage id="UserNav.sales" />,
         selected: selectedPageName === 'SalesBasepage',
         linkProps: {
           name: 'SalesBasepage',
         },
       },
+      {
+        text: <FormattedMessage id="UserNav.yourListings" />,
+        selected: selectedPageName === 'ManageListingsPage',
+        linkProps: {
+          name: 'ManageListingsPage',
+        },
+      },
+
       {
         text: <FormattedMessage id="UserNav.PromotionPage" />,
         selected: selectedPageName === 'PromotionPage',

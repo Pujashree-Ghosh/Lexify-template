@@ -8,11 +8,11 @@ function ChatButton({ openChatbar, newmessage, sideChat }) {
     <div className={css.chbtntw}>
       <button className={css.button} onClick={openChatbar}>
         {newmessage && sideChat ? null : newmessage ? (
-          <span className="msgpop" style={{ fontSize: '20px' }}>
-            *
-          </span>
+          <div className={css.notificationDot} />
         ) : null}
+
         <BsChatText />
+
         {/* chat */}
       </button>
     </div>
