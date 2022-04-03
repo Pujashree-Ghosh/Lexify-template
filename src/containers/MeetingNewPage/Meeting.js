@@ -634,7 +634,7 @@ const Meeting = props => {
               daysInHours={true}
               renderer={props => (
                 <div className={css.timer}>
-                  {props.hours === 0 && props.minutes === 0 && props.seconds === 0 ? null : (
+                  {/* {props.hours === 0 && props.minutes === 0 && props.seconds === 0 ? null : (
                     <div className="timerMessage">
                       <h1>
                         {moment(currentTime).isAfter(actualEndTime)
@@ -644,7 +644,7 @@ const Meeting = props => {
                         {props.seconds < 10 ? `0${props.seconds}` : props.seconds}
                       </h1>
                     </div>
-                  )}
+                  )} */}
                 </div>
               )}
               onComplete={() => {

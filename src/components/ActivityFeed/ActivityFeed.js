@@ -402,6 +402,7 @@ export const ActivityFeedComponent = props => {
     fetchMessagesInProgress,
     intl,
   } = props;
+
   const classes = classNames(rootClassName || css.root, className);
   const currentTransaction = ensureTransaction(transaction);
   const transitions = currentTransaction.attributes.transitions

@@ -54,7 +54,7 @@ const EditListingClientIdPanel = props => {
   );
 
   const type = publicData && publicData.type ? publicData.type : 'solicited';
-  const clientId = publicData && publicData.clientId.length > 0 ? publicData.clientId : [''];
+  const clientId = publicData && publicData?.clientId?.length > 0 ? publicData.clientId : [''];
   const startDate =
     publicData && publicData.startDate ? { date: moment(publicData.startDate).toDate() } : '';
   const endDate =
