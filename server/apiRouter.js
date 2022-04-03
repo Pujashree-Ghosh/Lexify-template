@@ -37,7 +37,7 @@ const publishPublicListing = require('./api/publish-public-listing');
 const globalAvailability = require('./api/globalAvailability');
 const sortOwnListings = require('./api/sortOwnListings');
 const updateClientId = require('./api/update-client-id');
-
+const showListingsAuthor = require('./api/show-listings-author');
 const { getTwilioToken } = require('./api/twilio');
 const { listingExceptionCreate, listingExceptionDelete } = require('./api/unsolicitedException');
 
@@ -85,7 +85,7 @@ router.delete('/deleteException', deleteException);
 router.post('/sortOwnListings', sortOwnListings);
 router.post('/updateClientId', updateClientId);
 router.post('/getTwilioToken', getTwilioToken);
-
+router.post('/showListingsAuthor', showListingsAuthor);
 router.post('/createProviderListing', createProviderListing);
 router.post('/updateProviderListing', updateProviderListing);
 router.post('/publishPublicListing', publishPublicListing);

@@ -310,7 +310,6 @@ const Transition = props => {
     onOpenReviewModal
   );
   const currentTransition = transition.transition;
-
   const deletedReviewContent = intl.formatMessage({ id: 'ActivityFeed.deletedReviewContent' });
   let reviewComponent = null;
 
@@ -404,10 +403,9 @@ export const ActivityFeedComponent = props => {
     intl,
   } = props;
   const classes = classNames(rootClassName || css.root, className);
-
   const currentTransaction = ensureTransaction(transaction);
   const transitions = currentTransaction.attributes.transitions
-    ? currentTransaction.attributes.transitions
+    ? currentTransaction.attributes.transitions?.filter(t => t.transition !== 'transition/accept')
     : [];
   const currentCustomer = ensureUser(currentTransaction.customer);
   const currentProvider = ensureUser(currentTransaction.provider);
@@ -420,7 +418,6 @@ export const ActivityFeedComponent = props => {
     currentProvider.id &&
     currentListing.id
   );
-
   // combine messages and transaction transitions
   const items = organizedItems(messages, transitions, hasOlderMessages || fetchMessagesInProgress);
 
