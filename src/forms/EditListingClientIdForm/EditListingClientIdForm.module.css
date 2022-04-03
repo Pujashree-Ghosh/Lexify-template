@@ -104,3 +104,8 @@
     }
   }
 }
+.endTime :disabled {
+  border-bottom: 2px solid var(--successColor);
+  color: var(--matterColor);
+  cursor: not-allowed;
+}

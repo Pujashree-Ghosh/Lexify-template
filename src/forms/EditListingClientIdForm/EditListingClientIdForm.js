@@ -432,7 +432,7 @@ const EditListingClientIdFormComponent = props => (
                       id="endHour"
                       name="endHour"
                       // label={endTimeLabel}
-                      className={css.bookingDates}
+                      className={css.endTime}
                       validate={composeValidators(required('End hour is required'))}
                       disabled={duration ? true : false}
                     >
@@ -446,7 +446,7 @@ const EditListingClientIdFormComponent = props => (
                       id="endHour"
                       name="endHour"
                       // label={endTimeLabel}
-                      className={css.bookingDates}
+                      className={css.endTime}
                       validate={composeValidators(required('End hour is required'))}
                       disabled={duration ? true : false}
                     >
@@ -460,7 +460,7 @@ const EditListingClientIdFormComponent = props => (
                       id="endHour"
                       name="endHour"
                       // label={endTimeLabel}
-                      className={css.bookingDates}
+                      className={css.endTime}
                       validate={composeValidators(required('End hour is required'))}
                       disabled={duration ? true : false}
                     >
