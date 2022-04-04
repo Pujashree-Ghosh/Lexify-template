@@ -7,7 +7,10 @@ import Button from '@material-ui/core/Button';
 function ChatButton({ openChatbar, newmessage, sideChat }) {
   return (
     <div className={css.chbtntw}>
-      <Button className={css.btnmod} onClick={openChatbar}>
+      <Button
+        className={!sideChat ? css.btnmod : `${css.btnmod} ${css.active}`}
+        onClick={openChatbar}
+      >
         {newmessage && sideChat ? null : newmessage ? (
           <div className={css.notificationDot} />
         ) : null}
