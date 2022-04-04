@@ -14,6 +14,8 @@ import {
   TRANSITION_COMPLETE,
   TRANSITION_CANCEL_PROVIDER,
   TRANSITION_CANCEL_CUSTOMER,
+  TRANSITION_CANCEL_PROVIDER_ORAL,
+  TRANSITION_CANCEL_CUSTOMER_ORAL,
   TRANSITION_RESCHEDULE_PROVIDER,
   TRANSITION_RESCHEDULE_CUSTOMER,
 } from '../../util/transaction';
@@ -712,6 +714,60 @@ export const cancelSaleProvider = id => (dispatch, getState, sdk) => {
       log.error(e, 'cancel-sale-provider-failed', {
         txId: id,
         transition: TRANSITION_CANCEL_PROVIDER,
+      });
+      throw e;
+    });
+};
+
+export const cancelSaleCustomerOral = id => (dispatch, getState, sdk) => {
+  if (acceptOrDeclineInProgress(getState())) {
+    return Promise.reject(new Error('Accept or decline already in progress'));
+  }
+  dispatch(cancelSaleCustomerRequest());
+
+  return sdk.transactions
+    .transition({ id, transition: TRANSITION_CANCEL_CUSTOMER_ORAL, params: {} }, { expand: true })
+    .then(response => {
+      axios.delete(`${apiBaseUrl()}/api/booking/deleteBooking`, {
+        data: { orderId: response.data.data.id.uuid },
+      });
+      dispatch(addMarketplaceEntities(response));
+      dispatch(cancelSaleCustomerSuccess());
+      dispatch(fetchCurrentUserNotifications());
+      return response;
+    })
+    .catch(e => {
+      dispatch(cancelSaleCustomerError(storableError(e)));
+      log.error(e, 'cancel-sale-customer-failed', {
+        txId: id,
+        transition: TRANSITION_CANCEL_CUSTOMER_ORAL,
+      });
+      throw e;
+    });
+};
+
+export const cancelSaleProviderOral = id => (dispatch, getState, sdk) => {
+  if (acceptOrDeclineInProgress(getState())) {
+    return Promise.reject(new Error('Accept or decline already in progress'));
+  }
+  dispatch(cancelSaleProviderRequest());
+
+  return sdk.transactions
+    .transition({ id, transition: TRANSITION_CANCEL_PROVIDER_ORAL, params: {} }, { expand: true })
+    .then(response => {
+      axios.delete(`${apiBaseUrl()}/api/booking/deleteBooking`, {
+        orderId: response.data.data.id.uuid,
+      });
+      dispatch(addMarketplaceEntities(response));
+      dispatch(cancelSaleProviderSuccess());
+      dispatch(fetchCurrentUserNotifications());
+      return response;
+    })
+    .catch(e => {
+      dispatch(cancelSaleProviderError(storableError(e)));
+      log.error(e, 'cancel-sale-provider-failed', {
+        txId: id,
+        transition: TRANSITION_CANCEL_PROVIDER_ORAL,
       });
       throw e;
     });

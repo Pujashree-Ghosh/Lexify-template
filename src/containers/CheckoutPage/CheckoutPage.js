@@ -65,6 +65,7 @@ import {
   speculateTransaction,
   stripeCustomer,
   confirmPayment,
+  confirmPaymentOral,
   sendMessage,
 } from './CheckoutPage.duck';
 import { storeData, storedData, clearData } from './CheckoutPageSessionHelpers';
@@ -294,6 +295,7 @@ export class CheckoutPageComponent extends Component {
       onInitiateOrder,
       onConfirmCardPayment,
       onConfirmPayment,
+      onConfirmPaymentOral,
       onSendMessage,
       onSavePaymentMethod,
     } = this.props;
@@ -401,6 +403,11 @@ export class CheckoutPageComponent extends Component {
       return onConfirmPayment(fnParams);
     };
 
+    const fnConfirmPaymentOral = fnParams => {
+      createdPaymentIntent = fnParams.paymentIntent;
+      return onConfirmPaymentOral(fnParams);
+    };
+
     // Step 4: send initial message
     const fnSendMessage = fnParams => {
       return onSendMessage({ ...fnParams, message });
@@ -441,6 +448,13 @@ export class CheckoutPageComponent extends Component {
       fnSendMessage,
       fnSavePaymentMethod
     );
+    const handlePaymentIntentCreationOral = composeAsync(
+      fnRequestPayment,
+      fnConfirmCardPayment,
+      fnConfirmPaymentOral,
+      fnSendMessage,
+      fnSavePaymentMethod
+    );
 
     // Create order aka transaction
     // NOTE: if unit type is line-item/units, quantity needs to be added.
@@ -474,7 +488,9 @@ export class CheckoutPageComponent extends Component {
       ...optionalPaymentParams,
     };
 
-    return handlePaymentIntentCreation(orderParams);
+    return pageData.listing.attributes.publicData.category === 'customService'
+      ? handlePaymentIntentCreation(orderParams)
+      : handlePaymentIntentCreationOral(orderParams);
   }
 
   handleSubmit(values) {
@@ -1048,6 +1064,7 @@ const mapDispatchToProps = dispatch => ({
   onRetrievePaymentIntent: params => dispatch(retrievePaymentIntent(params)),
   onConfirmCardPayment: params => dispatch(confirmCardPayment(params)),
   onConfirmPayment: params => dispatch(confirmPayment(params)),
+  onConfirmPaymentOral: params => dispatch(confirmPaymentOral(params)),
   onSendMessage: params => dispatch(sendMessage(params)),
   onSavePaymentMethod: (stripeCustomer, stripePaymentMethodId) =>
     dispatch(savePaymentMethod(stripeCustomer, stripePaymentMethodId)),

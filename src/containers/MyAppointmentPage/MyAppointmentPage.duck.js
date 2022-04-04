@@ -79,7 +79,12 @@ export const loadData = (params, search) => (dispatch, getState, sdk) => {
     tab === 'pending'
       ? ['transition/pending-confirmation']
       : tab === 'upcoming'
-      ? ['transition/reschedule-customer', 'transition/reschedule-provider', 'transition/accept']
+      ? [
+          'transition/reschedule-customer',
+          'transition/reschedule-provider',
+          'transition/accept',
+          'transition/accept-oral',
+        ]
       : [
           'transition/complete',
           'transition/expire-review-period',

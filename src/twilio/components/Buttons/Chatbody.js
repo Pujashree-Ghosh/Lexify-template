@@ -52,18 +52,18 @@ function Chat({ sideChat, closeChat, updateText, sendMessage, text, messages }) 
                   >
                     <div className={css.aut}>{m.author}</div>
                     {validURL(m?.text) ? (
-                      <a
-                        href={m?.text}
-                        className={css.msgcnt}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {extractName(m?.text)}
-                      </a>
-                    ) : (
-                      //   <ExternalLink href={m?.text} className={css.msgcnt}>
+                      // <a
+                      //   href={m?.text}
+                      //   className={css.msgcnt}
+                      //   target="_blank"
+                      //   rel="noopener noreferrer"
+                      // >
                       //   {extractName(m?.text)}
-                      // </ExternalLink>
+                      // </a>
+                      <ExternalLink href={m?.text} className={css.msgcnt}>
+                        {extractName(m?.text)}
+                      </ExternalLink>
+                    ) : (
                       <div className={css.msgcnt}>{m.text}</div>
                     )}
                     {/* <div className={css.msgcnt}>{m.text}</div> */}
