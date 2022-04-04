@@ -38,6 +38,8 @@ import Button from '../Button/Button';
 import {
   cancelSaleCustomer,
   cancelSaleProvider,
+  cancelSaleCustomerOral,
+  cancelSaleProviderOral,
   rescheduleCustomer,
   rescheduleProvider,
 } from '../../containers/TransactionPage/TransactionPage.duck';
@@ -62,8 +64,12 @@ export const BookingBreakdownComponent = props => {
     intl,
     dateType,
     timeZone,
+    cancelCustomerInProgress,
+    cancelProviderInProgress,
     onCancelSaleCustomer,
     onCancelSaleProvider,
+    onCancelSaleCustomerOral,
+    onCancelSaleProviderOral,
     onRescheduleCustomer,
     onRescheduleProvider,
     onFetchTimeSlots,
@@ -80,7 +86,7 @@ export const BookingBreakdownComponent = props => {
   const isProvider = userRole === 'provider';
   const [showBookingPanel, setShowBookingPanel] = useState(false);
   useEffect(() => {
-    if (transaction.attributes.lastTransition === 'transition/accept') {
+    if (transaction.attributes.lastTransition === 'transition/accept-oral') {
       onLoadListingData(transaction?.listing?.id.uuid);
     }
   }, [transaction?.listing?.id.uuid]);
@@ -156,6 +162,7 @@ export const BookingBreakdownComponent = props => {
   const durationMinute = transaction?.listing?.attributes?.publicData?.durationMinute;
   const duration = durationHour && durationMinute ? `${durationHour}.${durationMinute}` : '1';
   const tStart = transaction?.booking?.attributes?.start;
+  const category = transaction?.listing?.attributes?.publicData?.category;
 
   const onSubmit = () => {
     // console.log('clicked');
@@ -222,16 +229,50 @@ export const BookingBreakdownComponent = props => {
         </span>
       ) : null}
       {!showBookingPanel ? (
-        transaction?.attributes?.lastTransition === 'transition/accept' ||
-        transaction?.attributes?.lastTransition === 'transition/reschedule-customer' ||
-        transaction?.attributes?.lastTransition === 'transition/reschedule-provider' ? (
+        category === 'customService' ? (
+          transaction?.attributes?.lastTransition === 'transition/accept' ||
+          transaction?.attributes?.lastTransition === 'transition/reschedule-customer' ||
+          transaction?.attributes?.lastTransition === 'transition/reschedule-provider' ? (
+            isCustomer ? (
+              <Button
+                className={css.bkcnclbtn}
+                inProgress={cancelCustomerInProgress}
+                onClick={() => onCancelSaleCustomer(transaction.id)}
+              >
+                {' '}
+                Cancel
+              </Button>
+            ) : (
+              <Button
+                className={css.bkcnclbtn}
+                inProgress={cancelProviderInProgress}
+                onClick={() => onCancelSaleProvider(transaction.id)}
+              >
+                {' '}
+                Cancel
+              </Button>
+            )
+          ) : (
+            ''
+          )
+        ) : transaction?.attributes?.lastTransition === 'transition/accept-oral' ||
+          transaction?.attributes?.lastTransition === 'transition/reschedule-customer' ||
+          transaction?.attributes?.lastTransition === 'transition/reschedule-provider' ? (
           isCustomer ? (
-            <Button className={css.bkcnclbtn} onClick={() => onCancelSaleCustomer(transaction.id)}>
+            <Button
+              className={css.bkcnclbtn}
+              inProgress={cancelCustomerInProgress}
+              onClick={() => onCancelSaleCustomerOral(transaction.id)}
+            >
               {' '}
               Cancel
             </Button>
           ) : (
-            <Button className={css.bkcnclbtn} onClick={() => onCancelSaleProvider(transaction.id)}>
+            <Button
+              className={css.bkcnclbtn}
+              inProgress={cancelProviderInProgress}
+              onClick={() => onCancelSaleProviderOral(transaction.id)}
+            >
               {' '}
               Cancel
             </Button>
@@ -332,7 +373,7 @@ export const BookingBreakdownComponent = props => {
       )}
 
       {!showBookingPanel ? (
-        transaction?.attributes?.lastTransition === 'transition/accept' &&
+        transaction?.attributes?.lastTransition === 'transition/accept-oral' &&
         moment()
           .add(24, 'h')
           .isBefore(moment(tStart)) ? (
@@ -405,6 +446,8 @@ const mapDispatchToProps = dispatch => {
   return {
     onCancelSaleCustomer: transactionId => dispatch(cancelSaleCustomer(transactionId)),
     onCancelSaleProvider: transactionId => dispatch(cancelSaleProvider(transactionId)),
+    onCancelSaleCustomerOral: transactionId => dispatch(cancelSaleCustomerOral(transactionId)),
+    onCancelSaleProviderOral: transactionId => dispatch(cancelSaleProviderOral(transactionId)),
     onRescheduleCustomer: (transactionId, param) =>
       dispatch(rescheduleCustomer(transactionId, param)),
     onRescheduleProvider: (transactionId, param) =>

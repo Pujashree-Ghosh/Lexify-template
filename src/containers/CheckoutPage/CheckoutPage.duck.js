@@ -7,6 +7,7 @@ import {
   TRANSITION_REQUEST_PAYMENT,
   TRANSITION_REQUEST_PAYMENT_AFTER_ENQUIRY,
   TRANSITION_CONFIRM_PAYMENT,
+  TRANSITION_CONFIRM_PAYMENT_ORAL,
   isPrivileged,
 } from '../../util/transaction';
 import * as log from '../../util/log';
@@ -291,6 +292,34 @@ export const confirmPayment = orderParams => (dispatch, getState, sdk) => {
   const bodyParams = {
     id: orderParams.transactionId,
     transition: TRANSITION_CONFIRM_PAYMENT,
+    params: {},
+  };
+
+  return sdk.transactions
+    .transition(bodyParams)
+    .then(response => {
+      const order = response.data.data;
+      dispatch(confirmPaymentSuccess(order.id));
+      return order;
+    })
+    .catch(e => {
+      dispatch(confirmPaymentError(storableError(e)));
+      const transactionIdMaybe = orderParams.transactionId
+        ? { transactionId: orderParams.transactionId.uuid }
+        : {};
+      log.error(e, 'initiate-order-failed', {
+        ...transactionIdMaybe,
+      });
+      throw e;
+    });
+};
+
+export const confirmPaymentOral = orderParams => (dispatch, getState, sdk) => {
+  dispatch(confirmPaymentRequest());
+
+  const bodyParams = {
+    id: orderParams.transactionId,
+    transition: TRANSITION_CONFIRM_PAYMENT_ORAL,
     params: {},
   };
 

@@ -88,8 +88,8 @@ export default function DeviceSelectionScreen({
       // setTimeout(() => {
       // SignalHelper.emit('meeting', JSON.stringify({ status: 'open', isProvider }));
       if (typeof window !== undefined) {
-        console.log('socket----->>>>>', window.socket);
-        // window.socket && window.socket.emit('meeting-server', { status: 'open', isProvider });
+        // console.log('socket----->>>>>', window.socket);
+        window.socket && window.socket.emit('meeting-server', { status: 'open', isProvider });
       }
 
       // }, 1000);
