@@ -50,16 +50,29 @@
     {:name :action/stripe-capture-payment-intent}],
    :from :state/preauthorized,
    :to :state/accepted}
+   {:name :transition/confirm-payment-oral,
+   :actor :actor.role/customer,
+   :actions 
+    [{:name :action/stripe-confirm-payment-intent}],
+   :from :state/pending-payment,
+   :to :state/preauthorized-oral}
+   {:name :transition/accept-oral,
+    :at {:fn/timepoint [:time/first-entered-state :state/preauthorized-oral]},
+   :actions
+   [{:name :action/accept-booking}
+    {:name :action/stripe-capture-payment-intent}],
+   :from :state/preauthorized-oral,
+   :to :state/accepted-oral}
    {:name :transition/reschedule-customer,
     :actor :actor.role/customer,
     :actions [{:name :action/update-booking, :config {:type :time}}],
-    :from :state/accepted,
-    :to :state/accepted}
+    :from :state/accepted-oral,
+    :to :state/accepted-oral}
    {:name :transition/reschedule-provider,
    :actor :actor.role/provider,
     :actions [{:name :action/update-booking, :config {:type :time}}],
-    :from :state/accepted,
-    :to :state/accepted}
+    :from :state/accepted-oral,
+    :to :state/accepted-oral}
   ;; {:name :transition/accept,
   ;;  :actor :actor.role/provider,
   ;;  :actions
@@ -94,6 +107,11 @@
    :actions [],
    :from :state/accepted,
    :to :state/pending-confirmation}
+   {:name :transition/pending-confirmation-oral,
+   :at {:fn/timepoint [:time/booking-end]},
+   :actions [],
+   :from :state/accepted-oral,
+   :to :state/pending-confirmation}
   {:name :transition/complete,
    :actor :actor.role/customer,
    :actions [{:name :action/stripe-create-payout}],
@@ -112,15 +130,41 @@
    :actor :actor.role/provider,
    :actions
    [{:name :action/cancel-booking}
-    {:name :action/calculate-full-refund}],
+    {:name :action/calculate-full-refund}
+    {:name :action/stripe-refund-payment}],
    :from :state/accepted,
    :to :state/cancelled}
    {:name :transition/cancel-customer,
    :actor :actor.role/customer,
    :actions
    [{:name :action/cancel-booking}
-    {:name :action/calculate-full-refund}],
+    {:name :action/calculate-full-refund}
+    {:name :action/stripe-refund-payment}],
    :from :state/accepted,
+   :to :state/cancelled}
+   {:name :transition/cancel-oral,
+   :actor :actor.role/operator,
+   :actions
+   [{:name :action/cancel-booking}
+    {:name :action/calculate-full-refund}
+    {:name :action/stripe-refund-payment}],
+   :from :state/accepted-oral,
+   :to :state/cancelled}
+   {:name :transition/cancel-provider-oral,
+   :actor :actor.role/provider,
+   :actions
+   [{:name :action/cancel-booking}
+    {:name :action/calculate-full-refund}
+    {:name :action/stripe-refund-payment}],
+   :from :state/accepted-oral,
+   :to :state/cancelled}
+   {:name :transition/cancel-customer-oral,
+   :actor :actor.role/customer,
+   :actions
+   [{:name :action/cancel-booking}
+    {:name :action/calculate-full-refund}
+    {:name :action/stripe-refund-payment}],
+   :from :state/accepted-oral,
    :to :state/cancelled}
   {:name :transition/review-1-by-provider,
    :actor :actor.role/provider,

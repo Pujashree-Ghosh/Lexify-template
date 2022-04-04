@@ -116,6 +116,37 @@ io.on('connection', socket => {
     console.log('deletedUser ' + socket.id);
     console.log(connectedUsers[roomId].users.map(m => m.socketId));
   });
+
+  socket.on('meeting-server', data => {
+    console.log('meeting-server', data);
+    // if (data.status === 'close') {
+    //   connectedUsers[roomId].meetingRoom = connectedUsers[roomId].meetingRoom || [];
+    //   console.log(connectedUsers[roomId]);
+    //   const revIndex = connectedUsers[roomId].meetingRoom.findIndex(item => item === role);
+    //   console.log('revIndex', revIndex);
+    //   if (revIndex !== -1) {
+    //     let oldUsers = connectedUsers[roomId].meetingRoom;
+    //     oldUsers.splice(revIndex, 1);
+    //     connectedUsers[roomId].meetingRoom = oldUsers;
+    //     console.log(connectedUsers[roomId]);
+    //   }
+    // } else if (data.status === 'open') {
+    //   console.log(258, connectedUsers[roomId.actualStartTime]);
+    //   if (!connectedUsers[roomId].actualStartTime && data.isProvider) {
+    //     console.log(260);
+    //     connectedUsers[roomId].actualStartTime = Math.min(
+    //       new Date().getTime(),
+    //       connectedUsers[roomId].maxStartTime
+    //     );
+    //   }
+    //   connectedUsers[roomId] = connectedUsers[roomId] || {};
+    //   connectedUsers[roomId].meetingRoom = [role, ...(connectedUsers[roomId].meetingRoom || [])];
+    // }
+
+    // data.actualStartTime = connectedUsers[roomId].actualStartTime;
+    // console.log(data);
+    // io.in(roomId).emit('meeting', data);
+  });
 });
 
 const errorPage = fs.readFileSync(path.join(buildPath, '500.html'), 'utf-8');

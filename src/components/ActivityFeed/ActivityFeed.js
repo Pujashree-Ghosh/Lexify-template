@@ -15,15 +15,19 @@ import { formatDate } from '../../util/dates';
 import { ensureTransaction, ensureUser, ensureListing } from '../../util/data';
 import {
   TRANSITION_ACCEPT,
+  TRANSITION_ACCEPT_ORAL,
   TRANSITION_CANCEL,
   TRANSITION_CANCEL_PROVIDER,
   TRANSITION_CANCEL_CUSTOMER,
+  TRANSITION_CANCEL_PROVIDER_ORAL,
+  TRANSITION_CANCEL_CUSTOMER_ORAL,
   TRANSITION_RESCHEDULE_PROVIDER,
   TRANSITION_RESCHEDULE_CUSTOMER,
   TRANSITION_COMPLETE,
   TRANSITION_DECLINE,
   TRANSITION_EXPIRE,
   TRANSITION_CONFIRM_PAYMENT,
+  TRANSITION_CONFIRM_PAYMENT_ORAL,
   TRANSITION_REVIEW_1_BY_CUSTOMER,
   TRANSITION_REVIEW_1_BY_PROVIDER,
   TRANSITION_REVIEW_2_BY_CUSTOMER,
@@ -184,7 +188,22 @@ const resolveTransitionMessage = (
           values={{ displayName, listingTitle }}
         />
       );
+    case TRANSITION_CONFIRM_PAYMENT_ORAL:
+      return isOwnTransition ? (
+        <FormattedMessage id="ActivityFeed.ownTransitionRequest" values={{ listingTitle }} />
+      ) : (
+        <FormattedMessage
+          id="ActivityFeed.transitionRequest"
+          values={{ displayName, listingTitle }}
+        />
+      );
     case TRANSITION_ACCEPT:
+      return isOwnTransition ? (
+        <FormattedMessage id="ActivityFeed.ownTransitionAccept" />
+      ) : (
+        <FormattedMessage id="ActivityFeed.transitionAccept" values={{ displayName }} />
+      );
+    case TRANSITION_ACCEPT_ORAL:
       return isOwnTransition ? (
         <FormattedMessage id="ActivityFeed.ownTransitionAccept" />
       ) : (
@@ -205,6 +224,10 @@ const resolveTransitionMessage = (
     case TRANSITION_CANCEL_PROVIDER:
       return <FormattedMessage id="ActivityFeed.transitionCancelProvider" />;
     case TRANSITION_CANCEL_CUSTOMER:
+      return <FormattedMessage id="ActivityFeed.transitionCancelCustomer" />;
+    case TRANSITION_CANCEL_PROVIDER_ORAL:
+      return <FormattedMessage id="ActivityFeed.transitionCancelProvider" />;
+    case TRANSITION_CANCEL_CUSTOMER_ORAL:
       return <FormattedMessage id="ActivityFeed.transitionCancelCustomer" />;
     case TRANSITION_RESCHEDULE_PROVIDER:
       return <FormattedMessage id="ActivityFeed.transitionRescheduleProvider" />;

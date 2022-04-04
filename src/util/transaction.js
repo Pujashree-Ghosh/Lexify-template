@@ -24,6 +24,7 @@ export const TRANSITION_REQUEST_PAYMENT_AFTER_ENQUIRY = 'transition/request-paym
 // Therefore we need to make another transition to Marketplace API,
 // to tell that the payment is confirmed.
 export const TRANSITION_CONFIRM_PAYMENT = 'transition/confirm-payment';
+export const TRANSITION_CONFIRM_PAYMENT_ORAL = 'transition/confirm-payment-oral';
 
 // If the payment is not confirmed in the time limit set in transaction process (by default 15min)
 // the transaction will expire automatically.
@@ -32,6 +33,7 @@ export const TRANSITION_EXPIRE_PAYMENT = 'transition/expire-payment';
 // When the provider accepts or declines a transaction from the
 // SalePage, it is transitioned with the accept or decline transition.
 export const TRANSITION_ACCEPT = 'transition/accept';
+export const TRANSITION_ACCEPT_ORAL = 'transition/accept-oral';
 export const TRANSITION_DECLINE = 'transition/decline';
 
 // The backend automatically expire the transaction.
@@ -41,6 +43,9 @@ export const TRANSITION_EXPIRE = 'transition/expire';
 export const TRANSITION_CANCEL = 'transition/cancel';
 export const TRANSITION_CANCEL_PROVIDER = 'transition/cancel-provider';
 export const TRANSITION_CANCEL_CUSTOMER = 'transition/cancel-customer';
+export const TRANSITION_CANCEL_ORAL = 'transition/cancel-oral';
+export const TRANSITION_CANCEL_PROVIDER_ORAL = 'transition/cancel-provider-oral';
+export const TRANSITION_CANCEL_CUSTOMER_ORAL = 'transition/cancel-customer-oral';
 export const TRANSITION_RESCHEDULE_PROVIDER = 'transition/reschedule-provider';
 export const TRANSITION_RESCHEDULE_CUSTOMER = 'transition/reschedule-customer';
 export const TRANSITION_PENDING_CONFIRMATION = 'transition/pending-confirmation';
@@ -92,8 +97,10 @@ const STATE_ENQUIRY = 'enquiry';
 const STATE_PENDING_PAYMENT = 'pending-payment';
 const STATE_PAYMENT_EXPIRED = 'payment-expired';
 const STATE_PREAUTHORIZED = 'preauthorized';
+const STATE_PREAUTHORIZED_ORAL = 'preauthorized-oral';
 const STATE_DECLINED = 'declined';
 const STATE_ACCEPTED = 'accepted';
+const STATE_ACCEPTED_ORAL = 'accepted-oral';
 const STATE_CANCELED = 'canceled';
 const STATE_RESCHEDULE = 'rescheduled';
 const STATE_PENDING_CONFIRMATION = 'pending-confirmation';
@@ -138,6 +145,7 @@ const stateDescription = {
       on: {
         [TRANSITION_EXPIRE_PAYMENT]: STATE_PAYMENT_EXPIRED,
         [TRANSITION_CONFIRM_PAYMENT]: STATE_PREAUTHORIZED,
+        [TRANSITION_CONFIRM_PAYMENT_ORAL]: STATE_PREAUTHORIZED_ORAL,
       },
     },
 
@@ -149,6 +157,13 @@ const stateDescription = {
         [TRANSITION_ACCEPT]: STATE_ACCEPTED,
       },
     },
+    [STATE_PREAUTHORIZED_ORAL]: {
+      on: {
+        [TRANSITION_DECLINE]: STATE_DECLINED,
+        [TRANSITION_EXPIRE]: STATE_DECLINED,
+        [TRANSITION_ACCEPT_ORAL]: STATE_ACCEPTED_ORAL,
+      },
+    },
 
     [STATE_DECLINED]: {},
     [STATE_ACCEPTED]: {
@@ -156,6 +171,16 @@ const stateDescription = {
         [TRANSITION_CANCEL]: STATE_CANCELED,
         [TRANSITION_CANCEL_PROVIDER]: STATE_CANCELED,
         [TRANSITION_CANCEL_CUSTOMER]: STATE_CANCELED,
+        [TRANSITION_RESCHEDULE_PROVIDER]: STATE_RESCHEDULE,
+        [TRANSITION_RESCHEDULE_CUSTOMER]: STATE_RESCHEDULE,
+        [TRANSITION_PENDING_CONFIRMATION]: STATE_PENDING_CONFIRMATION,
+      },
+    },
+    [STATE_ACCEPTED_ORAL]: {
+      on: {
+        [TRANSITION_CANCEL_ORAL]: STATE_CANCELED,
+        [TRANSITION_CANCEL_PROVIDER_ORAL]: STATE_CANCELED,
+        [TRANSITION_CANCEL_CUSTOMER_ORAL]: STATE_CANCELED,
         [TRANSITION_RESCHEDULE_PROVIDER]: STATE_RESCHEDULE,
         [TRANSITION_RESCHEDULE_CUSTOMER]: STATE_RESCHEDULE,
         [TRANSITION_PENDING_CONFIRMATION]: STATE_PENDING_CONFIRMATION,
@@ -231,6 +256,7 @@ const getTransitionsToState = getTransitionsToStateFn(stateDescription);
 // This is needed to fetch transactions that need response from provider.
 // I.e. transactions which provider needs to accept or decline
 export const transitionsToRequested = getTransitionsToState(STATE_PREAUTHORIZED);
+export const transitionsToRequestedOral = getTransitionsToState(STATE_PREAUTHORIZED_ORAL);
 
 /**
  * Helper functions to figure out if transaction is in a specific state.
@@ -253,8 +279,14 @@ export const txIsPaymentExpired = tx =>
 export const txIsRequested = tx =>
   getTransitionsToState(STATE_PREAUTHORIZED).includes(txLastTransition(tx));
 
+export const txIsRequestedOral = tx =>
+  getTransitionsToState(STATE_PREAUTHORIZED_ORAL).includes(txLastTransition(tx));
+
 export const txIsAccepted = tx =>
   getTransitionsToState(STATE_ACCEPTED).includes(txLastTransition(tx));
+
+export const txIsAcceptedOral = tx =>
+  getTransitionsToState(STATE_ACCEPTED_ORAL).includes(txLastTransition(tx));
 
 export const txIsRescheduled = tx =>
   getTransitionsToState(STATE_RESCHEDULE).includes(txLastTransition(tx));
@@ -324,14 +356,19 @@ export const getReview2Transition = isCustomer =>
 export const isRelevantPastTransition = transition => {
   return [
     TRANSITION_ACCEPT,
+    TRANSITION_ACCEPT_ORAL,
     TRANSITION_CANCEL,
     TRANSITION_CANCEL_PROVIDER,
     TRANSITION_CANCEL_CUSTOMER,
+    TRANSITION_CANCEL_ORAL,
+    TRANSITION_CANCEL_PROVIDER_ORAL,
+    TRANSITION_CANCEL_CUSTOMER_ORAL,
     TRANSITION_RESCHEDULE_PROVIDER,
     TRANSITION_RESCHEDULE_CUSTOMER,
     TRANSITION_PENDING_CONFIRMATION,
     TRANSITION_COMPLETE,
     TRANSITION_CONFIRM_PAYMENT,
+    TRANSITION_CONFIRM_PAYMENT_ORAL,
     TRANSITION_DECLINE,
     TRANSITION_EXPIRE,
     TRANSITION_REVIEW_1_BY_CUSTOMER,

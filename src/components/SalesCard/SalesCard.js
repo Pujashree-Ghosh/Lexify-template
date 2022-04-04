@@ -63,7 +63,7 @@ function SalesCardComponent(props) {
     let listingTitle = transaction?.listing?.attributes?.title;
     let transaction_customer_id = transaction?.customer?.id?.uuid;
     let transaction_provider_id = transaction?.provider?.id?.uuid;
-    let role = 'CUSTOMER';
+    let role = 'provider';
 
     let actualStartTime;
     let customerJoinTime;

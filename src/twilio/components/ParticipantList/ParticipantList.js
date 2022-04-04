@@ -64,7 +64,6 @@ export default function ParticipantList() {
       SignalHelper.emit('customer', JSON.stringify({ isEnter: true }));
     }
   }
-  console.log(60609, screenShareParticipant);
   return (
     <aside
       className={clsx(classes.container, {

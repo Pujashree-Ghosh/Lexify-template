@@ -15,6 +15,7 @@ import {
   txHasBeenDelivered,
   txIsPaymentExpired,
   txIsPaymentPending,
+  txIsAcceptedOral,
 } from '../../util/transaction';
 import { propTypes, DATE_TYPE_DATETIME } from '../../util/types';
 import { createSlug, stringify } from '../../util/urlHelpers';
@@ -139,6 +140,16 @@ export const txState = (intl, tx, type) => {
         id: 'InboxPage.stateAccepted',
       }),
     };
+  } else if (txIsAcceptedOral(tx)) {
+    return {
+      nameClassName: css.nameNotEmphasized,
+      bookingClassName: css.bookingNoActionNeeded,
+      lastTransitionedAtClassName: css.lastTransitionedAtNotEmphasized,
+      stateClassName: css.stateSucces,
+      state: intl.formatMessage({
+        id: 'InboxPage.stateAccepted',
+      }),
+    };
   } else if (txIsRescheduled(tx)) {
     return {
       nameClassName: css.nameNotEmphasized,
@@ -149,19 +160,17 @@ export const txState = (intl, tx, type) => {
         id: 'InboxPage.stateRescheduled',
       }),
     };
-  }
-  // else if (txIsPendingConfirmation(tx)) {
-  //   return {
-  //     nameClassName: css.nameNotEmphasized,
-  //     bookingClassName: css.bookingNoActionNeeded,
-  //     lastTransitionedAtClassName: css.lastTransitionedAtNotEmphasized,
-  //     stateClassName: css.stateSucces,
-  //     state: intl.formatMessage({
-  //       id: 'InboxPage.statePendingConfirmation',
-  //     }),
-  //   };
-  // }
-  else if (txIsCanceled(tx)) {
+  } else if (txIsPendingConfirmation(tx)) {
+    return {
+      nameClassName: css.nameNotEmphasized,
+      bookingClassName: css.bookingNoActionNeeded,
+      lastTransitionedAtClassName: css.lastTransitionedAtNotEmphasized,
+      stateClassName: css.stateSucces,
+      state: intl.formatMessage({
+        id: 'InboxPage.statePendingConfirmation',
+      }),
+    };
+  } else if (txIsCanceled(tx)) {
     return {
       nameClassName: css.nameNotEmphasized,
       bookingClassName: css.bookingNoActionNeeded,

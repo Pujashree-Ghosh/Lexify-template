@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import {
   TRANSITION_REQUEST_PAYMENT_AFTER_ENQUIRY,
   txIsAccepted,
+  txIsAcceptedOral,
   txIsRescheduled,
   txIsCanceled,
   txIsDeclined,
@@ -436,6 +437,13 @@ export class TransactionPanelComponent extends Component {
           showCalendar: true,
         };
       } else if (txIsAccepted(tx)) {
+        return {
+          headingState: HEADING_ACCEPTED,
+          showDetailCardHeadings: isCustomer,
+          showAddress: isCustomer,
+          showCalendar: true,
+        };
+      } else if (txIsAcceptedOral(tx)) {
         return {
           headingState: HEADING_ACCEPTED,
           showDetailCardHeadings: isCustomer,

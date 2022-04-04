@@ -15,6 +15,7 @@ import {
   txIsPaymentExpired,
   txIsPaymentPending,
   txIsPendingConfirmation,
+  txIsAcceptedOral,
 } from '../../util/transaction';
 import { propTypes, DATE_TYPE_DATETIME } from '../../util/types';
 import { createSlug, stringify } from '../../util/urlHelpers';
@@ -61,6 +62,8 @@ export const txState = (intl, tx, type) => {
   const isOrder = type === 'order';
 
   if (txIsAccepted(tx)) {
+    return 'upcoming';
+  } else if (txIsAcceptedOral(tx)) {
     return 'upcoming';
   } else if (txIsPendingConfirmation(tx)) {
     return 'pending';
