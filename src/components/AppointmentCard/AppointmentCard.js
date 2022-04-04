@@ -14,7 +14,19 @@ import moment from 'moment';
 import jsonwebtoken from 'jsonwebtoken';
 import config from '../../config';
 import Button, { PrimaryButton } from '../Button/Button';
+import axios from 'axios';
+import Modal from '../Modal/Modal';
 function AppointmentCardComponent(props) {
+  const [countryData, setCountryData] = useState();
+  const [progress, setProgress] = useState(false);
+  const [isEditPlanModalOpen, setIsEditPlanModalOpen] = useState(false);
+  useEffect(() => {
+    axios
+      .get('https://countriesnow.space/api/v0.1/countries/states')
+      .then(res => setCountryData(res.data.data))
+      .catch(err => console.log('somer error occurred', err));
+  }, []);
+
   const {
     unitType,
     type,
@@ -26,12 +38,27 @@ function AppointmentCardComponent(props) {
     confirmConsultationSuccess,
     history,
   } = props;
+  console.log(123, isEditPlanModalOpen);
   const provider = tx && tx.provider;
   const listing = tx && tx.listing;
   const booking = tx && tx.booking;
   const category = listing?.attributes?.publicData?.category;
-  const [progress, setProgress] = useState(false);
-
+  const city = listing?.attributes?.publicData?.city[0];
+  const country = countryData?.filter(
+    c =>
+      c.iso3 ===
+      (listing?.attributes?.publicData?.country?.length > 0
+        ? listing?.attributes?.publicData?.country[0]
+        : '')
+  )[0]?.name;
+  const state = countryData
+    ?.filter(c => c.iso3 === 'USA')[0]
+    ?.states?.filter(s =>
+      s.state_code === listing?.attributes?.publicData?.state?.length > 0
+        ? listing?.attributes?.publicData?.state[0]
+        : ''
+    )[0]?.name;
+  console.log('first', country);
   const goToConference = async transaction => {
     let startTime = transaction?.booking?.attributes?.start;
     let endTime = transaction?.booking?.attributes?.end;
@@ -167,7 +194,7 @@ function AppointmentCardComponent(props) {
               <div className={css.userName}>{provider?.attributes?.profile?.displayName}</div>
               {/* <div className={css.userLisence}>{listing.attributes.title}</div> */}
               <div className={css.userLocation}>
-                {false ? (
+                {true ? (
                   <>
                     <img src={biolocationIcon} className={css.locationIcon} />
 
@@ -177,7 +204,7 @@ function AppointmentCardComponent(props) {
                     </span>
                   </>
                 ) : (
-                  'Kolkata,India'
+                  ''
                 )}
               </div>
             </div>
@@ -187,7 +214,7 @@ function AppointmentCardComponent(props) {
           {stateData === 'pending' ? (
             <>
               <div className={css.cctxtp}>
-                Please click on 'confirm' to confirm that you have recieved the consultation
+                Please click on 'confirm' to confirm that you have received the consultation
               </div>
               <div className={css.profileBtnContainer}>
                 <Button
@@ -195,18 +222,20 @@ function AppointmentCardComponent(props) {
                   inProgress={progress}
                   // ready={ready}
                   onClick={() => {
-                    setProgress(false);
-                    onConfirmConsultation(tx.id.uuid).then(resp => {
-                      // console.log(resp);
-                      history.push(
-                        createResourceLocatorString(
-                          'MyAppoinmentBasePage',
-                          routeConfiguration(),
-                          // { id: resp.data.data.id.uuid },
-                          {}
-                        )
-                      );
-                    });
+                    setIsEditPlanModalOpen(true);
+
+                    // setProgress(false);
+                    // onConfirmConsultation(tx.id.uuid).then(resp => {
+                    //   // console.log(resp);
+                    //   history.push(
+                    //     createResourceLocatorString(
+                    //       'MyAppoinmentBasePage',
+                    //       routeConfiguration(),
+                    //       // { id: resp.data.data.id.uuid },
+                    //       {}
+                    //     )
+                    //   );
+                    // });
                   }}
                   // onClick={() => {
                   //   if (listing?.attributes?.publicData?.isProviderType) {
@@ -232,6 +261,40 @@ function AppointmentCardComponent(props) {
                 >
                   <FormattedMessage id="AppointmentCard.confirmButton" />
                 </Button>
+                <Modal
+                  id="ConfirmConsultation"
+                  isOpen={isEditPlanModalOpen}
+                  onClose={() => setIsEditPlanModalOpen(false)}
+                  onManageDisableScrolling={() => {}}
+                  containerClassName={css.modalContainer}
+                  usePortal
+                >
+                  <div className={css.popup}>
+                    <div className={css.popupMessage}>
+                      <FormattedMessage id="AppointmentCard.popupMessage" />
+                    </div>
+
+                    <Button
+                      className={css.confirmBtn}
+                      onClick={() => {
+                        setProgress(false);
+                        onConfirmConsultation(tx.id.uuid).then(resp => {
+                          // console.log(resp);
+                          history.push(
+                            createResourceLocatorString(
+                              'MyAppoinmentBasePage',
+                              routeConfiguration(),
+                              // { id: resp.data.data.id.uuid },
+                              {}
+                            )
+                          );
+                        });
+                      }}
+                    >
+                      Confirm
+                    </Button>
+                  </div>
+                </Modal>
               </div>
             </>
           ) : stateData === 'upcoming' ? (

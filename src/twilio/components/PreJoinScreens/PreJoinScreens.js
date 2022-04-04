@@ -27,6 +27,7 @@ export default function PreJoinScreens({ meetingExpired, ...props }) {
   // const [name, setName] = useState((user && user.displayName) || '');
   const [roomName, setRoomName] = useState(props && props.roomName);
   const name = props && props.displayName;
+  const Id = `${name}`;
   const [mediaError, setMediaError] = useState('');
   const [listingTitle, setListingTitle] = useState(props && props.listingTitle);
   const [shouldShowMessage, setShouldShowMessage] = useState(false);
@@ -92,7 +93,7 @@ export default function PreJoinScreens({ meetingExpired, ...props }) {
 
       {/* {step === Steps.deviceSelectionStep && ( */}
       <DeviceSelectionScreen
-        name={name}
+        name={Id}
         roomName={roomName}
         setStep={setStep}
         listingTitle={listingTitle}

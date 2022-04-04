@@ -16,21 +16,27 @@ import { createResourceLocatorString } from '../../util/routes';
 import axios from 'axios';
 import { createSlug } from '../../util/urlHelpers';
 import ReadmoreButton from '../../containers/ReadmoreButton/ReadmoreButton';
+import { apiBaseUrl } from '../../util/api';
 
 function UserResultCardComponent(props) {
   const { listing, currentUser, onShowUser, history } = props;
   // console.log(history);
   // const [authorDetail, setAuthorDetail] = useState([]);
   const [countryData, setCountryData] = useState([]);
-
+  const [listingAuthor, setListingAuthor] = useState();
   useEffect(() => {
     onShowUser(listing.author.id);
+    console.log(listing.author.id);
     axios
       .get('https://countriesnow.space/api/v0.1/countries/states')
       .then(res => setCountryData(res.data.data))
       .catch(err => console.log('somer error occurred', err));
+    axios
+      .post(`${apiBaseUrl()}/api/showListingsAuthor`, { id: listing.author.id.uuid })
+      .then(res => setListingAuthor(res.data.data))
+      .catch(err => console.log(err));
   }, []);
-
+  console.log(141, listingAuthor);
   const ensuredUser = ensureUser(listing.author);
   const state = countryData
     ?.filter(c => c.iso3 === 'USA')[0]
@@ -63,6 +69,7 @@ function UserResultCardComponent(props) {
   //   )[0]?.name
   // );
   const slug = createSlug(listing?.attributes?.title);
+  console.log('first', listing.author.id.uuid);
   return (
     <div className={css.cardContainer} key={listing.id.uuid}>
       <div className={css.dmuser}>
@@ -79,9 +86,9 @@ function UserResultCardComponent(props) {
           <div className={css.userInfo}>
             <div className={css.userName}>{listing.attributes.title}</div>
             <div className={css.userVerified}>
-              {currentUser?.attributes?.profile?.protectedData?.isProfileVerified
+              {listingAuthor && listingAuthor?.attributes?.profile?.protectedData?.isProfileVerified
                 ? 'Attorney of law'
-                : null}
+                : ''}
             </div>
             <div className={css.userLocation}>
               {listing?.attributes?.publicData?.country?.length ? (

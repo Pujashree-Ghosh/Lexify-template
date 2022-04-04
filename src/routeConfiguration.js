@@ -321,14 +321,14 @@ const routeConfiguration = () => {
       loadData: pageDataLoadingAPI.InboxPage.loadData,
     },
     {
-      path: '/sale',
+      path: '/sales',
       name: 'SalesBasepage',
       auth: true,
       authPage: 'LoginPage',
       component: () => <NamedRedirect name="Salespage" params={{ tab: 'pending' }} />,
     },
     {
-      path: '/sale/:tab',
+      path: '/sales/:tab',
       name: 'Salespage',
       auth: true,
       authPage: 'LoginPage',

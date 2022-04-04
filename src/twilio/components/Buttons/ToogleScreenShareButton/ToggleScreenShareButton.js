@@ -33,11 +33,20 @@ const useStyles = makeStyles(theme =>
 export default function ToggleScreenShareButton(props) {
   const classes = useStyles();
   const screenShareParticipant = useScreenShareParticipant();
-  const { toggleScreenShare, isSharingScreen } = useVideoContext();
-  const disableScreenShareButton = Boolean(screenShareParticipant);
+  const { toggleScreenShare, isSharingScreen, room } = useVideoContext();
+  const disableScreenShareButton = Boolean(
+    screenShareParticipant &&
+      !(JSON.stringify(room.localParticipant) === JSON.stringify(screenShareParticipant))
+  );
+  // const disableScreenShareButton = Boolean(screenShareParticipant);
   const isScreenShareSupported = navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia;
   const isDisabled = props.disabled || disableScreenShareButton || !isScreenShareSupported;
-
+  // console.log(
+  //   606098,
+  //   Array.from(room.participants.values()),
+  //   JSON.stringify(room.localParticipant) === JSON.stringify(screenShareParticipant),
+  //   screenShareParticipant
+  // );
   let tooltipMessage = '';
 
   if (disableScreenShareButton) {

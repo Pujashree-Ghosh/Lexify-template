@@ -29,7 +29,16 @@
   padding-bottom: 66.6667%; /* 3:2 Aspect Ratio */
   background: var(--matterColorNegative); /* Loading BG color */
 }
-
+.popupMessage {
+  margin-bottom: 5px;
+}
+.popup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: auto;
+  margin-top: 25px;
+}
 .rootForImage {
   /* Layout - image will take space defined by aspect ratio wrapper */
   position: absolute;
