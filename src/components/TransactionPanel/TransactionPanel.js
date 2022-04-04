@@ -391,7 +391,6 @@ export class TransactionPanelComponent extends Component {
       fetchLineItemsError,
       onJoinMeeting,
     } = this.props;
-
     const currentTransaction = ensureTransaction(transaction);
     const currentListing = ensureListing(currentTransaction.listing);
     const currentProvider = ensureUser(currentTransaction.provider);
@@ -737,11 +736,11 @@ export class TransactionPanelComponent extends Component {
               listingId={currentListing.id && currentListing.id.uuid}
               listingDeleted={listingDeleted}
             /> */}
-            {isProvider ? (
+            {/* {isProvider ? (
               <div className={css.avatarWrapperProviderDesktop}>
                 <AvatarLarge user={currentCustomer} className={css.avatarDesktop} />
               </div>
-            ) : null}
+            ) : null} */}
 
             <PanelHeading
               panelHeadingState={stateData.headingState}

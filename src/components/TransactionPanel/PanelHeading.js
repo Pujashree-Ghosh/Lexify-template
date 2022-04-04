@@ -179,10 +179,10 @@ const PanelHeading = props => {
         >
           {!listingDeleted ? (
             <p className={css.transactionInfoMessage}>
-              <FormattedMessage
+              {/* <FormattedMessage
                 id="TransactionPanel.orderPreauthorizedInfo"
                 values={{ providerName }}
-              />
+              /> */}
             </p>
           ) : null}
         </HeadingCustomerWithSubtitle>
@@ -194,7 +194,7 @@ const PanelHeading = props => {
         >
           {!isCustomerBanned ? (
             <p className={titleClasses}>
-              <FormattedMessage id="TransactionPanel.saleRequestedInfo" values={{ customerName }} />
+              {/* <FormattedMessage id="TransactionPanel.saleRequestedInfo" values={{ customerName }} /> */}
             </p>
           ) : null}
         </HeadingProvider>

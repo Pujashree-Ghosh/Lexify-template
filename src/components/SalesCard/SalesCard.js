@@ -14,7 +14,15 @@ import moment from 'moment';
 import jsonwebtoken from 'jsonwebtoken';
 import config from '../../config';
 import Button, { PrimaryButton } from '../Button/Button';
+import axios from 'axios';
 function SalesCardComponent(props) {
+  const [countryData, setCountryData] = useState();
+  useEffect(() => {
+    axios
+      .get('https://countriesnow.space/api/v0.1/countries/states')
+      .then(res => setCountryData(res.data.data))
+      .catch(err => console.log('somer error occurred', err));
+  }, []);
   const {
     unitType,
     type,
@@ -31,6 +39,21 @@ function SalesCardComponent(props) {
   const booking = tx && tx.booking;
   const category = listing?.attributes?.publicData?.category;
   const [progress, setProgress] = useState(false);
+  const city = listing?.attributes?.publicData?.city[0];
+  const country = countryData?.filter(
+    c =>
+      c.iso3 ===
+      (listing?.attributes?.publicData?.country?.length > 0
+        ? listing?.attributes?.publicData?.country[0]
+        : '')
+  )[0]?.name;
+  const state = countryData
+    ?.filter(c => c.iso3 === 'USA')[0]
+    ?.states?.filter(s =>
+      s.state_code === listing?.attributes?.publicData?.state?.length > 0
+        ? listing?.attributes?.publicData?.state[0]
+        : ''
+    )[0]?.name;
 
   const goToConference = async transaction => {
     let startTime = transaction?.booking?.attributes?.start;
@@ -167,7 +190,7 @@ function SalesCardComponent(props) {
               <div className={css.userName}>{provider?.attributes?.profile?.displayName}</div>
               {/* <div className={css.userLisence}>{listing.attributes.title}</div> */}
               <div className={css.userLocation}>
-                {false ? (
+                {true ? (
                   <>
                     <img src={biolocationIcon} className={css.locationIcon} />
 
@@ -177,7 +200,7 @@ function SalesCardComponent(props) {
                     </span>
                   </>
                 ) : (
-                  'Kolkata,India'
+                  ''
                 )}
               </div>
             </div>
@@ -187,7 +210,7 @@ function SalesCardComponent(props) {
           {stateData === 'pending' ? (
             <>
               {/* <div className={css.cctxtp}>
-                Please click on 'confirm' to confirm that you have recieved the consultation
+                Please click on 'confirm' to confirm that you have received the consultation
               </div> */}
               {/* <div className={css.profileBtnContainer}>
                 <Button
