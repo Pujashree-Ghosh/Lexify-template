@@ -160,19 +160,17 @@ export const txState = (intl, tx, type) => {
         id: 'InboxPage.stateRescheduled',
       }),
     };
-  }
-  // else if (txIsPendingConfirmation(tx)) {
-  //   return {
-  //     nameClassName: css.nameNotEmphasized,
-  //     bookingClassName: css.bookingNoActionNeeded,
-  //     lastTransitionedAtClassName: css.lastTransitionedAtNotEmphasized,
-  //     stateClassName: css.stateSucces,
-  //     state: intl.formatMessage({
-  //       id: 'InboxPage.statePendingConfirmation',
-  //     }),
-  //   };
-  // }
-  else if (txIsCanceled(tx)) {
+  } else if (txIsPendingConfirmation(tx)) {
+    return {
+      nameClassName: css.nameNotEmphasized,
+      bookingClassName: css.bookingNoActionNeeded,
+      lastTransitionedAtClassName: css.lastTransitionedAtNotEmphasized,
+      stateClassName: css.stateSucces,
+      state: intl.formatMessage({
+        id: 'InboxPage.statePendingConfirmation',
+      }),
+    };
+  } else if (txIsCanceled(tx)) {
     return {
       nameClassName: css.nameNotEmphasized,
       bookingClassName: css.bookingNoActionNeeded,
