@@ -35,7 +35,7 @@
     box-shadow: var(--boxShadowLight);
   }
 }
-.Appointmentlwm{
+.Appointmentlwm {
   padding-top: 30px;
 }
 .navigation {
@@ -105,7 +105,6 @@
 
   @media (--viewportMedium) {
     padding-top: 12px;
-
   }
 
   @media (--viewportLarge) {

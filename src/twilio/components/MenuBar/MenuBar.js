@@ -17,7 +17,8 @@ import { ListingContext } from './../../../containers/MeetingNewPage/Meeting';
 import SignalHelper from '../../../util/signalHelper';
 // import { print } from '../../../util/data';
 import ChatButton from '../Buttons/ChatButton';
-// import useLocalAudioToggle from '../../../hooks/useLocalAudioToggle/useLocalAudioToggle';
+import useLocalAudioToggle from '../../../twilio/hooks/useLocalAudioToggle/useLocalAudioToggle';
+import useLocalVideoToggle from '../../../twilio/hooks/useLocalVideoToggle/useLocalVideoToggle';
 
 import Chat from '../../../containers/MeetingNewPage/Chat';
 // import Back from '../Buttons/Back';
@@ -97,7 +98,8 @@ export default function MenuBar({ isProvider, extendMeeting, isShortBooking, isE
 
     setNewmessage(false);
   };
-  // const [isAudioEnabled, toggleAudioEnabled] = useLocalAudioToggle();
+  const [isAudioEnabled, toggleAudioEnabled] = useLocalAudioToggle();
+  const [isVideoEnabled, toggleVideoEnabled] = useLocalVideoToggle();
 
   console.log(555444, isAudioEnabled);
   return (
@@ -124,11 +126,22 @@ export default function MenuBar({ isProvider, extendMeeting, isShortBooking, isE
           </Hidden>
           <Grid item className="mob-wid">
             <Grid container justify="center" className="mob-inline">
-              <ToggleAudioButton className="btnmod" disabled={isReconnecting} />
-              <ToggleVideoButton className="btnmod" disabled={isReconnecting} />
+              <ToggleAudioButton
+                className={isAudioEnabled ? 'btnmod' : 'btnmod active'}
+                disabled={isReconnecting}
+              />
+              <ToggleVideoButton
+                className={isVideoEnabled ? 'btnmod' : 'btnmod active'}
+                disabled={isReconnecting}
+              />
 
               <Hidden smDown>
-                {<ToggleScreenShareButton disabled={isReconnecting} />}
+                {
+                  <ToggleScreenShareButton
+                    // className={isSharingScreen ? '' : 'active'}
+                    disabled={isReconnecting}
+                  />
+                }
 
                 {/* {!isSharingScreen && <ToggleScreenShareButton disabled={isReconnecting} />} */}
               </Hidden>
