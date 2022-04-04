@@ -381,7 +381,7 @@ const Meeting = props => {
     const backend_server = apiBaseUrl();
     socket = io(backend_server, {
       query: {
-        roomId: transactionId + listingId,
+        roomId: listingId,
         // role,
         // ...(decoded.actualStartTime ? { actualStartTime: decoded.actualStartTime } : {}),
         // ...(decoded.customerJoinTime ? { customerJoinTime: decoded.customerJoinTime } : {}),
