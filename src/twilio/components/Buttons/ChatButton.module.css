@@ -1,24 +1,28 @@
 .chbtntw {
   position: relative;
 }
-.chbtntw .button {
-  padding: 14px 15px;
+.chbtntw .btnmod {
+  width: 40px;
+  height: 40px;
+  background-color: #3c4043 ;
+  border-radius: 50px ;
+
+  min-width: auto;
+  margin: 0 10px ;
   border: 0;
-  color: rgba(0, 0, 0, 0.87);
-  text-transform: uppercase;
-  font-weight: 500;
-  font-size: 0.875rem;
   cursor: pointer;
-  letter-spacing: 0.02857em;
 }
-.chbtntw .button:hover {
+.chbtntw .btnmod:hover {
+  background: #43474a !important
+}
+.btnmod.active {
+  background: #ea4335 !important
+}
+/* .chbtntw .button:hover {
   background-color: rgba(0, 0, 0, 0.04);
-}
-.chbtntw .button svg {
-  fill: #000;
-  height: 24px;
-  width: 22px;
-  margin: 0;
+} */
+.chbtntw .btnmod svg {
+  color: #fff;
 }
 .notificationDot {
   /* Dimensions */

@@ -9,6 +9,8 @@ import Tooltip from '@material-ui/core/Tooltip';
 import useScreenShareParticipant from '../../../hooks/useScreenShareParticipant/useScreenShareParticipant';
 import useVideoContext from '../../../hooks/useVideoContext/useVideoContext';
 
+import { MdScreenShare, MdStopScreenShare } from 'react-icons/md';
+
 export const SCREEN_SHARE_TEXT = 'Share Screen';
 export const STOP_SCREEN_SHARE_TEXT = 'Stop Sharing';
 export const SHARE_IN_PROGRESS_TEXT = 'Cannot share screen when another user is sharing';
@@ -60,7 +62,7 @@ export default function ToggleScreenShareButton(props) {
           className={`${classes.button} btnmod shareicon`}
           onClick={toggleScreenShare}
           disabled={isDisabled}
-          startIcon={isSharingScreen ? <StopScreenShareIcon /> : <ScreenShareIcon />}
+          startIcon={isSharingScreen ? <MdScreenShare /> : <MdStopScreenShare />}
           data-cy-share-screen
         >
           {/* {isSharingScreen ? STOP_SCREEN_SHARE_TEXT : SCREEN_SHARE_TEXT} */}

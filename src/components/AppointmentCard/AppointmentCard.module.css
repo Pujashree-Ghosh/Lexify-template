@@ -140,7 +140,7 @@
   box-shadow: 1px 0px 8px rgba(0, 0, 0, 0.2);
   width: 100%;
   display: flex;
-  margin: 20px 0;
+  margin: 0px 0 20px;
   border-left: 7px solid #a91722;
   position: relative;
   /* min-height: 100%; */

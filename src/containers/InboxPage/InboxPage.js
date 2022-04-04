@@ -435,7 +435,7 @@ export const InboxPageComponent = props => {
           </h1>
           {currentUserListing ? nav : <div className={css.navPlaceholder} />}
         </LayoutWrapperSideNav>
-        <LayoutWrapperMain>
+        <LayoutWrapperMain className={css.Appointmentlwm}>
           {error}
           <ul className={css.itemList}>
             {!fetchInProgress ? (

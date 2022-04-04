@@ -6,6 +6,10 @@
   /* Top Bar's drop shadow should always be visible */
   z-index: var(--zIndexTopbar);
   position: relative;
+
+  @media (max-width: 575px){
+      overflow-x: hiddin;
+  }
 }
 
 .container {

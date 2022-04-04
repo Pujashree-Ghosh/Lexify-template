@@ -7,6 +7,8 @@ import VideoOnIcon from '../../../icons/VideoOnIcon';
 import { useHasVideoInputDevices } from '../../../hooks/deviceHooks/deviceHooks';
 import useLocalVideoToggle from '../../../hooks/useLocalVideoToggle/useLocalVideoToggle';
 
+import { BsFillCameraVideoFill, BsFillCameraVideoOffFill } from 'react-icons/bs';
+
 export default function ToggleVideo(props) {
   const [isVideoEnabled, toggleVideoEnabled] = useLocalVideoToggle();
   const lastClickTimeRef = useRef(0);
@@ -24,7 +26,7 @@ export default function ToggleVideo(props) {
       className={props.className}
       onClick={toggleVideo}
       disabled={!hasVideoDevices || props.disabled}
-      startIcon={isVideoEnabled ? <VideoOnIcon /> : <VideoOffIcon />}
+      startIcon={isVideoEnabled ? <BsFillCameraVideoFill /> : <BsFillCameraVideoOffFill />}
     >
       {!hasVideoDevices ? 'No Video' : isVideoEnabled ? 'Stop Video' : 'Start Video'}
     </Button>

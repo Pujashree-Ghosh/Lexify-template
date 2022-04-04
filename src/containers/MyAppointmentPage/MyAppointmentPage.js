@@ -261,7 +261,7 @@ export const MyAppointmentPageComponent = props => {
           <UserNav selectedPageName="MyAppoinmentBasePage" />
         </LayoutWrapperTopbar>
         <LayoutWrapperSideNav className={css.navigation}>{nav}</LayoutWrapperSideNav>
-        <LayoutWrapperMain>
+        <LayoutWrapperMain className={css.Appointmentlwm}>
           {error}
           {/* <ul className={css.itemList}>
             {!fetchInProgress ? (

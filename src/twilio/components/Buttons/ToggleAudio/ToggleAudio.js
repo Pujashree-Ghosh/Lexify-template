@@ -6,6 +6,7 @@ import MicOffIcon from '../../../icons/MicOffIcon';
 
 import useLocalAudioToggle from '../../../hooks/useLocalAudioToggle/useLocalAudioToggle';
 import useVideoContext from '../../../hooks/useVideoContext/useVideoContext';
+import { BsFillMicFill, BsFillMicMuteFill } from 'react-icons/bs';
 
 export default function ToggleAudio(props) {
   const [isAudioEnabled, toggleAudioEnabled] = useLocalAudioToggle();
@@ -17,7 +18,7 @@ export default function ToggleAudio(props) {
       className={props.className}
       onClick={toggleAudioEnabled}
       disabled={!hasAudioTrack || props.disabled}
-      startIcon={isAudioEnabled ? <MicIcon /> : <MicOffIcon />}
+      startIcon={isAudioEnabled ? <BsFillMicFill /> : <BsFillMicMuteFill />}
       data-cy-audio-toggle
     >
       {!hasAudioTrack ? 'No Audio' : isAudioEnabled ? 'Mute' : 'Unmute'}

@@ -17,6 +17,7 @@ import { ListingContext } from './../../../containers/MeetingNewPage/Meeting';
 import SignalHelper from '../../../util/signalHelper';
 // import { print } from '../../../util/data';
 import ChatButton from '../Buttons/ChatButton';
+// import useLocalAudioToggle from '../../../hooks/useLocalAudioToggle/useLocalAudioToggle';
 
 import Chat from '../../../containers/MeetingNewPage/Chat';
 // import Back from '../Buttons/Back';
@@ -96,6 +97,9 @@ export default function MenuBar({ isProvider, extendMeeting, isShortBooking, isE
 
     setNewmessage(false);
   };
+  // const [isAudioEnabled, toggleAudioEnabled] = useLocalAudioToggle();
+
+  console.log(555444, isAudioEnabled);
   return (
     <>
       {isSharingScreen && (

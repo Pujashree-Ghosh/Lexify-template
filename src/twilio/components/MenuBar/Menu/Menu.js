@@ -9,6 +9,7 @@ import MoreIcon from '@material-ui/icons/MoreVert';
 import Typography from '@material-ui/core/Typography';
 import { Theme, useMediaQuery } from '@material-ui/core';
 import { useTheme } from '@material-ui/core/styles';
+import { BsThreeDotsVertical } from 'react-icons/bs';
 
 export default function Menu(props) {
   const theme = useTheme();
@@ -26,7 +27,7 @@ export default function Menu(props) {
       <Button
         onClick={() => setMenuOpen(isOpen => !isOpen)}
         ref={anchorRef}
-        className={`${props.buttonClassName} mobsetting`}
+        className={`${props.buttonClassName} mobsetting btnmod`}
       >
         {isMobile ? (
           <>
@@ -36,7 +37,7 @@ export default function Menu(props) {
         ) : (
           <>
             {/* Settings */}
-            <ExpandMoreIcon />
+            <BsThreeDotsVertical />
           </>
         )}
       </Button>
