@@ -20,6 +20,7 @@ function AppointmentCardComponent(props) {
   const [countryData, setCountryData] = useState();
   const [progress, setProgress] = useState(false);
   const [isEditPlanModalOpen, setIsEditPlanModalOpen] = useState(false);
+  const [joinMeetingProgress, setJoinMeetingProgress] = useState(false);
   useEffect(() => {
     axios
       .get('https://countriesnow.space/api/v0.1/countries/states')
@@ -38,6 +39,8 @@ function AppointmentCardComponent(props) {
     confirmConsultationSuccess,
     history,
     onJoinMeeting,
+    txBothJoined,
+    txCustomerJoined1,
   } = props;
   const provider = tx && tx.provider;
   const listing = tx && tx.listing;
@@ -128,6 +131,7 @@ function AppointmentCardComponent(props) {
       },
       config.secretCode
     );
+    setJoinMeetingProgress(false);
     window.open(`/meeting-new/${jwtToken}`);
     // this.props.history.push(`/meeting-new/${jwtToken}`);
     // console.log('555 token', jwtToken);
@@ -222,41 +226,7 @@ function AppointmentCardComponent(props) {
                   // ready={ready}
                   onClick={() => {
                     setIsEditPlanModalOpen(true);
-
-                    // setProgress(false);
-                    // onConfirmConsultation(tx.id.uuid).then(resp => {
-                    //   // console.log(resp);
-                    //   history.push(
-                    //     createResourceLocatorString(
-                    //       'MyAppoinmentBasePage',
-                    //       routeConfiguration(),
-                    //       // { id: resp.data.data.id.uuid },
-                    //       {}
-                    //     )
-                    //   );
-                    // });
                   }}
-                  // onClick={() => {
-                  //   if (listing?.attributes?.publicData?.isProviderType) {
-                  //     history.push(
-                  //       createResourceLocatorString(
-                  //         'ProfilePage',
-                  //         routeConfiguration(),
-                  //         { id: ensuredUser.id.uuid },
-                  //         {}
-                  //       )
-                  //     );
-                  //   } else {
-                  //     history.push(
-                  //       createResourceLocatorString(
-                  //         'ListingPage',
-                  //         routeConfiguration(),
-                  //         { id: listing.id.uuid, slug },
-                  //         {}
-                  //       )
-                  //     );
-                  //   }
-                  // }}
                 >
                   <FormattedMessage id="AppointmentCard.confirmButton" />
                 </Button>
@@ -275,10 +245,11 @@ function AppointmentCardComponent(props) {
 
                     <Button
                       className={css.confirmBtn}
+                      inProgress={progress}
                       onClick={() => {
-                        setProgress(false);
+                        setProgress(true);
                         onConfirmConsultation(tx.id.uuid).then(resp => {
-                          // console.log(resp);
+                          setProgress(false);
                           history.push(
                             createResourceLocatorString(
                               'MyAppoinmentBasePage',
@@ -303,27 +274,21 @@ function AppointmentCardComponent(props) {
                 {category !== 'customService' ? (
                   <div className={css.profileBtn}>
                     <PrimaryButton
-                      // inProgress={joinMeetingProgress}
+                      inProgress={joinMeetingProgress}
                       className={css.joinBtn}
                       onClick={() => {
-                        //   if (stateData.isShortBooking) {
-                        //     onJoinShortMeeting(currentTransaction.id, isCustomer)
-                        //       .then(res => {
-                        //         this.goToConference(currentTransaction);
-                        //         console.log('onJoinShortMeeting', res);
-                        //       })
-                        //       .catch(e => console.error(e));
-                        //   } else {
-                        onJoinMeeting(tx.id, true)
-                          .then(res => {
-                            goToConference(tx);
-                          })
-                          .catch(e => {
-                            console.error(e);
-                          });
-                        //   }
-                        //
-                        // goToConference(tx);
+                        setJoinMeetingProgress(true);
+                        if (txBothJoined(tx) || txCustomerJoined1(tx)) {
+                          goToConference(tx);
+                        } else {
+                          onJoinMeeting(tx.id, true)
+                            .then(res => {
+                              goToConference(tx);
+                            })
+                            .catch(e => {
+                              console.error(e);
+                            });
+                        }
                       }}
                     >
                       Join Meeting

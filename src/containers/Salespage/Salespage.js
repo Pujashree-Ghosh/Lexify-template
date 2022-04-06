@@ -185,6 +185,8 @@ export const SalespageComponent = props => {
           confirmConsultationInProgress={confirmConsultationInProgress}
           confirmConsultationSuccess={confirmConsultationSuccess}
           onJoinMeeting={onJoinMeeting}
+          txProviderJoined1={txProviderJoined1}
+          txBothJoined={txBothJoined}
         />
       </div>
     ) : null;

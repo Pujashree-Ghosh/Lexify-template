@@ -805,16 +805,37 @@ export class TransactionPanelComponent extends Component {
                       // inProgress={joinMeetingProgress}
                       className={css.joinMeetingBtn}
                       onClick={() => {
-                        onJoinMeeting(currentTransaction.id, isCustomer)
-                          .then(res => {
+                        if (isCustomer) {
+                          if (
+                            txCustomerJoined1(currentTransaction) ||
+                            txBothJoined(currentTransaction)
+                          ) {
                             this.goToConference(currentTransaction);
-                          })
-                          .catch(e => {
-                            console.error(e);
-                          });
-
-                        //
-                        // this.goToConference(currentTransaction);
+                          } else {
+                            onJoinMeeting(currentTransaction.id, isCustomer)
+                              .then(res => {
+                                this.goToConference(currentTransaction);
+                              })
+                              .catch(e => {
+                                console.error(e);
+                              });
+                          }
+                        } else {
+                          if (
+                            txProviderJoined1(currentTransaction) ||
+                            txBothJoined(currentTransaction)
+                          ) {
+                            this.goToConference(currentTransaction);
+                          } else {
+                            onJoinMeeting(currentTransaction.id, isCustomer)
+                              .then(res => {
+                                this.goToConference(currentTransaction);
+                              })
+                              .catch(e => {
+                                console.error(e);
+                              });
+                          }
+                        }
                       }}
                     >
                       Join Meeting
@@ -992,14 +1013,37 @@ export class TransactionPanelComponent extends Component {
                         // inProgress={joinMeetingProgress}
                         className={css.joinMeetingBtn}
                         onClick={() => {
-                          onJoinMeeting(currentTransaction.id, isCustomer)
-                            .then(res => {
+                          if (isCustomer) {
+                            if (
+                              txCustomerJoined1(currentTransaction) ||
+                              txBothJoined(currentTransaction)
+                            ) {
                               this.goToConference(currentTransaction);
-                            })
-                            .catch(e => {
-                              console.error(e);
-                            });
-                          // this.goToConference(currentTransaction);
+                            } else {
+                              onJoinMeeting(currentTransaction.id, isCustomer)
+                                .then(res => {
+                                  this.goToConference(currentTransaction);
+                                })
+                                .catch(e => {
+                                  console.error(e);
+                                });
+                            }
+                          } else {
+                            if (
+                              txProviderJoined1(currentTransaction) ||
+                              txBothJoined(currentTransaction)
+                            ) {
+                              this.goToConference(currentTransaction);
+                            } else {
+                              onJoinMeeting(currentTransaction.id, isCustomer)
+                                .then(res => {
+                                  this.goToConference(currentTransaction);
+                                })
+                                .catch(e => {
+                                  console.error(e);
+                                });
+                            }
+                          }
                         }}
                       >
                         Join Meeting

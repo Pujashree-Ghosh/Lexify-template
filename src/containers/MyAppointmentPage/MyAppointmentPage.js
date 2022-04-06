@@ -185,6 +185,8 @@ export const MyAppointmentPageComponent = props => {
           confirmConsultationInProgress={confirmConsultationInProgress}
           confirmConsultationSuccess={confirmConsultationSuccess}
           onJoinMeeting={onJoinMeeting}
+          txBothJoined={txBothJoined}
+          txCustomerJoined1={txCustomerJoined1}
         />
       </div>
     ) : null;

@@ -17,6 +17,7 @@ import Button, { PrimaryButton } from '../Button/Button';
 import axios from 'axios';
 function SalesCardComponent(props) {
   const [countryData, setCountryData] = useState();
+  const [joinMeetingProgress, setJoinMeetingProgress] = useState(false);
   useEffect(() => {
     axios
       .get('https://countriesnow.space/api/v0.1/countries/states')
@@ -34,12 +35,13 @@ function SalesCardComponent(props) {
     confirmConsultationSuccess,
     history,
     onJoinMeeting,
+    txBothJoined,
+    txProviderJoined1,
   } = props;
   const provider = tx && tx.provider;
   const listing = tx && tx.listing;
   const booking = tx && tx.booking;
   const category = listing?.attributes?.publicData?.category;
-  const [progress, setProgress] = useState(false);
   const city = listing?.attributes?.publicData?.city[0];
   const country = countryData?.filter(
     c =>
@@ -126,6 +128,7 @@ function SalesCardComponent(props) {
       },
       config.secretCode
     );
+    setJoinMeetingProgress(false);
     window.open(`/meeting-new/${jwtToken}`);
     // this.props.history.push(`/meeting-new/${jwtToken}`);
     // console.log('555 token', jwtToken);
@@ -245,27 +248,21 @@ function SalesCardComponent(props) {
                 {category !== 'customService' ? (
                   <div className={css.profileBtn}>
                     <PrimaryButton
-                      // inProgress={joinMeetingProgress}
+                      inProgress={joinMeetingProgress}
                       className={css.joinBtn}
                       onClick={() => {
-                        //   if (stateData.isShortBooking) {
-                        //     onJoinShortMeeting(currentTransaction.id, isCustomer)
-                        //       .then(res => {
-                        //         this.goToConference(currentTransaction);
-                        //         console.log('onJoinShortMeeting', res);
-                        //       })
-                        //       .catch(e => console.error(e));
-                        //   } else {
-                        onJoinMeeting(tx.id, false)
-                          .then(res => {
-                            goToConference(tx);
-                          })
-                          .catch(e => {
-                            console.error(e);
-                          });
-                        //   }
-                        //
-                        // goToConference(tx);
+                        setJoinMeetingProgress(true);
+                        if (txBothJoined(tx) || txProviderJoined1(tx)) {
+                          goToConference(tx);
+                        } else {
+                          onJoinMeeting(tx.id, false)
+                            .then(res => {
+                              goToConference(tx);
+                            })
+                            .catch(e => {
+                              console.error(e);
+                            });
+                        }
                       }}
                     >
                       Join Meeting
