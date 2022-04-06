@@ -16,6 +16,10 @@ import {
   txIsPaymentExpired,
   txIsPaymentPending,
   txIsAcceptedOral,
+  txCustomerJoined1,
+  txProviderJoined1,
+  txBothJoined,
+  txIsExpired,
 } from '../../util/transaction';
 import { propTypes, DATE_TYPE_DATETIME } from '../../util/types';
 import { createSlug, stringify } from '../../util/urlHelpers';
@@ -158,6 +162,46 @@ export const txState = (intl, tx, type) => {
       stateClassName: css.stateSucces,
       state: intl.formatMessage({
         id: 'InboxPage.stateRescheduled',
+      }),
+    };
+  } else if (txCustomerJoined1(tx)) {
+    return {
+      nameClassName: css.nameNotEmphasized,
+      bookingClassName: css.bookingNoActionNeeded,
+      lastTransitionedAtClassName: css.lastTransitionedAtNotEmphasized,
+      stateClassName: css.stateSucces,
+      state: intl.formatMessage({
+        id: 'InboxPage.stateCustomerJoined',
+      }),
+    };
+  } else if (txProviderJoined1(tx)) {
+    return {
+      nameClassName: css.nameNotEmphasized,
+      bookingClassName: css.bookingNoActionNeeded,
+      lastTransitionedAtClassName: css.lastTransitionedAtNotEmphasized,
+      stateClassName: css.stateSucces,
+      state: intl.formatMessage({
+        id: 'InboxPage.stateProviderJoined',
+      }),
+    };
+  } else if (txBothJoined(tx)) {
+    return {
+      nameClassName: css.nameNotEmphasized,
+      bookingClassName: css.bookingNoActionNeeded,
+      lastTransitionedAtClassName: css.lastTransitionedAtNotEmphasized,
+      stateClassName: css.stateSucces,
+      state: intl.formatMessage({
+        id: 'InboxPage.stateBothJoined',
+      }),
+    };
+  } else if (txIsExpired(tx)) {
+    return {
+      nameClassName: css.nameNotEmphasized,
+      bookingClassName: css.bookingNoActionNeeded,
+      lastTransitionedAtClassName: css.lastTransitionedAtNotEmphasized,
+      stateClassName: css.stateSucces,
+      state: intl.formatMessage({
+        id: 'InboxPage.stateMeetingExpired',
       }),
     };
   } else if (txIsPendingConfirmation(tx)) {

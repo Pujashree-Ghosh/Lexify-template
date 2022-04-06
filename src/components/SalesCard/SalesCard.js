@@ -33,6 +33,7 @@ function SalesCardComponent(props) {
     confirmConsultationInProgress,
     confirmConsultationSuccess,
     history,
+    onJoinMeeting,
   } = props;
   const provider = tx && tx.provider;
   const listing = tx && tx.listing;
@@ -255,18 +256,16 @@ function SalesCardComponent(props) {
                         //       })
                         //       .catch(e => console.error(e));
                         //   } else {
-                        //     onJoinMeeting(currentTransaction.id, isCustomer)
-                        //       .then(res => {
-                        //         this.goToConference(currentTransaction);
-                        //         console.log('onJoinMeeting', res);
-                        //       })
-                        //       .catch(e => {
-                        //         console.log('557. err in page', e);
-                        //         console.error(e);
-                        //       });
+                        onJoinMeeting(tx.id, false)
+                          .then(res => {
+                            goToConference(tx);
+                          })
+                          .catch(e => {
+                            console.error(e);
+                          });
                         //   }
                         //
-                        goToConference(tx);
+                        // goToConference(tx);
                       }}
                     >
                       Join Meeting

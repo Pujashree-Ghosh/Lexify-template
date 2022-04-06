@@ -14,6 +14,10 @@ import {
   txIsPaymentPending,
   txIsRequested,
   txHasBeenDelivered,
+  txCustomerJoined1,
+  txProviderJoined1,
+  txBothJoined,
+  txIsExpired,
 } from '../../util/transaction';
 import { LINE_ITEM_NIGHT, LINE_ITEM_DAY, propTypes } from '../../util/types';
 import {
@@ -53,6 +57,7 @@ import PanelHeading, {
   HEADING_DECLINED,
   HEADING_CANCELED,
   HEADING_DELIVERED,
+  HEADING_EXPIRED,
 } from './PanelHeading';
 import Axios from 'axios';
 import { PrimaryButton } from '../Button/Button';
@@ -450,6 +455,36 @@ export class TransactionPanelComponent extends Component {
           showAddress: isCustomer,
           showCalendar: true,
         };
+      } else if (txCustomerJoined1(tx)) {
+        return {
+          headingState: HEADING_ACCEPTED,
+          isShortBooking: false,
+          customer_joined: true,
+          bookingAccepted: true,
+        };
+      } else if (txProviderJoined1(tx)) {
+        return {
+          headingState: HEADING_ACCEPTED,
+          isShortBooking: false,
+          provider_joined: true,
+          bookingAccepted: true,
+        };
+      } else if (txBothJoined(tx)) {
+        return {
+          headingState: HEADING_ACCEPTED,
+          isShortBooking: false,
+          provider_joined: true,
+          customer_joined: true,
+          bookingAccepted: true,
+        };
+      } else if (txIsExpired(tx)) {
+        return {
+          headingState: HEADING_EXPIRED,
+          showDetailCardHeadings: isCustomer,
+          allowProviderCancel: false,
+          hideCalendars: true,
+          cancelledOrDeclined: true,
+        };
       } else if (txIsRescheduled(tx)) {
         return {
           headingState: HEADING_RESCHEDULED,
@@ -770,26 +805,16 @@ export class TransactionPanelComponent extends Component {
                       // inProgress={joinMeetingProgress}
                       className={css.joinMeetingBtn}
                       onClick={() => {
-                        //   if (stateData.isShortBooking) {
-                        //     onJoinShortMeeting(currentTransaction.id, isCustomer)
-                        //       .then(res => {
-                        //         this.goToConference(currentTransaction);
-                        //         console.log('onJoinShortMeeting', res);
-                        //       })
-                        //       .catch(e => console.error(e));
-                        //   } else {
-                        //     onJoinMeeting(currentTransaction.id, isCustomer)
-                        //       .then(res => {
-                        //         this.goToConference(currentTransaction);
-                        //         console.log('onJoinMeeting', res);
-                        //       })
-                        //       .catch(e => {
-                        //         console.log('557. err in page', e);
-                        //         console.error(e);
-                        //       });
-                        //   }
+                        onJoinMeeting(currentTransaction.id, isCustomer)
+                          .then(res => {
+                            this.goToConference(currentTransaction);
+                          })
+                          .catch(e => {
+                            console.error(e);
+                          });
+
                         //
-                        this.goToConference(currentTransaction);
+                        // this.goToConference(currentTransaction);
                       }}
                     >
                       Join Meeting
@@ -967,26 +992,14 @@ export class TransactionPanelComponent extends Component {
                         // inProgress={joinMeetingProgress}
                         className={css.joinMeetingBtn}
                         onClick={() => {
-                          //   if (stateData.isShortBooking) {
-                          //     onJoinShortMeeting(currentTransaction.id, isCustomer)
-                          //       .then(res => {
-                          //         this.goToConference(currentTransaction);
-                          //         console.log('onJoinShortMeeting', res);
-                          //       })
-                          //       .catch(e => console.error(e));
-                          //   } else {
-                          //     onJoinMeeting(currentTransaction.id, isCustomer)
-                          //       .then(res => {
-                          //         this.goToConference(currentTransaction);
-                          //         console.log('onJoinMeeting', res);
-                          //       })
-                          //       .catch(e => {
-                          //         console.log('557. err in page', e);
-                          //         console.error(e);
-                          //       });
-                          //   }
-                          //
-                          this.goToConference(currentTransaction);
+                          onJoinMeeting(currentTransaction.id, isCustomer)
+                            .then(res => {
+                              this.goToConference(currentTransaction);
+                            })
+                            .catch(e => {
+                              console.error(e);
+                            });
+                          // this.goToConference(currentTransaction);
                         }}
                       >
                         Join Meeting

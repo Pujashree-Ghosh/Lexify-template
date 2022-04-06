@@ -15,6 +15,7 @@ export const HEADING_RESCHEDULED = 'rescheduled';
 export const HEADING_DECLINED = 'declined';
 export const HEADING_CANCELED = 'canceled';
 export const HEADING_DELIVERED = 'delivered';
+export const HEADING_EXPIRED = 'heading-expired';
 
 const createListingLink = (listingId, label, listingDeleted, searchParams = {}, className = '') => {
   if (!listingDeleted) {
@@ -258,6 +259,29 @@ const PanelHeading = props => {
           className={titleClasses}
           id="TransactionPanel.saleCancelledTitle"
           values={{ customerName, listingLink }}
+        />
+      );
+    case HEADING_EXPIRED:
+      return isCustomer ? (
+        <HeadingCustomer
+          className={titleClasses}
+          id={
+            isShortBooking
+              ? 'TransactionPanel.orderExpiredTitleShortBooking'
+              : 'TransactionPanel.orderExpiredTitle'
+          }
+          values={{ customerName, listingLink, bookingTime }}
+        />
+      ) : (
+        <HeadingProvider
+          className={titleClasses}
+          id={
+            isShortBooking
+              ? 'TransactionPanel.saleExpiredTitleShortBooking'
+              : 'TransactionPanel.saleExpiredTitle'
+          }
+          values={{ customerName, providerName, bookingTime }}
+          isCustomerBanned={isCustomerBanned}
         />
       );
     case HEADING_DELIVERED:

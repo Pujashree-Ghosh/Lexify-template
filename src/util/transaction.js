@@ -50,6 +50,24 @@ export const TRANSITION_RESCHEDULE_PROVIDER = 'transition/reschedule-provider';
 export const TRANSITION_RESCHEDULE_CUSTOMER = 'transition/reschedule-customer';
 export const TRANSITION_PENDING_CONFIRMATION = 'transition/pending-confirmation';
 
+//----------------------------------------------------------------//
+
+export const TRANSITION_CUSTOMER_JOIN_1 = 'transition/customer-join-1';
+
+export const TRANSITION_CUSTOMER_JOIN_2 = 'transition/customer-join-2';
+
+export const TRANSITION_PROVIDER_JOIN_1 = 'transition/provider-join-1';
+
+export const TRANSITION_PROVIDER_JOIN_2 = 'transition/provider-join-2';
+
+export const TRANSITION_CUSTOMER_MISSING = 'transition/customer-missing';
+
+export const TRANSITION_PROVIDER_MISSING = 'transition/provider-missing';
+
+export const TRANSITION_MEETING_EXPIRED = 'transition/meeting-expired';
+
+//----------------------------------------------------------------//
+
 // The backend will mark the transaction completed.
 export const TRANSITION_COMPLETE = 'transition/complete';
 
@@ -101,6 +119,10 @@ const STATE_PREAUTHORIZED_ORAL = 'preauthorized-oral';
 const STATE_DECLINED = 'declined';
 const STATE_ACCEPTED = 'accepted';
 const STATE_ACCEPTED_ORAL = 'accepted-oral';
+const STATE_EXPIRED = 'expired';
+const STATE_CUSTOMER_JOINED_1 = 'customer-joined-1';
+const STATE_PROVIDER_JOINED_1 = 'provider-joined-1';
+const STATE_BOTH_JOINED = 'meeting-both-joined';
 const STATE_CANCELED = 'canceled';
 const STATE_RESCHEDULE = 'rescheduled';
 const STATE_PENDING_CONFIRMATION = 'pending-confirmation';
@@ -183,11 +205,33 @@ const stateDescription = {
         [TRANSITION_CANCEL_CUSTOMER_ORAL]: STATE_CANCELED,
         [TRANSITION_RESCHEDULE_PROVIDER]: STATE_RESCHEDULE,
         [TRANSITION_RESCHEDULE_CUSTOMER]: STATE_RESCHEDULE,
+        [TRANSITION_MEETING_EXPIRED]: STATE_EXPIRED,
+        [TRANSITION_CUSTOMER_JOIN_1]: STATE_CUSTOMER_JOINED_1,
+        [TRANSITION_PROVIDER_JOIN_1]: STATE_PROVIDER_JOINED_1,
+        [TRANSITION_PENDING_CONFIRMATION]: STATE_PENDING_CONFIRMATION,
+      },
+    },
+
+    [STATE_CUSTOMER_JOINED_1]: {
+      on: {
+        [TRANSITION_PROVIDER_JOIN_2]: STATE_BOTH_JOINED,
+        [TRANSITION_PROVIDER_MISSING]: STATE_EXPIRED,
+      },
+    },
+    [STATE_PROVIDER_JOINED_1]: {
+      on: {
+        [TRANSITION_CUSTOMER_JOIN_2]: STATE_BOTH_JOINED,
+        [TRANSITION_CUSTOMER_MISSING]: STATE_EXPIRED,
+      },
+    },
+    [STATE_BOTH_JOINED]: {
+      on: {
         [TRANSITION_PENDING_CONFIRMATION]: STATE_PENDING_CONFIRMATION,
       },
     },
 
     [STATE_RESCHEDULE]: {},
+    [STATE_EXPIRED]: {},
 
     [STATE_PENDING_CONFIRMATION]: {
       on: {
@@ -294,6 +338,18 @@ export const txIsRescheduled = tx =>
 export const txIsPendingConfirmation = tx =>
   getTransitionsToState(STATE_PENDING_CONFIRMATION).includes(txLastTransition(tx));
 
+export const txCustomerJoined1 = tx =>
+  getTransitionsToState(STATE_CUSTOMER_JOINED_1).includes(txLastTransition(tx));
+
+export const txProviderJoined1 = tx =>
+  getTransitionsToState(STATE_PROVIDER_JOINED_1).includes(txLastTransition(tx));
+
+export const txBothJoined = tx =>
+  getTransitionsToState(STATE_BOTH_JOINED).includes(txLastTransition(tx));
+
+export const txIsExpired = tx =>
+  getTransitionsToState(STATE_EXPIRED).includes(txLastTransition(tx));
+
 export const txIsDeclined = tx =>
   getTransitionsToState(STATE_DECLINED).includes(txLastTransition(tx));
 
@@ -331,6 +387,7 @@ const hasPassedStateFn = state => tx =>
 
 export const txHasBeenAccepted = hasPassedStateFn(STATE_ACCEPTED);
 export const txHasBeenDelivered = hasPassedStateFn(STATE_DELIVERED);
+export const txHasBeenExpired = hasPassedStateFn(STATE_EXPIRED);
 
 /**
  * Other transaction related utility functions
@@ -349,6 +406,12 @@ export const getReview1Transition = isCustomer =>
 
 export const getReview2Transition = isCustomer =>
   isCustomer ? TRANSITION_REVIEW_2_BY_CUSTOMER : TRANSITION_REVIEW_2_BY_PROVIDER;
+
+export const joinMeeting1Transition = isCustomer =>
+  isCustomer ? TRANSITION_CUSTOMER_JOIN_1 : TRANSITION_PROVIDER_JOIN_1;
+
+export const joinMeeting2Transition = isCustomer =>
+  isCustomer ? TRANSITION_CUSTOMER_JOIN_2 : TRANSITION_PROVIDER_JOIN_2;
 
 // Check if a transition is the kind that should be rendered
 // when showing transition history (e.g. ActivityFeed)
@@ -375,6 +438,13 @@ export const isRelevantPastTransition = transition => {
     TRANSITION_REVIEW_1_BY_PROVIDER,
     TRANSITION_REVIEW_2_BY_CUSTOMER,
     TRANSITION_REVIEW_2_BY_PROVIDER,
+    TRANSITION_CUSTOMER_JOIN_1,
+    TRANSITION_CUSTOMER_JOIN_2,
+    TRANSITION_PROVIDER_JOIN_1,
+    TRANSITION_PROVIDER_JOIN_2,
+    TRANSITION_CUSTOMER_MISSING,
+    TRANSITION_PROVIDER_MISSING,
+    TRANSITION_MEETING_EXPIRED,
   ].includes(transition);
 };
 

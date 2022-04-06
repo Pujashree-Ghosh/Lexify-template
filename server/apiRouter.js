@@ -40,6 +40,7 @@ const updateClientId = require('./api/update-client-id');
 const showListingsAuthor = require('./api/show-listings-author');
 const { getTwilioToken } = require('./api/twilio');
 const { listingExceptionCreate, listingExceptionDelete } = require('./api/unsolicitedException');
+const { unsolicitedTransition } = require('./api/unsolicited-transition');
 
 const router = express.Router();
 
@@ -93,6 +94,7 @@ router.post('/globalAvailability', globalAvailability);
 router.get('/globalAvailability', globalAvailability);
 router.post('/listing/createException', listingExceptionCreate);
 router.delete('/listing/exceptionDelete', listingExceptionDelete);
+router.post('/unsolicitedTransition', unsolicitedTransition);
 
 router.get('/initiate-login-as', initiateLoginAs);
 router.get('/login-as', loginAs);

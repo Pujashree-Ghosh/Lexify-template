@@ -16,6 +16,9 @@ import {
   txIsPaymentPending,
   txIsPendingConfirmation,
   txIsAcceptedOral,
+  txCustomerJoined1,
+  txProviderJoined1,
+  txBothJoined,
 } from '../../util/transaction';
 import { propTypes, DATE_TYPE_DATETIME } from '../../util/types';
 import { createSlug, stringify } from '../../util/urlHelpers';
@@ -45,7 +48,7 @@ import config from '../../config';
 
 import css from './Salespage.module.css';
 import SalesCard from '../../components/SalesCard/SalesCard';
-import { confirmConsultation } from '../TransactionPage/TransactionPage.duck';
+import { confirmConsultation, joinMeeting } from '../TransactionPage/TransactionPage.duck';
 
 const formatDate = (intl, date) => {
   return {
@@ -64,6 +67,12 @@ export const txState = (intl, tx, type) => {
   if (txIsAccepted(tx)) {
     return 'upcoming';
   } else if (txIsAcceptedOral(tx)) {
+    return 'upcoming';
+  } else if (txCustomerJoined1(tx)) {
+    return 'upcoming';
+  } else if (txProviderJoined1(tx)) {
+    return 'upcoming';
+  } else if (txBothJoined(tx)) {
     return 'upcoming';
   } else if (txIsPendingConfirmation(tx)) {
     return 'pending';
@@ -139,6 +148,7 @@ export const SalespageComponent = props => {
     confirmConsultationInProgress,
     confirmConsultationSuccess,
     confirmConsultationError,
+    onJoinMeeting,
   } = props;
 
   // console.log(confirmConsultationSuccess);
@@ -161,7 +171,6 @@ export const SalespageComponent = props => {
   const toTxItem = tx => {
     const type = isPending ? 'pending' : isUpcoming ? 'upcoming' : 'complete';
     const stateData = txState(intl, tx, type);
-    console.log(tx);
 
     // Render InboxItem only if the latest transition of the transaction is handled in the `txState` function.
     return stateData ? (
@@ -175,6 +184,7 @@ export const SalespageComponent = props => {
           onConfirmConsultation={onConfirmConsultation}
           confirmConsultationInProgress={confirmConsultationInProgress}
           confirmConsultationSuccess={confirmConsultationSuccess}
+          onJoinMeeting={onJoinMeeting}
         />
       </div>
     ) : null;
@@ -348,6 +358,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     onConfirmConsultation: transactionId => dispatch(confirmConsultation(transactionId)),
+    onJoinMeeting: (transactionId, isCustomer) => dispatch(joinMeeting(transactionId, isCustomer)),
   };
 };
 

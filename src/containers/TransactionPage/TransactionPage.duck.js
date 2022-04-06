@@ -9,6 +9,8 @@ import {
   getReview1Transition,
   getReview2Transition,
   txIsInFirstReviewBy,
+  joinMeeting1Transition,
+  joinMeeting2Transition,
   TRANSITION_ACCEPT,
   TRANSITION_DECLINE,
   TRANSITION_COMPLETE,
@@ -646,25 +648,41 @@ export const joinMeeting = (id, isCustomer) => (dispatch, getState, sdk) => {
     })
     .catch(e => {
       if (isTransactionsTransitionInvalidTransition(storableError(e))) {
-        console.log('557 first catch', e);
         return joinMeetingSecond(id, isCustomer, dispatch, sdk, getState);
       } else {
-        console.log('557 first else catch');
         dispatch(joinMeetingError(storableError(e)));
 
         // Rethrow so the page can track whether the sending failed, and
         // keep the message in the form for a retry.
         throw e;
       }
-      // dispatch(joinMeetingError(storableError(e)));
-      // log.error(e, 'accept-sale-failed', {
-      //   txId: id,
-      //   transition,
-      // });
-      // throw e;
     });
 };
 
+export const joinMeetingSecond = (id, isCustomer, dispatch, sdk, getState) => {
+  if (acceptOrDeclineInProgress(getState())) {
+    return Promise.reject(new Error('Join meeting already in progress'));
+  }
+  dispatch(joinMeetingRequest());
+  const transition = joinMeeting2Transition(isCustomer);
+  console.log('557 join meeting second', transition);
+  return sdk.transactions
+    .transition({ id, transition, params: {} }, { expand: true })
+    .then(response => {
+      dispatch(addMarketplaceEntities(response));
+      dispatch(joinMeetingSuccess());
+      dispatch(fetchCurrentUserNotifications());
+      return response;
+    })
+    .catch(e => {
+      dispatch(joinMeetingError(storableError(e)));
+      log.error(e, 'join-meeting-second-failed', {
+        txId: id,
+        transition,
+      });
+      throw e;
+    });
+};
 export const cancelSaleCustomer = id => (dispatch, getState, sdk) => {
   if (acceptOrDeclineInProgress(getState())) {
     return Promise.reject(new Error('Accept or decline already in progress'));

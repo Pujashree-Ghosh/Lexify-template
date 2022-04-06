@@ -37,8 +37,8 @@ function AppointmentCardComponent(props) {
     confirmConsultationInProgress,
     confirmConsultationSuccess,
     history,
+    onJoinMeeting,
   } = props;
-  console.log(123, isEditPlanModalOpen);
   const provider = tx && tx.provider;
   const listing = tx && tx.listing;
   const booking = tx && tx.booking;
@@ -58,7 +58,6 @@ function AppointmentCardComponent(props) {
         ? listing?.attributes?.publicData?.state[0]
         : ''
     )[0]?.name;
-  console.log('first', country);
   const goToConference = async transaction => {
     let startTime = transaction?.booking?.attributes?.start;
     let endTime = transaction?.booking?.attributes?.end;
@@ -315,18 +314,16 @@ function AppointmentCardComponent(props) {
                         //       })
                         //       .catch(e => console.error(e));
                         //   } else {
-                        //     onJoinMeeting(currentTransaction.id, isCustomer)
-                        //       .then(res => {
-                        //         this.goToConference(currentTransaction);
-                        //         console.log('onJoinMeeting', res);
-                        //       })
-                        //       .catch(e => {
-                        //         console.log('557. err in page', e);
-                        //         console.error(e);
-                        //       });
+                        onJoinMeeting(tx.id, true)
+                          .then(res => {
+                            goToConference(tx);
+                          })
+                          .catch(e => {
+                            console.error(e);
+                          });
                         //   }
                         //
-                        goToConference(tx);
+                        // goToConference(tx);
                       }}
                     >
                       Join Meeting
