@@ -52,7 +52,6 @@ const EditListingClientIdFormComponent = props => (
       } = formRenderProps;
 
       const userId = useSelector(state => state?.user?.currentUser?.id.uuid);
-      console.log(999, values.clientId);
 
       const printTimeStrings = t => {
         const m = t % 60;

@@ -34,9 +34,15 @@ const TopbarMobileMenu = props => {
   const user = ensureCurrentUser(currentUser);
 
   if (!isAuthenticated) {
-    const signup = (
+    const signupLawyer = (
+      <NamedLink name="SignupLawyerPage" className={css.signupLink}>
+        <FormattedMessage id="TopbarMobileMenu.signupLawyerLink" />
+      </NamedLink>
+    );
+
+    const signupClient = (
       <NamedLink name="SignupPage" className={css.signupLink}>
-        <FormattedMessage id="TopbarMobileMenu.signupLink" />
+        <FormattedMessage id="TopbarMobileMenu.signupClientLink" />
       </NamedLink>
     );
 
@@ -48,7 +54,10 @@ const TopbarMobileMenu = props => {
 
     const signupOrLogin = (
       <span className={css.authenticationLinks}>
-        <FormattedMessage id="TopbarMobileMenu.signupOrLogin" values={{ signup, login }} />
+        <FormattedMessage
+          id="TopbarMobileMenu.signupOrLogin"
+          values={{ signupLawyer, signupClient, login }}
+        />
       </span>
     );
     return (
@@ -57,7 +66,11 @@ const TopbarMobileMenu = props => {
           <div className={css.authenticationGreeting}>
             <FormattedMessage
               id="TopbarMobileMenu.unauthorizedGreeting"
-              values={{ lineBreak: <br />, signupOrLogin }}
+              values={{ lineBreak: <br /> }}
+            />
+            <FormattedMessage
+              id="TopbarMobileMenu.signupOrLogin"
+              values={{ lineBreak: <br />, signupLawyer, signupClient, login }}
             />
           </div>
         </div>
