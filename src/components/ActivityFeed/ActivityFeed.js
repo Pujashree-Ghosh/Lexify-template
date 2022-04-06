@@ -32,6 +32,9 @@ import {
   TRANSITION_REVIEW_1_BY_PROVIDER,
   TRANSITION_REVIEW_2_BY_CUSTOMER,
   TRANSITION_REVIEW_2_BY_PROVIDER,
+  TRANSITION_MEETING_EXPIRED,
+  TRANSITION_PROVIDER_JOIN_1,
+  TRANSITION_CUSTOMER_JOIN_1,
   transitionIsReviewed,
   txIsDelivered,
   txIsInFirstReviewBy,
@@ -285,7 +288,12 @@ const resolveTransitionMessage = (
           />
         );
       }
-
+    case TRANSITION_MEETING_EXPIRED:
+      return <FormattedMessage id="ActivityFeed.meetingExpired" />;
+    case TRANSITION_PROVIDER_JOIN_1:
+      return <FormattedMessage id="ActivityFeed.providerJoined" />;
+    case TRANSITION_CUSTOMER_JOIN_1:
+      return <FormattedMessage id="ActivityFeed.customerJoined" />;
     default:
       log.error(new Error('Unknown transaction transition type'), 'unknown-transition-type', {
         transitionType: currentTransition,
@@ -429,7 +437,9 @@ export const ActivityFeedComponent = props => {
   const classes = classNames(rootClassName || css.root, className);
   const currentTransaction = ensureTransaction(transaction);
   const transitions = currentTransaction.attributes.transitions
-    ? currentTransaction.attributes.transitions?.filter(t => t.transition !== 'transition/accept')
+    ? currentTransaction.attributes.transitions?.filter(
+        t => t.transition !== 'transition/accept' && t.transition !== 'transition/accept-oral'
+      )
     : [];
   const currentCustomer = ensureUser(currentTransaction.customer);
   const currentProvider = ensureUser(currentTransaction.provider);

@@ -61,7 +61,7 @@ function Chat({ sideChat, closeChat, updateText, sendMessage, text, messages }) 
                       //   {extractName(m?.text)}
                       // </a>
                       <ExternalLink href={m?.text} className={css.msgcnt}>
-                        {extractName(m?.text)}
+                        {m?.text}
                       </ExternalLink>
                     ) : (
                       <div className={css.msgcnt}>{m.text}</div>
