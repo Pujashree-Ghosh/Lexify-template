@@ -150,23 +150,31 @@ export const SalespageComponent = props => {
     confirmConsultationError,
     onJoinMeeting,
   } = props;
-
-  // console.log(confirmConsultationSuccess);
   const { tab } = params;
   const ensuredCurrentUser = ensureCurrentUser(currentUser);
 
-  const validTab = tab === 'pending' || tab === 'upcoming' || tab === 'complete';
+  const validTab =
+    tab === 'pending' || tab === 'upcoming' || tab === 'complete' || tab === 'verification';
   if (!validTab) {
     return <NotFoundPage />;
   }
 
   const isPending = tab === 'pending';
   const isUpcoming = tab === 'upcoming';
+  const isComplete = tab === 'complete';
+  const isVerification = tab === 'verification';
 
   const pendingTitle = 'Pending'; // intl.formatMessage({ id: 'InboxPage.ordersTitle' });
   const upcomingTitle = 'Upcoming'; // intl.formatMessage({ id: 'InboxPage.salesTitle' });
   const completeTitle = 'Complete';
-  const title = isPending ? pendingTitle : isUpcoming ? upcomingTitle : completeTitle;
+  const verificationTitle = 'verification';
+  const title = isPending
+    ? pendingTitle
+    : isUpcoming
+    ? upcomingTitle
+    : isComplete
+    ? completeTitle
+    : verificationTitle;
 
   const toTxItem = tx => {
     const type = isPending ? 'pending' : isUpcoming ? 'upcoming' : 'complete';
@@ -255,14 +263,35 @@ export const SalespageComponent = props => {
           {/* {providerNotificationBadge} */}
         </span>
       ),
-      selected: !isPending && !isUpcoming,
+      selected: isComplete,
       linkProps: {
         name: 'Salespage',
         params: { tab: 'complete' },
       },
     },
+    currentUser !== null && currentUser?.attributes?.profile?.publicData?.isSuperAdmin
+      ? {
+          text: (
+            <span>
+              <FormattedMessage id="MyAppointmentPage.verificationTabTitle" />
+              {/* {providerNotificationBadge} */}
+            </span>
+          ),
+          selected: isVerification,
+          linkProps: {
+            name: 'Salespage',
+            params: { tab: 'verification' },
+          },
+        }
+      : null,
   ];
-  const nav = <TabNav rootClassName={css.tabs} tabRootClassName={css.tab} tabs={tabs} />;
+  const nav = (
+    <TabNav
+      rootClassName={css.tabs}
+      tabRootClassName={css.tab}
+      tabs={tabs.filter(t => t !== null)}
+    />
+  );
 
   return (
     <Page title={title} scrollingDisabled={scrollingDisabled}>

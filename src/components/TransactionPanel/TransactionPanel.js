@@ -18,6 +18,8 @@ import {
   txProviderJoined1,
   txBothJoined,
   txIsExpired,
+  txIsPendingConfirmation,
+  txIsRequestedOral,
 } from '../../util/transaction';
 import { LINE_ITEM_NIGHT, LINE_ITEM_DAY, propTypes } from '../../util/types';
 import {
@@ -444,6 +446,20 @@ export class TransactionPanelComponent extends Component {
           showSaleButtons: isProvider && !isCustomerBanned,
           showCalendar: true,
         };
+      } else if (txIsRequestedOral(tx)) {
+        return {
+          headingState: HEADING_REQUESTED,
+          showDetailCardHeadings: isCustomer,
+          showSaleButtons: isProvider && !isCustomerBanned,
+          showCalendar: true,
+        };
+      } else if (txIsPendingConfirmation(tx)) {
+        return {
+          headingState: HEADING_ACCEPTED,
+          showDetailCardHeadings: isCustomer,
+          showAddress: isCustomer,
+          showCalendar: true,
+        };
       } else if (txIsAccepted(tx)) {
         return {
           headingState: HEADING_ACCEPTED,
@@ -516,7 +532,6 @@ export class TransactionPanelComponent extends Component {
       }
     };
     const stateData = stateDataFn(currentTransaction);
-    // console.log(1996, stateData);
 
     const deletedListingTitle = intl.formatMessage({
       id: 'TransactionPanel.deletedListingTitle',

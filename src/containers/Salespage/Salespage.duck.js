@@ -104,6 +104,7 @@ export const loadData = (params, search) => (dispatch, getState, sdk) => {
     pending: 'pending',
     upcoming: 'upcoming',
     complete: 'complete',
+    verification: 'verification',
   };
 
   const onlyFilter = onlyFilterValues[tab];
