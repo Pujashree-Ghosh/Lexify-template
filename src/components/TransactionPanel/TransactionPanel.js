@@ -64,6 +64,7 @@ import { PrimaryButton } from '../Button/Button';
 import { apiBaseUrl } from '../../util/api';
 import { BsCalendar2Plus } from 'react-icons/bs';
 import css from './TransactionPanel.module.css';
+import axios from 'axios';
 
 // Helper function to get display names for different roles
 const displayNames = (currentUser, currentProvider, currentCustomer, intl) => {
@@ -108,6 +109,7 @@ export class TransactionPanelComponent extends Component {
       // fileUploadSuccess: null,
       // cancelError: '',
       inProgress: false,
+      joinMeetingProgress: false,
     };
     // this.fileInputRef = React.createRef();
 
@@ -267,6 +269,7 @@ export class TransactionPanelComponent extends Component {
       },
       config.secretCode
     );
+    this.setState({ joinMeetingProgress: false });
     window.open(`/meeting-new/${jwtToken}`);
     // this.props.history.push(`/meeting-new/${jwtToken}`);
     // console.log('555 token', jwtToken);
@@ -756,6 +759,7 @@ export class TransactionPanelComponent extends Component {
     };
 
     const category = currentListing.attributes.publicData.category;
+    const listingType = currentListing.attributes.publicData.type;
 
     return (
       <div className={classes}>
@@ -802,9 +806,10 @@ export class TransactionPanelComponent extends Component {
                   {stateData.headingState === 'accepted' ||
                   stateData.headingState === 'rescheduled' ? (
                     <PrimaryButton
-                      // inProgress={joinMeetingProgress}
+                      inProgress={this.state.joinMeetingProgress}
                       className={css.joinMeetingBtn}
                       onClick={() => {
+                        this.setState({ joinMeetingProgress: true });
                         if (isCustomer) {
                           if (
                             txCustomerJoined1(currentTransaction) ||
@@ -821,19 +826,46 @@ export class TransactionPanelComponent extends Component {
                               });
                           }
                         } else {
-                          if (
-                            txProviderJoined1(currentTransaction) ||
-                            txBothJoined(currentTransaction)
-                          ) {
-                            this.goToConference(currentTransaction);
-                          } else {
-                            onJoinMeeting(currentTransaction.id, isCustomer)
-                              .then(res => {
-                                this.goToConference(currentTransaction);
-                              })
-                              .catch(e => {
-                                console.error(e);
+                          if (listingType === 'unsolicited') {
+                            axios
+                              .get(
+                                `${apiBaseUrl()}/api/unsolicitedTransition/${
+                                  currentListing.id.uuid
+                                }`
+                              )
+                              .then(resp => {
+                                if (resp.data.length > 0) {
+                                  resp.data.map(d => {
+                                    if (d !== currentTransaction.id) {
+                                      onJoinMeeting(d, false);
+                                    }
+                                  });
+                                  onJoinMeeting(currentTransaction.id, isCustomer)
+                                    .then(res => {
+                                      this.goToConference(currentTransaction);
+                                    })
+                                    .catch(e => {
+                                      console.error(e);
+                                    });
+                                } else {
+                                  this.goToConference(currentTransaction);
+                                }
                               });
+                          } else {
+                            if (
+                              txProviderJoined1(currentTransaction) ||
+                              txBothJoined(currentTransaction)
+                            ) {
+                              this.goToConference(currentTransaction);
+                            } else {
+                              onJoinMeeting(currentTransaction.id, isCustomer)
+                                .then(res => {
+                                  this.goToConference(currentTransaction);
+                                })
+                                .catch(e => {
+                                  console.error(e);
+                                });
+                            }
                           }
                         }
                       }}
@@ -1010,9 +1042,10 @@ export class TransactionPanelComponent extends Component {
                     {stateData.headingState === 'accepted' ||
                     stateData.headingState === 'rescheduled' ? (
                       <PrimaryButton
-                        // inProgress={joinMeetingProgress}
+                        inProgress={this.state.joinMeetingProgress}
                         className={css.joinMeetingBtn}
                         onClick={() => {
+                          this.setState({ joinMeetingProgress: true });
                           if (isCustomer) {
                             if (
                               txCustomerJoined1(currentTransaction) ||
@@ -1029,19 +1062,46 @@ export class TransactionPanelComponent extends Component {
                                 });
                             }
                           } else {
-                            if (
-                              txProviderJoined1(currentTransaction) ||
-                              txBothJoined(currentTransaction)
-                            ) {
-                              this.goToConference(currentTransaction);
-                            } else {
-                              onJoinMeeting(currentTransaction.id, isCustomer)
-                                .then(res => {
-                                  this.goToConference(currentTransaction);
-                                })
-                                .catch(e => {
-                                  console.error(e);
+                            if (listingType === 'unsolicited') {
+                              axios
+                                .get(
+                                  `${apiBaseUrl()}/api/unsolicitedTransition/${
+                                    currentListing.id.uuid
+                                  }`
+                                )
+                                .then(resp => {
+                                  if (resp.data.length > 0) {
+                                    resp.data.map(d => {
+                                      if (d !== currentTransaction.id) {
+                                        onJoinMeeting(d, false);
+                                      }
+                                    });
+                                    onJoinMeeting(currentTransaction.id, isCustomer)
+                                      .then(res => {
+                                        this.goToConference(currentTransaction);
+                                      })
+                                      .catch(e => {
+                                        console.error(e);
+                                      });
+                                  } else {
+                                    this.goToConference(currentTransaction);
+                                  }
                                 });
+                            } else {
+                              if (
+                                txProviderJoined1(currentTransaction) ||
+                                txBothJoined(currentTransaction)
+                              ) {
+                                this.goToConference(currentTransaction);
+                              } else {
+                                onJoinMeeting(currentTransaction.id, isCustomer)
+                                  .then(res => {
+                                    this.goToConference(currentTransaction);
+                                  })
+                                  .catch(e => {
+                                    console.error(e);
+                                  });
+                              }
                             }
                           }
                         }}
@@ -1056,22 +1116,6 @@ export class TransactionPanelComponent extends Component {
                   ''
                 )}
               </div>
-              {/* <button
-                // onClick={
-                //     ()=>onJoinMeeting(currentTransaction.id, isCustomer)
-                //     .then(res => {
-                //       this.goToConference(currentTransaction);
-                //       console.log('onJoinMeeting', res);
-                //     })
-                //     .catch(e => {
-                //       console.log('557. err in page', e);
-                //       console.error(e);
-                //     })
-                //   }
-                onClick={() => this.goToConference(currentTransaction)}
-              >
-                This is a button
-              </button> */}
 
               {/* {stateData.showSaleButtons ? (
                 <div className={css.desktopActionButtons}>{saleButtons}</div>
@@ -1090,32 +1134,6 @@ export class TransactionPanelComponent extends Component {
           sendReviewInProgress={sendReviewInProgress}
           sendReviewError={sendReviewError}
         />
-
-        {/* <PrimaryButton
-          inProgress={joinMeetingProgress}
-          onClick={() => {
-            if (stateData.isShortBooking) {
-              onJoinShortMeeting(currentTransaction.id, isCustomer)
-                .then(res => {
-                  this.goToConference(currentTransaction);
-                  console.log('onJoinShortMeeting', res);
-                })
-                .catch(e => console.error(e));
-            } else {
-              onJoinMeeting(currentTransaction.id, isCustomer)
-                .then(res => {
-                  this.goToConference(currentTransaction);
-                  console.log('onJoinMeeting', res);
-                })
-                .catch(e => {
-                  console.log('557. err in page', e);
-                  console.error(e);
-                });
-            }
-          }}
-        >
-          {stateData.isShortBooking ? 'Join Free Trial Meeting' : 'Join Meeting'}
-        </PrimaryButton> */}
       </div>
     );
   }

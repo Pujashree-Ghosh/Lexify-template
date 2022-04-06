@@ -94,7 +94,7 @@ router.post('/globalAvailability', globalAvailability);
 router.get('/globalAvailability', globalAvailability);
 router.post('/listing/createException', listingExceptionCreate);
 router.delete('/listing/exceptionDelete', listingExceptionDelete);
-router.post('/unsolicitedTransition', unsolicitedTransition);
+router.get('/unsolicitedTransition/:id', unsolicitedTransition);
 
 router.get('/initiate-login-as', initiateLoginAs);
 router.get('/login-as', loginAs);

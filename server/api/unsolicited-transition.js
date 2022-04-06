@@ -7,31 +7,32 @@ const integrationSdk = flexIntegrationSdk.createInstance({
 });
 
 module.exports.unsolicitedTransition = async (req, response) => {
-  const listingId = req.body.id;
+  const listingId = req.params.id;
+  // console.log(listingId);
 
   return new Promise((resolve, reject) => {
-    integrationSdk.transactions
-      .query({ listingId: '624aa0cb-5f36-49ba-bb44-a3187dfeed33' })
-      .then(res => {
-        console.log(
-          res.data.data.map(t => {
-            if (t.attributes.lastTransition === 'transition/accept-oral') {
-              return t.id.uuid;
-            }
-            // return t.attrbutes;
+    integrationSdk.transactions.query({ listingId }).then(res => {
+      const tId = res.data.data
+        .filter(t => {
+          return (
+            t.attributes.lastTransition === 'transition/accept-oral' ||
+            t.attributes.lastTransition === 'transition/customer-join-1'
+          );
+        })
+        .map(ft => ft.id.uuid);
+      console.log(
+        res.data.data
+          .filter(t => {
+            return (
+              t.attributes.lastTransition === 'transition/accept-oral' ||
+              t.attributes.lastTransition === 'transition/customer-join-1'
+            );
           })
-          // res.data.data
-        );
+          .map(ft => ft.id.uuid)
+      );
 
-        response
-          .send
-          // res.data.data.map(t => {
-          //   if (t.attrbutes.lastTransition === 'transition/accept-oral') {
-          //     return t.id.uuid;
-          //   }
-          // })
-          ();
-        return resolve('success');
-      });
+      response.send(tId);
+      return resolve('success');
+    });
   });
 };

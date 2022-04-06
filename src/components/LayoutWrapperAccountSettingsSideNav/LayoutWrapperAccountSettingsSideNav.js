@@ -9,6 +9,7 @@ import { FormattedMessage } from '../../util/reactIntl';
 import { withViewport } from '../../util/contextHelpers';
 import { ensureCurrentUser } from '../../util/data';
 import { LayoutWrapperSideNav } from '../../components';
+import { connect } from 'react-redux';
 
 const MAX_HORIZONTAL_NAV_SCREEN_WIDTH = 1023;
 
@@ -31,6 +32,7 @@ const LayoutWrapperAccountSettingsSideNavComponent = props => {
   const user = ensureCurrentUser(currentUser);
   const protectedData = user?.attributes?.profile?.protectedData;
   const isLawyer = protectedData?.isLawyer;
+  console.log(isLawyer, user);
 
   const { width } = viewport;
   const hasViewport = width > 0;
@@ -144,8 +146,15 @@ LayoutWrapperAccountSettingsSideNavComponent.propTypes = {
   }).isRequired,
 };
 
-const LayoutWrapperAccountSettingsSideNav = compose(withViewport)(
-  LayoutWrapperAccountSettingsSideNavComponent
-);
+const mapStateToProps = state => {
+  const { currentUser } = state.user;
+
+  return { currentUser };
+};
+
+const LayoutWrapperAccountSettingsSideNav = compose(
+  withViewport,
+  connect(mapStateToProps)
+)(LayoutWrapperAccountSettingsSideNavComponent);
 
 export default LayoutWrapperAccountSettingsSideNav;

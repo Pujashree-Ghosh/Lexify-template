@@ -75,13 +75,13 @@ class FieldDateAndTimeInputServiceComponent extends Component {
               }
             }}
             isDayBlocked={day => {
-              console.log(
-                moment(day).isSameOrBefore(moment(serviceEndDate)),
-                moment(day).isSameOrAfter(moment(serviceStartDate)),
-                day.toDate(),
-                serviceEndDate,
-                serviceStartDate
-              );
+              // console.log(
+              //   moment(day).isSameOrBefore(moment(serviceEndDate)),
+              //   moment(day).isSameOrAfter(moment(serviceStartDate)),
+              //   day.toDate(),
+              //   serviceEndDate,
+              //   serviceStartDate
+              // );
               return !moment(day)
                 .clone()
                 .startOf('day')

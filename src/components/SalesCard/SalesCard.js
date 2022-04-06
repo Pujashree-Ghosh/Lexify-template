@@ -15,6 +15,8 @@ import jsonwebtoken from 'jsonwebtoken';
 import config from '../../config';
 import Button, { PrimaryButton } from '../Button/Button';
 import axios from 'axios';
+import { txCustomerJoined1 } from '../../util/transaction';
+import { apiBaseUrl } from '../../util/api';
 function SalesCardComponent(props) {
   const [countryData, setCountryData] = useState();
   const [joinMeetingProgress, setJoinMeetingProgress] = useState(false);
@@ -42,6 +44,7 @@ function SalesCardComponent(props) {
   const listing = tx && tx.listing;
   const booking = tx && tx.booking;
   const category = listing?.attributes?.publicData?.category;
+  const listingType = listing?.attributes?.publicData?.type;
   const city = listing?.attributes?.publicData?.city[0];
   const country = countryData?.filter(
     c =>
@@ -136,6 +139,7 @@ function SalesCardComponent(props) {
   };
 
   // console.log(stateData, tx);
+  // console.log(666, txCustomerJoined1(tx));
 
   return (
     <div className={css.cardContainer}>
@@ -252,16 +256,39 @@ function SalesCardComponent(props) {
                       className={css.joinBtn}
                       onClick={() => {
                         setJoinMeetingProgress(true);
-                        if (txBothJoined(tx) || txProviderJoined1(tx)) {
-                          goToConference(tx);
-                        } else {
-                          onJoinMeeting(tx.id, false)
-                            .then(res => {
-                              goToConference(tx);
-                            })
-                            .catch(e => {
-                              console.error(e);
+                        if (listingType === 'unsolicited') {
+                          axios
+                            .get(`${apiBaseUrl()}/api/unsolicitedTransition/${listing.id.uuid}`)
+                            .then(resp => {
+                              if (resp.data.length > 0) {
+                                resp.data.map(d => {
+                                  if (d !== tx.id) {
+                                    onJoinMeeting(d, false);
+                                  }
+                                });
+                                onJoinMeeting(tx.id, false)
+                                  .then(res => {
+                                    goToConference(tx);
+                                  })
+                                  .catch(e => {
+                                    console.error(e);
+                                  });
+                              } else {
+                                goToConference(tx);
+                              }
                             });
+                        } else {
+                          if (txBothJoined(tx) || txProviderJoined1(tx)) {
+                            goToConference(tx);
+                          } else {
+                            onJoinMeeting(tx.id, false)
+                              .then(res => {
+                                goToConference(tx);
+                              })
+                              .catch(e => {
+                                console.error(e);
+                              });
+                          }
                         }
                       }}
                     >
