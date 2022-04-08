@@ -19,6 +19,7 @@ import {
   txCustomerJoined1,
   txProviderJoined1,
   txBothJoined,
+  txIsPendingConfirmationOral,
 } from '../../util/transaction';
 import { propTypes, DATE_TYPE_DATETIME } from '../../util/types';
 import { createSlug, stringify } from '../../util/urlHelpers';
@@ -75,6 +76,8 @@ export const txState = (intl, tx, type) => {
   } else if (txBothJoined(tx)) {
     return 'upcoming';
   } else if (txIsPendingConfirmation(tx)) {
+    return 'pending';
+  } else if (txIsPendingConfirmationOral(tx)) {
     return 'pending';
   } else if (txHasBeenDelivered(tx)) {
     return 'complete';

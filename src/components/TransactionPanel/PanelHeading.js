@@ -265,22 +265,14 @@ const PanelHeading = props => {
       return isCustomer ? (
         <HeadingCustomer
           className={titleClasses}
-          id={
-            isShortBooking
-              ? 'TransactionPanel.orderExpiredTitleShortBooking'
-              : 'TransactionPanel.orderExpiredTitle'
-          }
-          values={{ customerName, listingLink, bookingTime }}
+          id={'TransactionPanel.orderExpiredTitle'}
+          values={{ customerName, listingLink }}
         />
       ) : (
         <HeadingProvider
           className={titleClasses}
-          id={
-            isShortBooking
-              ? 'TransactionPanel.saleExpiredTitleShortBooking'
-              : 'TransactionPanel.saleExpiredTitle'
-          }
-          values={{ customerName, providerName, bookingTime }}
+          id={'TransactionPanel.saleExpiredTitle'}
+          values={{ customerName, providerName }}
           isCustomerBanned={isCustomerBanned}
         />
       );

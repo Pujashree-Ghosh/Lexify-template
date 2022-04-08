@@ -41,6 +41,8 @@ function SalesCardComponent(props) {
     txProviderJoined1,
   } = props;
   const provider = tx && tx.provider;
+  const customer = tx && tx.customer;
+
   const listing = tx && tx.listing;
   const booking = tx && tx.booking;
   const category = listing?.attributes?.publicData?.category;
@@ -192,12 +194,12 @@ function SalesCardComponent(props) {
           <div className={css.userContent}>
             <div className={css.SectionAvatarImg}>
               {/* <SectionAvatar user={listing.author} /> */}
-              <AvatarMedium className={css.profileAvatar} user={provider} disableProfileLink />
+              <AvatarMedium className={css.profileAvatar} user={customer} disableProfileLink />
             </div>
             <div className={css.userInfo}>
-              <div className={css.userName}>{provider?.attributes?.profile?.displayName}</div>
+              <div className={css.userName}>{customer?.attributes?.profile?.displayName}</div>
               {/* <div className={css.userLisence}>{listing.attributes.title}</div> */}
-              <div className={css.userLocation}>
+              {/* <div className={css.userLocation}>
                 {true ? (
                   <>
                     <img src={biolocationIcon} className={css.locationIcon} />
@@ -210,7 +212,7 @@ function SalesCardComponent(props) {
                 ) : (
                   ''
                 )}
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

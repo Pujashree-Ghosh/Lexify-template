@@ -45,6 +45,8 @@ import {
   txRoleIsCustomer,
   getUserTxRole,
   isRelevantPastTransition,
+  TRANSITION_PROVIDER_MISSING,
+  TRANSITION_CUSTOMER_MISSING,
 } from '../../util/transaction';
 import { propTypes } from '../../util/types';
 import * as log from '../../util/log';
@@ -294,6 +296,11 @@ const resolveTransitionMessage = (
       return <FormattedMessage id="ActivityFeed.providerJoined" />;
     case TRANSITION_CUSTOMER_JOIN_1:
       return <FormattedMessage id="ActivityFeed.customerJoined" />;
+    case TRANSITION_PROVIDER_MISSING:
+      return <FormattedMessage id="ActivityFeed.providerMisssing" />;
+    case TRANSITION_CUSTOMER_MISSING:
+      return <FormattedMessage id="ActivityFeed.customerMissing" />;
+
     default:
       log.error(new Error('Unknown transaction transition type'), 'unknown-transition-type', {
         transitionType: currentTransition,

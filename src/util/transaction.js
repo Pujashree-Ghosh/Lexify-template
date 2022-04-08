@@ -49,6 +49,7 @@ export const TRANSITION_CANCEL_CUSTOMER_ORAL = 'transition/cancel-customer-oral'
 export const TRANSITION_RESCHEDULE_PROVIDER = 'transition/reschedule-provider';
 export const TRANSITION_RESCHEDULE_CUSTOMER = 'transition/reschedule-customer';
 export const TRANSITION_PENDING_CONFIRMATION = 'transition/pending-confirmation';
+export const TRANSITION_PENDING_CONFIRMATION_ORAL = 'transition/pending-confirmation-oral';
 
 //----------------------------------------------------------------//
 
@@ -126,6 +127,7 @@ const STATE_BOTH_JOINED = 'meeting-both-joined';
 const STATE_CANCELED = 'canceled';
 const STATE_RESCHEDULE = 'rescheduled';
 const STATE_PENDING_CONFIRMATION = 'pending-confirmation';
+const STATE_PENDING_CONFIRMATION_ORAL = 'pending-confirmation-oral';
 const STATE_DELIVERED = 'delivered';
 const STATE_REVIEWED = 'reviewed';
 const STATE_REVIEWED_BY_CUSTOMER = 'reviewed-by-customer';
@@ -208,7 +210,7 @@ const stateDescription = {
         [TRANSITION_MEETING_EXPIRED]: STATE_EXPIRED,
         [TRANSITION_CUSTOMER_JOIN_1]: STATE_CUSTOMER_JOINED_1,
         [TRANSITION_PROVIDER_JOIN_1]: STATE_PROVIDER_JOINED_1,
-        [TRANSITION_PENDING_CONFIRMATION]: STATE_PENDING_CONFIRMATION,
+        [TRANSITION_PENDING_CONFIRMATION_ORAL]: STATE_PENDING_CONFIRMATION_ORAL,
       },
     },
 
@@ -227,6 +229,7 @@ const stateDescription = {
     [STATE_BOTH_JOINED]: {
       on: {
         [TRANSITION_PENDING_CONFIRMATION]: STATE_PENDING_CONFIRMATION,
+        [TRANSITION_PENDING_CONFIRMATION_ORAL]: STATE_PENDING_CONFIRMATION_ORAL,
       },
     },
 
@@ -338,6 +341,9 @@ export const txIsRescheduled = tx =>
 export const txIsPendingConfirmation = tx =>
   getTransitionsToState(STATE_PENDING_CONFIRMATION).includes(txLastTransition(tx));
 
+export const txIsPendingConfirmationOral = tx =>
+  getTransitionsToState(STATE_PENDING_CONFIRMATION_ORAL).includes(txLastTransition(tx));
+
 export const txCustomerJoined1 = tx =>
   getTransitionsToState(STATE_CUSTOMER_JOINED_1).includes(txLastTransition(tx));
 
@@ -429,6 +435,7 @@ export const isRelevantPastTransition = transition => {
     TRANSITION_RESCHEDULE_PROVIDER,
     TRANSITION_RESCHEDULE_CUSTOMER,
     TRANSITION_PENDING_CONFIRMATION,
+    TRANSITION_PENDING_CONFIRMATION_ORAL,
     TRANSITION_COMPLETE,
     TRANSITION_CONFIRM_PAYMENT,
     TRANSITION_CONFIRM_PAYMENT_ORAL,

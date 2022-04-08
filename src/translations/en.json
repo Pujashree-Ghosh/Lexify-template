@@ -1089,7 +1089,7 @@
   "TopbarMobileMenu.signupLink": "Sign up",
   "TopbarMobileMenu.signupLawyerLink": "Sign up as Lawyer",
   "TopbarMobileMenu.signupClientLink": "Sign up as Client",
-  "TopbarMobileMenu.signupOrLogin":  "{lineBreak}{lineBreak}{signupClient}{lineBreak}{lineBreak}{signupLawyer}{lineBreak}{lineBreak}{login}",
+  "TopbarMobileMenu.signupOrLogin": "{lineBreak}{lineBreak}{signupClient}{lineBreak}{lineBreak}{signupLawyer}{lineBreak}{lineBreak}{login}",
   "TopbarMobileMenu.unauthorizedGreeting": "Hello there,{lineBreak} What would you like to do:{lineBreak}",
   "TopbarMobileMenu.yourListingsLink": "Your teacher profile",
   "TopbarSearchForm.placeholder": "Search",
@@ -1327,9 +1327,9 @@
   "BookingTimeForm.slotNotAvailableMessage": "This time slot is not available to book. Please choose another slot",
   "ActivityFeed.transitionCancelProvider": "The booking was cancelled by the lawyer.",
   "ActivityFeed.transitionCancelCustomer": "The booking was cancelled by the customer.",
-  "ActivityFeed.meetingExpired":"The meeting has ended",
-  "ActivityFeed.customerJoined":"The customer has joined",
-  "ActivityFeed.providerJoined":"The provider has joined",
+  "ActivityFeed.meetingExpired": "The meeting has ended",
+  "ActivityFeed.customerJoined": "The customer has joined",
+  "ActivityFeed.providerJoined": "The provider has joined",
   "signupFormForm.companyNamePlaceholder": "Comapny name",
   "signupFormForm.companyNameLabel": "Enter company name",
   "SignupForm.companyNameRequired": "Company name required",
@@ -1354,5 +1354,9 @@
   "InboxPage.stateCustomerJoined": "Customer Joined",
   "InboxPage.stateProviderJoined": "Provider Joined",
   "InboxPage.stateBothJoined": "Meeting Started",
-  "InboxPage.stateMeetingExpired": "Meeting Expired"
+  "InboxPage.stateMeetingExpired": "Meeting Expired",
+  "TransactionPanel.orderExpiredTitle": "{customerName}, your booking for {listingLink} has been expired.",
+  "TransactionPanel.saleExpiredTitle": "The booking from {customerName} for a session with you has been expired.",
+  "ActivityFeed.customerMissing": "Customer Missing",
+  "ActivityFeed.providerMisssing": "Provider Missing"
 }
