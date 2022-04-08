@@ -544,6 +544,9 @@
   font-size: 20px;
   font-weight: bold;
   padding-top: 45px;
+  @media (max-width: 575px) {
+    padding: 20px 0;
+  }
 }
 .righthorizontal {
   display: flex;
