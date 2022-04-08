@@ -1,0 +1,12 @@
+{
+  "terminal.integrated.allowMnemonics": false,
+  "terminal.integrated.altClickMovesCursor": true,
+  "terminal.integrated.cursorStyle": "block",
+  "terminal.integrated.customGlyphs": true,
+  "terminal.integrated.drawBoldTextInBrightColors": true,
+  "terminal.integrated.enableMultiLinePasteWarning": true,
+  "terminal.integrated.gpuAcceleration": "auto",
+  "terminal.integrated.macOptionClickForcesSelection": false,
+  "terminal.integrated.macOptionIsMeta": false,
+  "terminal.integrated.sendKeybindingsToShell": false
+}

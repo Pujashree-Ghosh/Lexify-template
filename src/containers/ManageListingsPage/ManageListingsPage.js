@@ -399,16 +399,18 @@ export class ManageListingsPageComponent extends Component {
                         <div className={css.righthorizontal}>
                           {/* rightlowerdiv */}
 
-                          <div>
-                            {isDraft ? (
-                              <span className={css.span}>UNPUBLISHED</span>
-                            ) : (
-                              <span className={css.span}> PUBLISHED</span>
-                            )}
+                          <div className={css.lastprice}>
+                            <div>
+                              {isDraft ? (
+                                <span className={css.span}>UNPUBLISHED</span>
+                              ) : (
+                                <span className={css.span}> PUBLISHED</span>
+                              )}
+                            </div>
+                            <span className={css.price}>
+                              {typeof formattedPrice === 'undefined' ? '' : formattedPrice}{' '}
+                            </span>
                           </div>
-                          <span className={css.price}>
-                            {typeof formattedPrice === 'undefined' ? '' : formattedPrice}{' '}
-                          </span>
 
                           <button
                             className={css.editbutton}

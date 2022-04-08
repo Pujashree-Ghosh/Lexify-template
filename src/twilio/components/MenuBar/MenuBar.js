@@ -167,9 +167,9 @@ export default function MenuBar({ isProvider, extendMeeting, isShortBooking, isE
             </Grid>
           </Grid> */}
 
-          <Hidden smDown>
+          <Hidden>
             <Grid style={{ flex: 1 }}>
-              <Grid container justify="flex-end">
+              <Grid container alignItems="center" justify="flex-end">
                 <Menu />
                 <EndCallButton isProvider={isProvider} />
               </Grid>

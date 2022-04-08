@@ -55,11 +55,11 @@
 .btnmod span span {
   margin: 0;
 }
-.btnmod span span svg{
-    font-size: 16px !important;
-    color: #fff;
+.btnmod span span svg {
+  font-size: 16px !important;
+  color: #fff;
 }
-    
+
 /* .btnmod span span svg {
   height: 28px;
   width: 30px;
@@ -74,20 +74,19 @@ button.vid-end-btn {
   border-radius: 30px;
   font-size: 22px;
 
- 
   @media (max-width: 959px) {
-    margin: 15px 0;
+    margin-right: 10px;
   }
 }
 button.vid-end-btn:hover {
   background: #eb5b4f;
 }
-.footer-mod{
-      background-color: #202124 !important;
-      padding-top: 12px !important;
-      padding-bottom: 12px !important;
+.footer-mod {
+  background-color: #202124 !important;
+  padding-top: 12px !important;
+  padding-bottom: 12px !important;
 }
-.footer-mod p{
+.footer-mod p {
   color: #fff;
 }
 .btnmod {
@@ -99,25 +98,24 @@ button.vid-end-btn:hover {
   min-width: auto !important;
   margin: 0 10px !important;
 }
-.btnmod:hover{
-  background: #43474a !important
+.btnmod:hover {
+  background: #43474a !important;
 }
-.btnmod.active{
-  background: #ea4335 !important
+.btnmod.active {
+  background: #ea4335 !important;
 }
-.btnmod  span{
+.btnmod span {
   padding: 0 !important;
 }
-.mob-inline{
+.mob-inline {
   align-items: center;
 }
-.mobsetting.btnmod{
+.mobsetting.btnmod {
   color: #fff;
   font-size: 18px;
 }
-.inner-right-mod{
+.inner-right-mod {
   @media (max-width: 575px) {
-      padding: 10px !important;
-
+    padding: 10px !important;
   }
 }

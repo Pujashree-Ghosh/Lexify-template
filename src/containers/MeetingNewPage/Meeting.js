@@ -656,7 +656,7 @@ const Meeting = props => {
               }}
             />
 
-            <MobileTopMenuBar isProvider={isProvider} />
+            {/* <MobileTopMenuBar isProvider={isProvider} /> */}
             <Room />
             {/* {remainingMeetingTime && (
               <Timer

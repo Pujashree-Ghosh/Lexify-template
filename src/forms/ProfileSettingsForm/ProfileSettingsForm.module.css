@@ -383,12 +383,20 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  @media (max-width: 767px) {
+    flex-direction: column;
+  }
 }
 .halfinput {
   flex-basis: 48%;
 }
 .thirdinput {
   flex-basis: 30%;
+  @media (max-width: 767px) {
+    flex-basis: 100%;
+    width: 100%;
+    margin: 10px 0 0;
+  }
 }
 .inlinefrom button {
   min-height: 44px;
