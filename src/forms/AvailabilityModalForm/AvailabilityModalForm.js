@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { bool, object, string } from 'prop-types';
 import { compose } from 'redux';
+import isEqual from 'lodash/isEqual';
 import { Form as FinalForm } from 'react-final-form';
 import arrayMutators from 'final-form-arrays';
 import { FieldArray } from 'react-final-form-arrays';
@@ -307,6 +308,8 @@ const submit = (onSubmit, weekdays) => values => {
 
 const AvailabilityModalFormComponent = props => {
   const { onSubmit, duration, ...restOfprops } = props;
+  const [submittedValues, setSubmittedValues] = useState({});
+
   return (
     <FinalForm
       {...restOfprops}
@@ -327,11 +330,14 @@ const AvailabilityModalFormComponent = props => {
           fetchErrors,
           values,
           duration,
+          updateSuccess,
+          initialValues,
         } = fieldRenderProps;
 
         const classes = classNames(rootClassName || css.root, className);
         const submitInProgress = inProgress;
-
+        const submittedOnce = Object.keys(submittedValues).length > 0;
+        const pristineSinceLastSubmit = submittedOnce && isEqual(values, initialValues);
         const concatDayEntriesReducer = (entries, day) =>
           values[day] ? entries.concat(values[day]) : entries;
         const hasUnfinishedEntries = !!weekdays
@@ -343,7 +349,15 @@ const AvailabilityModalFormComponent = props => {
         const submitDisabled = submitInProgress || hasUnfinishedEntries;
 
         return (
-          <Form id={formId} className={classes} onSubmit={handleSubmit}>
+          <Form
+            id={formId}
+            className={classes}
+            onSubmit={e => {
+              e.preventDefault();
+              setSubmittedValues(values);
+              handleSubmit(e);
+            }}
+          >
             <h2 className={css.heading}>
               <FormattedMessage
                 id="EditListingAvailabilityPlanForm.title"
@@ -383,7 +397,7 @@ const AvailabilityModalFormComponent = props => {
                 type="submit"
                 inProgress={submitInProgress}
                 disabled={submitDisabled}
-                // ready={true}
+                ready={pristineSinceLastSubmit}
               >
                 <FormattedMessage id="EditListingAvailabilityPlanForm.saveSchedule" />
               </PrimaryButton>

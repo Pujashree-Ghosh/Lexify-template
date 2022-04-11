@@ -26,7 +26,6 @@ function UserResultCardComponent(props) {
   const [listingAuthor, setListingAuthor] = useState();
   useEffect(() => {
     onShowUser(listing.author.id);
-    console.log(listing.author.id);
     axios
       .get('https://countriesnow.space/api/v0.1/countries/states')
       .then(res => setCountryData(res.data.data))
@@ -36,7 +35,6 @@ function UserResultCardComponent(props) {
       .then(res => setListingAuthor(res.data.data))
       .catch(err => console.log(err));
   }, []);
-  console.log(141, listingAuthor);
   const ensuredUser = ensureUser(listing.author);
   const state = countryData
     ?.filter(c => c.iso3 === 'USA')[0]
@@ -69,7 +67,6 @@ function UserResultCardComponent(props) {
   //   )[0]?.name
   // );
   const slug = createSlug(listing?.attributes?.title);
-  console.log('first', listing.author.id.uuid);
   return (
     <div className={css.cardContainer} key={listing.id.uuid}>
       <div className={css.dmuser}>

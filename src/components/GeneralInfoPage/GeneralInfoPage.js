@@ -26,6 +26,7 @@ import {
   uploadImage,
 } from '../../containers/ProfileSettingsPage/ProfileSettingsPage.duck';
 import css from '../../containers/ProfileSettingsPage/ProfileSettingsPage.module.css';
+import moment from 'moment';
 
 const onImageUploadHandler = (values, fn) => {
   const { id, imageId, file } = values;
@@ -68,15 +69,18 @@ export class GeneralInfoPageComponent extends Component {
     // console.log(user.id.uuid);
     const isLawyer = protectedData?.isLawyer;
     const handleSubmit = values => {
+      console.log(values);
       if (isLawyer === true) {
         const {
           firstName,
           lastName,
           bio: rawBio,
-          schedule,
+          startDate,
+          startTime,
           profileImage,
           otp,
           phoneNumber,
+          verificationId,
           ...restVal
         } = values;
 
@@ -86,7 +90,12 @@ export class GeneralInfoPageComponent extends Component {
           firstName: firstName.trim(),
           lastName: lastName.trim(),
           bio,
-          protectedData: { schedule: schedule, phoneNumber: `+${phoneNumber}` },
+          protectedData: {
+            startDate: moment(startDate.date).format(),
+            startTime,
+            phoneNumber: `+${phoneNumber}`,
+            verificationId,
+          },
           publicData: { phoneNumber: `+${phoneNumber}`, ...restVal },
         };
         const uploadedImage = this.props.image;
@@ -180,7 +189,10 @@ export class GeneralInfoPageComponent extends Component {
               education: publicData.education ? publicData.education : [{}],
               practice: publicData.practice ? publicData.practice : [{}],
               industry: publicData.industry ? publicData.industry : [{}],
-              schedule: protectedData.schedule ? protectedData.schedule : [{}],
+              startDate: protectedData.startDate
+                ? { date: moment(protectedData.startDate).toDate() }
+                : [''],
+              startTime: protectedData.startTime ? protectedData.startTime : '',
             }}
             profileImage={profileImage}
             onImageUpload={e => onImageUploadHandler(e, onImageUpload)}
@@ -287,7 +299,7 @@ export class GeneralInfoPageComponent extends Component {
                 <h1 className={css.heading}>
                   <FormattedMessage id="ProfileSettingsPage.heading" />
                 </h1> */}
-                {/* {user.id ? (
+              {/* {user.id ? (
                   <NamedLink
                     className={css.profileLink}
                     name="ProfilePage"

@@ -26,6 +26,16 @@ const BookingSchema = new mongoose.Schema(
       type: Date,
       required: true,
     },
+    isVerification: {
+      type: Boolean,
+    },
+    meetingLink: {
+      type: String,
+    },
+    hasVerified: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

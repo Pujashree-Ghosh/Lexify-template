@@ -130,7 +130,7 @@ module.exports = async (req, response) => {
                   startTime: start.format('HH:mm'),
                   endTime: end.format('HH:mm'),
                 });
-                console.log(l.attributes.state, l.attributes.publicData.category);
+                // console.log(l.attributes.state, l.attributes.publicData.category);
 
                 // console.log(newEntreis);
 

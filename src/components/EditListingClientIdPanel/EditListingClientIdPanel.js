@@ -65,7 +65,6 @@ const EditListingClientIdPanel = props => {
     state => state?.user?.currentUser?.attributes?.profile?.protectedData?.availabilityPlan
   );
   const availabilityPlan = currentListing?.attributes?.availabilityPlan;
-  console.log(525, clientId);
 
   return (
     <div className={classes}>

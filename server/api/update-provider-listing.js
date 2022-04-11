@@ -16,17 +16,17 @@ module.exports = async (req, response) => {
           const languages = JSON.parse(res.data.data.attributes.profile.publicData.languages).map(
             m => m.value
           );
-          const country = res.data.data.attributes.profile.publicData.jurisdictionPractice.map(
+          const country = res.data.data.attributes.profile.publicData?.jurisdictionPractice?.map(
             m => m.country
           );
-          const state = res.data.data.attributes.profile.publicData.jurisdictionPractice.map(
+          const state = res.data.data.attributes.profile.publicData?.jurisdictionPractice?.map(
             s => s.state
           );
-          const city = res.data.data.attributes.profile.publicData.jurisdictionPractice.map(
+          const city = res.data.data.attributes.profile.publicData?.jurisdictionPractice?.map(
             m => m.city
           );
-          const description = res.data.data.attributes.profile.bio;
-          const practiceArea = res.data.data.attributes.profile.publicData.practice.map(m => m);
+          const description = res.data.data.attributes.profile?.bio;
+          const practiceArea = res.data.data.attributes.profile.publicData?.practice?.map(m => m);
           integrationSdk.listings
             .update({
               id: res.data.data.attributes.profile.publicData.providerListing,

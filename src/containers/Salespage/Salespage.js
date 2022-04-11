@@ -43,6 +43,7 @@ import {
   IconSpinner,
   UserDisplayName,
   UserNav,
+  VerificationTab,
 } from '../../components';
 import { TopbarContainer, NotFoundPage } from '..';
 import config from '../../config';
@@ -310,8 +311,14 @@ export const SalespageComponent = props => {
         </LayoutWrapperTopbar>
         <LayoutWrapperSideNav className={css.navigation}>{nav}</LayoutWrapperSideNav>
         <LayoutWrapperMain className={css.Appointmentlwm}>
-          {error}
-          {/* <ul className={css.itemList}>
+          {isVerification ? (
+            <div className={css.AppointmentCardContainer}>
+              <VerificationTab currentUser={ensuredCurrentUser} />
+            </div>
+          ) : (
+            <>
+              {error}
+              {/* <ul className={css.itemList}>
             {!fetchInProgress ? (
               transactions.map(toTxItem)
             ) : (
@@ -321,9 +328,11 @@ export const SalespageComponent = props => {
             )}
             {noResults}
           </ul> */}
-          {!fetchInProgress ? transactions.map(toTxItem) : <IconSpinner />}
-          {noResults}
-          {pagingLinks}
+              {!fetchInProgress ? transactions.map(toTxItem) : <IconSpinner />}
+              {noResults}
+              {pagingLinks}
+            </>
+          )}
         </LayoutWrapperMain>
         <LayoutWrapperFooter>
           <Footer />

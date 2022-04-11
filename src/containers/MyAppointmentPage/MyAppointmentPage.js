@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { arrayOf, bool, number, oneOf, shape, string } from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
@@ -43,6 +43,7 @@ import {
   IconSpinner,
   UserDisplayName,
   UserNav,
+  VerificationCardLawyer,
 } from '../../components';
 import { TopbarContainer, NotFoundPage } from '..';
 import config from '../../config';
@@ -50,6 +51,9 @@ import config from '../../config';
 import css from './MyAppointmentPage.module.css';
 import AppointmentCard from '../../components/AppointmentCard/AppointmentCard';
 import { confirmConsultation, joinMeeting } from '../TransactionPage/TransactionPage.duck';
+import axios from 'axios';
+import { apiBaseUrl } from '../../util/api';
+import VerificationCard from '../../components/VerificatoinCard/VerificationCard';
 
 const formatDate = (intl, date) => {
   return {
@@ -153,6 +157,27 @@ export const MyAppointmentPageComponent = props => {
     confirmConsultationError,
     onJoinMeeting,
   } = props;
+
+  const [verificationDetail, setVerificationDetail] = useState('');
+
+  useEffect(() => {
+    let unmounted = false;
+    if (currentUser?.id?.uuid) {
+      axios
+        .post(`${apiBaseUrl()}/api/fetchUserVerification`, {
+          customerId: currentUser.id.uuid,
+        })
+        .then(resp => {
+          if (!unmounted) {
+            setVerificationDetail(resp.data);
+          }
+        });
+    }
+
+    return () => {
+      unmounted = true;
+    };
+  }, []);
 
   // console.log(confirmConsultationSuccess);
   const { tab } = params;
@@ -267,6 +292,8 @@ export const MyAppointmentPageComponent = props => {
   ];
   const nav = <TabNav rootClassName={css.tabs} tabRootClassName={css.tab} tabs={tabs} />;
 
+  const isProfileVerified = currentUser?.attributes?.profile?.protectedData?.isProfileVerified;
+
   return (
     <Page title={title} scrollingDisabled={scrollingDisabled}>
       <LayoutSideNavigation>
@@ -282,19 +309,17 @@ export const MyAppointmentPageComponent = props => {
         <LayoutWrapperSideNav className={css.navigation}>{nav}</LayoutWrapperSideNav>
         <LayoutWrapperMain className={css.Appointmentlwm}>
           {error}
-          {/* <ul className={css.itemList}>
-            {!fetchInProgress ? (
-              transactions.map(toTxItem)
-            ) : (
-              <li className={css.listItemsLoading}>  
-                <IconSpinner />
-              </li>
-            )}
-            {noResults}
-          </ul> */}
-          {!fetchInProgress ? transactions.map(toTxItem) : <IconSpinner />}
-          {noResults}
-          {pagingLinks}
+          {isProfileVerified ? (
+            <>
+              {!fetchInProgress ? transactions.map(toTxItem) : <IconSpinner />}
+              {noResults}
+              {pagingLinks}
+            </>
+          ) : verificationDetail ? (
+            <VerificationCardLawyer detail={verificationDetail} />
+          ) : (
+            <IconSpinner />
+          )}
         </LayoutWrapperMain>
         <LayoutWrapperFooter>
           <Footer />

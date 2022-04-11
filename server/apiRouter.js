@@ -29,10 +29,15 @@ const {
   deleteBooking,
   getProviderBooking,
   updateBooking,
+  setVerification,
+  updateVerification,
+  fetchVerificationList,
+  markAsVerified,
+  fetchUserVerification,
 } = require('./api/booking');
 
-const createProviderListing = require('./api/create-provider-listing');
 const updateProviderListing = require('./api/update-provider-listing');
+const createProviderListing = require('./api/create-provider-listing');
 const publishPublicListing = require('./api/publish-public-listing');
 const globalAvailability = require('./api/globalAvailability');
 const sortOwnListings = require('./api/sortOwnListings');
@@ -41,6 +46,8 @@ const showListingsAuthor = require('./api/show-listings-author');
 const { getTwilioToken } = require('./api/twilio');
 const { listingExceptionCreate, listingExceptionDelete } = require('./api/unsolicitedException');
 const { unsolicitedTransition } = require('./api/unsolicited-transition');
+const { setAdminAvailability, getAdminAvailability } = require('./api/AdminAvailability');
+const { verifyLawyer } = require('./api/verifyLawyer');
 
 const router = express.Router();
 
@@ -95,6 +102,21 @@ router.get('/globalAvailability', globalAvailability);
 router.post('/listing/createException', listingExceptionCreate);
 router.delete('/listing/exceptionDelete', listingExceptionDelete);
 router.get('/unsolicitedTransition/:id', unsolicitedTransition);
+
+// router.post('/setVerificationTime', setVerificationTime);
+// router.get('/getVerification/:id', getVerification);
+// router.get('/getAllVerifications', getAllVerifications);
+
+router.post('/setVerification', setVerification);
+router.post('/updateVerification', updateVerification);
+router.post('/fetchVerificationList', fetchVerificationList);
+router.post('/markAsVerified', markAsVerified);
+router.post('/fetchUserVerification', fetchUserVerification);
+
+router.post('/verifyLawyer', verifyLawyer);
+
+router.post('/setAdminAvailability1', setAdminAvailability);
+router.get('/getAdminAvailability', getAdminAvailability);
 
 router.get('/initiate-login-as', initiateLoginAs);
 router.get('/login-as', loginAs);

@@ -1195,8 +1195,9 @@
   "ProfileSettingsForm.endTimeLabel": "End time",
   "ProfileSettingsForm.endTimePlaceholder": "00:00",
   "ProfileSettingsForm.startTimeRequired": "start time require",
-  "ProfileSettingsForm.startTimeLabel": "Start time",
+  "ProfileSettingsForm.startTimeLabel": "Time",
   "ProfileSettingsForm.DateLabel": "Date",
+  "ProfileSettingsForm.startDateLabel": "Date",
   "ProfileSettingsForm.startTimePlaceholder": "00:00",
   "ProfileSettingsForm.practiceDateRequired": "Choose Date",
   "ProfileSettingsForm.practiceDateLabel": "Date",
@@ -1358,5 +1359,6 @@
   "TransactionPanel.orderExpiredTitle": "{customerName}, your booking for {listingLink} has been expired.",
   "TransactionPanel.saleExpiredTitle": "The booking from {customerName} for a session with you has been expired.",
   "ActivityFeed.customerMissing": "Customer Missing",
-  "ActivityFeed.providerMisssing": "Provider Missing"
+  "ActivityFeed.providerMisssing": "Provider Missing",
+  "VerificationTab.noResultFound": "No results."
 }

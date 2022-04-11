@@ -162,6 +162,7 @@ const AvailabilityForm = props => {
     submitButtonText,
     updateInProgress,
     errors,
+    updateSuccess,
   } = props;
   const currentUser = useSelector(state => state.user.currentUser);
   const currentUserListing = useSelector(state => state.user.currentUserListing);
@@ -458,6 +459,7 @@ const AvailabilityForm = props => {
             inProgress={updateInProgress}
             fetchErrors={errors}
             duration={duration}
+            updateSuccess={updateSuccess}
           />
         </Modal>
       ) : null}

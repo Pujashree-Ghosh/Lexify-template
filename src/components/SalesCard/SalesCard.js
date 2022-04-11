@@ -21,10 +21,16 @@ function SalesCardComponent(props) {
   const [countryData, setCountryData] = useState();
   const [joinMeetingProgress, setJoinMeetingProgress] = useState(false);
   useEffect(() => {
+    let isCancelled = false;
     axios
       .get('https://countriesnow.space/api/v0.1/countries/states')
-      .then(res => setCountryData(res.data.data))
+      .then(res => {
+        if (!isCancelled) setCountryData(res.data.data);
+      })
       .catch(err => console.log('somer error occurred', err));
+    return () => {
+      isCancelled = true;
+    };
   }, []);
   const {
     unitType,

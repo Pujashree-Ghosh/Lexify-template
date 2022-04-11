@@ -375,16 +375,16 @@ class FieldDateAndTimeInput extends Component {
           .startOf('hour')
           .add(minToAdd, 'm');
 
-        console.log(
-          min,
-          minToAdd,
-          parseInt(min / 5) + 1,
-          moment(m.attributes.start)
-            .clone()
-            .startOf('hour')
-            .add(minToAdd, 'm')
-            .toDate()
-        );
+        // console.log(
+        //   min,
+        //   minToAdd,
+        //   parseInt(min / 5) + 1,
+        //   moment(m.attributes.start)
+        //     .clone()
+        //     .startOf('hour')
+        //     .add(minToAdd, 'm')
+        //     .toDate()
+        // );
       } else {
         start = moment(m.attributes.start).clone();
       }
