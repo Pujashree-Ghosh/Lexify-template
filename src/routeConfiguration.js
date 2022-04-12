@@ -9,6 +9,7 @@ import { NotFoundPage } from './containers';
 import { NamedRedirect } from './components';
 import CreateListing from './components/CreateListing/CreateListing';
 
+
 const pageDataLoadingAPI = getPageDataLoadingAPI();
 
 const AboutPage = loadable(() => import(/* webpackChunkName: "AboutPage" */ './containers/AboutPage/AboutPage'));
@@ -43,6 +44,7 @@ const JurisdictionPage = loadable(() => import(/* webpackChunkName: "Jurisdictio
 const EducationPage = loadable(() => import(/* webpackChunkName: "EducationPage" */ './components/EducationPage/EducationPage'));
 const PracticeAreaPage = loadable(() => import(/* webpackChunkName: "PracticeAreaPage" */ './components/PracticeAreaPage/PracticeAreaPage'));
 const AvailabilityPage = loadable(() => import(/* webpackChunkName: "AvailabilityPage" */ './components/AvailabilityPage/AvailabilityPage'));
+const BufferTimePage = loadable(() => import(/* webpackChunkName: "BufferTimePage" */ './components/BufferTimePage/BufferTimePage'));
 const VerificationPage = loadable(() => import(/* webpackChunkName: "VerificationPage" */ './components/VerificationPage/VerificationPage'));
 // const AppointmentPage = loadable(() => import(/* webpackChunkName: "AppointmentPage" */ './components/AppointmentPage/AppointmentPage'));
 
@@ -547,6 +549,14 @@ const routeConfiguration = () => {
       auth: true,
       authPage: 'LoginPage',
       component: AvailabilityPage,
+      // loadData: pageDataLoadingAPI.GeneralInfoPage.loadData,
+    },
+    {
+      path: '/profile-setting/buffer',
+      name: 'BufferTimePage',
+      auth: true,
+      authPage: 'LoginPage',
+      component: BufferTimePage,
       // loadData: pageDataLoadingAPI.GeneralInfoPage.loadData,
     },
     {

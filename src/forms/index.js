@@ -31,4 +31,5 @@ export { default as EditListingDurationForm } from './EditListingDurationForm/Ed
 export { default as EditListingClientIdForm } from './EditListingClientIdForm/EditListingClientIdForm'
 export { default as EditListingDeadlineForm } from './EditListingDeadlineForm/EditListingDeadlineForm'
 export { default as EditListingExpiryForm } from './EditListingExpiryForm/EditListingExpiryForm'
+export { default as BufferTimeForm } from './BufferTimeForm/BufferTimeForm'
 

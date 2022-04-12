@@ -14,6 +14,7 @@ module.exports.setAdminAvailability = async (req, res) => {
       throw 403;
     }
     const entries = user.data.data.attributes.profile.protectedData.availabilityPlan.entries;
+    console.log(entries);
 
     const result = await AdminAvailability.findOneAndUpdate(
       { userId },

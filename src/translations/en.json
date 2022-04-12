@@ -1360,5 +1360,11 @@
   "TransactionPanel.saleExpiredTitle": "The booking from {customerName} for a session with you has been expired.",
   "ActivityFeed.customerMissing": "Customer Missing",
   "ActivityFeed.providerMisssing": "Provider Missing",
-  "VerificationTab.noResultFound": "No results."
+  "VerificationTab.noResultFound": "No results.",
+  "ProfilePageSideNav.bufferTime": "Buffer Time",
+  "ProfileSettingsForm.beforeBufferTimeLabel": "Before Time",
+  "ProfileSettingsForm.afterBufferTimeLabel": "After Time",
+  "ProfileSettingsForm.afterBufferTimePlaceholder": "After",
+  "ProfileSettingsForm.beforeBufferTimePlaceHolder": "Before",
+  "ProfileSettingsForm.bufferTimeTitle": "Choose Buffer Time"
 }

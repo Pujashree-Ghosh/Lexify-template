@@ -187,5 +187,6 @@ export { default as UserResultCard } from './UserResultCard/UserResultCard'
 export { default as EditListingExpiryPanel } from './EditListingExpiryPanel/EditListingExpiryPanel'
 export { default as VerificationTab } from './VerificationTab/VerificationTab'
 export { default as VerificationCardLawyer } from './VerificationCardLawyer/VerificationCardLawyer'
+export { default as BufferTimePage } from './BufferTimePage/BufferTimePage'
 
 

@@ -115,7 +115,7 @@ router.post('/fetchUserVerification', fetchUserVerification);
 
 router.post('/verifyLawyer', verifyLawyer);
 
-router.post('/setAdminAvailability1', setAdminAvailability);
+router.post('/setAdminAvailability', setAdminAvailability);
 router.get('/getAdminAvailability', getAdminAvailability);
 
 router.get('/initiate-login-as', initiateLoginAs);
