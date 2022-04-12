@@ -289,6 +289,7 @@ const EditListingWizardTab = props => {
       return (
         <EditListingClientIdPanel
           {...panelProps(CLIENT)}
+          category={category}
           submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
           onSubmit={values => {
             onCompleteEditListingWizardTab(tab, values);

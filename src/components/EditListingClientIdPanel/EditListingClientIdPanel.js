@@ -23,6 +23,7 @@ const EditListingClientIdPanel = props => {
     submitButtonText,
     panelUpdated,
     updateInProgress,
+    category,
     errors,
   } = props;
 
@@ -53,7 +54,12 @@ const EditListingClientIdPanel = props => {
     <FormattedMessage id="EditListingClientIdPanel.listingTitle" />
   );
 
-  const type = publicData && publicData.type ? publicData.type : 'solicited';
+  const type =
+    category === 'customService'
+      ? 'unsolicited'
+      : publicData && publicData.type
+      ? publicData.type
+      : 'solicited';
   const clientId = publicData && publicData?.clientId?.length > 0 ? publicData.clientId : [''];
   const startDate =
     publicData && publicData.startDate ? { date: moment(publicData.startDate).toDate() } : '';
@@ -72,6 +78,7 @@ const EditListingClientIdPanel = props => {
       <EditListingClientIdForm
         className={css.form}
         initialValues={{ clientId, type, startDate, endDate, startHour, endHour }}
+        category={category}
         onSubmit={values => {
           const { clientId, type, startDate, endDate, startHour, endHour } = values;
           const updatedValues = {

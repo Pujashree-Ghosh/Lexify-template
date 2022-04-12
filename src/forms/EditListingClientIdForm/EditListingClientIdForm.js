@@ -49,6 +49,7 @@ const EditListingClientIdFormComponent = props => (
         form,
         duration,
         currentListing,
+        category,
       } = formRenderProps;
 
       const userId = useSelector(state => state?.user?.currentUser?.id.uuid);
@@ -190,6 +191,7 @@ const EditListingClientIdFormComponent = props => (
             });
         }
       });
+      // console.log(values);
 
       return (
         <Form
@@ -200,14 +202,22 @@ const EditListingClientIdFormComponent = props => (
               axios
                 .post(`${apiBaseUrl()}/api/listing/createException`, {
                   id: currentListing.id.uuid,
-                  startDate: moment(
-                    `${moment(values.startDate.date).format('DD/MM/YYYY')} ${values.startHour}`,
-                    'DD/MM/YYYY HH:mm:ss'
-                  ).format(),
-                  endDate: moment(
-                    `${moment(values.endDate.date).format('DD/MM/YYYY')} ${values.endHour}`,
-                    'DD/MM/YYYY HH:mm:ss'
-                  ).format(),
+                  startDate:
+                    category === 'unsolicited'
+                      ? moment(values.startDate.date).format()
+                      : moment(
+                          `${moment(values.startDate.date).format('DD/MM/YYYY')} ${
+                            values.startHour
+                          }`,
+                          'DD/MM/YYYY HH:mm:ss'
+                        ).format(),
+                  endDate:
+                    category === 'unsolicited'
+                      ? moment(values.endDate.date).format()
+                      : moment(
+                          `${moment(values.endDate.date).format('DD/MM/YYYY')} ${values.endHour}`,
+                          'DD/MM/YYYY HH:mm:ss'
+                        ).format(),
                   seats: values.clientId.length,
                 })
                 .then(console.log('Saved'))
@@ -230,26 +240,30 @@ const EditListingClientIdFormComponent = props => (
           <h3 className={css.sectionTitle}>
             <FormattedMessage id="EditListingClientIdForm.subTitle" />
           </h3>
-          <div className={css.typeContainer}>
-            <FieldRadioButton
-              className={css.type}
-              id="type1"
-              name="type"
-              label="Solicited"
-              value="solicited"
-              // showAsRequired={showAsRequired}
-              onClick={() => form.change('clientId', [''])}
-            />
-            <FieldRadioButton
-              className={css.type}
-              id="type2"
-              name="type"
-              label="Unsolicited"
-              value="unsolicited"
-              // showAsRequired={showAsRequired}
-              onClick={() => form.change('clientId', [''])}
-            />
-          </div>
+          {category !== 'customService' ? (
+            <div className={css.typeContainer}>
+              <FieldRadioButton
+                className={css.type}
+                id="type1"
+                name="type"
+                label="Solicited"
+                value="solicited"
+                // showAsRequired={showAsRequired}
+                onClick={() => form.change('clientId', [''])}
+              />
+              <FieldRadioButton
+                className={css.type}
+                id="type2"
+                name="type"
+                label="Unsolicited"
+                value="unsolicited"
+                // showAsRequired={showAsRequired}
+                onClick={() => form.change('clientId', [''])}
+              />
+            </div>
+          ) : (
+            ''
+          )}
           {values.type === 'solicited' ? (
             <div>
               <FieldArray name="clientId">
@@ -406,71 +420,75 @@ const EditListingClientIdFormComponent = props => (
                   />
                 </div>
               </div>
-              <div className={`${css.inlinefrom} ${css.cdin}`}>
-                <div className={css.cdinwd}>
-                  {startTimeLabel}
-                  <FieldSelect
-                    id="startHour"
-                    name="startHour"
-                    // label={startTimeLabel}
-                    className={css.bookingDates}
-                    validate={composeValidators(required('Start hour is required'))}
-                    onChange={handleStartTimeChange}
-                  >
-                    <option value="">Choose Start Hour</option>
-                    {ALL_HOURS.map(i => (
-                      <option value={i}>{i}</option>
-                    ))}
-                  </FieldSelect>
-                </div>
-                <div className={css.cdinwd}>
-                  {endTimeLabel}
-
-                  {endHours && endHours.length > 0 ? (
+              {category !== 'customService' ? (
+                <div className={`${css.inlinefrom} ${css.cdin}`}>
+                  <div className={css.cdinwd}>
+                    {startTimeLabel}
                     <FieldSelect
-                      id="endHour"
-                      name="endHour"
-                      // label={endTimeLabel}
-                      className={css.endTime}
-                      validate={composeValidators(required('End hour is required'))}
-                      disabled={duration ? true : false}
+                      id="startHour"
+                      name="startHour"
+                      // label={startTimeLabel}
+                      className={css.bookingDates}
+                      validate={composeValidators(required('Start hour is required'))}
+                      onChange={handleStartTimeChange}
                     >
-                      <option value="">Choose End Hour</option>
-                      {endHours.map(i => (
-                        <option value={i}>{i}</option>
-                      ))}
-                    </FieldSelect>
-                  ) : initialEndHours ? (
-                    <FieldSelect
-                      id="endHour"
-                      name="endHour"
-                      // label={endTimeLabel}
-                      className={css.endTime}
-                      validate={composeValidators(required('End hour is required'))}
-                      disabled={duration ? true : false}
-                    >
-                      <option value="">Choose End Hour</option>
-                      {initialEndHours.map(i => (
-                        <option value={i}>{i}</option>
-                      ))}
-                    </FieldSelect>
-                  ) : (
-                    <FieldSelect
-                      id="endHour"
-                      name="endHour"
-                      // label={endTimeLabel}
-                      className={css.endTime}
-                      validate={composeValidators(required('End hour is required'))}
-                      disabled={duration ? true : false}
-                    >
-                      <option value="">Choose End Hour</option>
+                      <option value="">Choose Start Hour</option>
                       {ALL_HOURS.map(i => (
                         <option value={i}>{i}</option>
                       ))}
                     </FieldSelect>
-                  )}
+                  </div>
+                  <div className={css.cdinwd}>
+                    {endTimeLabel}
+
+                    {endHours && endHours.length > 0 ? (
+                      <FieldSelect
+                        id="endHour"
+                        name="endHour"
+                        // label={endTimeLabel}
+                        className={css.endTime}
+                        validate={composeValidators(required('End hour is required'))}
+                        disabled={duration ? true : false}
+                      >
+                        <option value="">Choose End Hour</option>
+                        {endHours.map(i => (
+                          <option value={i}>{i}</option>
+                        ))}
+                      </FieldSelect>
+                    ) : initialEndHours ? (
+                      <FieldSelect
+                        id="endHour"
+                        name="endHour"
+                        // label={endTimeLabel}
+                        className={css.endTime}
+                        validate={composeValidators(required('End hour is required'))}
+                        disabled={duration ? true : false}
+                      >
+                        <option value="">Choose End Hour</option>
+                        {initialEndHours.map(i => (
+                          <option value={i}>{i}</option>
+                        ))}
+                      </FieldSelect>
+                    ) : (
+                      <FieldSelect
+                        id="endHour"
+                        name="endHour"
+                        // label={endTimeLabel}
+                        className={css.endTime}
+                        validate={composeValidators(required('End hour is required'))}
+                        disabled={duration ? true : false}
+                      >
+                        <option value="">Choose End Hour</option>
+                        {ALL_HOURS.map(i => (
+                          <option value={i}>{i}</option>
+                        ))}
+                      </FieldSelect>
+                    )}
+                  </div>
                 </div>
-              </div>
+              ) : (
+                ''
+              )}
               {bookingError ? (
                 <span style={{ color: ' red' }}>You already have something in this time slot</span>
               ) : (
