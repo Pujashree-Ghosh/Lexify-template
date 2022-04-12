@@ -278,8 +278,8 @@
   }
 }
 .areaOfLawFilter {
-  flex-basis: 33%;
-  max-width: 33%;
+  flex-basis: 48%;
+  max-width: 48%;
   @media (max-width: 767px) {
     flex-basis: 100%;
     max-width: 100%;
