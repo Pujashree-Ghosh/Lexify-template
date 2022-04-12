@@ -6,7 +6,7 @@
   width: 100%;
   @media (max-width: 1023px) {
     margin: 50px 0;
-    padding: 0 35px;
+    padding: 0 15px;
   }
 
   @media (--viewportMedium) {
@@ -255,6 +255,10 @@
   font-size: 24px;
   font-weight: 600;
   margin: 0 0 15px;
+  @media (max-width: 575px) {
+    margin: 15px 0;
+    text-align: center;
+  }
 }
 .locationBio span {
   display: block;
@@ -263,6 +267,9 @@
   font-weight: 400;
   color: #7a7a7a;
   margin: 0 0 10px;
+  @media (max-width: 575px) {
+    text-align: center;
+  }
 }
 .locationBio span img {
   margin: 0 10px 0 0;
@@ -537,6 +544,9 @@
   font-size: 20px;
   font-weight: bold;
   padding-top: 45px;
+  @media (max-width: 575px) {
+    padding: 20px 0;
+  }
 }
 .righthorizontal {
   display: flex;
@@ -556,6 +566,7 @@
     align-items: center;
     flex-direction: row;
     border: 0;
+    padding-right: 10px;
   }
 }
 .rightlowerdiv {
@@ -584,6 +595,9 @@
   color: #ffffff;
   font-weight: 500;
   cursor: pointer;
+  @media (max-width: 575px) {
+    margin: 0 0 0 auto;
+  }
 }
 .price {
   padding: 20px;
@@ -608,13 +622,11 @@
   display: flex;
   justify-content: center;
 }
+
 .pagination a {
   padding: 10px;
   margin: 8px;
 }
 .pagination a:hover {
-  border: 1px solid #a91722;
-  border-radius: 50%;
-  background-color: #a91722;
-  color: white;
+  color: #df4450;
 }

@@ -894,7 +894,7 @@ class FieldDateAndTimeInput extends Component {
           ) : (
             ''
           )} */}
-          <div className={css.field}>
+          <div className={`${css.field} ${css.bookinghhmm}`}>
             <select
               name="bookingStartTime"
               id={formId ? `${formId}.bookingStartTime` : 'bookingStartTime'}
