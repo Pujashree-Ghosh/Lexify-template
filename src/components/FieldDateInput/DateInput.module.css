@@ -13,6 +13,9 @@
     width: 100%;
     min-height: calc(100vh - 252px);
     background-color: var(--marketplaceColor);
+    @media (max-width: 575px) {
+      min-height: auto !important;
+    }
 
     @media (--viewportMedium) {
       /* !important is added to top because react-dates uses inline style for height */
