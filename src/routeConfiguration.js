@@ -130,6 +130,7 @@ const routeConfiguration = () => {
       name: 'CheckoutPage',
       auth: true,
       component: CheckoutPage,
+      authPage: 'LoginPage',
       setInitialValues: pageDataLoadingAPI.CheckoutPage.setInitialValues,
     },
     {

@@ -9,6 +9,7 @@ import { EditListingClientIdForm, EditListingDeadlineForm } from '../../forms';
 import { ListingLink } from '../../components';
 
 import css from './EditListingDeadlinePanel.module.css';
+import moment from 'moment';
 
 const EditListingDeadlinePanel = props => {
   const {
@@ -45,8 +46,7 @@ const EditListingDeadlinePanel = props => {
     <FormattedMessage id="EditListingDeadlinePanel.listingTitle" />
   );
 
-  const Deadline = publicData && publicData.Deadline;
-
+  const Deadline = publicData && { date: moment(publicData.Deadline).toDate() };
   return (
     <div className={classes}>
       <h1 className={css.title}>{panelTitle}</h1>
@@ -56,7 +56,7 @@ const EditListingDeadlinePanel = props => {
         onSubmit={values => {
           const { Deadline } = values;
           const updatedValues = {
-            publicData: { Deadline },
+            publicData: { Deadline: moment(Deadline.date).format() },
           };
           onSubmit(updatedValues);
         }}

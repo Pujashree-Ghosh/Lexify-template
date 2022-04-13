@@ -7,7 +7,7 @@ import arrayMutators from 'final-form-arrays';
 import { injectIntl, FormattedMessage } from '../../util/reactIntl';
 import { propTypes } from '../../util/types';
 import config from '../../config';
-import { Button, FieldTextInput, Form } from '../../components';
+import { Button, FieldDateInput, Form } from '../../components';
 import { required, composeValidators } from '../../util/validators';
 
 import css from './EditListingDeadlineForm.module.css';
@@ -68,6 +68,10 @@ const EditListingDeadlineFormComponent = props => (
       const deadlineInvalidMessage = intl.formatMessage({
         id: 'EditListingDeadlineForm.deadlineInvalid',
       });
+      const deadlinePlaceholder = intl.formatMessage({
+        id: 'EditListingDeadlineForm.deadlinePlaceholder',
+      });
+
       return (
         <Form className={classes} onSubmit={handleSubmit}>
           {errorMessage}
@@ -75,15 +79,22 @@ const EditListingDeadlineFormComponent = props => (
           <h3 className={css.sectionTitle}>
             <FormattedMessage id="EditListingDeadlineForm.subTitle" />
           </h3>
-          <FieldTextInput
-            className={css.street}
-            type="date"
+
+          <FieldDateInput
+            className={`${css.street} `}
             id="deadLineDate"
             name="Deadline"
+            // label={fromLabel}
+            placeholderText={deadlinePlaceholder}
             validate={composeValidators(
               deadlineValidator(deadlineInvalidMessage),
               required(deadlineRequiredMessage)
             )}
+            isDayBlocked={day => {
+              return false;
+            }}
+            // isOutsideRange={() => false}
+            useMobileMargins
           />
           <Button
             className={css.submitButton}

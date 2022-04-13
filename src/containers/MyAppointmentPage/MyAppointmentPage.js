@@ -195,6 +195,7 @@ export const MyAppointmentPageComponent = props => {
   const upcomingTitle = 'Upcoming'; // intl.formatMessage({ id: 'InboxPage.salesTitle' });
   const completeTitle = 'Complete';
   const title = isPending ? pendingTitle : isUpcoming ? upcomingTitle : completeTitle;
+  const isLawyer = currentUser?.profile?.attributes?.protectedData?.isLawyer;
 
   const toTxItem = tx => {
     const type = isPending ? 'pending' : isUpcoming ? 'upcoming' : 'complete';
@@ -309,16 +310,24 @@ export const MyAppointmentPageComponent = props => {
         <LayoutWrapperSideNav className={css.navigation}>{nav}</LayoutWrapperSideNav>
         <LayoutWrapperMain className={css.Appointmentlwm}>
           {error}
-          {isProfileVerified ? (
+          {isLawyer ? (
+            isProfileVerified ? (
+              <>
+                {!fetchInProgress ? transactions.map(toTxItem) : <IconSpinner />}
+                {noResults}
+                {pagingLinks}
+              </>
+            ) : verificationDetail ? (
+              <VerificationCardLawyer detail={verificationDetail} />
+            ) : (
+              <IconSpinner />
+            )
+          ) : (
             <>
               {!fetchInProgress ? transactions.map(toTxItem) : <IconSpinner />}
               {noResults}
               {pagingLinks}
             </>
-          ) : verificationDetail ? (
-            <VerificationCardLawyer detail={verificationDetail} />
-          ) : (
-            <IconSpinner />
           )}
         </LayoutWrapperMain>
         <LayoutWrapperFooter>

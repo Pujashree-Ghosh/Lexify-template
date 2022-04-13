@@ -238,9 +238,9 @@ export class ManageListingsPageComponent extends Component {
       { key: 'closed', value: 'closed', label: 'Closed' },
     ];
     const typeOptions = [
-      { key: 'publicOral', value: 'publicOral', label: 'Public Oral' },
-      { key: 'customOral', value: 'customOral', label: 'Custom Oral' },
-      { key: 'customService', value: 'customService', label: 'Custom Service' },
+      { key: 'publicOral', value: 'publicOral', label: 'Public Consultation' },
+      { key: 'customOral', value: 'customOral', label: 'Tailor-Made Consultation' },
+      { key: 'customService', value: 'customService', label: 'Tailor-Made Service' },
     ];
     const practiceAreaOptions = [
       {

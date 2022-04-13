@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { arrayOf, bool, func, shape, string } from 'prop-types';
 import { compose } from 'redux';
 import { Form as FinalForm } from 'react-final-form';
 import { intlShape, injectIntl, FormattedMessage } from '../../util/reactIntl';
 import classNames from 'classnames';
 import { propTypes } from '../../util/types';
-import { maxLength, required, composeValidators } from '../../util/validators';
-import { Form, Button, FieldTextInput } from '../../components';
+import { required, composeValidators } from '../../util/validators';
+import { Form, Button, FieldDateInput } from '../../components';
 
 import css from './EditListingExpiryForm.module.css';
 import moment from 'moment';
@@ -32,6 +32,7 @@ const EditListingExpiryFormComponent = props => (
         category,
         listing,
       } = formRenderProps;
+      const [showWarning, setShowWarning] = useState(false);
 
       const deadLine =
         listing &&
@@ -60,13 +61,13 @@ const EditListingExpiryFormComponent = props => (
       const VALID = undefined;
 
       const expiryValidator = message => value => {
-        if (category !== 'customOral' && moment(value).isAfter(moment(deadLine))) {
+        if (category !== 'customOral' && moment(value.date).isAfter(moment(deadLine))) {
           return message;
         }
         if (
           category === 'customOral' &&
-          moment().isAfter(value) &&
-          !moment(moment().format('YYYY-MM-DD')).isSame(moment(value))
+          moment().isAfter(value.date) &&
+          !moment(moment().format('YYYY-MM-DD')).isSame(moment(value.date))
         ) {
           return intl.formatMessage({ id: 'EditListingDeadlineForm.deadlineInvalid' });
         }
@@ -79,6 +80,9 @@ const EditListingExpiryFormComponent = props => (
       const expDateInvalidMessage = intl.formatMessage({
         id: 'EditListingExpiryForm.expDateInvalid',
       });
+      const expiryPlaceholder = intl.formatMessage({
+        id: 'EditListingExpiryForm.expiryPlaceholder',
+      });
 
       return (
         <Form className={classes} onSubmit={handleSubmit}>
@@ -87,16 +91,34 @@ const EditListingExpiryFormComponent = props => (
           <h3 className={css.sectionTitle}>
             <FormattedMessage id="EditListingExpiryForm.subTitle" />
           </h3>
-          <FieldTextInput
-            className={css.street}
-            type="date"
+
+          <FieldDateInput
+            className={`${css.street} `}
             id="expiryDate"
             name="expiry"
             validate={composeValidators(
               expiryValidator(expDateInvalidMessage),
               required(expDateRequiredMessage)
             )}
+            placeholderText={expiryPlaceholder}
+            isDayBlocked={day => {
+              return false;
+            }}
+            // isOutsideRange={() => false}
+            onChange={value => {
+              if (
+                category === 'customService' &&
+                moment.duration(moment(deadLine).diff(value.date)).asHours() < 24 &&
+                moment.duration(moment(deadLine).diff(value.date)).asHours() >= 0
+              ) {
+                setShowWarning(true);
+              } else {
+                setShowWarning(false);
+              }
+            }}
+            useMobileMargins
           />
+          {showWarning && <span>Expiry Date and Deadline are too close</span>}
 
           <Button
             className={css.submitButton}

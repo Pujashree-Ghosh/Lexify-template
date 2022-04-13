@@ -10,6 +10,7 @@ import { EditListingExpiryForm } from '../../forms';
 import config from '../../config';
 
 import css from './EditListingExpiryPanel.module.css';
+import moment from 'moment';
 
 const EditListingExpiryPanel = props => {
   const {
@@ -46,7 +47,7 @@ const EditListingExpiryPanel = props => {
   ) : (
     <FormattedMessage id="EditListingExpiryPanel.title" />
   );
-  const expiry = publicData && publicData.expiry;
+  const expiry = publicData && { date: moment(publicData.expiry).toDate() };
 
   return (
     <div className={classes}>
@@ -58,7 +59,7 @@ const EditListingExpiryPanel = props => {
         onSubmit={values => {
           const { expiry } = values;
           const updateValues = {
-            publicData: { expiry },
+            publicData: { expiry: moment(expiry.date).format() },
           };
 
           onSubmit(updateValues);

@@ -246,7 +246,7 @@ const EditListingClientIdFormComponent = props => (
                 className={css.type}
                 id="type1"
                 name="type"
-                label="Solicited"
+                label="One-on-one"
                 value="solicited"
                 // showAsRequired={showAsRequired}
                 onClick={() => form.change('clientId', [''])}
@@ -255,7 +255,7 @@ const EditListingClientIdFormComponent = props => (
                 className={css.type}
                 id="type2"
                 name="type"
-                label="Unsolicited"
+                label="Event"
                 value="unsolicited"
                 // showAsRequired={showAsRequired}
                 onClick={() => form.change('clientId', [''])}
