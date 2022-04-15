@@ -129,6 +129,7 @@ export class BookingTimeFormComponent extends Component {
             `${moment(listingStartDate).format('DD/MM/YYYY')} ${listingStartTime}`,
             'DD/MM/YYYY HH:mm:ss'
           ).format();
+          const deadline = listing?.attributes?.publicData?.Deadline;
           const serviceEndDate = moment(
             `${moment(listingeEndDate).format('DD/MM/YYYY')} ${listingeEndTime}`,
             'DD/MM/YYYY HH:mm:ss'
@@ -297,6 +298,8 @@ export class BookingTimeFormComponent extends Component {
                     listing={listing}
                     serviceStartDate={serviceStartDate}
                     serviceEndDate={serviceEndDate}
+                    deadline={deadline}
+                    category={category}
                     expiry={expiry}
                   />
                 ) : (

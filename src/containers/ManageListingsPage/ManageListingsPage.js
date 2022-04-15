@@ -160,7 +160,6 @@ export class ManageListingsPageComponent extends Component {
       currentUser,
     } = this.props;
 
-    console.log(444, this.state);
     const customPagination = this.state.metaFromApi;
     const hasPaginationInfo = !!customPagination && customPagination.totalItems != null;
     const listingsAreLoaded = this.state.listingsFromApiLoaded && hasPaginationInfo;

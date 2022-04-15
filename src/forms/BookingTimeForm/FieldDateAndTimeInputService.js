@@ -30,6 +30,36 @@ class FieldDateAndTimeInputServiceComponent extends Component {
     const endDate = resetToStartOfDay(inclusiveEnd, timeZone, 1);
     return !(dateIsAfter(localizedDay, startDate) && dateIsAfter(endDate, localizedDay));
   }
+  componentDidUpdate(prevProps) {
+    const { serviceStartDate, serviceEndDate, form, deadline, category, expiry } = this.props;
+    if (category === 'customOral') {
+      if (moment(serviceStartDate).isAfter(moment())) {
+        form.change('bookingEndTime', moment(serviceEndDate).valueOf());
+        form.change('bookingStartTime', moment(serviceStartDate).valueOf());
+      }
+    } else {
+      if (
+        moment(deadline)
+          .clone()
+          .isAfter(moment())
+      ) {
+        form.change(
+          'bookingEndTime',
+          moment(deadline)
+            .clone()
+            .valueOf()
+        );
+        form.change(
+          'bookingStartTime',
+          moment()
+            .clone()
+            .add(1, 'h')
+            .startOf('hour')
+            .valueOf()
+        );
+      }
+    }
+  }
 
   render() {
     const {
@@ -49,53 +79,54 @@ class FieldDateAndTimeInputServiceComponent extends Component {
     const classes = classNames(rootClassName || css.root, className);
 
     return (
-      <div className={classes}>
-        <div className={css.formRow}>
-          <FieldDateInput
-            className={css.fieldDateInput}
-            id="bookingStartDate"
-            name="bookingStartDate"
-            placeholderText={startDateLabel}
-            useMobileMargins
-            onChange={val => {
-              form.change('bookingEndDate', { date: serviceEndDate });
+      // <div className={classes}>
+      //   <div className={css.formRow}>
+      //     <FieldDateInput
+      //       className={css.fieldDateInput}
+      //       id="bookingStartDate"
+      //       name="bookingStartDate"
+      //       placeholderText={startDateLabel}
+      //       useMobileMargins
+      //       onChange={val => {
+      //         form.change('bookingEndDate', { date: serviceEndDate });
 
-              if (moment(serviceStartDate).isAfter(moment())) {
-                form.change('bookingStartDate', serviceStartDate);
-                form.change('bookingEndTime', moment(serviceEndDate).valueOf());
-                form.change('bookingStartTime', moment(serviceStartDate).valueOf());
+      //         if (moment(serviceStartDate).isAfter(moment())) {
+      //           form.change('bookingStartDate', serviceStartDate);
+      //           form.change('bookingEndTime', moment(serviceEndDate).valueOf());
+      //           form.change('bookingStartTime', moment(serviceStartDate).valueOf());
 
-                // console.log(
-                //   'shkahs',
-                //   values,
-                //   serviceEndDate,
-                //   moment(serviceStartDate).toDate(),
-                //   moment(val.date).toDate()
-                // );
-              }
-            }}
-            isDayBlocked={day => {
-              // console.log(
-              //   moment(day).isSameOrBefore(moment(serviceEndDate)),
-              //   moment(day).isSameOrAfter(moment(serviceStartDate)),
-              //   day.toDate(),
-              //   serviceEndDate,
-              //   serviceStartDate
-              // );
-              return !moment(day)
-                .clone()
-                .startOf('day')
-                .isSameOrBefore(
-                  moment(expiry)
-                    .clone()
-                    .startOf('day')
-                );
-            }}
-            //   isOutsideRange={day => this.isOutsideRange(true)}
-            // myClass={true}
-          />
-        </div>
-      </div>
+      //           // console.log(
+      //           //   'shkahs',
+      //           //   values,
+      //           //   serviceEndDate,
+      //           //   moment(serviceStartDate).toDate(),
+      //           //   moment(val.date).toDate()
+      //           // );
+      //         }
+      //       }}
+      //       isDayBlocked={day => {
+      //         // console.log(
+      //         //   moment(day).isSameOrBefore(moment(serviceEndDate)),
+      //         //   moment(day).isSameOrAfter(moment(serviceStartDate)),
+      //         //   day.toDate(),
+      //         //   serviceEndDate,
+      //         //   serviceStartDate
+      //         // );
+      //         return !moment(day)
+      //           .clone()
+      //           .startOf('day')
+      //           .isSameOrBefore(
+      //             moment(expiry)
+      //               .clone()
+      //               .startOf('day')
+      //           );
+      //       }}
+      //       //   isOutsideRange={day => this.isOutsideRange(true)}
+      //       // myClass={true}
+      //     />
+      //   </div>
+      // </div>
+      <></>
     );
   }
 }

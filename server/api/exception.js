@@ -41,7 +41,7 @@ module.exports.createException = async (req, response) => {
   const startDate = req.body.startDate;
   const endDate = req.body.endDate;
   const seats = req.body.seats;
-  console.log(authorId);
+  console.log('aId', authorId);
   return new Promise((resolve, reject) => {
     integrationSdk.listings
       .query({

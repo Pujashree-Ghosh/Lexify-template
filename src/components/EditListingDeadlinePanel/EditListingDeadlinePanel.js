@@ -24,6 +24,7 @@ const EditListingDeadlinePanel = props => {
     panelUpdated,
     updateInProgress,
     errors,
+    category,
   } = props;
 
   const classes = classNames(rootClassName || css.root, className);
@@ -60,7 +61,9 @@ const EditListingDeadlinePanel = props => {
           };
           onSubmit(updatedValues);
         }}
+        currentListing={currentListing}
         onChange={onChange}
+        category={category}
         saveActionMsg={submitButtonText}
         disabled={disabled}
         ready={ready}

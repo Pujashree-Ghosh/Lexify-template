@@ -63,6 +63,8 @@ const EditListingClientIdPanel = props => {
   const clientId = publicData && publicData?.clientId?.length > 0 ? publicData.clientId : [''];
   const startDate =
     publicData && publicData.startDate ? { date: moment(publicData.startDate).toDate() } : '';
+
+  // console.log(startDate);
   const endDate =
     publicData && publicData.endDate ? { date: moment(publicData.endDate).toDate() } : '';
   const startHour = publicData && publicData.startHour ? publicData.startHour : '';

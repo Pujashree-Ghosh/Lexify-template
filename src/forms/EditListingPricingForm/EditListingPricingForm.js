@@ -89,7 +89,6 @@ export const EditListingPricingFormComponent = props => (
         id: 'EditListingPricingForm.vatinvalid',
       });
       const vatValid = validators.numberValid(vatInvalidMessage);
-      console.log(values, values.vatData);
 
       return (
         <Form onSubmit={handleSubmit} className={classes}>
@@ -118,7 +117,7 @@ export const EditListingPricingFormComponent = props => (
                                 id="vattype"
                                 name={`${name}.vatType`}
                                 label={vattypeLabel}
-                                validate={required}
+                                // validate={required}
                                 type="textarea"
                               ></FieldTextInput>
                             </div>
@@ -128,7 +127,7 @@ export const EditListingPricingFormComponent = props => (
                                 name={`${name}.vat`}
                                 type="text"
                                 label={vatLabel}
-                                validate={validators.composeValidators(required, vatValid)}
+                                // validate={validators.composeValidators(vatValid)}
                                 // validate={required}
 
                                 // pattern={'/^[0-9\b]+$/'}

@@ -73,8 +73,9 @@ const EditListingClientIdFormComponent = props => (
       };
       const [endHours, setEndHours] = useState();
       const [bookingError, setBookinError] = useState(false);
-      const hour = Array(97).fill();
-      const ALL_HOURS = hour.map((v, i) => printTimeStrings(i * 15));
+      const [startHours, setStartHours] = useState([]);
+      const hour = Array(289).fill();
+      const ALL_HOURS = hour.map((v, i) => printTimeStrings(i * 5));
       const classes = classNames(rootClassName || css.root, className);
       const submitReady = (updated && pristine) || ready;
       const submitInProgress = updateInProgress;
@@ -128,10 +129,6 @@ const EditListingClientIdFormComponent = props => (
           }
         });
 
-        // console.log('dd', getEndHours);
-        // this.setState({
-        //   endHours: getEndHours,
-        // });
         setEndHours(getEndHours);
         if (duration) {
           const startTime = parseInt(val.split(':')[0] * 60) + parseInt(val.split(':')[1]);
@@ -144,8 +141,6 @@ const EditListingClientIdFormComponent = props => (
               ind = index;
             }
           });
-
-          console.log(startTime + duration, ALL_HOURS[ind]);
 
           form.change('endHour', ALL_HOURS[ind]);
         }
@@ -160,77 +155,217 @@ const EditListingClientIdFormComponent = props => (
         : null;
 
       useEffect(() => {
-        if (currentListing?.attributes?.publicData?.category === 'customOral') {
+        let allBooking = [];
+        let allAvailableTime = [];
+        // values.startDate &&
+        // ALL_HOURS.map(m => {
+        let start = moment().clone();
+
+        if (values.startDate) {
+          if (moment(values.startDate.date).format('DD:MM:yy') === start.format('DD:MM:yy')) {
+            // if (
+            //   Number(
+            //     moment()
+            //       .clone()
+            //       .format('mm')
+            //   ) % 5
+            // ) {
+            const min = moment()
+              .clone()
+              .format('mm');
+            const minToAdd = 5 * (parseInt(min / 5) + 1);
+
+            start = moment()
+              .clone()
+              .startOf('h')
+              .add(minToAdd, 'm');
+            // } else {
+            //   start = start = moment().clone();
+            // }
+          } else {
+            start = moment(
+              `${moment(values.startDate.date).format('DD/MM/YYYY')} ${ALL_HOURS[0]}`,
+              'DD/MM/YYYY HH:mm:ss'
+            ).clone();
+          }
+
+          const end = moment(
+            `${moment(values.startDate.date).format('DD/MM/YYYY')} ${
+              ALL_HOURS[ALL_HOURS.length - 1]
+            }`,
+            'DD/MM/YYYY HH:mm:ss'
+          ).clone();
+
+          while (
+            start
+              .clone()
+              // .add(5, 'm')
+              .isSameOrBefore(moment(end))
+          ) {
+            allAvailableTime.push(start.format());
+
+            start.add(5, 'm');
+          }
+          // });
+
+          // if (
+          //   currentListing?.attributes?.publicData?.category === 'customOral' &&
+          //   values.type === 'unsolicited' &&
+          //   values.startDate &&
+          //   values.startHour
+          // ) {
+          //   axios
+          //     .post(`${apiBaseUrl()}/api/booking/getBooking`, {
+          //       providerId: userId,
+          //       start: moment(
+          //         `${moment(values.startDate.date).format('DD/MM/YYYY')} ${values.startHour}`,
+          //         'DD/MM/YYYY HH:mm:ss'
+          //       )
+          //         .clone()
+          //         .add(1, 'm')
+          //         .format(),
+          //       end: moment(
+          //         `${moment(values.startDate.date).format('DD/MM/YYYY')} ${values.startHour}`,
+          //         'DD/MM/YYYY HH:mm:ss'
+          //       )
+          //         .clone()
+          //         .add(1, 'm')
+          //         .format(),
+          //     })
+          //     .then(resp => {
+          //       if (resp.data.length > 0) {
+          //         setBookinError(true);
+          //       } else {
+          //         setBookinError(false);
+          //       }
+          //     })
+          //     .catch(err => {
+          //       console.log(err);
+          //     });
+          // }
+
           axios
-            .post(`${apiBaseUrl()}/api/booking/getBooking`, {
+            .post(`${apiBaseUrl()}/api/booking/getProviderBooking`, {
               providerId: userId,
-              start: moment(
-                `${moment(values.startDate.date).format('DD/MM/YYYY')} ${values.startHour}`,
-                'DD/MM/YYYY HH:mm:ss'
-              )
-                .clone()
-                .add(1, 'm')
-                .format(),
-              end: moment(
-                `${moment(values.startDate.date).format('DD/MM/YYYY')} ${values.startHour}`,
-                'DD/MM/YYYY HH:mm:ss'
-              )
-                .clone()
-                .add(1, 'm')
-                .format(),
+              start: moment(values.startDate.date)
+                .startOf('day')
+                .toISOString(),
+              end: moment(values.endDate.date)
+                .endOf('day')
+                .toISOString(),
             })
             .then(resp => {
-              if (resp.data.length > 0) {
-                setBookinError(true);
-              } else {
-                setBookinError(false);
-              }
-            })
-            .catch(err => {
-              console.log(err);
+              resp.data.map(r => {
+                allBooking.push({
+                  start: moment(r.start).toDate(),
+                  end: moment(r.end).toDate(),
+                });
+              });
+              let allBookedSlot = [];
+              allBooking.map((b, i) => {
+                const start = moment(b.start).clone();
+                const end = moment(b.end).clone();
+                // .subtract(1, 'm');
+                let count = 0;
+                while (
+                  start
+                    .clone()
+                    .add(5, 'm')
+                    .isSameOrBefore(moment(end))
+                ) {
+                  if (count === 0) {
+                    allBookedSlot.push(
+                      start
+                        .clone()
+                        .add(1, 'm')
+                        .format()
+                    );
+                  } else {
+                    allBookedSlot.push(start.format());
+                  }
+                  start.add(5, 'm');
+                  count += 1;
+                }
+              });
+              let availableTimeSlots = allAvailableTime.filter(f => !allBookedSlot.includes(f));
+
+              const allStartHour = [];
+              availableTimeSlots.map(m => {
+                const start = moment(m).clone();
+
+                if (
+                  availableTimeSlots.includes(
+                    start
+                      .clone()
+                      // .add(hour, 'h')
+                      .add(duration, 'm')
+                      .format()
+                  ) &&
+                  availableTimeSlots.indexOf(
+                    start
+                      .clone()
+                      // .add(hour, 'h')
+                      .add(duration, 'm')
+                      .format()
+                  ) -
+                    availableTimeSlots.indexOf(start.clone().format()) ===
+                    duration / 5
+                ) {
+                  allStartHour.push({
+                    timeOfDay: start.format('HH:mm'),
+                    timestamp: start.valueOf(),
+                  });
+                  start.add(5, 'm');
+                }
+              });
+
+              setStartHours(allStartHour.filter(f => (f.timeOfDay.split(':')[1] * 1) % 15 === 0));
+
+              // this.setState({ allStartHour: allStartHour });
             });
         }
-      });
-      // console.log(values);
+      }, [values.startDate]);
 
       return (
         <Form
           className={classes}
           onSubmit={e => {
             e.preventDefault();
-            if (values.type === 'unsolicited') {
-              axios
-                .post(`${apiBaseUrl()}/api/listing/createException`, {
-                  id: currentListing.id.uuid,
-                  startDate:
-                    category === 'unsolicited'
-                      ? moment(values.startDate.date).format()
-                      : moment(
-                          `${moment(values.startDate.date).format('DD/MM/YYYY')} ${
-                            values.startHour
-                          }`,
-                          'DD/MM/YYYY HH:mm:ss'
-                        ).format(),
-                  endDate:
-                    category === 'unsolicited'
-                      ? moment(values.endDate.date).format()
-                      : moment(
-                          `${moment(values.endDate.date).format('DD/MM/YYYY')} ${values.endHour}`,
-                          'DD/MM/YYYY HH:mm:ss'
-                        ).format(),
-                  seats: values.clientId.length,
-                })
-                .then(console.log('Saved'))
-                .catch(err => console.log(err));
-            } else {
-              axios
-                .delete(`${apiBaseUrl()}/api/listing/exceptionDelete`, {
-                  data: {
+            if (category === 'customOral') {
+              if (values.type === 'unsolicited') {
+                axios
+                  .post(`${apiBaseUrl()}/api/listing/createException`, {
                     id: currentListing.id.uuid,
-                  },
-                })
-                .then(console.log('Saved'))
-                .catch(err => console.log(err));
+                    startDate:
+                      category === 'unsolicited'
+                        ? moment(values.startDate.date).format()
+                        : moment(
+                            `${moment(values.startDate.date).format('DD/MM/YYYY')} ${
+                              values.startHour
+                            }`,
+                            'DD/MM/YYYY HH:mm:ss'
+                          ).format(),
+                    endDate:
+                      category === 'unsolicited'
+                        ? moment(values.endDate.date).format()
+                        : moment(
+                            `${moment(values.endDate.date).format('DD/MM/YYYY')} ${values.endHour}`,
+                            'DD/MM/YYYY HH:mm:ss'
+                          ).format(),
+                    seats: values.clientId.length,
+                  })
+                  .then(console.log('Saved'))
+                  .catch(err => console.log(err));
+              } else {
+                axios
+                  .delete(`${apiBaseUrl()}/api/listing/exceptionDelete`, {
+                    data: {
+                      id: currentListing.id.uuid,
+                    },
+                  })
+                  .then(console.log('Saved'))
+                  .catch(err => console.log(err));
+              }
             }
             handleSubmit(e);
           }}
@@ -287,10 +422,34 @@ const EditListingClientIdFormComponent = props => (
                                 placeholder={clientIdPlaceholderMessage}
                                 validate={composeValidators(required(clientIdRequiredMessage))}
                               />
+                              <MdOutlineClose
+                                onClick={() => {
+                                  form.change(
+                                    'clientId',
+                                    values.clientId.filter(f => f !== values.clientId[i])
+                                  );
+                                  if (values.clientId.length === 1) {
+                                    form.change('clientId', ['']);
+                                  }
+                                }}
+                              />
                             </div>
                           </div>
                         );
                       })}
+
+                      <div className={css.inlinefrom}>
+                        <InlineTextButton
+                          className={css.addMore}
+                          type="button"
+                          onClick={() => {
+                            fields.push();
+                          }}
+                          // disabled={!values.practice[values.practice?.length - 1]}
+                        >
+                          <FormattedMessage id="EditListingClientIdForm.addMoreClient" />
+                        </InlineTextButton>
+                      </div>
                     </div>
                   );
                 }}
@@ -348,16 +507,6 @@ const EditListingClientIdFormComponent = props => (
                         >
                           <FormattedMessage id="EditListingClientIdForm.addMoreClient" />
                         </InlineTextButton>
-                        {/* <Button
-                        className={css.remove}
-                        type="button"
-                        onClick={() => {
-                          fields.pop();
-                        }}
-                        // disabled={values.practice?.length < 2}
-                      >
-                        <FormattedMessage id="ProfileSettingsForm.remove" />
-                      </Button> */}
                       </div>
                     </div>
                   );
@@ -365,135 +514,117 @@ const EditListingClientIdFormComponent = props => (
               </FieldArray>
               <div className={css.infoText}>You can find client ID in client's profile</div>
 
-              {/* <FieldTimeZoneSelect
-                id="timezone"
-                name="timezone"
-                className={css.timeZone}
-                // type="text"
-                label={intl.formatMessage({
-                  id: 'EditListingLocationForm.videoTimeZone',
-                })}
-                placeholder={intl.formatMessage({
-                  id: 'EditListingLocationForm.videoTimeZonePlaceholder',
-                })}
-                // maxLength={TITLE_MAX_LENGTH}
-                validate={composeValidators(
-                  required(
-                    intl.formatMessage({
-                      id: 'EditListingLocationForm.videoTimeZoneRequired',
-                    })
-                  )
-                )}
-              /> */}
-
-              <div className={`${css.inlinefrom} ${css.cdin} mobiledsd`}>
-                <div className={css.cdinwd}>
-                  {startDateLabel}
-                  <FieldDateInput
-                    className={(css.bookingDates, css.startDatePlaceholder)}
-                    id="startDate"
-                    name="startDate"
-                    placeholderText={startDateLabel}
-                    useMobileMargins
-                    onChange={val => {
-                      if (duration) {
-                        form.change('endDate', val);
-                      } else {
-                        form.change('endDate', {});
-                      }
-                    }}
-                    // myClass={true}
-                  />
-                </div>
-                <div className={css.cdinwd}>
-                  {endDateLabel}
-                  <FieldDateInput
-                    id="endDate"
-                    className={css.bookingDates}
-                    name="endDate"
-                    placeholderText={endDateLabel}
-                    useMobileMargins
-                    isDayBlocked={day => {
-                      return moment(values?.startDate.date).isAfter(day);
-                    }}
-                    disabled={duration ? true : false}
-                  />
-                </div>
-              </div>
               {category !== 'customService' ? (
-                <div className={`${css.inlinefrom} ${css.cdin}`}>
-                  <div className={css.cdinwd}>
-                    {startTimeLabel}
-                    <FieldSelect
-                      id="startHour"
-                      name="startHour"
-                      // label={startTimeLabel}
-                      className={css.bookingDates}
-                      validate={composeValidators(required('Start hour is required'))}
-                      onChange={handleStartTimeChange}
-                    >
-                      <option value="">Choose Start Hour</option>
-                      {ALL_HOURS.map(i => (
-                        <option value={i}>{i}</option>
-                      ))}
-                    </FieldSelect>
+                <>
+                  <div className={`${css.inlinefrom} ${css.cdin} mobiledsd`}>
+                    <div className={css.cdinwd}>
+                      {startDateLabel}
+                      <FieldDateInput
+                        className={(css.bookingDates, css.startDatePlaceholder)}
+                        id="startDate"
+                        name="startDate"
+                        placeholderText={startDateLabel}
+                        useMobileMargins
+                        onChange={val => {
+                          if (duration) {
+                            form.change('endDate', val);
+                          } else {
+                            form.change('endDate', {});
+                          }
+                        }}
+                        // myClass={true}
+                      />
+                    </div>
+                    <div className={css.cdinwd}>
+                      {endDateLabel}
+                      <FieldDateInput
+                        id="endDate"
+                        className={css.bookingDates}
+                        name="endDate"
+                        placeholderText={endDateLabel}
+                        useMobileMargins
+                        isDayBlocked={day => {
+                          return moment(values?.startDate.date).isAfter(day);
+                        }}
+                        disabled={duration ? true : false}
+                      />
+                    </div>
                   </div>
-                  <div className={css.cdinwd}>
-                    {endTimeLabel}
 
-                    {endHours && endHours.length > 0 ? (
+                  <div className={`${css.inlinefrom} ${css.cdin}`}>
+                    <div className={css.cdinwd}>
+                      {startTimeLabel}
                       <FieldSelect
-                        id="endHour"
-                        name="endHour"
-                        // label={endTimeLabel}
-                        className={css.endTime}
-                        validate={composeValidators(required('End hour is required'))}
-                        disabled={duration ? true : false}
+                        id="startHour"
+                        name="startHour"
+                        // label={startTimeLabel}
+                        className={css.bookingDates}
+                        validate={composeValidators(required('Start hour is required'))}
+                        onChange={handleStartTimeChange}
                       >
-                        <option value="">Choose End Hour</option>
-                        {endHours.map(i => (
-                          <option value={i}>{i}</option>
+                        <option value="">Choose Start Hour</option>
+                        {startHours.map(t => (
+                          <option value={t.timeOfDay}>{t.timeOfDay}</option>
                         ))}
                       </FieldSelect>
-                    ) : initialEndHours ? (
-                      <FieldSelect
-                        id="endHour"
-                        name="endHour"
-                        // label={endTimeLabel}
-                        className={css.endTime}
-                        validate={composeValidators(required('End hour is required'))}
-                        disabled={duration ? true : false}
-                      >
-                        <option value="">Choose End Hour</option>
-                        {initialEndHours.map(i => (
-                          <option value={i}>{i}</option>
-                        ))}
-                      </FieldSelect>
-                    ) : (
-                      <FieldSelect
-                        id="endHour"
-                        name="endHour"
-                        // label={endTimeLabel}
-                        className={css.endTime}
-                        validate={composeValidators(required('End hour is required'))}
-                        disabled={duration ? true : false}
-                      >
-                        <option value="">Choose End Hour</option>
-                        {ALL_HOURS.map(i => (
-                          <option value={i}>{i}</option>
-                        ))}
-                      </FieldSelect>
-                    )}
+                    </div>
+                    <div className={css.cdinwd}>
+                      {endTimeLabel}
+
+                      {endHours && endHours.length > 0 ? (
+                        <FieldSelect
+                          id="endHour"
+                          name="endHour"
+                          // label={endTimeLabel}
+                          className={css.endTime}
+                          validate={composeValidators(required('End hour is required'))}
+                          disabled={duration ? true : false}
+                        >
+                          <option value="">Choose End Hour</option>
+                          {endHours.map(i => (
+                            <option value={i}>{i}</option>
+                          ))}
+                        </FieldSelect>
+                      ) : initialEndHours ? (
+                        <FieldSelect
+                          id="endHour"
+                          name="endHour"
+                          // label={endTimeLabel}
+                          className={css.endTime}
+                          validate={composeValidators(required('End hour is required'))}
+                          disabled={duration ? true : false}
+                        >
+                          <option value="">Choose End Hour</option>
+                          {initialEndHours.map(i => (
+                            <option value={i}>{i}</option>
+                          ))}
+                        </FieldSelect>
+                      ) : (
+                        <FieldSelect
+                          id="endHour"
+                          name="endHour"
+                          // label={endTimeLabel}
+                          className={css.endTime}
+                          validate={composeValidators(required('End hour is required'))}
+                          disabled={duration ? true : false}
+                        >
+                          <option value="">Choose End Hour</option>
+                          {ALL_HOURS.map(i => (
+                            <option value={i}>{i}</option>
+                          ))}
+                        </FieldSelect>
+                      )}
+                    </div>
                   </div>
-                </div>
+                </>
               ) : (
                 ''
               )}
-              {bookingError ? (
+              {/* {bookingError ? (
                 <span style={{ color: ' red' }}>You already have something in this time slot</span>
               ) : (
                 ''
-              )}
+              )} */}
             </div>
           )}
           <Button
