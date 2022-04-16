@@ -70,13 +70,15 @@ export const txState = (intl, tx, type) => {
     return 'upcoming';
   } else if (txIsAcceptedOral(tx)) {
     return 'upcoming';
-  } else if (txCustomerJoined1(tx)) {
-    return 'upcoming';
-  } else if (txProviderJoined1(tx)) {
-    return 'upcoming';
-  } else if (txBothJoined(tx)) {
-    return 'upcoming';
-  } else if (txIsPendingConfirmation(tx)) {
+  }
+  // else if (txCustomerJoined1(tx)) {
+  //   return 'upcoming';
+  // } else if (txProviderJoined1(tx)) {
+  //   return 'upcoming';
+  // } else if (txBothJoined(tx)) {
+  //   return 'upcoming';
+  // }
+  else if (txIsPendingConfirmation(tx)) {
     return 'pending';
   } else if (txIsPendingConfirmationOral(tx)) {
     return 'pending';

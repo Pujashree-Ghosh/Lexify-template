@@ -481,8 +481,25 @@ export class ListingPageComponent extends Component {
                     fetchLineItemsError={fetchLineItemsError}
                     duration={duration}
                   />
-                ) : currentListing?.attributes?.publicData?.category !== 'publicOral' &&
-                  currentListing?.attributes?.publicData?.clientId?.includes(
+                ) : currentListing?.attributes?.publicData?.category === 'publicOral' ? (
+                  <BookingPanel
+                    className={css.bookingPanel}
+                    listing={currentListing}
+                    isOwnListing={isOwnListing}
+                    unitType={unitType}
+                    onSubmit={handleBookingSubmit}
+                    title={bookingTitle}
+                    authorDisplayName={authorDisplayName}
+                    onManageDisableScrolling={onManageDisableScrolling}
+                    monthlyTimeSlots={monthlyTimeSlots}
+                    onFetchTimeSlots={onFetchTimeSlots}
+                    onFetchTransactionLineItems={onFetchTransactionLineItems}
+                    lineItems={lineItems}
+                    fetchLineItemsInProgress={fetchLineItemsInProgress}
+                    fetchLineItemsError={fetchLineItemsError}
+                    duration={duration}
+                  />
+                ) : currentListing?.attributes?.publicData?.clientId?.includes(
                     currentUser?.attributes?.email
                   ) ? (
                   <BookingPanel

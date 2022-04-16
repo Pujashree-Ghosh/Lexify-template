@@ -84,10 +84,10 @@ export const loadData = (params, search) => (dispatch, getState, sdk) => {
           'transition/reschedule-provider',
           'transition/accept',
           'transition/accept-oral',
-          'transition/customer-join-1',
-          'transition/provider-join-1',
-          'transition/provider-join-2',
-          'transition/customer-join-2',
+          // 'transition/customer-join-1',
+          // 'transition/provider-join-1',
+          // 'transition/provider-join-2',
+          // 'transition/customer-join-2',
         ]
       : [
           'transition/complete',

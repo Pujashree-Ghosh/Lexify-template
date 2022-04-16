@@ -164,37 +164,39 @@ export const txState = (intl, tx, type) => {
         id: 'InboxPage.stateRescheduled',
       }),
     };
-  } else if (txCustomerJoined1(tx)) {
-    return {
-      nameClassName: css.nameNotEmphasized,
-      bookingClassName: css.bookingNoActionNeeded,
-      lastTransitionedAtClassName: css.lastTransitionedAtNotEmphasized,
-      stateClassName: css.stateSucces,
-      state: intl.formatMessage({
-        id: 'InboxPage.stateCustomerJoined',
-      }),
-    };
-  } else if (txProviderJoined1(tx)) {
-    return {
-      nameClassName: css.nameNotEmphasized,
-      bookingClassName: css.bookingNoActionNeeded,
-      lastTransitionedAtClassName: css.lastTransitionedAtNotEmphasized,
-      stateClassName: css.stateSucces,
-      state: intl.formatMessage({
-        id: 'InboxPage.stateProviderJoined',
-      }),
-    };
-  } else if (txBothJoined(tx)) {
-    return {
-      nameClassName: css.nameNotEmphasized,
-      bookingClassName: css.bookingNoActionNeeded,
-      lastTransitionedAtClassName: css.lastTransitionedAtNotEmphasized,
-      stateClassName: css.stateSucces,
-      state: intl.formatMessage({
-        id: 'InboxPage.stateBothJoined',
-      }),
-    };
-  } else if (txIsExpired(tx)) {
+  }
+  // else if (txCustomerJoined1(tx)) {
+  //   return {
+  //     nameClassName: css.nameNotEmphasized,
+  //     bookingClassName: css.bookingNoActionNeeded,
+  //     lastTransitionedAtClassName: css.lastTransitionedAtNotEmphasized,
+  //     stateClassName: css.stateSucces,
+  //     state: intl.formatMessage({
+  //       id: 'InboxPage.stateCustomerJoined',
+  //     }),
+  //   };
+  // } else if (txProviderJoined1(tx)) {
+  //   return {
+  //     nameClassName: css.nameNotEmphasized,
+  //     bookingClassName: css.bookingNoActionNeeded,
+  //     lastTransitionedAtClassName: css.lastTransitionedAtNotEmphasized,
+  //     stateClassName: css.stateSucces,
+  //     state: intl.formatMessage({
+  //       id: 'InboxPage.stateProviderJoined',
+  //     }),
+  //   };
+  // } else if (txBothJoined(tx)) {
+  //   return {
+  //     nameClassName: css.nameNotEmphasized,
+  //     bookingClassName: css.bookingNoActionNeeded,
+  //     lastTransitionedAtClassName: css.lastTransitionedAtNotEmphasized,
+  //     stateClassName: css.stateSucces,
+  //     state: intl.formatMessage({
+  //       id: 'InboxPage.stateBothJoined',
+  //     }),
+  //   };
+  // }
+  else if (txIsExpired(tx)) {
     return {
       nameClassName: css.nameNotEmphasized,
       bookingClassName: css.bookingNoActionNeeded,

@@ -79,43 +79,6 @@ function SalesCardComponent(props) {
     let transaction_provider_id = transaction?.provider?.id?.uuid;
     let role = 'provider';
 
-    let actualStartTime;
-    let customerJoinTime;
-
-    // [{"transition":"transition/request-payment","createdAt":"2021-06-09T08:50:22.829Z","by":"customer"},{"transition":"transition/confirm-payment","createdAt":"2021-06-09T08:50:25.122Z","by":"customer"},{"transition":"transition/accept-short-booking","createdAt":"2021-06-09T09:01:02.036Z","by":"provider"},{"transition":"transition/short-booking-provider-join-1","createdAt":"2021-06-09T09:04:02.847Z","by":"provider"},{"transition":"transition/short-booking-customer-join-2","createdAt":"2021-06-09T09:04:06.660Z","by":"customer"}]
-
-    let { transitions } = transaction?.attributes;
-    // const isShortBooking =
-    //   transaction &&
-    //   transaction.attributes.protectedData &&
-    //   transaction.attributes.protectedData.shortBooking;
-
-    // let findActualStartTime =
-    // // isShortBooking ? [TRANSITION_SHORT_BOOKING_PROVIDER_JOIN_2, TRANSITION_SHORT_BOOKING_CUSTOMER_JOIN_2]:
-    //   [TRANSITION_PROVIDER_JOIN_1, TRANSITION_PROVIDER_JOIN_2];
-
-    // Array.isArray(transitions) &&
-    //   transitions.length &&
-    //   transitions.forEach(item => {
-    //     if (findActualStartTime.includes(item.transition)) {
-    //       actualStartTime = item.createdAt;
-    //     }
-    //   });
-
-    // let findCustomerJoinTime =
-    // // isShortBooking ? [TRANSITION_SHORT_BOOKING_CUSTOMER_JOIN_1, TRANSITION_SHORT_BOOKING_CUSTOMER_JOIN_2] :
-    //  [TRANSITION_CUSTOMER_JOIN_1, TRANSITION_CUSTOMER_JOIN_2];
-
-    // Array.isArray(transitions) &&
-    //   transitions.length &&
-    //   transitions.forEach(item => {
-    //     if (findCustomerJoinTime.includes(item.transition)) {
-    //       customerJoinTime = item.createdAt;
-    //     }
-    //   });
-
-    // console.log({ actualStartTime, customerJoinTime });
-
     if (!transactionId) {
       return;
     }
@@ -141,9 +104,6 @@ function SalesCardComponent(props) {
     );
     setJoinMeetingProgress(false);
     window.open(`/meeting-new/${jwtToken}`);
-    // this.props.history.push(`/meeting-new/${jwtToken}`);
-    // console.log('555 token', jwtToken);
-    // console.log('555 conf URL', config.canonicalRootURL + '/meeting-new/' + jwtToken);
   };
 
   // console.log(stateData, tx);
@@ -264,40 +224,41 @@ function SalesCardComponent(props) {
                       className={css.joinBtn}
                       onClick={() => {
                         setJoinMeetingProgress(true);
-                        if (listingType === 'unsolicited') {
-                          axios
-                            .get(`${apiBaseUrl()}/api/unsolicitedTransition/${listing.id.uuid}`)
-                            .then(resp => {
-                              if (resp.data.length > 0) {
-                                resp.data.map(d => {
-                                  if (d !== tx.id) {
-                                    onJoinMeeting(d, false);
-                                  }
-                                });
-                                onJoinMeeting(tx.id, false)
-                                  .then(res => {
-                                    goToConference(tx);
-                                  })
-                                  .catch(e => {
-                                    console.error(e);
-                                  });
-                              } else {
-                                goToConference(tx);
-                              }
-                            });
-                        } else {
-                          if (txBothJoined(tx) || txProviderJoined1(tx)) {
-                            goToConference(tx);
-                          } else {
-                            onJoinMeeting(tx.id, false)
-                              .then(res => {
-                                goToConference(tx);
-                              })
-                              .catch(e => {
-                                console.error(e);
-                              });
-                          }
-                        }
+                        // if (listingType === 'unsolicited') {
+                        //   axios
+                        //     .get(`${apiBaseUrl()}/api/unsolicitedTransition/${listing.id.uuid}`)
+                        //     .then(resp => {
+                        //       if (resp.data.length > 0) {
+                        //         resp.data.map(d => {
+                        //           if (d !== tx.id) {
+                        //             onJoinMeeting(d, false);
+                        //           }
+                        //         });
+                        //         onJoinMeeting(tx.id, false)
+                        //           .then(res => {
+                        //             goToConference(tx);
+                        //           })
+                        //           .catch(e => {
+                        //             console.error(e);
+                        //           });
+                        //       } else {
+                        //         goToConference(tx);
+                        //       }
+                        //     });
+                        // } else {
+                        //   if (txBothJoined(tx) || txProviderJoined1(tx)) {
+                        //     goToConference(tx);
+                        //   } else {
+                        //     onJoinMeeting(tx.id, false)
+                        //       .then(res => {
+                        //         goToConference(tx);
+                        //       })
+                        //       .catch(e => {
+                        //         console.error(e);
+                        //       });
+                        //   }
+                        // }
+                        goToConference(tx);
                       }}
                     >
                       Join Meeting

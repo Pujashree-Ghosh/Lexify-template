@@ -103,51 +103,51 @@
   ;;  :from :state/preauthorized,
   ;;  :to :state/declined}
 
-{:name :transition/customer-join-1
-   :actor :actor.role/customer
-   :actions []
-   :from :state/accepted-oral
-   :to :state/customer-joined-1}
+;; {:name :transition/customer-join-1
+;;    :actor :actor.role/customer
+;;    :actions []
+;;    :from :state/accepted-oral
+;;    :to :state/customer-joined-1}
 
-  {:name :transition/provider-join-1
-   :actor :actor.role/provider
-   :actions []
-   :from :state/accepted-oral
-   :to :state/provider-joined-1}
+;;   {:name :transition/provider-join-1
+;;    :actor :actor.role/provider
+;;    :actions []
+;;    :from :state/accepted-oral
+;;    :to :state/provider-joined-1}
 
-  {:name :transition/customer-join-2
-   :actor :actor.role/customer
-   :actions []
-   :from :state/provider-joined-1
-   :to :state/meeting-both-joined}
+;;   {:name :transition/customer-join-2
+;;    :actor :actor.role/customer
+;;    :actions []
+;;    :from :state/provider-joined-1
+;;    :to :state/meeting-both-joined}
 
-  {:name :transition/provider-join-2
-   :actor :actor.role/provider
-   :actions []
-   :from :state/customer-joined-1
-   :to :state/meeting-both-joined}
+;;   {:name :transition/provider-join-2
+;;    :actor :actor.role/provider
+;;    :actions []
+;;    :from :state/customer-joined-1
+;;    :to :state/meeting-both-joined}
   
-  {:name :transition/customer-missing
-   :at {:fn/plus [{:fn/timepoint [:time/booking-start]} {:fn/period ["PT10M"]}]}
-   :actions [{:name :action/cancel-booking}]
-   :from :state/provider-joined-1
-   :to :state/expired}
+;;   {:name :transition/customer-missing
+;;    :at {:fn/plus [{:fn/timepoint [:time/booking-start]} {:fn/period ["PT10M"]}]}
+;;    :actions [{:name :action/cancel-booking}]
+;;    :from :state/provider-joined-1
+;;    :to :state/expired}
   
-  {:name :transition/provider-missing
-   :at {:fn/plus [{:fn/timepoint [:time/booking-start]} {:fn/period ["PT10M"]}]}
-   :actions [{:name :action/cancel-booking}
-    {:name :action/calculate-full-refund}
-    {:name :action/stripe-refund-payment}]
-   :from :state/customer-joined-1
-   :to :state/expired}
+;;   {:name :transition/provider-missing
+;;    :at {:fn/plus [{:fn/timepoint [:time/booking-start]} {:fn/period ["PT10M"]}]}
+;;    :actions [{:name :action/cancel-booking}
+;;     {:name :action/calculate-full-refund}
+;;     {:name :action/stripe-refund-payment}]
+;;    :from :state/customer-joined-1
+;;    :to :state/expired}
 
-  {:name :transition/meeting-expired
-   :at {:fn/plus [{:fn/timepoint [:time/booking-start]} {:fn/period ["PT10M"]}]}
-   :actions [{:name :action/cancel-booking}
-   {:name :action/calculate-full-refund}
-    {:name :action/stripe-refund-payment}]
-   :from :state/accepted-oral
-   :to :state/expired}
+;;   {:name :transition/meeting-expired
+;;    :at {:fn/plus [{:fn/timepoint [:time/booking-start]} {:fn/period ["PT10M"]}]}
+;;    :actions [{:name :action/cancel-booking}
+;;    {:name :action/calculate-full-refund}
+;;     {:name :action/stripe-refund-payment}]
+;;    :from :state/accepted-oral
+;;    :to :state/expired}
 
 
   {:name :transition/pending-confirmation,
@@ -155,11 +155,18 @@
    :actions [],
    :from :state/accepted,
    :to :state/pending-confirmation}
-   {:name :transition/pending-confirmation-oral,
+
+    {:name :transition/pending-confirmation-oral,
    :at {:fn/timepoint [:time/booking-end]},
    :actions [],
-   :from :state/meeting-both-joined,
+   :from :state/accepted-oral,
    :to :state/pending-confirmation}
+
+  ;;  {:name :transition/pending-confirmation-oral,
+  ;;  :at {:fn/timepoint [:time/booking-end]},
+  ;;  :actions [],
+  ;;  :from :state/meeting-both-joined,
+  ;;  :to :state/pending-confirmation}
   {:name :transition/complete,
    :actor :actor.role/customer,
    :actions [{:name :action/stripe-create-payout}],

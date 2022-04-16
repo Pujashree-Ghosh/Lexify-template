@@ -474,29 +474,31 @@ export class TransactionPanelComponent extends Component {
           showAddress: isCustomer,
           showCalendar: true,
         };
-      } else if (txCustomerJoined1(tx)) {
-        return {
-          headingState: HEADING_ACCEPTED,
-          isShortBooking: false,
-          customer_joined: true,
-          bookingAccepted: true,
-        };
-      } else if (txProviderJoined1(tx)) {
-        return {
-          headingState: HEADING_ACCEPTED,
-          isShortBooking: false,
-          provider_joined: true,
-          bookingAccepted: true,
-        };
-      } else if (txBothJoined(tx)) {
-        return {
-          headingState: HEADING_ACCEPTED,
-          isShortBooking: false,
-          provider_joined: true,
-          customer_joined: true,
-          bookingAccepted: true,
-        };
-      } else if (txIsExpired(tx)) {
+      }
+      // else if (txCustomerJoined1(tx)) {
+      //   return {
+      //     headingState: HEADING_ACCEPTED,
+      //     isShortBooking: false,
+      //     customer_joined: true,
+      //     bookingAccepted: true,
+      //   };
+      // } else if (txProviderJoined1(tx)) {
+      //   return {
+      //     headingState: HEADING_ACCEPTED,
+      //     isShortBooking: false,
+      //     provider_joined: true,
+      //     bookingAccepted: true,
+      //   };
+      // } else if (txBothJoined(tx)) {
+      //   return {
+      //     headingState: HEADING_ACCEPTED,
+      //     isShortBooking: false,
+      //     provider_joined: true,
+      //     customer_joined: true,
+      //     bookingAccepted: true,
+      //   };
+      // }
+      else if (txIsExpired(tx)) {
         return {
           headingState: HEADING_EXPIRED,
           showDetailCardHeadings: isCustomer,
@@ -825,64 +827,65 @@ export class TransactionPanelComponent extends Component {
                       className={css.joinMeetingBtn}
                       onClick={() => {
                         this.setState({ joinMeetingProgress: true });
-                        if (isCustomer) {
-                          if (
-                            txCustomerJoined1(currentTransaction) ||
-                            txBothJoined(currentTransaction)
-                          ) {
-                            this.goToConference(currentTransaction);
-                          } else {
-                            onJoinMeeting(currentTransaction.id, isCustomer)
-                              .then(res => {
-                                this.goToConference(currentTransaction);
-                              })
-                              .catch(e => {
-                                console.error(e);
-                              });
-                          }
-                        } else {
-                          if (listingType === 'unsolicited') {
-                            axios
-                              .get(
-                                `${apiBaseUrl()}/api/unsolicitedTransition/${
-                                  currentListing.id.uuid
-                                }`
-                              )
-                              .then(resp => {
-                                if (resp.data.length > 0) {
-                                  resp.data.map(d => {
-                                    if (d !== currentTransaction.id) {
-                                      onJoinMeeting(d, false);
-                                    }
-                                  });
-                                  onJoinMeeting(currentTransaction.id, isCustomer)
-                                    .then(res => {
-                                      this.goToConference(currentTransaction);
-                                    })
-                                    .catch(e => {
-                                      console.error(e);
-                                    });
-                                } else {
-                                  this.goToConference(currentTransaction);
-                                }
-                              });
-                          } else {
-                            if (
-                              txProviderJoined1(currentTransaction) ||
-                              txBothJoined(currentTransaction)
-                            ) {
-                              this.goToConference(currentTransaction);
-                            } else {
-                              onJoinMeeting(currentTransaction.id, isCustomer)
-                                .then(res => {
-                                  this.goToConference(currentTransaction);
-                                })
-                                .catch(e => {
-                                  console.error(e);
-                                });
-                            }
-                          }
-                        }
+                        // if (isCustomer) {
+                        //   if (
+                        //     txCustomerJoined1(currentTransaction) ||
+                        //     txBothJoined(currentTransaction)
+                        //   ) {
+                        //     this.goToConference(currentTransaction);
+                        //   } else {
+                        //     onJoinMeeting(currentTransaction.id, isCustomer)
+                        //       .then(res => {
+                        //         this.goToConference(currentTransaction);
+                        //       })
+                        //       .catch(e => {
+                        //         console.error(e);
+                        //       });
+                        //   }
+                        // } else {
+                        //   if (listingType === 'unsolicited') {
+                        //     axios
+                        //       .get(
+                        //         `${apiBaseUrl()}/api/unsolicitedTransition/${
+                        //           currentListing.id.uuid
+                        //         }`
+                        //       )
+                        //       .then(resp => {
+                        //         if (resp.data.length > 0) {
+                        //           resp.data.map(d => {
+                        //             if (d !== currentTransaction.id) {
+                        //               onJoinMeeting(d, false);
+                        //             }
+                        //           });
+                        //           onJoinMeeting(currentTransaction.id, isCustomer)
+                        //             .then(res => {
+                        //               this.goToConference(currentTransaction);
+                        //             })
+                        //             .catch(e => {
+                        //               console.error(e);
+                        //             });
+                        //         } else {
+                        //           this.goToConference(currentTransaction);
+                        //         }
+                        //       });
+                        //   } else {
+                        //     if (
+                        //       txProviderJoined1(currentTransaction) ||
+                        //       txBothJoined(currentTransaction)
+                        //     ) {
+                        //       this.goToConference(currentTransaction);
+                        //     } else {
+                        //       onJoinMeeting(currentTransaction.id, isCustomer)
+                        //         .then(res => {
+                        //           this.goToConference(currentTransaction);
+                        //         })
+                        //         .catch(e => {
+                        //           console.error(e);
+                        //         });
+                        //     }
+                        //   }
+                        // }
+                        this.goToConference(currentTransaction);
                       }}
                     >
                       Join Meeting
@@ -1061,64 +1064,65 @@ export class TransactionPanelComponent extends Component {
                         className={css.joinMeetingBtn}
                         onClick={() => {
                           this.setState({ joinMeetingProgress: true });
-                          if (isCustomer) {
-                            if (
-                              txCustomerJoined1(currentTransaction) ||
-                              txBothJoined(currentTransaction)
-                            ) {
-                              this.goToConference(currentTransaction);
-                            } else {
-                              onJoinMeeting(currentTransaction.id, isCustomer)
-                                .then(res => {
-                                  this.goToConference(currentTransaction);
-                                })
-                                .catch(e => {
-                                  console.error(e);
-                                });
-                            }
-                          } else {
-                            if (listingType === 'unsolicited') {
-                              axios
-                                .get(
-                                  `${apiBaseUrl()}/api/unsolicitedTransition/${
-                                    currentListing.id.uuid
-                                  }`
-                                )
-                                .then(resp => {
-                                  if (resp.data.length > 0) {
-                                    resp.data.map(d => {
-                                      if (d !== currentTransaction.id) {
-                                        onJoinMeeting(d, false);
-                                      }
-                                    });
-                                    onJoinMeeting(currentTransaction.id, isCustomer)
-                                      .then(res => {
-                                        this.goToConference(currentTransaction);
-                                      })
-                                      .catch(e => {
-                                        console.error(e);
-                                      });
-                                  } else {
-                                    this.goToConference(currentTransaction);
-                                  }
-                                });
-                            } else {
-                              if (
-                                txProviderJoined1(currentTransaction) ||
-                                txBothJoined(currentTransaction)
-                              ) {
-                                this.goToConference(currentTransaction);
-                              } else {
-                                onJoinMeeting(currentTransaction.id, isCustomer)
-                                  .then(res => {
-                                    this.goToConference(currentTransaction);
-                                  })
-                                  .catch(e => {
-                                    console.error(e);
-                                  });
-                              }
-                            }
-                          }
+                          // if (isCustomer) {
+                          //   if (
+                          //     txCustomerJoined1(currentTransaction) ||
+                          //     txBothJoined(currentTransaction)
+                          //   ) {
+                          //     this.goToConference(currentTransaction);
+                          //   } else {
+                          //     onJoinMeeting(currentTransaction.id, isCustomer)
+                          //       .then(res => {
+                          //         this.goToConference(currentTransaction);
+                          //       })
+                          //       .catch(e => {
+                          //         console.error(e);
+                          //       });
+                          //   }
+                          // } else {
+                          //   if (listingType === 'unsolicited') {
+                          //     axios
+                          //       .get(
+                          //         `${apiBaseUrl()}/api/unsolicitedTransition/${
+                          //           currentListing.id.uuid
+                          //         }`
+                          //       )
+                          //       .then(resp => {
+                          //         if (resp.data.length > 0) {
+                          //           resp.data.map(d => {
+                          //             if (d !== currentTransaction.id) {
+                          //               onJoinMeeting(d, false);
+                          //             }
+                          //           });
+                          //           onJoinMeeting(currentTransaction.id, isCustomer)
+                          //             .then(res => {
+                          //               this.goToConference(currentTransaction);
+                          //             })
+                          //             .catch(e => {
+                          //               console.error(e);
+                          //             });
+                          //         } else {
+                          //           this.goToConference(currentTransaction);
+                          //         }
+                          //       });
+                          //   } else {
+                          //     if (
+                          //       txProviderJoined1(currentTransaction) ||
+                          //       txBothJoined(currentTransaction)
+                          //     ) {
+                          //       this.goToConference(currentTransaction);
+                          //     } else {
+                          //       onJoinMeeting(currentTransaction.id, isCustomer)
+                          //         .then(res => {
+                          //           this.goToConference(currentTransaction);
+                          //         })
+                          //         .catch(e => {
+                          //           console.error(e);
+                          //         });
+                          //     }
+                          //   }
+                          // }
+                          this.goToConference(currentTransaction);
                         }}
                       >
                         Join Meeting
