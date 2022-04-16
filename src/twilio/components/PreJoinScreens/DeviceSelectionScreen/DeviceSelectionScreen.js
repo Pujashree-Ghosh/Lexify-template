@@ -80,8 +80,6 @@ export default function DeviceSelectionScreen({
   const isFirefox = browser && browser.name === 'firefox';
   const handleJoin = () => {
     getToken(name, roomName).then(token => {
-      //
-      // connect(token);
       connect(token, {
         region: 'gll',
       });

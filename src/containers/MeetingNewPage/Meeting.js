@@ -135,8 +135,9 @@ const Meeting = props => {
 
   const onCancel = () => {
     // console.log('object');
-    const path = isProvider ? `/sale/${transactionId}/details` : `/order/${transactionId}/details`;
-    props.history.push(path);
+    // const path = isProvider ? `/sale/${transactionId}/details` : `/order/${transactionId}/details`;
+    // props.history.push(path);
+    if (typeof window !== undefined) window.close();
   };
   // const moderator = 'Surajit T';
 

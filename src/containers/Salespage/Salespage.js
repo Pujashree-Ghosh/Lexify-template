@@ -305,9 +305,9 @@ export const SalespageComponent = props => {
             className={css.topbar}
             mobileRootClassName={css.mobileTopbar}
             desktopClassName={css.desktopTopbar}
-            currentPage="Salespageage"
+            currentPage="SalesBasePage"
           />
-          <UserNav selectedPageName="SalesBasepage" />
+          <UserNav selectedPageName="SalesBasePage" />
         </LayoutWrapperTopbar>
         <LayoutWrapperSideNav className={css.navigation}>{nav}</LayoutWrapperSideNav>
         <LayoutWrapperMain className={css.Appointmentlwm}>

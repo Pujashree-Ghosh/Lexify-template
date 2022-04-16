@@ -124,13 +124,6 @@ const TopbarMobileMenu = props => {
         ) : (
           ''
         )}
-        <NamedLink
-          className={classNames(css.navigationLink, currentPageClass('MyAppointmentPage'))}
-          name="MyAppointmentPage"
-          params={{ tab: 'pending' }}
-        >
-          <FormattedMessage id="TopbarMobileMenu.myAppointment" />
-        </NamedLink>
         {currentUser?.attributes?.profile?.protectedData?.isLawyer ? (
           <NamedLink
             className={classNames(css.navigationLink, currentPageClass('ManageListingsPage'))}
@@ -141,6 +134,25 @@ const TopbarMobileMenu = props => {
         ) : (
           ''
         )}
+        {currentUser?.attributes?.profile?.protectedData?.isLawyer ? (
+          <NamedLink
+            className={classNames(css.navigationLink, currentPageClass('SalesBasePage'))}
+            name="Salespage"
+            params={{ tab: 'pending' }}
+          >
+            <FormattedMessage id="TopbarMobile.mySalesLink" />
+          </NamedLink>
+        ) : (
+          ''
+        )}
+        <NamedLink
+          className={classNames(css.navigationLink, currentPageClass('MyAppointmentPage'))}
+          name="MyAppointmentPage"
+          params={{ tab: 'pending' }}
+        >
+          <FormattedMessage id="TopbarMobileMenu.myAppointment" />
+        </NamedLink>
+
         <NamedLink
           className={classNames(css.navigationLink, currentPageClass('PromotionPage'))}
           name="PromotionPage"

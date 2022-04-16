@@ -314,26 +314,20 @@ class MainPanelComponent extends Component {
           'SearchPage',
           routeConfiguration(),
           {},
-          { pub_hasPublicListing: true, pub_isProviderType: true }
+          // { pub_hasPublicListing: true, pub_isProviderType: true }
+          { pub_isProviderType: true }
         )
       );
     }
     if (
-      urlQueryParams?.pub_isProviderType !== true ||
-      urlQueryParams?.pub_hasPublicListing !== true
+      urlQueryParams?.pub_isProviderType !== true
+      // ||
+      // urlQueryParams?.pub_hasPublicListing !== true
     ) {
-      // history.push(
-      //   createResourceLocatorString(
-      //     'SearchPage',
-      //     routeConfiguration(),
-      //     {},
-      //     { pub_hasPublicListing: true, pub_isProviderType: true }
-      //   )
-      // );
       if (
         this.state.keywords === '' &&
         this.state.practiceArea.length < 1 &&
-        urlQueryParams?.pub_hasPublicListing === true &&
+        // urlQueryParams?.pub_hasPublicListing === true &&
         urlQueryParams?.pub_isProviderType === true
       ) {
         history.push(
@@ -341,18 +335,19 @@ class MainPanelComponent extends Component {
             'SearchPage',
             routeConfiguration(),
             {},
-            { pub_hasPublicListing: true, pub_isProviderType: true }
+            // { pub_hasPublicListing: true, pub_isProviderType: true }
+            { pub_isProviderType: true }
           )
         );
       }
 
       if (
         this.state.currentQueryParams.hasOwnProperty('keywords') &&
-        urlQueryParams?.pub_hasPublicListing === true &&
+        // urlQueryParams?.pub_hasPublicListing === true &&
         urlQueryParams?.pub_isProviderType === true
       ) {
         let currParams = this.state.currentQueryParams;
-        delete currParams?.pub_hasPublicListing;
+        // delete currParams?.pub_hasPublicListing;
         delete currParams?.pub_isProviderType;
         history.push(
           createResourceLocatorString('SearchPage', routeConfiguration(), {}, { ...currParams })
@@ -360,11 +355,11 @@ class MainPanelComponent extends Component {
       }
       if (
         this.state.currentQueryParams.hasOwnProperty('pub_practiceArea') &&
-        urlQueryParams?.pub_hasPublicListing === true &&
+        // urlQueryParams?.pub_hasPublicListing === true &&
         urlQueryParams?.pub_isProviderType === true
       ) {
         let currParams = this.state.currentQueryParams;
-        delete currParams?.pub_hasPublicListing;
+        // delete currParams?.pub_hasPublicListing;
         delete currParams?.pub_isProviderType;
         history.push(
           createResourceLocatorString('SearchPage', routeConfiguration(), {}, { ...currParams })
@@ -392,7 +387,7 @@ class MainPanelComponent extends Component {
       if (this.state.keywords !== '' || this.state.practiceArea.length >= 1) {
         search.pub_category = 'publicOral';
         delete search.pub_isProviderType;
-        delete search.pub_hasPublicListing;
+        // delete search.pub_hasPublicListing;
       }
       if (this.state.keywords === '' && this.state.practiceArea.length < 1) {
         if (search.hasOwnProperty('pub_category')) {
@@ -888,8 +883,8 @@ class MainPanelComponent extends Component {
               </h2>
             ) : null}
             {urlQueryParams.pub_isProviderType === true &&
-            urlQueryParams.pub_hasPublicListing === true &&
-            Object.keys(urlQueryParams).length === 2 ? (
+            // urlQueryParams.pub_hasPublicListing === true &&
+            Object.keys(urlQueryParams).length === 1 ? (
               ''
             ) : (
               <SearchResultsPanel

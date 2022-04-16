@@ -61,7 +61,8 @@ export const LandingPageComponent = props => {
         'SearchPage',
         routeConfiguration(),
         {},
-        { pub_isProviderType: true, pub_hasPublicListing: true }
+        // { pub_isProviderType: true, pub_hasPublicListing: true }
+        { pub_isProviderType: true }
       )
     );
   });

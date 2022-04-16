@@ -88,26 +88,6 @@ const TopbarDesktop = props => {
       </MenuLabel>
       {currentUser?.attributes?.profile?.protectedData?.isLawyer ? (
         <MenuContent className={css.profileMenuContent}>
-          <MenuItem key="MyAppointmentPage">
-            <NamedLink
-              className={classNames(css.profileSettingsLink, currentPageClass('MyAppointmentPage'))}
-              name="MyAppointmentPage"
-              params={{ tab: 'pending' }}
-            >
-              <span className={css.menuItemBorder} />
-              <FormattedMessage id="TopbarDesktop.appointmentsLink" />
-            </NamedLink>
-          </MenuItem>
-          <MenuItem key="Salespage">
-            <NamedLink
-              className={classNames(css.profileSettingsLink, currentPageClass('Salespage'))}
-              name="Salespage"
-              params={{ tab: 'pending' }}
-            >
-              <span className={css.menuItemBorder} />
-              <FormattedMessage id="TopbarDesktop.mysalesLink" />
-            </NamedLink>
-          </MenuItem>
           <MenuItem key="ManageListingsPage">
             <NamedLink
               className={classNames(
@@ -118,6 +98,26 @@ const TopbarDesktop = props => {
             >
               <span className={css.menuItemBorder} />
               <FormattedMessage id="TopbarDesktop.manageListingsLink" />
+            </NamedLink>
+          </MenuItem>
+          <MenuItem key="Salespage">
+            <NamedLink
+              className={classNames(css.profileSettingsLink, currentPageClass('SalesBasePage'))}
+              name="Salespage"
+              params={{ tab: 'pending' }}
+            >
+              <span className={css.menuItemBorder} />
+              <FormattedMessage id="TopbarDesktop.mySalesLink" />
+            </NamedLink>
+          </MenuItem>
+          <MenuItem key="MyAppointmentPage">
+            <NamedLink
+              className={classNames(css.profileSettingsLink, currentPageClass('MyAppointmentPage'))}
+              name="MyAppointmentPage"
+              params={{ tab: 'pending' }}
+            >
+              <span className={css.menuItemBorder} />
+              <FormattedMessage id="TopbarDesktop.appointmentsLink" />
             </NamedLink>
           </MenuItem>
 

@@ -61,24 +61,25 @@ const UserNav = props => {
         ...listingTab(listing, selectedPageName),
       },
       {
-        text: <FormattedMessage id="UserNav.myAppointments" />,
-        selected: selectedPageName === 'MyAppoinmentBasePage',
+        text: <FormattedMessage id="UserNav.yourListings" />,
+        selected: selectedPageName === 'ManageListingsPage',
         linkProps: {
-          name: 'MyAppoinmentBasePage',
+          name: 'ManageListingsPage',
         },
       },
+
       {
         text: <FormattedMessage id="UserNav.sales" />,
-        selected: selectedPageName === 'SalesBasepage',
+        selected: selectedPageName === 'SalesBasePage',
         linkProps: {
           name: 'SalesBasepage',
         },
       },
       {
-        text: <FormattedMessage id="UserNav.yourListings" />,
-        selected: selectedPageName === 'ManageListingsPage',
+        text: <FormattedMessage id="UserNav.myAppointments" />,
+        selected: selectedPageName === 'MyAppoinmentBasePage',
         linkProps: {
-          name: 'ManageListingsPage',
+          name: 'MyAppoinmentBasePage',
         },
       },
 

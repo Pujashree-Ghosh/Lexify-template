@@ -104,70 +104,70 @@ export const EditListingPricingFormComponent = props => (
           ) : null}
 
           <div className={css.selectform}>
-            {category !== 'publicOral' ? (
-              <FieldArray name="vatData">
-                {({ fields }) => {
-                  return (
-                    <div className={css.sectionContainer}>
-                      {fields.map((name, i) => {
-                        return (
-                          <div key={name + i}>
-                            <div className={css.fromgroup}>
-                              <FieldTextInput
-                                id="vattype"
-                                name={`${name}.vatType`}
-                                label={vattypeLabel}
-                                // validate={required}
-                                type="textarea"
-                              ></FieldTextInput>
-                            </div>
-                            <div className={css.fromgroup}>
-                              <FieldTextInput
-                                id="vat"
-                                name={`${name}.vat`}
-                                type="text"
-                                label={vatLabel}
-                                // validate={validators.composeValidators(vatValid)}
-                                // validate={required}
-
-                                // pattern={'/^[0-9\b]+$/'}
-                              ></FieldTextInput>
-                            </div>
+            {/* {category !== 'publicOral' ? ( */}
+            <FieldArray name="vatData">
+              {({ fields }) => {
+                return (
+                  <div className={css.sectionContainer}>
+                    {fields.map((name, i) => {
+                      return (
+                        <div key={name + i}>
+                          <div className={css.fromgroup}>
+                            <FieldTextInput
+                              id="vattype"
+                              name={`${name}.vatType`}
+                              label={vattypeLabel}
+                              // validate={required}
+                              type="textarea"
+                            ></FieldTextInput>
                           </div>
-                        );
-                      })}
-                      <div className={`${css.fromgroup} ${css.inlinefrom}`}>
-                        <Button
-                          className={css.addMore}
-                          type="button"
-                          onClick={() => {
-                            fields.push();
-                          }}
-                          disabled={
-                            !values.vatData[values.vatData?.length - 1]?.vatType ||
-                            !values.vatData[values.vatData?.length - 1]?.vat
-                          }
-                        >
-                          <FormattedMessage id="editlistingPricingForm.addMore" />
-                        </Button>
-                        <Button
-                          className={css.remove}
-                          type="button"
-                          onClick={() => {
-                            fields.pop();
-                          }}
-                          disabled={values.vatData?.length < 2}
-                        >
-                          <FormattedMessage id="editlistingPricingForm.remove" />
-                        </Button>
-                      </div>
+                          <div className={css.fromgroup}>
+                            <FieldTextInput
+                              id="vat"
+                              name={`${name}.vat`}
+                              type="text"
+                              label={vatLabel}
+                              // validate={validators.composeValidators(vatValid)}
+                              // validate={required}
+
+                              // pattern={'/^[0-9\b]+$/'}
+                            ></FieldTextInput>
+                          </div>
+                        </div>
+                      );
+                    })}
+                    <div className={`${css.fromgroup} ${css.inlinefrom}`}>
+                      <Button
+                        className={css.addMore}
+                        type="button"
+                        onClick={() => {
+                          fields.push();
+                        }}
+                        disabled={
+                          !values.vatData[values.vatData?.length - 1]?.vatType ||
+                          !values.vatData[values.vatData?.length - 1]?.vat
+                        }
+                      >
+                        <FormattedMessage id="editlistingPricingForm.addMore" />
+                      </Button>
+                      <Button
+                        className={css.remove}
+                        type="button"
+                        onClick={() => {
+                          fields.pop();
+                        }}
+                        disabled={values.vatData?.length < 2}
+                      >
+                        <FormattedMessage id="editlistingPricingForm.remove" />
+                      </Button>
                     </div>
-                  );
-                }}
-              </FieldArray>
-            ) : (
+                  </div>
+                );
+              }}
+            </FieldArray>
+            {/* ) : (
               ''
-            )}
+            )} */}
           </div>
           <FieldCurrencyInput
             id="price"
