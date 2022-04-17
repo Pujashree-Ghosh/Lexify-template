@@ -90,13 +90,13 @@ const UserNav = props => {
           name: 'PromotionPage',
         },
       },
-      {
-        text: <FormattedMessage id="UserNav.ServicesPage" />,
-        selected: selectedPageName === 'ServicesPage',
-        linkProps: {
-          name: 'ServicesPage',
-        },
-      },
+      // {
+      //   text: <FormattedMessage id="UserNav.ServicesPage" />,
+      //   selected: selectedPageName === 'ServicesPage',
+      //   linkProps: {
+      //     name: 'ServicesPage',
+      //   },
+      // },
       {
         text: <FormattedMessage id="UserNav.profileSettingsPage" />,
         selected: selectedPageName === 'ProfileSettingsPage',
@@ -130,13 +130,13 @@ const UserNav = props => {
           name: 'PromotionPage',
         },
       },
-      {
-        text: <FormattedMessage id="UserNav.ServicesPage" />,
-        selected: selectedPageName === 'ServicesPage',
-        linkProps: {
-          name: 'ServicesPage',
-        },
-      },
+      // {
+      //   text: <FormattedMessage id="UserNav.ServicesPage" />,
+      //   selected: selectedPageName === 'ServicesPage',
+      //   linkProps: {
+      //     name: 'ServicesPage',
+      //   },
+      // },
       {
         text: <FormattedMessage id="UserNav.profileSettingsPage" />,
         selected: selectedPageName === 'ProfileSettingsPage',

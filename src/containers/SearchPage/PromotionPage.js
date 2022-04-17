@@ -70,6 +70,7 @@ function PromotionPageComponent(props) {
   const validQueryParams = validURLParamsForExtendedData(searchInURL, filterConfig);
   const [loading, setLoading] = useState(true);
 
+  // console.log('list', listings);
   // console.log(listings);
   const routes = routeConfiguration();
   const type = validQueryParams && validQueryParams?.pub_type;
@@ -78,30 +79,35 @@ function PromotionPageComponent(props) {
     ensuredCurrentUser && ensuredCurrentUser.attributes && ensuredCurrentUser.attributes.email;
   const title = intl.formatMessage({ id: 'PromotionPage.title' });
   useEffect(() => {
-    // console.log(ensuredCurrentUser);
-    if (type !== 'unsolicited' || clientId !== email) {
+    // console.log(ensuredCurrentUser, searchParams, type);
+
+    // if (type !== 'has_any:unsolicited,solicited' || clientId !== email) {
+    if (clientId !== email) {
       // setLoading(true);
-      let timer = setTimeout(() => {
-        history.push(
-          createResourceLocatorString(
-            'PromotionPage',
-            routes,
-            {},
-            { pub_type: 'unsolicited', pub_clientId: `${email}` }
-          )
-        );
-        setLoading(false);
-      }, 1000);
+      // let timer = setTimeout(() => {
+      history.push(
+        createResourceLocatorString(
+          'PromotionPage',
+          routes,
+          {},
+          // { pub_type: `has_any:unsolicited,solicited`, pub_clientId: `${email}` }
+          { pub_clientId: `${email}` }
+        )
+      );
+      // setLoading(false);
+      // }, 1000);
       return () => {
-        clearTimeout(timer);
+        // clearTimeout(timer);
       };
     }
-  }, [type, email]);
+  }, [clientId, email]);
   // useEffect(() => {
   //   setTimeout(() => {
   //     setLoading(false);
   //   }, 3000);
   // }, []);
+
+  // console.log(searchParams);
   return (
     <Page className={css.root} title={title} scrollingDisabled={scrollingDisabled}>
       <LayoutSingleColumn>
@@ -116,9 +122,8 @@ function PromotionPageComponent(props) {
         </LayoutWrapperTopbar>
         <LayoutWrapperMain>
           {/* {loading && <div>Loading Result..</div>} */}
-          {searchParams.pub_type !== 'unsolicited' ||
-          searchParams.pub_clientId !== email ||
-          searchInProgress ? (
+          {/* {searchParams.pub_type !== 'has_any:unsolicited,solicited' || */}
+          {searchParams.pub_clientId !== email || searchInProgress ? (
             <div>Loading Result..</div>
           ) : (
             // !loading &&
@@ -126,8 +131,8 @@ function PromotionPageComponent(props) {
             ensuredCurrentUser &&
             ensuredCurrentUser.id &&
             ensuredCurrentUser.id.uuid &&
-            validQueryParams.pub_clientId === ensuredCurrentUser.attributes.email &&
-            validQueryParams.pub_type === 'unsolicited' && (
+            validQueryParams.pub_clientId === ensuredCurrentUser.attributes.email && (
+              // validQueryParams.pub_type === 'has_any:unsolicited,solicited' && (
               // <div className={css.content}>
               <div className={css.listingCards}>
                 {listings.map(l => (
@@ -145,7 +150,7 @@ function PromotionPageComponent(props) {
           )}
           {!searchInProgress &&
             !listings.length &&
-            searchParams.pub_type === 'unsolicited' &&
+            // searchParams.pub_type === 'has_any:unsolicited,solicited' &&
             searchParams.pub_clientId === email && (
               <div className={css.nrftxt}>No result found</div>
             )}
