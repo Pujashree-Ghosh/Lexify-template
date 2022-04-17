@@ -624,6 +624,16 @@ class MainPanelComponent extends Component {
                     this.getHandleChangedValueFn()({
                       ['pub_country']: e?.value,
                     });
+                    this.getHandleChangedValueFn()({
+                      ['pub_city']: '',
+                    });
+                    this.getHandleChangedValueFn()({
+                      ['pub_postalCode']: '',
+                    });
+                    this.getHandleChangedValueFn()({
+                      ['pub_state']: '',
+                    });
+                    this.setState({ city: [], state: [], postalCode: [] });
                   }}
                 >
                   {/* <option value="">Select Country</option>
@@ -680,7 +690,7 @@ class MainPanelComponent extends Component {
                     onChange={e => {
                       this.setState({ city: e.target.value });
                       this.getHandleChangedValueFn()({
-                        ['pub_city']: e.target.value,
+                        ['pub_city']: e.target.value.toLowerCase(),
                       });
                     }}
                   />

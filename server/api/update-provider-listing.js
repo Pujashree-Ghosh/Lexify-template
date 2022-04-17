@@ -19,12 +19,18 @@ module.exports = async (req, response) => {
           const country = res.data.data.attributes.profile.publicData?.jurisdictionPractice?.map(
             m => m.country
           );
-          const state = res.data.data.attributes.profile.publicData?.jurisdictionPractice?.map(
-            s => s.state
-          );
-          const city = res.data.data.attributes.profile.publicData?.jurisdictionPractice?.map(
-            m => m.city
-          );
+          const state = res.data.data.attributes.profile.publicData?.jurisdictionPractice
+            ?.map(s => s.state)
+            ?.filter(f => f !== undefined);
+          const city = res.data.data.attributes.profile.publicData?.jurisdictionPractice
+            ?.map(m => m.city?.toLowerCase())
+            ?.filter(f => f !== undefined);
+          const zip = res.data.data.attributes.profile.publicData?.jurisdictionPractice
+            ?.map(m => m.postalCode)
+            ?.filter(f => f !== undefined);
+          const industry = res.data.data.attributes.profile.publicData?.industry
+            ?.map(m => m.industryName)
+            ?.filter(f => f !== undefined);
           const description = res.data.data.attributes.profile?.bio;
           const practiceArea = res.data.data.attributes.profile.publicData?.practice?.map(m => m);
           integrationSdk.listings
@@ -35,8 +41,10 @@ module.exports = async (req, response) => {
                 languages,
                 country,
                 practiceArea,
-                state,
-                city,
+                state: state.length ? state : null,
+                city: city.length ? city : null,
+                postalCode: zip.length ? zip : null,
+                industry: industry.length ? industry : null,
               },
             })
             .then(res => {
