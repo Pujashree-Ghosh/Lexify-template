@@ -34,17 +34,28 @@ const EditListingDeadlinePanel = props => {
   const isPublished = currentListing.id && currentListing.attributes.state !== LISTING_STATE_DRAFT;
   const panelTitle = isPublished ? (
     <FormattedMessage
-      id="EditListingDeadlinePanel.title"
+      id="EditListingDeadlinePanel.customServiceTitleEdit"
       values={{
         listingTitle: (
           <ListingLink listing={listing}>
-            <FormattedMessage id="EditListingDeadlinePanel.listingTitle" />
+            {/* <FormattedMessage id="EditListingDeadlinePanel.listingTitle" /> */}
+            {listing?.title}
           </ListingLink>
         ),
       }}
     />
   ) : (
-    <FormattedMessage id="EditListingDeadlinePanel.listingTitle" />
+    <FormattedMessage
+      id="EditListingDeadlinePanel.customServiceTitle"
+      values={{
+        listingTitle: (
+          <ListingLink listing={listing}>
+            {/* <FormattedMessage id="EditListingDeadlinePanel.listingTitle" /> */}
+            {listing?.title}
+          </ListingLink>
+        ),
+      }}
+    />
   );
 
   const Deadline = publicData && { date: moment(publicData.Deadline).toDate() };

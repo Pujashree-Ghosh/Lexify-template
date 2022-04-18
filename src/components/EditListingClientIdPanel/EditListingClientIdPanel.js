@@ -39,20 +39,58 @@ const EditListingClientIdPanel = props => {
       : null;
   const { publicData } = currentListing.attributes;
   const isPublished = currentListing.id && currentListing.attributes.state !== LISTING_STATE_DRAFT;
-  const panelTitle = isPublished ? (
-    <FormattedMessage
-      id="EditListingClientIdPanel.title"
-      values={{
-        listingTitle: (
-          <ListingLink listing={listing}>
-            <FormattedMessage id="EditListingClientIdPanel.listingTitle" />
-          </ListingLink>
-        ),
-      }}
-    />
-  ) : (
-    <FormattedMessage id="EditListingClientIdPanel.listingTitle" />
-  );
+  const panelTitle =
+    category === 'customOral' ? (
+      isPublished ? (
+        <FormattedMessage
+          id="EditListingClientIdPanel.customOralTitleEdit"
+          values={{
+            listingTitle: (
+              <ListingLink listing={listing}>
+                {/* <FormattedMessage id="EditListingClientIdPanel.listingTitle" /> */}
+                {listing?.title}
+              </ListingLink>
+            ),
+          }}
+        />
+      ) : (
+        <FormattedMessage
+          id="EditListingClientIdPanel.customOralTitle"
+          values={{
+            listingTitle: (
+              <ListingLink listing={listing}>
+                {/* <FormattedMessage id="EditListingClientIdPanel.listingTitle" /> */}
+                {listing?.title}
+              </ListingLink>
+            ),
+          }}
+        />
+      )
+    ) : isPublished ? (
+      <FormattedMessage
+        id="EditListingClientIdPanel.customServiceTitleEdit"
+        values={{
+          listingTitle: (
+            <ListingLink listing={listing}>
+              {/* <FormattedMessage id="EditListingClientIdPanel.listingTitle" /> */}
+              {listing?.title}
+            </ListingLink>
+          ),
+        }}
+      />
+    ) : (
+      <FormattedMessage
+        id="EditListingClientIdPanel.customServiceTitle"
+        values={{
+          listingTitle: (
+            <ListingLink listing={listing}>
+              {/* <FormattedMessage id="EditListingClientIdPanel.listingTitle" /> */}
+              {listing?.title}
+            </ListingLink>
+          ),
+        }}
+      />
+    );
 
   const type =
     category === 'customService'

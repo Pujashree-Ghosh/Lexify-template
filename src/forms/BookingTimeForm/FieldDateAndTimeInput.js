@@ -911,7 +911,7 @@ class FieldDateAndTimeInput extends Component {
 
               {bookingStartDate ? (
                 this.state.allStart.map(p => (
-                  <option key={p.timeOfDay} value={p.timestamp}>
+                  <option key={p.timestamp} value={p.timestamp}>
                     {p.timeOfDay}
                   </option>
                 ))

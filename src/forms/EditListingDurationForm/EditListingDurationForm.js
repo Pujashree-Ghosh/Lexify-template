@@ -111,7 +111,9 @@ const EditListingDurationFormComponent = props => (
               >
                 <option value="">hh</option>
                 {hour.map((m, i) => (
-                  <option value={i}>{i > 9 ? i : `0${i}`}</option>
+                  <option key={i} value={i}>
+                    {i > 9 ? i : `0${i}`}
+                  </option>
                 ))}
               </FieldSelect>
 
@@ -124,7 +126,9 @@ const EditListingDurationFormComponent = props => (
               >
                 <option value="">mm</option>
                 {minute.map((m, i) => (
-                  <option value={i * 15}>{i * 15 > 9 ? i * 15 : `0${i * 15}`}</option>
+                  <option key={i * 15} value={i * 15}>
+                    {i * 15 > 9 ? i * 15 : `0${i * 15}`}
+                  </option>
                 ))}
               </FieldSelect>
             </div>

@@ -33,20 +33,58 @@ const EditListingExpiryPanel = props => {
   const { publicData } = currentListing.attributes;
 
   const isPublished = currentListing.id && currentListing.attributes.state !== LISTING_STATE_DRAFT;
-  const panelTitle = isPublished ? (
-    <FormattedMessage
-      id="EditListingExpiryPanel.title"
-      values={{
-        listingTitle: (
-          <ListingLink listing={listing}>
-            <FormattedMessage id="EditListingExpiryPanel.title" />
-          </ListingLink>
-        ),
-      }}
-    />
-  ) : (
-    <FormattedMessage id="EditListingExpiryPanel.title" />
-  );
+  const panelTitle =
+    category === 'customOral' ? (
+      isPublished ? (
+        <FormattedMessage
+          id="EditListingExpiryPanel.customOralTitleEdit"
+          values={{
+            listingTitle: (
+              <ListingLink listing={listing}>
+                {/* <FormattedMessage id="EditListingExpiryPanel.title" /> */}
+                {listing?.title}
+              </ListingLink>
+            ),
+          }}
+        />
+      ) : (
+        <FormattedMessage
+          id="EditListingExpiryPanel.customOralTitle"
+          values={{
+            listingTitle: (
+              <ListingLink listing={listing}>
+                {/* <FormattedMessage id="EditListingExpiryPanel.title" /> */}
+                {listing?.title}
+              </ListingLink>
+            ),
+          }}
+        />
+      )
+    ) : isPublished ? (
+      <FormattedMessage
+        id="EditListingExpiryPanel.customServiceTitleEdit"
+        values={{
+          listingTitle: (
+            <ListingLink listing={listing}>
+              {/* <FormattedMessage id="EditListingExpiryPanel.title" /> */}
+              {listing?.title}
+            </ListingLink>
+          ),
+        }}
+      />
+    ) : (
+      <FormattedMessage
+        id="EditListingExpiryPanel.customServiceTitle"
+        values={{
+          listingTitle: (
+            <ListingLink listing={listing}>
+              {/* <FormattedMessage id="EditListingExpiryPanel.title" /> */}
+              {listing?.title}
+            </ListingLink>
+          ),
+        }}
+      />
+    );
   const expiry = publicData && { date: moment(publicData.expiry).toDate() };
 
   return (

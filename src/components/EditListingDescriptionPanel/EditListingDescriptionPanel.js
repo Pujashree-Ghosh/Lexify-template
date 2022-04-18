@@ -61,7 +61,7 @@ const EditListingDescriptionPanel = props => {
     state => state?.user?.currentUser?.attributes?.profile?.protectedData?.availabilityPlan
   );
   // console.log(availabilityPlan);
-  const languages = languagesObject.map(m => m.value);
+  const languages = languagesObject?.map(m => m.value);
   // const languagesParsed = JSON.parse(languages);
   // const languagesFinal = languagesParsed.map(m=>m.value);
 
@@ -80,7 +80,8 @@ const EditListingDescriptionPanel = props => {
           values={{
             listingTitle: (
               <ListingLink listing={listing}>
-                <FormattedMessage id="EditListingDescriptionPanel.publicOralTitle" />
+                {/* <FormattedMessage id="EditListingDescriptionPanel.publicOralTitle" /> */}
+                {listing?.title}
               </ListingLink>
             ),
           }}
@@ -91,11 +92,12 @@ const EditListingDescriptionPanel = props => {
     ) : category === 'customOral' ? (
       isPublished ? (
         <FormattedMessage
-          id="EditListingDescriptionPanel.title"
+          id="EditListingDescriptionPanel.customOralTitleEdit"
           values={{
             listingTitle: (
               <ListingLink listing={listing}>
-                <FormattedMessage id="EditListingDescriptionPanel.customOralTitle" />
+                {/* <FormattedMessage id="EditListingDescriptionPanel.customOralTitle" /> */}
+                {listing?.title}
               </ListingLink>
             ),
           }}
@@ -106,11 +108,12 @@ const EditListingDescriptionPanel = props => {
     ) : category === 'customService' ? (
       isPublished ? (
         <FormattedMessage
-          id="EditListingDescriptionPanel.title"
+          id="EditListingDescriptionPanel.customServiceTitleEdit"
           values={{
             listingTitle: (
               <ListingLink listing={listing}>
-                <FormattedMessage id="EditListingDescriptionPanel.customServiceTitle" />
+                {/* <FormattedMessage id="EditListingDescriptionPanel.customServiceTitle" /> */}
+                {listing.title}
               </ListingLink>
             ),
           }}

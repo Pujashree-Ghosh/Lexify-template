@@ -489,7 +489,7 @@ export class ManageListingsPageComponent extends Component {
                             <Overlay
                               message={intl.formatMessage(
                                 { id: 'ManageListingCard.closedListing' },
-                                { listingTitle: title }
+                                { listingTitle: m?.attributes?.title }
                               )}
                             >
                               <button

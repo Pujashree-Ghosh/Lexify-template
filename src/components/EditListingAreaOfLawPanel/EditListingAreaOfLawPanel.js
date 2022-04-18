@@ -34,17 +34,28 @@ const EditListingAreaOfLawPanel = props => {
   const isPublished = currentListing.id && currentListing.attributes.state !== LISTING_STATE_DRAFT;
   const panelTitle = isPublished ? (
     <FormattedMessage
-      id="EditListingAreaOfLawPanel.title"
+      id="EditListingAreaOfLawPanel.publicOralTitleEdit"
       values={{
         listingTitle: (
           <ListingLink listing={listing}>
-            <FormattedMessage id="EditListingAreaOfLawPanel.listingTitle" />
+            {/* <FormattedMessage id="EditListingAreaOfLawPanel.listingTitle" /> */}
+            {listing?.title}
           </ListingLink>
         ),
       }}
     />
   ) : (
-    <FormattedMessage id="EditListingAreaOfLawPanel.listingTitle" />
+    <FormattedMessage
+      id="EditListingAreaOfLawPanel.publicOralTitle"
+      values={{
+        listingTitle: (
+          <ListingLink listing={listing}>
+            {/* <FormattedMessage id="EditListingAreaOfLawPanel.listingTitle" /> */}
+            {listing?.title}
+          </ListingLink>
+        ),
+      }}
+    />
   );
 
   const areaOfLaw = publicData && publicData.areaOfLaw;
@@ -58,7 +69,7 @@ const EditListingAreaOfLawPanel = props => {
         initialValues={{ areaOfLaw: initialValues }}
         onSubmit={values => {
           const { areaOfLaw } = values;
-          console.log(typeof(areaOfLaw));
+          console.log(typeof areaOfLaw);
           const updatedValues = {
             publicData: { areaOfLaw },
           };
