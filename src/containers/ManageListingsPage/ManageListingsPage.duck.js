@@ -252,14 +252,34 @@ export const closeListing = listingId => (dispatch, getState, sdk) => {
     });
 };
 
-export const openListing = listingId => (dispatch, getState, sdk) => {
+export const openListing = (listingId, category) => (dispatch, getState, sdk) => {
   dispatch(openListingRequest(listingId));
 
   return sdk.ownListings
     .open({ id: listingId }, { expand: true })
     .then(response => {
-      dispatch(openListingSuccess(response));
-      return response;
+      if (category !== 'publicOral') {
+        sdk.ownListings
+          .update(
+            {
+              id: listingId,
+              publicData: {
+                clientId: null,
+                alreadyBooked: [],
+              },
+            },
+            {
+              expand: true,
+            }
+          )
+          .then(res => {
+            dispatch(openListingSuccess(response));
+            return response;
+          });
+      } else {
+        dispatch(openListingSuccess(response));
+        return response;
+      }
     })
     .catch(e => {
       dispatch(openListingError(storableError(e)));

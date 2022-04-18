@@ -499,7 +499,7 @@ export class ManageListingsPageComponent extends Component {
                                   event.preventDefault();
                                   event.stopPropagation();
                                   if (!actionsInProgressListingId) {
-                                    onOpenListing(m.id);
+                                    onOpenListing(m.id, m.attributes.publicData.category);
                                   }
                                 }}
                               >
@@ -593,7 +593,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => ({
   onCloseListing: listingId => dispatch(closeListing(listingId)),
-  onOpenListing: listingId => dispatch(openListing(listingId)),
+  onOpenListing: (listingId, category) => dispatch(openListing(listingId, category)),
 });
 
 const ManageListingsPage = compose(
