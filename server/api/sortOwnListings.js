@@ -6,13 +6,16 @@ const integrationSdk = flexIntegrationSdk.createInstance({
 });
 module.exports = async (req, response) => {
   const { authorId, states, pub_category, pub_areaOfLaw, page } = req.body;
+
   return new Promise((resolve, reject) => {
     integrationSdk.listings
       .query({
         authorId,
         states,
+        // states: 'draft,closed',
         pub_category,
         pub_areaOfLaw,
+        // pub_areaOfLaw: 'has_Any: contractsAndAgreements,employmentAndLabor',
         perPage: RESULT_PAGE_SIZE,
         page,
       })

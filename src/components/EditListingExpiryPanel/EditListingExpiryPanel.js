@@ -97,7 +97,12 @@ const EditListingExpiryPanel = props => {
         onSubmit={values => {
           const { expiry } = values;
           const updateValues = {
-            publicData: { expiry: moment(expiry.date).format() },
+            publicData: {
+              expiry: moment(expiry.date)
+                .clone()
+                .endOf('day')
+                .valueOf(),
+            },
           };
 
           onSubmit(updateValues);
