@@ -19,6 +19,7 @@ import { array, bool, func, oneOf, object, shape, string } from 'prop-types';
 import { propTypes } from '../../util/types';
 import css from './PromotionPage.module.css';
 import TopbarContainer from '../TopbarContainer/TopbarContainer';
+import moment from 'moment';
 
 function PromotionBasePageComponent(props) {
   const { history, intl, currentUser, scrollingDisabled } = props;
@@ -32,7 +33,7 @@ function PromotionBasePageComponent(props) {
           'PromotionPage',
           routeConfiguration(),
           { tab: 'One_N_One' },
-          { pub_clientId: `${email}` }
+          { pub_clientId: `${email}`, pub_expiry: `${moment().valueOf()},` }
         )
       );
       //   return () => {

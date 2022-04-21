@@ -13,7 +13,7 @@ import { parse } from '../../util/urlHelpers';
 import { isScrollingDisabled } from '../../ducks/UI.duck';
 import { ensureCurrentUser } from '../../util/data';
 import { validURLParamsForExtendedData } from './SearchPage.helpers';
-
+import moment from 'moment';
 import {
   Page,
   UserNav,
@@ -56,11 +56,29 @@ function PromotionPageComponent(props) {
   const validQueryParams = validURLParamsForExtendedData(searchInURL, filterConfig);
   const routes = routeConfiguration();
   const clientId = validQueryParams && validQueryParams.pub_clientId;
+  const hasGreaterCheck =
+    validQueryParams && `${validQueryParams.pub_expiry}`?.indexOf(',') === -1 ? false : true;
+  const expiry = validQueryParams && `${validQueryParams.pub_expiry}`?.split(',')[0];
   const email =
     ensuredCurrentUser && ensuredCurrentUser.attributes && ensuredCurrentUser.attributes.email;
   const title = intl.formatMessage({ id: 'PromotionPage.title' });
   useEffect(() => {
-    if (clientId !== email) {
+    if (
+      clientId !== email ||
+      !hasGreaterCheck ||
+      !(
+        expiry >=
+          moment()
+            .clone()
+            .startOf('day')
+            .valueOf() &&
+        expiry <=
+          moment()
+            .clone()
+            .endOf('day')
+            .valueOf()
+      )
+    ) {
       history.push(createResourceLocatorString('PromotionBasePage', routes, {}, {}));
     }
   });
@@ -86,7 +104,7 @@ function PromotionPageComponent(props) {
       linkProps: {
         name: 'PromotionPage',
         params: { tab: 'One_N_One' },
-        to: { search: `?pub_clientId=${email}` },
+        to: { search: `?pub_clientId=${email}&pub_expiry=${moment().valueOf()},` },
       },
     },
     {
@@ -99,7 +117,7 @@ function PromotionPageComponent(props) {
       linkProps: {
         name: 'PromotionPage',
         params: { tab: 'event' },
-        to: { search: `?pub_clientId=${email}` },
+        to: { search: `?pub_clientId=${email}&pub_expiry=${moment().valueOf()},` },
       },
     },
     {
@@ -113,7 +131,7 @@ function PromotionPageComponent(props) {
       linkProps: {
         name: 'PromotionPage',
         params: { tab: 'service' },
-        to: { search: `?pub_clientId=${email}` },
+        to: { search: `?pub_clientId=${email}&pub_expiry=${moment().valueOf()},` },
       },
     },
   ];
