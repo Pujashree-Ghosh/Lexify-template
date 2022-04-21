@@ -121,10 +121,10 @@ const TopbarDesktop = props => {
             </NamedLink>
           </MenuItem>
 
-          <MenuItem key="PromotionPage">
+          <MenuItem key="PromotionBasePage">
             <NamedLink
               className={classNames(css.promotionLink, currentPageClass('PromotionPage'))}
-              name="PromotionPage"
+              name="PromotionBasePage"
             >
               <span className={css.menuItemBorder} />
               <FormattedMessage id="TopbarDesktop.promotionLink" />
@@ -180,10 +180,10 @@ const TopbarDesktop = props => {
               <FormattedMessage id="TopbarDesktop.appointmentsLink" />
             </NamedLink>
           </MenuItem>
-          <MenuItem key="PromotionPage">
+          <MenuItem key="PromotionBasePage">
             <NamedLink
               className={classNames(css.promotionLink, currentPageClass('PromotionPage'))}
-              name="PromotionPage"
+              name="PromotionBasePage"
             >
               <span className={css.menuItemBorder} />
               <FormattedMessage id="TopbarDesktop.promotionLink" />

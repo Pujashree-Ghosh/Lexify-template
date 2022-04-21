@@ -2,40 +2,37 @@ import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter } from 'react-router-dom';
-import { injectIntl, intlShape } from '../../util/reactIntl';
+import { FormattedMessage, injectIntl, intlShape } from '../../util/reactIntl';
 import { propTypes } from '../../util/types';
-import { searchMapListings, setActiveListing } from './SearchPage.duck';
-import { array, bool, func, oneOf, object, shape, string } from 'prop-types';
+import { array, func, object, shape, string } from 'prop-types';
 import routeConfiguration from '../../routeConfiguration';
 import { getListingsById } from '../../ducks/marketplaceData.duck';
 import { createResourceLocatorString } from '../../util/routes';
 import config from '../../config';
-import { parse, stringify } from '../../util/urlHelpers';
+import { parse } from '../../util/urlHelpers';
 import { isScrollingDisabled } from '../../ducks/UI.duck';
 import { ensureCurrentUser } from '../../util/data';
-import {
-  pickSearchParamsOnly,
-  validURLParamsForExtendedData,
-  validFilterParams,
-  createSearchResultSchema,
-} from './SearchPage.helpers';
+import { validURLParamsForExtendedData } from './SearchPage.helpers';
 
 import {
   Page,
   UserNav,
-  LayoutSingleColumn,
   LayoutWrapperTopbar,
   LayoutWrapperMain,
   LayoutWrapperFooter,
-  ListingCard,
   Footer,
+  LayoutSideNavigation,
+  LayoutWrapperSideNav,
+  TabNav,
+  PaginationLinks,
+  IconSpinner,
 } from '../../components';
 import { TopbarContainer } from '../../containers';
 import css from './PromotionPage.module.css';
 import ListingResultCard from '../../components/ListingResultCard/ListingResultCard';
+import NotFoundPage from '../NotFoundPage/NotFoundPage';
 
 function PromotionPageComponent(props) {
-  // console.log(props);
   const {
     history,
     scrollingDisabled,
@@ -43,123 +40,145 @@ function PromotionPageComponent(props) {
     currentUser,
     filterConfig,
     listings,
-    // onActivateListing,
     location,
     searchInProgress,
     searchListingsError,
     searchParams,
     pagination,
+    params,
   } = props;
   const ensuredCurrentUser = ensureCurrentUser(currentUser);
-  const panelMediumWidth = 50;
-  const panelLargeWidth = 62.5;
-  const panelWidth = 62.5;
 
-  // console.log(searchParams, searchInProgress);
-
-  const cardRenderSizes = [
-    '(max-width: 767px) 100vw',
-    `(max-width: 1023px) ${panelMediumWidth}vw`,
-    `(max-width: 1920px) ${panelLargeWidth / 2}vw`,
-    `${panelLargeWidth / 3}vw`,
-  ].join(', ');
   const { mapSearch, page, ...searchInURL } = parse(location.search, {
     latlng: ['origin'],
     latlngBounds: ['bounds'],
   });
   const validQueryParams = validURLParamsForExtendedData(searchInURL, filterConfig);
-  const [loading, setLoading] = useState(true);
-
-  // console.log('list', listings);
-  // console.log(listings);
   const routes = routeConfiguration();
-  const type = validQueryParams && validQueryParams?.pub_type;
   const clientId = validQueryParams && validQueryParams.pub_clientId;
   const email =
     ensuredCurrentUser && ensuredCurrentUser.attributes && ensuredCurrentUser.attributes.email;
   const title = intl.formatMessage({ id: 'PromotionPage.title' });
   useEffect(() => {
-    // console.log(ensuredCurrentUser, searchParams, type);
-
-    // if (type !== 'has_any:unsolicited,solicited' || clientId !== email) {
     if (clientId !== email) {
-      // setLoading(true);
-      // let timer = setTimeout(() => {
-      history.push(
-        createResourceLocatorString(
-          'PromotionPage',
-          routes,
-          {},
-          // { pub_type: `has_any:unsolicited,solicited`, pub_clientId: `${email}` }
-          { pub_clientId: `${email}` }
-        )
-      );
-      // setLoading(false);
-      // }, 1000);
-      return () => {
-        // clearTimeout(timer);
-      };
+      history.push(createResourceLocatorString('PromotionBasePage', routes, {}, {}));
     }
-  }, [clientId, email]);
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     setLoading(false);
-  //   }, 3000);
-  // }, []);
+  });
 
-  // console.log(searchParams);
+  const { tab } = params;
+
+  const validTab = tab === 'One_N_One' || tab === 'event' || tab === 'service';
+
+  if (!validTab) {
+    return <NotFoundPage />;
+  }
+  const isOne_N_One = tab === 'One_N_One';
+  const isEvent = tab === 'event';
+
+  const tabs = [
+    {
+      text: (
+        <span>
+          <FormattedMessage id="PromotionPage.one_N_oneTabTitle" />
+        </span>
+      ),
+      selected: isOne_N_One,
+      linkProps: {
+        name: 'PromotionPage',
+        params: { tab: 'One_N_One' },
+        to: { search: `?pub_clientId=${email}` },
+      },
+    },
+    {
+      text: (
+        <span>
+          <FormattedMessage id="PromotionPage.eventTabTitle" />
+        </span>
+      ),
+      selected: isEvent,
+      linkProps: {
+        name: 'PromotionPage',
+        params: { tab: 'event' },
+        to: { search: `?pub_clientId=${email}` },
+      },
+    },
+    {
+      text: (
+        <span>
+          <FormattedMessage id="PromotionPage.serviceTabTitle" />
+          {/* {providerNotificationBadge} */}
+        </span>
+      ),
+      selected: !isOne_N_One && !isEvent,
+      linkProps: {
+        name: 'PromotionPage',
+        params: { tab: 'service' },
+        to: { search: `?pub_clientId=${email}` },
+      },
+    },
+  ];
+  const nav = <TabNav rootClassName={css.tabs} tabRootClassName={css.tab} tabs={tabs} />;
+
+  const pagingLinks =
+    !searchInProgress && pagination && pagination.totalPages > 1 ? (
+      <PaginationLinks
+        className={css.pagination}
+        pageName="PromotionPage"
+        pagePathParams={params}
+        pageSearchParams={{ pub_clientId: `${email}` }}
+        pagination={pagination}
+      />
+    ) : null;
+
+  const noResults =
+    !searchInProgress &&
+    listings.length === 0 &&
+    searchParams.pub_clientId === email &&
+    !searchListingsError ? (
+      <p className={css.nrftxt}>
+        <FormattedMessage id={'PromotionPage.noResultFound'} />
+      </p>
+    ) : null;
+  const error = searchListingsError ? (
+    <p className={css.nrftxt}>
+      <FormattedMessage id="PromotionPage.fetchFailed" />
+    </p>
+  ) : null;
+
   return (
     <Page className={css.root} title={title} scrollingDisabled={scrollingDisabled}>
-      <LayoutSingleColumn>
+      <LayoutSideNavigation>
         <LayoutWrapperTopbar>
           <TopbarContainer
             className={css.topbar}
             mobileRootClassName={css.mobileTopbar}
             desktopClassName={css.desktopTopbar}
-            currentPage="PromotionPage"
+            currentPage="PromotionBasePage"
           />
-          <UserNav selectedPageName="PromotionPage" />
+          <UserNav selectedPageName="PromotionBasePage" />
         </LayoutWrapperTopbar>
-        <LayoutWrapperMain>
-          {/* {loading && <div>Loading Result..</div>} */}
-          {/* {searchParams.pub_type !== 'has_any:unsolicited,solicited' || */}
-          {searchParams.pub_clientId !== email || searchInProgress ? (
-            <div>Loading Result..</div>
+        <LayoutWrapperSideNav className={css.navigation}>{nav}</LayoutWrapperSideNav>
+
+        <LayoutWrapperMain className={css.wrapperMain}>
+          {error}
+
+          {!searchInProgress ? (
+            <div className={css.listingCards}>
+              {listings.map(l => (
+                <ListingResultCard listing={l} history={history} key={l.id.uuid} />
+              ))}
+            </div>
           ) : (
-            // !loading &&
-            validQueryParams &&
-            ensuredCurrentUser &&
-            ensuredCurrentUser.id &&
-            ensuredCurrentUser.id.uuid &&
-            validQueryParams.pub_clientId === ensuredCurrentUser.attributes.email && (
-              // validQueryParams.pub_type === 'has_any:unsolicited,solicited' && (
-              // <div className={css.content}>
-              <div className={css.listingCards}>
-                {listings.map(l => (
-                  // <ListingCard
-                  //   className={css.listingCard}
-                  //   key={l.id.uuid}
-                  //   listing={l}
-                  //   renderSizes={cardRenderSizes}
-                  //   setActiveListing={onActivateListing}
-                  // />
-                  <ListingResultCard listing={l} history={history} key={l.id.uuid} />
-                ))}
-              </div>
-            )
+            <IconSpinner />
           )}
-          {!searchInProgress &&
-            !listings.length &&
-            // searchParams.pub_type === 'has_any:unsolicited,solicited' &&
-            searchParams.pub_clientId === email && (
-              <div className={css.nrftxt}>No result found</div>
-            )}
-          {searchListingsError ? <div className={css.nrftxt}>Some error occurred</div> : ''}
+
+          {noResults}
+          {pagingLinks}
         </LayoutWrapperMain>
         <LayoutWrapperFooter>
           <Footer />
         </LayoutWrapperFooter>
-      </LayoutSingleColumn>
+      </LayoutSideNavigation>
     </Page>
   );
 }
@@ -177,19 +196,10 @@ PromotionPageComponent.defaultProps = {
 
 PromotionPageComponent.propTypes = {
   listings: array,
-  // mapListings: array,
-  // onActivateListing: func.isRequired,
-  // onManageDisableScrolling: func.isRequired,
-  // onSearchMapListings: func.isRequired,
   pagination: propTypes.pagination,
-  // scrollingDisabled: bool.isRequired,
-  // searchInProgress: bool.isRequired,
   searchListingsError: propTypes.error,
   searchParams: object,
-  // tab: oneOf(['filters', 'listings', 'map']).isRequired,
   filterConfig: propTypes.filterConfig,
-  // sortConfig: propTypes.sortConfig,
-
   // from withRouter
   history: shape({
     push: func.isRequired,
@@ -213,30 +223,18 @@ const mapStateToProps = state => {
   } = state.SearchPage;
   const { currentUser } = state.user;
   const pageListings = getListingsById(state, currentPageResultIds);
-  // const mapListings = getListingsById(
-  //   state,
-  //   unionWith(currentPageResultIds, searchMapListingIds, (id1, id2) => id1.uuid === id2.uuid)
-  // );
 
   return {
     listings: pageListings,
     currentUser,
-    //   mapListings,
     pagination,
     scrollingDisabled: isScrollingDisabled(state),
     searchInProgress,
     searchListingsError,
     searchParams,
-    //   activeListingId,
   };
 };
 
-const mapDispatchToProps = dispatch => ({
-  // onManageDisableScrolling: (componentId, disableScrolling) =>
-  //   dispatch(manageDisableScrolling(componentId, disableScrolling)),
-  // onSearchMapListings: searchParams => dispatch(searchMapListings(searchParams)),
-  onActivateListing: listingId => dispatch(setActiveListing(listingId)),
-});
 const PromotionPage = compose(
   withRouter,
   connect(mapStateToProps),

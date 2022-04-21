@@ -8,6 +8,7 @@ import { NotFoundPage } from './containers';
 // at that point css bundling / imports will happen in wrong order.
 import { NamedRedirect } from './components';
 import CreateListing from './components/CreateListing/CreateListing';
+import PromotionBasePage from './containers/SearchPage/PromotionBasePage';
 
 
 const pageDataLoadingAPI = getPageDataLoadingAPI();
@@ -100,11 +101,21 @@ const routeConfiguration = () => {
     },
     {
       path: '/promotion',
+      name: 'PromotionBasePage',
+      auth: true,
+      authPage: 'LoginPage',
+      component: PromotionBasePage,
+      // loadData: pageDataLoadingAPI.SearchPage.loadData,
+      // component: () => <NamedRedirect name="PromotionPage" params={{ tab: 'One_N_One' }} />,
+
+    },
+    {
+      path: '/promotion/:tab',
       name: 'PromotionPage',
       auth: true,
       authPage: 'LoginPage',
       component: PromotionPage,
-      loadData: pageDataLoadingAPI.SearchPage.loadData,
+      loadData: pageDataLoadingAPI.PromotionPage.loadData,
     },
     {
       path: '/Services',

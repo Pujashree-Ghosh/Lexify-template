@@ -155,7 +155,7 @@ const TopbarMobileMenu = props => {
 
         <NamedLink
           className={classNames(css.navigationLink, currentPageClass('PromotionPage'))}
-          name="PromotionPage"
+          name="PromotionBasePage"
         >
           <FormattedMessage id="TopbarMobile.promotionLink" />
         </NamedLink>

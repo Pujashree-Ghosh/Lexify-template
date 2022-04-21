@@ -1327,6 +1327,7 @@
   "ProfileSettingsForm.cityLabel": "City",
   "EditListingClientIdForm.addMoreClient": "+ Add More Client Id",
   "PromotionPage.title": "Private offers Page",
+  "PromotionBasePage.title": "Private offers Page",
   "TopbarDesktop.promotionLink": "Private offers",
   "TopbarMobile.promotionLink": "Private offers",
   "UserNav.PromotionPage": "Private offers",
@@ -1393,5 +1394,10 @@
   "ProfileSettingsForm.fromPlaceholder": "Start Date",
   "ProfileSettingsForm.toPlaceholder": "End Date",
   "EditListingDeadlineForm.deadlinePlaceholder": "Deadline Date",
-  "EditListingExpiryForm.expiryPlaceholder": "Expiry Date"
+  "EditListingExpiryForm.expiryPlaceholder": "Expiry Date",
+  "PromotionPage.one_N_oneTabTitle": "One-on-one",
+  "PromotionPage.eventTabTitle": "Events",
+  "PromotionPage.serviceTabTitle": "Services",
+  "PromotionPage.noResultFound": "No result found",
+  "PromotionPage.fetchFailed": "Something went wrong failed to fetch data"
 }

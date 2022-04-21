@@ -85,9 +85,9 @@ const UserNav = props => {
 
       {
         text: <FormattedMessage id="UserNav.PromotionPage" />,
-        selected: selectedPageName === 'PromotionPage',
+        selected: selectedPageName === 'PromotionBasePage',
         linkProps: {
-          name: 'PromotionPage',
+          name: 'PromotionBasePage',
         },
       },
       // {
@@ -125,9 +125,9 @@ const UserNav = props => {
       },
       {
         text: <FormattedMessage id="UserNav.PromotionPage" />,
-        selected: selectedPageName === 'PromotionPage',
+        selected: selectedPageName === 'PromotionBasePage',
         linkProps: {
-          name: 'PromotionPage',
+          name: 'PromotionBasePage',
         },
       },
       // {

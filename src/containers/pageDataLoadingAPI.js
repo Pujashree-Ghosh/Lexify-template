@@ -14,6 +14,7 @@ import { loadData as PaymentMethodsPageLoader } from './PaymentMethodsPage/Payme
 import { loadData as ProfilePageLoader } from './ProfilePage/ProfilePage.duck';
 import { loadData as SearchPageLoader } from './SearchPage/SearchPage.duck';
 import { loadData as StripePayoutPageLoader } from './StripePayoutPage/StripePayoutPage.duck';
+import { loadData as PromotionPageLoader } from './SearchPage/PromotionPage.duck';
 
 import {
   loadData as TransactionPageLoader,
@@ -57,6 +58,9 @@ const getPageDataLoadingAPI = () => {
     },
     SearchPage: {
       loadData: SearchPageLoader,
+    },
+    PromotionPage: {
+      loadData: PromotionPageLoader,
     },
     StripePayoutPage: {
       loadData: StripePayoutPageLoader,
