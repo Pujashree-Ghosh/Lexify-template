@@ -12,6 +12,7 @@ import {
   txIsEnquired,
   txIsRequested,
   txIsPendingConfirmation,
+  txIsPendingConfirmationOral,
   txHasBeenDelivered,
   txIsPaymentExpired,
   txIsPaymentPending,
@@ -207,6 +208,16 @@ export const txState = (intl, tx, type) => {
       }),
     };
   } else if (txIsPendingConfirmation(tx)) {
+    return {
+      nameClassName: css.nameNotEmphasized,
+      bookingClassName: css.bookingNoActionNeeded,
+      lastTransitionedAtClassName: css.lastTransitionedAtNotEmphasized,
+      stateClassName: css.stateSucces,
+      state: intl.formatMessage({
+        id: 'InboxPage.statePendingConfirmation',
+      }),
+    };
+  } else if (txIsPendingConfirmationOral(tx)) {
     return {
       nameClassName: css.nameNotEmphasized,
       bookingClassName: css.bookingNoActionNeeded,
