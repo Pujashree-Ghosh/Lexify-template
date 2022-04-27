@@ -65,6 +65,8 @@ import {
   truncateToSubUnitPrecision,
 } from '../../util/currency';
 import ReactMultiSelectCheckboxes from 'react-multiselect-checkboxes';
+import searchIcon from "../../assets/search.png";
+import searchActiveIcon from "../../assets/search_active.png";
 
 const MENU_CONTENT_OFFSET = -12;
 const FILTER_DROPDOWN_OFFSET = 14;
@@ -103,10 +105,23 @@ export class ManageListingsPageComponent extends Component {
       listingsFromApi: [],
       metaFromApi: [],
       listingsFromApiLoaded: false,
+      clientId:"",
+      isFormFocused:false,
+      isAutoSearch:true,
     };
     this.onToggleMenu = this.onToggleMenu.bind(this);
   }
   componentDidUpdate() {
+    this.state.isAutoSearch && this.searchListingByClientId();
+  }
+
+  onToggleMenu(listing) {
+    this.setState({ listingMenuOpen: listing });
+  }
+
+  searchListingByClientId=(e)=>{
+    if(!!e) e.preventDefault()
+    this.setState({isAutoSearch:false})
     const queryParams = parse(this.props.location.search);
     const page = queryParams.page || 1;
     if (this.props.currentUser !== null) {
@@ -118,6 +133,7 @@ export class ManageListingsPageComponent extends Component {
           pub_areaOfLaw:
             this.state.practiceAreaSort.length !== 0 ? this.state.practiceAreaSort : null,
           page: page !== null ? page : null,
+          pub_clientId:!!this.state.clientId?this.state.clientId:null
         })
         .then(res => {
           if (
@@ -133,10 +149,6 @@ export class ManageListingsPageComponent extends Component {
         })
         .catch();
     }
-  }
-
-  onToggleMenu(listing) {
-    this.setState({ listingMenuOpen: listing });
   }
 
   render() {
@@ -212,25 +224,25 @@ export class ManageListingsPageComponent extends Component {
     const closingErrorListingId = !!closingListingError && closingListingError.listingId;
     const openingErrorListingId = !!openingListingError && openingListingError.listingId;
 
-    const listingssss = params => {
-      const { states, category, areaOfLaw } = params;
-      axios
-        .post(`${apiBaseUrl()}/api/sortOwnListings`, {
-          authorId: currentUser?.id?.uuid,
-          states: states !== '' ? states : null,
-          pub_category: category !== '' ? category : null,
-          pub_areaOfLaw: areaOfLaw !== '' ? areaOfLaw : null,
-        })
-        .then(res => {
-          console.log(114, res.data);
-          if (JSON.stringify(this.state.listingsFromApi) !== JSON.stringify(res?.data?.data)) {
-            this.setState({
-              listingsFromApi: res?.data?.data,
-            });
-          }
-        })
-        .catch();
-    };
+    // const listingssss = params => {
+    //   const { states, category, areaOfLaw } = params;
+    //   axios
+    //     .post(`${apiBaseUrl()}/api/sortOwnListings`, {
+    //       authorId: currentUser?.id?.uuid,
+    //       states: states !== '' ? states : null,
+    //       pub_category: category !== '' ? category : null,
+    //       pub_areaOfLaw: areaOfLaw !== '' ? areaOfLaw : null,
+    //     })
+    //     .then(res => {
+    //       console.log(114, res.data);
+    //       if (JSON.stringify(this.state.listingsFromApi) !== JSON.stringify(res?.data?.data)) {
+    //         this.setState({
+    //           listingsFromApi: res?.data?.data,
+    //         });
+    //       }
+    //     })
+    //     .catch();
+    // };
     const statusOptions = [
       { key: 'published', value: 'published', label: 'Published' },
       { key: 'draft', value: 'draft', label: 'Unpublished' },
@@ -260,12 +272,10 @@ export class ManageListingsPageComponent extends Component {
             options={typeOptions}
             className={css.formcontrol}
             onChange={e => {
-              e === null ? this.setState({ typeSort: '' }) : this.setState({ typeSort: e?.key });
-              if (e?.value !== 'publicOral') {
-                this.setState({
-                  practiceAreaSort: '',
-                });
-              }
+              e === null ? this.setState({ typeSort: '',clientId:"",isFormFocused:false,isAutoSearch:true }) : this.setState({ typeSort: e?.key,isAutoSearch:true });
+              if(e && e.value === "publicOral") this.setState({clientId:"",isFormFocused:false})
+              if (e?.value !== 'publicOral') this.setState({practiceAreaSort: '',isAutoSearch:true});
+              
             }}
           />
         </div>
@@ -278,8 +288,8 @@ export class ManageListingsPageComponent extends Component {
             className={css.formcontrol}
             onChange={e => {
               e === null
-                ? this.setState({ statusSort: '' })
-                : this.setState({ statusSort: e?.key });
+                ? this.setState({ statusSort: '' ,isAutoSearch:true})
+                : this.setState({ statusSort: e?.key,isAutoSearch:true });
             }}
           />
         </div>
@@ -295,12 +305,26 @@ export class ManageListingsPageComponent extends Component {
               onChange={e => {
                 console.log('hello', e);
                 e === null
-                  ? this.setState({ practiceAreaSort: '' })
-                  : this.setState({ practiceAreaSort: e?.map(e => e?.value) });
+                  ? this.setState({ practiceAreaSort: '' ,isAutoSearch:true})
+                  : this.setState({ practiceAreaSort: e?.map(e => e?.value),isAutoSearch:true});
               }}
             />
           </div>
         ) : null}
+        {(this.state.typeSort === "customOral" || this.state.typeSort === "customService") &&
+            <div className={css.categoryFilter}>
+              <label className={css.label}>Client ID</label>
+              <form action="" onSubmit={this.searchListingByClientId}
+                    className={classNames(css.clientIdSearchForm,{[css.activeClientIdSearchForm]:this.state.isFormFocused})} >
+                  <input type="text" value={this.state.clientId} placeholder="client id..." onFocus={()=>this.setState({isFormFocused:true})}
+                      onChange={(e)=>this.setState({clientId:e.target.value,isAutoSearch:false})}  onBlur={()=>this.setState({isFormFocused:false})}/>
+                  {!!this.state.clientId && <button type="button" onClick={()=>this.setState({clientId:""})}>&times;</button>}
+                  <button type="submit" disabled={!this.state.clientId}>
+                    <img src={!!this.state.clientId?searchActiveIcon:searchIcon} alt=""/>
+                  </button>
+              </form>
+            </div>
+        }     
       </div>
     );
     const title = intl.formatMessage({ id: 'ManageListingsPage.title' });
