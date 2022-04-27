@@ -104,13 +104,13 @@ export const EditListingPageComponent = props => {
   const showForm = hasStripeOnboardingDataIfNeeded && (isNewURI || currentListing.id);
   const routes = routeConfiguration();
 
+
   useEffect(() => {
     if (isNewURI) {
       setCategory(props.category);
     } else {
       setCategory(currentListing?.attributes?.publicData?.category);
     }
-    // console.log(isNewURI, category, currentListing?.id?.uuid, params, page?.submittedListingId);
   });
 
   if (shouldRedirect) {

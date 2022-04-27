@@ -84,6 +84,7 @@ class CurrencyInputComponent extends Component {
         ? intl.formatNumber(ensureDotSeparator(unformattedValue), currencyConfig)
         : '';
 
+      
       this.state = {
         formattedValue,
         unformattedValue,
@@ -260,6 +261,7 @@ const FieldCurrencyInputComponent = props => {
 
   const inputProps = { className: inputClasses, id, input, ...rest };
   const classes = classNames(rootClassName, className);
+
   return (
     <div className={classes}>
       {label ? <label htmlFor={id}>{label}</label> : null}

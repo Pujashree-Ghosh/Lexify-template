@@ -48,17 +48,7 @@ const EditListingExpiryPanel = props => {
           }}
         />
       ) : (
-        <FormattedMessage
-          id="EditListingExpiryPanel.customOralTitle"
-          values={{
-            listingTitle: (
-              <ListingLink listing={listing}>
-                {/* <FormattedMessage id="EditListingExpiryPanel.title" /> */}
-                {listing?.title}
-              </ListingLink>
-            ),
-          }}
-        />
+        <FormattedMessage id="EditListingExpiryPanel.customOralTitle" />
       )
     ) : isPublished ? (
       <FormattedMessage
@@ -73,17 +63,7 @@ const EditListingExpiryPanel = props => {
         }}
       />
     ) : (
-      <FormattedMessage
-        id="EditListingExpiryPanel.customServiceTitle"
-        values={{
-          listingTitle: (
-            <ListingLink listing={listing}>
-              {/* <FormattedMessage id="EditListingExpiryPanel.title" /> */}
-              {listing?.title}
-            </ListingLink>
-          ),
-        }}
-      />
+      <FormattedMessage id="EditListingExpiryPanel.customServiceTitle" />
     );
   const expiry = publicData && { date: moment(publicData.expiry).toDate() };
 
