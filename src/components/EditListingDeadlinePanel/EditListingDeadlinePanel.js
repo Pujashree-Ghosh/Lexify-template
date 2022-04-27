@@ -45,17 +45,7 @@ const EditListingDeadlinePanel = props => {
       }}
     />
   ) : (
-    <FormattedMessage
-      id="EditListingDeadlinePanel.customServiceTitle"
-      values={{
-        listingTitle: (
-          <ListingLink listing={listing}>
-            {/* <FormattedMessage id="EditListingDeadlinePanel.listingTitle" /> */}
-            {listing?.title}
-          </ListingLink>
-        ),
-      }}
-    />
+    <FormattedMessage id="EditListingDeadlinePanel.customServiceTitle" />
   );
 
   const Deadline = publicData && { date: moment(publicData.Deadline).toDate() };

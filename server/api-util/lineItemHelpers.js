@@ -5,10 +5,10 @@ const { Money } = types;
 
 const { getAmountAsDecimalJS, convertDecimalJSToNumber } = require('./currency');
 
-const firstPercentage = 10;
-const secondPercentage = 20;
-const thirdPercentage = 30;
-const fixedPrice = 2000;
+const firstPercentage = parseInt(process.env.REACT_APP_FIRST_PRICE_PERCENT);
+const secondPercentage = parseInt(process.env.REACT_APP_SECOND_PRICE_PERCENT);
+const thirdPercentage = parseInt(process.env.REACT_APP_THIRD_PRICE_PERCENT);
+const fixedPrice = parseInt(process.env.REACT_APP_FIXED_PRICE);
 
 /** Helper functions for constructing line items*/
 
@@ -160,13 +160,13 @@ exports.calculateCommission = lineItems => {
 
   const numericTotalPrice = convertDecimalJSToNumber(totalPrice);
   const unitPrice = lineItems[0].unitPrice;
-  if (numericTotalPrice <= 15000) {
+  if (numericTotalPrice <= parseInt(process.env.REACT_APP_FIRST_PRICE_THRES)) {
     const total = (numericTotalPrice * firstPercentage) / 100;
     // .times(firstPercentage)
     // .dividedBy(100)
     // .toNearest(1, Decimal.ROUND_HALF_UP);
     return new Money(-(total + fixedPrice), unitPrice.currency);
-  } else if (numericTotalPrice <= 50000) {
+  } else if (numericTotalPrice <= parseInt(process.env.REACT_APP_SECOND_PRICE_THRES)) {
     const total = (numericTotalPrice * secondPercentage) / 100;
     // .times(secondPercentage)
     // .dividedBy(100)

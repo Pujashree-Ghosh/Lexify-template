@@ -109,7 +109,7 @@ const EditListingDurationFormComponent = props => (
                 label="Hour"
                 className={css.hrtime}
               >
-                <option value="">hh</option>
+                <option value="" hidden={true}>hh</option>
                 {hour.map((m, i) => (
                   <option key={i} value={i}>
                     {i > 9 ? i : `0${i}`}
@@ -124,7 +124,7 @@ const EditListingDurationFormComponent = props => (
                 label="Minute"
                 className={css.minime}
               >
-                <option value="">mm</option>
+                <option value="" hidden={true}>mm</option>
                 {minute.map((m, i) => (
                   <option key={i * 15} value={i * 15}>
                     {i * 15 > 9 ? i * 15 : `0${i * 15}`}

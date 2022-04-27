@@ -54,17 +54,7 @@ const EditListingClientIdPanel = props => {
           }}
         />
       ) : (
-        <FormattedMessage
-          id="EditListingClientIdPanel.customOralTitle"
-          values={{
-            listingTitle: (
-              <ListingLink listing={listing}>
-                {/* <FormattedMessage id="EditListingClientIdPanel.listingTitle" /> */}
-                {listing?.title}
-              </ListingLink>
-            ),
-          }}
-        />
+        <FormattedMessage id="EditListingClientIdPanel.customOralTitle"/>
       )
     ) : isPublished ? (
       <FormattedMessage
@@ -79,17 +69,7 @@ const EditListingClientIdPanel = props => {
         }}
       />
     ) : (
-      <FormattedMessage
-        id="EditListingClientIdPanel.customServiceTitle"
-        values={{
-          listingTitle: (
-            <ListingLink listing={listing}>
-              {/* <FormattedMessage id="EditListingClientIdPanel.listingTitle" /> */}
-              {listing?.title}
-            </ListingLink>
-          ),
-        }}
-      />
+      <FormattedMessage id="EditListingClientIdPanel.customServiceTitle" />
     );
 
   const type =
