@@ -31,6 +31,8 @@ const EditListingDurationPanel = props => {
   const { publicData } = currentListing.attributes;
   //   const { duration, durationUnit } = publicData;
 
+  
+
   const isPublished = currentListing.id && currentListing.attributes.state !== LISTING_STATE_DRAFT;
   const panelTitle =
     category === 'customOral' ? (

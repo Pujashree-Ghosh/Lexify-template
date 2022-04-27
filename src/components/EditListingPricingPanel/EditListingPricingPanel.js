@@ -31,38 +31,104 @@ const EditListingPricingPanel = props => {
 
   const classes = classNames(rootClassName || css.root, className);
   const currentListing = ensureOwnListing(listing);
+  const { publicData } = currentListing.attributes;
   const { price } = currentListing.attributes;
-  const vatData = currentListing?.attributes?.publicData?.vatData
+  const vatData = publicData.vatData
     ? currentListing?.attributes?.publicData?.vatData
     : [{}];
   const vattype = currentListing?.attributes?.publicData?.vattype;
-  // console.log(currentListing);
+
+  const durationHour = publicData && publicData.durationHour;
+  const durationMinute = publicData && publicData.durationMinute;
+  console.log(category,"listingCategory");
 
   const isPublished = currentListing.id && currentListing.attributes.state !== LISTING_STATE_DRAFT;
-  const panelTitle = isPublished ? (
-    <FormattedMessage
-      id="EditListingPricingPanel.title"
-      values={{
-        listingTitle: (
-          <ListingLink listing={listing}>
-            <FormattedMessage id="EditListingPricingPanel.listingTitle" />
-          </ListingLink>
-        ),
-      }}
-    />
-  ) : (
-    <FormattedMessage id="EditListingPricingPanel.createListingTitle" />
-  );
+  const panelTitle =
+    category === 'publicOral' ? (
+      isPublished ? (
+        <FormattedMessage
+          id="EditListingPricePanel.publicOralTitleEdit"
+          values={{
+            listingTitle: (
+              <ListingLink listing={listing}>
+                {listing?.title}
+              </ListingLink>
+            ),
+          }}
+        />
+      ) : (
+        <FormattedMessage id="EditListingPricePanel.publicOralTitle" />
+      )
+    ) : category === 'customOral' ? (
+      isPublished ? (
+        <FormattedMessage
+          id="EditListingPricePanel.customOralTitleEdit"
+          values={{
+            listingTitle: (
+              <ListingLink listing={listing}>
+                {listing?.title}
+              </ListingLink>
+            ),
+          }}
+        />
+      ) : (
+        <FormattedMessage id="EditListingPricePanel.customOralTitle" />
+      )
+    ) : category === 'customService' ? (
+      isPublished ? (
+        <FormattedMessage
+          id="EditListingPricePanel.customServiceTitleEdit"
+          values={{
+            listingTitle: (
+              <ListingLink listing={listing}>
+                {/* <FormattedMessage id="EditListingDescriptionPanel.customServiceTitle" /> */}
+                {listing.title}
+              </ListingLink>
+            ),
+          }}
+        />
+      ) : (
+        
+        <FormattedMessage id="EditListingPricePanel.customServiceTitle" />
+      )
+    ) : (
+      ''
+    );
+  // const panelTitle = isPublished ? (
+  //   (category === 'publicOral'|| category === 'customOral')
+  //     ?<FormattedMessage
+  //         id="EditListingDuraionPricingPanel.title"
+  //         values={{
+  //           listingTitle: (
+  //             <ListingLink listing={listing}>
+  //               <FormattedMessage id="EditListingPricingPanel.listingTitle" />
+  //             </ListingLink>
+  //           ),
+  //         }}
+  //       />
+  //     :<FormattedMessage
+  //       id="EditListingPricingPanel.title"
+  //       values={{
+  //         listingTitle: (
+  //           <ListingLink listing={listing}>
+  //             <FormattedMessage id="EditListingPricingPanel.listingTitle" />
+  //           </ListingLink>
+  //         ),
+  //       }}
+  //     />
+  // ) : (
+  //   <FormattedMessage id="EditListingPricingPanel.createListingTitle" />
+  // );
 
   const priceCurrencyValid = price instanceof Money ? price.currency === config.currency : true;
   const form = priceCurrencyValid ? (
     <EditListingPricingForm
       className={css.form}
-      initialValues={{ price, vatData }}
+      initialValues={{ price, vatData ,durationHour,durationMinute}}
       onSubmit={values => {
-        const { price, vatData } = values;
+        const { price, vatData,durationHour, durationMinute  } = values;
         const updatedValues = {
-          publicData: { vatData },
+          publicData: { vatData,durationHour, durationMinute  },
           price: price,
         };
 

@@ -31,6 +31,7 @@ import EditListingWizardTab, {
   PRICING,
   // PHOTOS,
   EXPIRY,
+  DURATION_PRICING
 } from './EditListingWizardTab';
 import css from './EditListingWizard.module.css';
 import axios from 'axios';
@@ -94,6 +95,9 @@ const tabLabel = (intl, tab) => {
   else if (tab === EXPIRY) {
     key = 'EditListingWizard.tabLabelExpiry';
   }
+  else if(tab===DURATION_PRICING){
+    key = 'EditListingWizard.tabLabelDurationPricing';
+  }
 
   return intl.formatMessage({ id: key });
 };
@@ -137,6 +141,8 @@ const tabCompleted = (tab, listing) => {
     //   return !!availabilityPlan;
     case PRICING:
       return !!price;
+    case DURATION_PRICING:
+        return !!price && !!(publicData && publicData.durationHour && publicData.durationMinute)
     case EXPIRY:
       return !!(publicData && publicData.expiry);
     // case PHOTOS:
@@ -321,11 +327,12 @@ class EditListingWizard extends Component {
       category,
       ...rest
     } = this.props;
+    if(!category) return null;
     let TABS =
       category === 'publicOral'
-        ? [DESCRIPTION, AREAOFLAW, DURATION, PRICING]
+        ? [DESCRIPTION, AREAOFLAW, DURATION_PRICING]
         : category === 'customOral'
-        ? [DESCRIPTION, DURATION, CLIENT, PRICING, EXPIRY]
+        ? [DESCRIPTION, CLIENT, DURATION_PRICING, EXPIRY]
         : [
             DESCRIPTION,
             CLIENT,

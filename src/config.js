@@ -117,7 +117,7 @@ const siteFacebookPage = 'https://www.facebook.com/Sharetribe/';
 // You should create one to track social sharing in Facebook
 const facebookAppId = process.env.REACT_APP_FACEBOOK_APP_ID;
 
-const secretCode = 'kqtw2s_a/se0<_]it.a4h0tf+rnb!/]79q}4ib<zo6~{$@~@d*~a*<=8:vd^e2>';
+const secretCode = process.env.REACT_APP_JWT_SECRET_CODE;
 
 const maps = {
   mapboxAccessToken: process.env.REACT_APP_MAPBOX_ACCESS_TOKEN,

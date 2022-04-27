@@ -117,7 +117,7 @@ const TopbarMobileMenu = props => {
         {currentUser?.attributes?.profile?.protectedData?.isLawyer ? (
           <NamedLink
             className={classNames(css.navigationLink, currentPageClass('CreateListingPage'))}
-            name="NewListingPage"
+            name="CreateListing"
           >
             {<FormattedMessage id="OwnListingLink.addYourListingLink" />}
           </NamedLink>
@@ -180,7 +180,7 @@ const TopbarMobileMenu = props => {
       </div>
       {!currentUser ? (
         <div className={css.footer}>
-          <NamedLink className={css.createNewListingLink} name="NewListingPage">
+          <NamedLink className={css.createNewListingLink} name="CreateListing">
             <FormattedMessage id="TopbarMobileMenu.newListingLink" />
           </NamedLink>
         </div>
