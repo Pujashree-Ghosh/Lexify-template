@@ -121,7 +121,6 @@ export class ManageListingsPageComponent extends Component {
 
   searchListingByClientId=(e)=>{
     if(!!e) e.preventDefault()
-    this.setState({isAutoSearch:false})
     const queryParams = parse(this.props.location.search);
     const page = queryParams.page || 1;
     if (this.props.currentUser !== null) {
@@ -144,6 +143,7 @@ export class ManageListingsPageComponent extends Component {
               listingsFromApi: res?.data?.data,
               metaFromApi: res?.data?.meta,
               listingsFromApiLoaded: true,
+              isAutoSearch:false
             });
           }
         })
@@ -318,7 +318,11 @@ export class ManageListingsPageComponent extends Component {
                     className={classNames(css.clientIdSearchForm,{[css.activeClientIdSearchForm]:this.state.isFormFocused})} >
                   <input type="text" value={this.state.clientId} placeholder="client id..." onFocus={()=>this.setState({isFormFocused:true})}
                       onChange={(e)=>this.setState({clientId:e.target.value,isAutoSearch:false})}  onBlur={()=>this.setState({isFormFocused:false})}/>
-                  {!!this.state.clientId && <button type="button" onClick={()=>this.setState({clientId:""})}>&times;</button>}
+                  {!!this.state.clientId && <button type="button" 
+                      onClick={()=>{
+                        this.setState({clientId:""},this.searchListingByClientId);
+                      }}>&times;</button>
+                  }
                   <button type="submit" disabled={!this.state.clientId}>
                     <img src={!!this.state.clientId?searchActiveIcon:searchIcon} alt=""/>
                   </button>
