@@ -74,8 +74,6 @@ const Meeting = props => {
 
   // const moderator = decoded.moderator;
 
-  console.log(6922, decoded);
-
   const role = decoded.role;
   const currentTime = moment();
 
@@ -115,7 +113,18 @@ const Meeting = props => {
   //   currentUser,
   //   match: { params },
   // } = props;
-  const displayName = currentUser && currentUser.attributes.profile.displayName;
+  const userId = currentUser && currentUser.id.uuid;
+  const suffiex =
+    userId &&
+    userId
+      .split('')
+      .splice(0, 3)
+      .join('');
+
+  const displayName =
+    currentUser && currentUser.attributes.profile.displayName
+      ? `${currentUser.attributes.profile.firstName} ${currentUser.attributes.profile.lastName}-${suffiex}`
+      : '';
 
   // Here we would like the height of the main container to be the height of the viewport.
   // On some mobile browsers, 'height: 100vh' sets the height equal to that of the screen,
@@ -126,8 +135,9 @@ const Meeting = props => {
 
   const onCancel = () => {
     // console.log('object');
-    const path = isProvider ? `/sale/${transactionId}/details` : `/order/${transactionId}/details`;
-    props.history.push(path);
+    // const path = isProvider ? `/sale/${transactionId}/details` : `/order/${transactionId}/details`;
+    // props.history.push(path);
+    if (typeof window !== undefined) window.close();
   };
   // const moderator = 'Surajit T';
 
@@ -136,7 +146,7 @@ const Meeting = props => {
   // const meetingTimeDuration = moment().isSameOrBefore(startTime)
   //   ? moment(endTime).diff(moment(startTime), 'm')
   //   : moment(endTime).diff(moment(startTime).add(5, 'm'), 'm');
-  const roomName = listingId + transactionId;
+  const roomName = listingId;
 
   // let estEndTime = moment(actualStartTime).add(meetingTimeDuration, 'm');
   // console.log(
@@ -372,7 +382,7 @@ const Meeting = props => {
     const backend_server = apiBaseUrl();
     socket = io(backend_server, {
       query: {
-        roomId: transactionId + listingId,
+        roomId: listingId,
         // role,
         // ...(decoded.actualStartTime ? { actualStartTime: decoded.actualStartTime } : {}),
         // ...(decoded.customerJoinTime ? { customerJoinTime: decoded.customerJoinTime } : {}),
@@ -625,7 +635,7 @@ const Meeting = props => {
               daysInHours={true}
               renderer={props => (
                 <div className={css.timer}>
-                  {props.hours === 0 && props.minutes === 0 && props.seconds === 0 ? null : (
+                  {/* {props.hours === 0 && props.minutes === 0 && props.seconds === 0 ? null : (
                     <div className="timerMessage">
                       <h1>
                         {moment(currentTime).isAfter(actualEndTime)
@@ -635,7 +645,7 @@ const Meeting = props => {
                         {props.seconds < 10 ? `0${props.seconds}` : props.seconds}
                       </h1>
                     </div>
-                  )}
+                  )} */}
                 </div>
               )}
               onComplete={() => {
@@ -647,7 +657,7 @@ const Meeting = props => {
               }}
             />
 
-            <MobileTopMenuBar isProvider={isProvider} />
+            {/* <MobileTopMenuBar isProvider={isProvider} /> */}
             <Room />
             {/* {remainingMeetingTime && (
               <Timer

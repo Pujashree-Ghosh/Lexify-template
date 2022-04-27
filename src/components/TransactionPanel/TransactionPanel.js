@@ -5,6 +5,8 @@ import classNames from 'classnames';
 import {
   TRANSITION_REQUEST_PAYMENT_AFTER_ENQUIRY,
   txIsAccepted,
+  txIsAcceptedOral,
+  txIsRescheduled,
   txIsCanceled,
   txIsDeclined,
   txIsEnquired,
@@ -12,6 +14,12 @@ import {
   txIsPaymentPending,
   txIsRequested,
   txHasBeenDelivered,
+  txCustomerJoined1,
+  txProviderJoined1,
+  txBothJoined,
+  txIsExpired,
+  txIsPendingConfirmation,
+  txIsRequestedOral,
 } from '../../util/transaction';
 import { LINE_ITEM_NIGHT, LINE_ITEM_DAY, propTypes } from '../../util/types';
 import {
@@ -47,15 +55,18 @@ import PanelHeading, {
   HEADING_PAYMENT_EXPIRED,
   HEADING_REQUESTED,
   HEADING_ACCEPTED,
+  HEADING_RESCHEDULED,
   HEADING_DECLINED,
   HEADING_CANCELED,
   HEADING_DELIVERED,
+  HEADING_EXPIRED,
 } from './PanelHeading';
 import Axios from 'axios';
 import { PrimaryButton } from '../Button/Button';
 import { apiBaseUrl } from '../../util/api';
 import { BsCalendar2Plus } from 'react-icons/bs';
 import css from './TransactionPanel.module.css';
+import axios from 'axios';
 
 // Helper function to get display names for different roles
 const displayNames = (currentUser, currentProvider, currentCustomer, intl) => {
@@ -100,6 +111,7 @@ export class TransactionPanelComponent extends Component {
       // fileUploadSuccess: null,
       // cancelError: '',
       inProgress: false,
+      joinMeetingProgress: false,
     };
     // this.fileInputRef = React.createRef();
 
@@ -118,7 +130,7 @@ export class TransactionPanelComponent extends Component {
         clientId: 'c5c3ffe8-8b3e-49a5-8e88-920a883c826f',
 
         authority: 'https://login.microsoftonline.com/common/',
-        redirectUri: 'https://lexify-dev.herokuapp.com/',
+        redirectUri: 'https://lexify-dev-bitcanny.herokuapp.com/',
         // redirectUri: 'http://localhost:3000/',
       },
       cache: {
@@ -259,6 +271,7 @@ export class TransactionPanelComponent extends Component {
       },
       config.secretCode
     );
+    this.setState({ joinMeetingProgress: false });
     window.open(`/meeting-new/${jwtToken}`);
     // this.props.history.push(`/meeting-new/${jwtToken}`);
     // console.log('555 token', jwtToken);
@@ -388,7 +401,6 @@ export class TransactionPanelComponent extends Component {
       fetchLineItemsError,
       onJoinMeeting,
     } = this.props;
-
     const currentTransaction = ensureTransaction(transaction);
     const currentListing = ensureListing(currentTransaction.listing);
     const currentProvider = ensureUser(currentTransaction.provider);
@@ -434,9 +446,69 @@ export class TransactionPanelComponent extends Component {
           showSaleButtons: isProvider && !isCustomerBanned,
           showCalendar: true,
         };
+      } else if (txIsRequestedOral(tx)) {
+        return {
+          headingState: HEADING_REQUESTED,
+          showDetailCardHeadings: isCustomer,
+          showSaleButtons: isProvider && !isCustomerBanned,
+          showCalendar: true,
+        };
+      } else if (txIsPendingConfirmation(tx)) {
+        return {
+          headingState: HEADING_ACCEPTED,
+          showDetailCardHeadings: isCustomer,
+          showAddress: isCustomer,
+          showCalendar: true,
+        };
       } else if (txIsAccepted(tx)) {
         return {
           headingState: HEADING_ACCEPTED,
+          showDetailCardHeadings: isCustomer,
+          showAddress: isCustomer,
+          showCalendar: true,
+        };
+      } else if (txIsAcceptedOral(tx)) {
+        return {
+          headingState: HEADING_ACCEPTED,
+          showDetailCardHeadings: isCustomer,
+          showAddress: isCustomer,
+          showCalendar: true,
+        };
+      }
+      // else if (txCustomerJoined1(tx)) {
+      //   return {
+      //     headingState: HEADING_ACCEPTED,
+      //     isShortBooking: false,
+      //     customer_joined: true,
+      //     bookingAccepted: true,
+      //   };
+      // } else if (txProviderJoined1(tx)) {
+      //   return {
+      //     headingState: HEADING_ACCEPTED,
+      //     isShortBooking: false,
+      //     provider_joined: true,
+      //     bookingAccepted: true,
+      //   };
+      // } else if (txBothJoined(tx)) {
+      //   return {
+      //     headingState: HEADING_ACCEPTED,
+      //     isShortBooking: false,
+      //     provider_joined: true,
+      //     customer_joined: true,
+      //     bookingAccepted: true,
+      //   };
+      // }
+      else if (txIsExpired(tx)) {
+        return {
+          headingState: HEADING_EXPIRED,
+          showDetailCardHeadings: isCustomer,
+          allowProviderCancel: false,
+          hideCalendars: true,
+          cancelledOrDeclined: true,
+        };
+      } else if (txIsRescheduled(tx)) {
+        return {
+          headingState: HEADING_RESCHEDULED,
           showDetailCardHeadings: isCustomer,
           showAddress: isCustomer,
           showCalendar: true,
@@ -462,7 +534,6 @@ export class TransactionPanelComponent extends Component {
       }
     };
     const stateData = stateDataFn(currentTransaction);
-    // console.log(1996, stateData);
 
     const deletedListingTitle = intl.formatMessage({
       id: 'TransactionPanel.deletedListingTitle',
@@ -704,6 +775,9 @@ export class TransactionPanelComponent extends Component {
       // }
     };
 
+    const category = currentListing.attributes.publicData.category;
+    const listingType = currentListing.attributes.publicData.type;
+
     return (
       <div className={classes}>
         <div className={css.container}>
@@ -718,11 +792,11 @@ export class TransactionPanelComponent extends Component {
               listingId={currentListing.id && currentListing.id.uuid}
               listingDeleted={listingDeleted}
             /> */}
-            {isProvider ? (
+            {/* {isProvider ? (
               <div className={css.avatarWrapperProviderDesktop}>
                 <AvatarLarge user={currentCustomer} className={css.avatarDesktop} />
               </div>
-            ) : null}
+            ) : null} */}
 
             <PanelHeading
               panelHeadingState={stateData.headingState}
@@ -744,40 +818,85 @@ export class TransactionPanelComponent extends Component {
               />
               <BreakdownMaybe transaction={currentTransaction} transactionRole={transactionRole} />
 
-              <div className={css.jnbtncon}>
-                {stateData.headingState === 'accepted' ? (
-                  <PrimaryButton
-                    // inProgress={joinMeetingProgress}
-                    className={css.joinMeetingBtn}
-                    onClick={() => {
-                      //   if (stateData.isShortBooking) {
-                      //     onJoinShortMeeting(currentTransaction.id, isCustomer)
-                      //       .then(res => {
-                      //         this.goToConference(currentTransaction);
-                      //         console.log('onJoinShortMeeting', res);
-                      //       })
-                      //       .catch(e => console.error(e));
-                      //   } else {
-                      //     onJoinMeeting(currentTransaction.id, isCustomer)
-                      //       .then(res => {
-                      //         this.goToConference(currentTransaction);
-                      //         console.log('onJoinMeeting', res);
-                      //       })
-                      //       .catch(e => {
-                      //         console.log('557. err in page', e);
-                      //         console.error(e);
-                      //       });
-                      //   }
-                      //
-                      this.goToConference(currentTransaction);
-                    }}
-                  >
-                    Join Meeting
-                  </PrimaryButton>
-                ) : (
-                  ''
-                )}
-              </div>
+              {category !== 'customService' ? (
+                <div className={css.jnbtncon}>
+                  {stateData.headingState === 'accepted' ||
+                  stateData.headingState === 'rescheduled' ? (
+                    <PrimaryButton
+                      inProgress={this.state.joinMeetingProgress}
+                      className={css.joinMeetingBtn}
+                      onClick={() => {
+                        this.setState({ joinMeetingProgress: true });
+                        // if (isCustomer) {
+                        //   if (
+                        //     txCustomerJoined1(currentTransaction) ||
+                        //     txBothJoined(currentTransaction)
+                        //   ) {
+                        //     this.goToConference(currentTransaction);
+                        //   } else {
+                        //     onJoinMeeting(currentTransaction.id, isCustomer)
+                        //       .then(res => {
+                        //         this.goToConference(currentTransaction);
+                        //       })
+                        //       .catch(e => {
+                        //         console.error(e);
+                        //       });
+                        //   }
+                        // } else {
+                        //   if (listingType === 'unsolicited') {
+                        //     axios
+                        //       .get(
+                        //         `${apiBaseUrl()}/api/unsolicitedTransition/${
+                        //           currentListing.id.uuid
+                        //         }`
+                        //       )
+                        //       .then(resp => {
+                        //         if (resp.data.length > 0) {
+                        //           resp.data.map(d => {
+                        //             if (d !== currentTransaction.id) {
+                        //               onJoinMeeting(d, false);
+                        //             }
+                        //           });
+                        //           onJoinMeeting(currentTransaction.id, isCustomer)
+                        //             .then(res => {
+                        //               this.goToConference(currentTransaction);
+                        //             })
+                        //             .catch(e => {
+                        //               console.error(e);
+                        //             });
+                        //         } else {
+                        //           this.goToConference(currentTransaction);
+                        //         }
+                        //       });
+                        //   } else {
+                        //     if (
+                        //       txProviderJoined1(currentTransaction) ||
+                        //       txBothJoined(currentTransaction)
+                        //     ) {
+                        //       this.goToConference(currentTransaction);
+                        //     } else {
+                        //       onJoinMeeting(currentTransaction.id, isCustomer)
+                        //         .then(res => {
+                        //           this.goToConference(currentTransaction);
+                        //         })
+                        //         .catch(e => {
+                        //           console.error(e);
+                        //         });
+                        //     }
+                        //   }
+                        // }
+                        this.goToConference(currentTransaction);
+                      }}
+                    >
+                      Join Meeting
+                    </PrimaryButton>
+                  ) : (
+                    ''
+                  )}
+                </div>
+              ) : (
+                ''
+              )}
             </div>
 
             {savePaymentMethodFailed ? (
@@ -936,61 +1055,90 @@ export class TransactionPanelComponent extends Component {
                   transaction={currentTransaction}
                   transactionRole={transactionRole}
                 />
-                <div className={css.jnbtncon}>
-                  {stateData.headingState === 'accepted' ? (
-                    <PrimaryButton
-                      // inProgress={joinMeetingProgress}
-                      className={css.joinMeetingBtn}
-                      onClick={() => {
-                        //   if (stateData.isShortBooking) {
-                        //     onJoinShortMeeting(currentTransaction.id, isCustomer)
-                        //       .then(res => {
-                        //         this.goToConference(currentTransaction);
-                        //         console.log('onJoinShortMeeting', res);
-                        //       })
-                        //       .catch(e => console.error(e));
-                        //   } else {
-                        //     onJoinMeeting(currentTransaction.id, isCustomer)
-                        //       .then(res => {
-                        //         this.goToConference(currentTransaction);
-                        //         console.log('onJoinMeeting', res);
-                        //       })
-                        //       .catch(e => {
-                        //         console.log('557. err in page', e);
-                        //         console.error(e);
-                        //       });
-                        //   }
-                        //
-                        this.goToConference(currentTransaction);
-                      }}
-                    >
-                      Join Meeting
-                    </PrimaryButton>
-                  ) : (
-                    ''
-                  )}
-                </div>
+                {category !== 'customService' ? (
+                  <div className={css.jnbtncon}>
+                    {stateData.headingState === 'accepted' ||
+                    stateData.headingState === 'rescheduled' ? (
+                      <PrimaryButton
+                        inProgress={this.state.joinMeetingProgress}
+                        className={css.joinMeetingBtn}
+                        onClick={() => {
+                          this.setState({ joinMeetingProgress: true });
+                          // if (isCustomer) {
+                          //   if (
+                          //     txCustomerJoined1(currentTransaction) ||
+                          //     txBothJoined(currentTransaction)
+                          //   ) {
+                          //     this.goToConference(currentTransaction);
+                          //   } else {
+                          //     onJoinMeeting(currentTransaction.id, isCustomer)
+                          //       .then(res => {
+                          //         this.goToConference(currentTransaction);
+                          //       })
+                          //       .catch(e => {
+                          //         console.error(e);
+                          //       });
+                          //   }
+                          // } else {
+                          //   if (listingType === 'unsolicited') {
+                          //     axios
+                          //       .get(
+                          //         `${apiBaseUrl()}/api/unsolicitedTransition/${
+                          //           currentListing.id.uuid
+                          //         }`
+                          //       )
+                          //       .then(resp => {
+                          //         if (resp.data.length > 0) {
+                          //           resp.data.map(d => {
+                          //             if (d !== currentTransaction.id) {
+                          //               onJoinMeeting(d, false);
+                          //             }
+                          //           });
+                          //           onJoinMeeting(currentTransaction.id, isCustomer)
+                          //             .then(res => {
+                          //               this.goToConference(currentTransaction);
+                          //             })
+                          //             .catch(e => {
+                          //               console.error(e);
+                          //             });
+                          //         } else {
+                          //           this.goToConference(currentTransaction);
+                          //         }
+                          //       });
+                          //   } else {
+                          //     if (
+                          //       txProviderJoined1(currentTransaction) ||
+                          //       txBothJoined(currentTransaction)
+                          //     ) {
+                          //       this.goToConference(currentTransaction);
+                          //     } else {
+                          //       onJoinMeeting(currentTransaction.id, isCustomer)
+                          //         .then(res => {
+                          //           this.goToConference(currentTransaction);
+                          //         })
+                          //         .catch(e => {
+                          //           console.error(e);
+                          //         });
+                          //     }
+                          //   }
+                          // }
+                          this.goToConference(currentTransaction);
+                        }}
+                      >
+                        Join Meeting
+                      </PrimaryButton>
+                    ) : (
+                      ''
+                    )}
+                  </div>
+                ) : (
+                  ''
+                )}
               </div>
-              {/* <button
-                // onClick={
-                //     ()=>onJoinMeeting(currentTransaction.id, isCustomer)
-                //     .then(res => {
-                //       this.goToConference(currentTransaction);
-                //       console.log('onJoinMeeting', res);
-                //     })
-                //     .catch(e => {
-                //       console.log('557. err in page', e);
-                //       console.error(e);
-                //     })
-                //   }
-                onClick={() => this.goToConference(currentTransaction)}
-              >
-                This is a button
-              </button> */}
 
-              {stateData.showSaleButtons ? (
+              {/* {stateData.showSaleButtons ? (
                 <div className={css.desktopActionButtons}>{saleButtons}</div>
-              ) : null}
+              ) : null} */}
             </div>
           </div>
         </div>
@@ -1005,32 +1153,6 @@ export class TransactionPanelComponent extends Component {
           sendReviewInProgress={sendReviewInProgress}
           sendReviewError={sendReviewError}
         />
-
-        {/* <PrimaryButton
-          inProgress={joinMeetingProgress}
-          onClick={() => {
-            if (stateData.isShortBooking) {
-              onJoinShortMeeting(currentTransaction.id, isCustomer)
-                .then(res => {
-                  this.goToConference(currentTransaction);
-                  console.log('onJoinShortMeeting', res);
-                })
-                .catch(e => console.error(e));
-            } else {
-              onJoinMeeting(currentTransaction.id, isCustomer)
-                .then(res => {
-                  this.goToConference(currentTransaction);
-                  console.log('onJoinMeeting', res);
-                })
-                .catch(e => {
-                  console.log('557. err in page', e);
-                  console.error(e);
-                });
-            }
-          }}
-        >
-          {stateData.isShortBooking ? 'Join Free Trial Meeting' : 'Join Meeting'}
-        </PrimaryButton> */}
       </div>
     );
   }

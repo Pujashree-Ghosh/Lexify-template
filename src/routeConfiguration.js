@@ -8,6 +8,8 @@ import { NotFoundPage } from './containers';
 // at that point css bundling / imports will happen in wrong order.
 import { NamedRedirect } from './components';
 import CreateListing from './components/CreateListing/CreateListing';
+import PromotionBasePage from './containers/SearchPage/PromotionBasePage';
+
 
 const pageDataLoadingAPI = getPageDataLoadingAPI();
 
@@ -18,6 +20,8 @@ const ContactDetailsPage = loadable(() => import(/* webpackChunkName: "ContactDe
 const EditListingPage = loadable(() => import(/* webpackChunkName: "EditListingPage" */ './containers/EditListingPage/EditListingPage'));
 const EmailVerificationPage = loadable(() => import(/* webpackChunkName: "EmailVerificationPage" */ './containers/EmailVerificationPage/EmailVerificationPage'));
 const InboxPage = loadable(() => import(/* webpackChunkName: "InboxPage" */ './containers/InboxPage/InboxPage'));
+const Salespage = loadable(() => import(/* webpackChunkName: "Salespage" */ './containers/Salespage/Salespage'));
+
 const MyAppointmentPage = loadable(() => import(/* webpackChunkName: "MyAppointmentPage" */ './containers/MyAppointmentPage/MyAppointmentPage'));
 const LandingPage = loadable(() => import(/* webpackChunkName: "LandingPage" */ './containers/LandingPage/LandingPage'));
 const ListingPage = loadable(() => import(/* webpackChunkName: "ListingPage" */ /* webpackPrefetch: true */ './containers/ListingPage/ListingPage'));
@@ -41,6 +45,7 @@ const JurisdictionPage = loadable(() => import(/* webpackChunkName: "Jurisdictio
 const EducationPage = loadable(() => import(/* webpackChunkName: "EducationPage" */ './components/EducationPage/EducationPage'));
 const PracticeAreaPage = loadable(() => import(/* webpackChunkName: "PracticeAreaPage" */ './components/PracticeAreaPage/PracticeAreaPage'));
 const AvailabilityPage = loadable(() => import(/* webpackChunkName: "AvailabilityPage" */ './components/AvailabilityPage/AvailabilityPage'));
+const BufferTimePage = loadable(() => import(/* webpackChunkName: "BufferTimePage" */ './components/BufferTimePage/BufferTimePage'));
 const VerificationPage = loadable(() => import(/* webpackChunkName: "VerificationPage" */ './components/VerificationPage/VerificationPage'));
 // const AppointmentPage = loadable(() => import(/* webpackChunkName: "AppointmentPage" */ './components/AppointmentPage/AppointmentPage'));
 
@@ -96,11 +101,21 @@ const routeConfiguration = () => {
     },
     {
       path: '/promotion',
+      name: 'PromotionBasePage',
+      auth: true,
+      authPage: 'LoginPage',
+      component: PromotionBasePage,
+      // loadData: pageDataLoadingAPI.SearchPage.loadData,
+      // component: () => <NamedRedirect name="PromotionPage" params={{ tab: 'One_N_One' }} />,
+
+    },
+    {
+      path: '/promotion/:tab',
       name: 'PromotionPage',
       auth: true,
       authPage: 'LoginPage',
       component: PromotionPage,
-      loadData: pageDataLoadingAPI.SearchPage.loadData,
+      loadData: pageDataLoadingAPI.PromotionPage.loadData,
     },
     {
       path: '/Services',
@@ -126,6 +141,7 @@ const routeConfiguration = () => {
       name: 'CheckoutPage',
       auth: true,
       component: CheckoutPage,
+      authPage: 'LoginPage',
       setInitialValues: pageDataLoadingAPI.CheckoutPage.setInitialValues,
     },
     {
@@ -317,6 +333,21 @@ const routeConfiguration = () => {
       authPage: 'LoginPage',
       component: InboxPage,
       loadData: pageDataLoadingAPI.InboxPage.loadData,
+    },
+    {
+      path: '/sales',
+      name: 'SalesBasepage',
+      auth: true,
+      authPage: 'LoginPage',
+      component: () => <NamedRedirect name="Salespage" params={{ tab: 'pending' }} />,
+    },
+    {
+      path: '/sales/:tab',
+      name: 'Salespage',
+      auth: true,
+      authPage: 'LoginPage',
+      component: Salespage,
+      loadData: pageDataLoadingAPI.Salespage.loadData,
     },
     {
       path: '/appointment',
@@ -530,6 +561,14 @@ const routeConfiguration = () => {
       auth: true,
       authPage: 'LoginPage',
       component: AvailabilityPage,
+      // loadData: pageDataLoadingAPI.GeneralInfoPage.loadData,
+    },
+    {
+      path: '/profile-setting/buffer',
+      name: 'BufferTimePage',
+      auth: true,
+      authPage: 'LoginPage',
+      component: BufferTimePage,
       // loadData: pageDataLoadingAPI.GeneralInfoPage.loadData,
     },
     {

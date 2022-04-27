@@ -15,17 +15,26 @@ import { formatDate } from '../../util/dates';
 import { ensureTransaction, ensureUser, ensureListing } from '../../util/data';
 import {
   TRANSITION_ACCEPT,
+  TRANSITION_ACCEPT_ORAL,
   TRANSITION_CANCEL,
   TRANSITION_CANCEL_PROVIDER,
   TRANSITION_CANCEL_CUSTOMER,
+  TRANSITION_CANCEL_PROVIDER_ORAL,
+  TRANSITION_CANCEL_CUSTOMER_ORAL,
+  TRANSITION_RESCHEDULE_PROVIDER,
+  TRANSITION_RESCHEDULE_CUSTOMER,
   TRANSITION_COMPLETE,
   TRANSITION_DECLINE,
   TRANSITION_EXPIRE,
   TRANSITION_CONFIRM_PAYMENT,
+  TRANSITION_CONFIRM_PAYMENT_ORAL,
   TRANSITION_REVIEW_1_BY_CUSTOMER,
   TRANSITION_REVIEW_1_BY_PROVIDER,
   TRANSITION_REVIEW_2_BY_CUSTOMER,
   TRANSITION_REVIEW_2_BY_PROVIDER,
+  TRANSITION_MEETING_EXPIRED,
+  TRANSITION_PROVIDER_JOIN_1,
+  TRANSITION_CUSTOMER_JOIN_1,
   transitionIsReviewed,
   txIsDelivered,
   txIsInFirstReviewBy,
@@ -36,6 +45,8 @@ import {
   txRoleIsCustomer,
   getUserTxRole,
   isRelevantPastTransition,
+  TRANSITION_PROVIDER_MISSING,
+  TRANSITION_CUSTOMER_MISSING,
 } from '../../util/transaction';
 import { propTypes } from '../../util/types';
 import * as log from '../../util/log';
@@ -182,7 +193,22 @@ const resolveTransitionMessage = (
           values={{ displayName, listingTitle }}
         />
       );
+    case TRANSITION_CONFIRM_PAYMENT_ORAL:
+      return isOwnTransition ? (
+        <FormattedMessage id="ActivityFeed.ownTransitionRequest" values={{ listingTitle }} />
+      ) : (
+        <FormattedMessage
+          id="ActivityFeed.transitionRequest"
+          values={{ displayName, listingTitle }}
+        />
+      );
     case TRANSITION_ACCEPT:
+      return isOwnTransition ? (
+        <FormattedMessage id="ActivityFeed.ownTransitionAccept" />
+      ) : (
+        <FormattedMessage id="ActivityFeed.transitionAccept" values={{ displayName }} />
+      );
+    case TRANSITION_ACCEPT_ORAL:
       return isOwnTransition ? (
         <FormattedMessage id="ActivityFeed.ownTransitionAccept" />
       ) : (
@@ -204,6 +230,14 @@ const resolveTransitionMessage = (
       return <FormattedMessage id="ActivityFeed.transitionCancelProvider" />;
     case TRANSITION_CANCEL_CUSTOMER:
       return <FormattedMessage id="ActivityFeed.transitionCancelCustomer" />;
+    case TRANSITION_CANCEL_PROVIDER_ORAL:
+      return <FormattedMessage id="ActivityFeed.transitionCancelProvider" />;
+    case TRANSITION_CANCEL_CUSTOMER_ORAL:
+      return <FormattedMessage id="ActivityFeed.transitionCancelCustomer" />;
+    case TRANSITION_RESCHEDULE_PROVIDER:
+      return <FormattedMessage id="ActivityFeed.transitionRescheduleProvider" />;
+    case TRANSITION_RESCHEDULE_CUSTOMER:
+      return <FormattedMessage id="ActivityFeed.transitionRescheduleCustomer" />;
     case TRANSITION_CANCEL:
       return <FormattedMessage id="ActivityFeed.transitionCancel" />;
     case TRANSITION_COMPLETE:
@@ -256,6 +290,16 @@ const resolveTransitionMessage = (
           />
         );
       }
+    case TRANSITION_MEETING_EXPIRED:
+      return <FormattedMessage id="ActivityFeed.meetingExpired" />;
+    case TRANSITION_PROVIDER_JOIN_1:
+      return <FormattedMessage id="ActivityFeed.providerJoined" />;
+    case TRANSITION_CUSTOMER_JOIN_1:
+      return <FormattedMessage id="ActivityFeed.customerJoined" />;
+    case TRANSITION_PROVIDER_MISSING:
+      return <FormattedMessage id="ActivityFeed.providerMisssing" />;
+    case TRANSITION_CUSTOMER_MISSING:
+      return <FormattedMessage id="ActivityFeed.customerMissing" />;
 
     default:
       log.error(new Error('Unknown transaction transition type'), 'unknown-transition-type', {
@@ -304,7 +348,6 @@ const Transition = props => {
     onOpenReviewModal
   );
   const currentTransition = transition.transition;
-
   const deletedReviewContent = intl.formatMessage({ id: 'ActivityFeed.deletedReviewContent' });
   let reviewComponent = null;
 
@@ -397,11 +440,13 @@ export const ActivityFeedComponent = props => {
     fetchMessagesInProgress,
     intl,
   } = props;
-  const classes = classNames(rootClassName || css.root, className);
 
+  const classes = classNames(rootClassName || css.root, className);
   const currentTransaction = ensureTransaction(transaction);
   const transitions = currentTransaction.attributes.transitions
-    ? currentTransaction.attributes.transitions
+    ? currentTransaction.attributes.transitions?.filter(
+        t => t.transition !== 'transition/accept' && t.transition !== 'transition/accept-oral'
+      )
     : [];
   const currentCustomer = ensureUser(currentTransaction.customer);
   const currentProvider = ensureUser(currentTransaction.provider);
@@ -414,7 +459,6 @@ export const ActivityFeedComponent = props => {
     currentProvider.id &&
     currentListing.id
   );
-
   // combine messages and transaction transitions
   const items = organizedItems(messages, transitions, hasOlderMessages || fetchMessagesInProgress);
 

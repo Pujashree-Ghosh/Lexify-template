@@ -1,0 +1,60 @@
+.chbtntw {
+  position: relative;
+}
+.chbtntw .btnmod {
+  width: 40px;
+  height: 40px;
+  background-color: #3c4043 ;
+  border-radius: 50px ;
+
+  min-width: auto;
+  margin: 0 10px ;
+  border: 0;
+  cursor: pointer;
+}
+.chbtntw .btnmod:hover {
+  background: #43474a !important
+}
+.btnmod.active {
+  background: #ea4335 !important
+}
+/* .chbtntw .button:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+} */
+.chbtntw .btnmod svg {
+  color: #fff;
+}
+.notificationDot {
+  /* Dimensions */
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+
+  /* Position */
+  position: absolute;
+  top: 17px;
+  right: 12px;
+
+  /* Style: red dot */
+  background-color: var(--failColor);
+
+  animation-name: notificationPop;
+  animation-duration: 0.1s;
+  animation-delay: 0.1s;
+  animation-fill-mode: forwards;
+
+  animation-timing-function: ease-in;
+  opacity: 0;
+  transform: scale(0);
+}
+
+@keyframes notificationPop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

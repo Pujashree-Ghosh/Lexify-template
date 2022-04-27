@@ -59,7 +59,7 @@
 .listingCards {
   padding: 0 24px 96px 24px;
 
-  margin: 10px auto;
+  margin: 50px auto;
   width: 100%;
   max-width: 1040px;
   /* @media (--viewportMedium) {
@@ -70,4 +70,37 @@
   @media (--viewportLarge) {
     padding: 0 36px 96px 36px;
   }
+}
+.tabs {
+  padding-top: 2px;
+
+  display: flex;
+  flex-direction: row;
+  overflow-x: auto;
+  position: sticky;
+  top: 110px;
+
+  @media (--viewportMedium) {
+    padding-top: 12px;
+  }
+
+  @media (--viewportLarge) {
+    padding-top: 30px;
+    flex-direction: column;
+  }
+}
+
+.tab {
+  margin-left: 16px;
+
+  &:first-child {
+    margin-left: 0;
+  }
+
+  @media (--viewportLarge) {
+    margin-left: 0;
+  }
+}
+.wrapperMain{
+  padding: 0 40px 0 40px;
 }

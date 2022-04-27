@@ -34,9 +34,15 @@ const TopbarMobileMenu = props => {
   const user = ensureCurrentUser(currentUser);
 
   if (!isAuthenticated) {
-    const signup = (
+    const signupLawyer = (
+      <NamedLink name="SignupLawyerPage" className={css.signupLink}>
+        <FormattedMessage id="TopbarMobileMenu.signupLawyerLink" />
+      </NamedLink>
+    );
+
+    const signupClient = (
       <NamedLink name="SignupPage" className={css.signupLink}>
-        <FormattedMessage id="TopbarMobileMenu.signupLink" />
+        <FormattedMessage id="TopbarMobileMenu.signupClientLink" />
       </NamedLink>
     );
 
@@ -48,7 +54,10 @@ const TopbarMobileMenu = props => {
 
     const signupOrLogin = (
       <span className={css.authenticationLinks}>
-        <FormattedMessage id="TopbarMobileMenu.signupOrLogin" values={{ signup, login }} />
+        <FormattedMessage
+          id="TopbarMobileMenu.signupOrLogin"
+          values={{ signupLawyer, signupClient, login }}
+        />
       </span>
     );
     return (
@@ -57,7 +66,11 @@ const TopbarMobileMenu = props => {
           <div className={css.authenticationGreeting}>
             <FormattedMessage
               id="TopbarMobileMenu.unauthorizedGreeting"
-              values={{ lineBreak: <br />, signupOrLogin }}
+              values={{ lineBreak: <br /> }}
+            />
+            <FormattedMessage
+              id="TopbarMobileMenu.signupOrLogin"
+              values={{ lineBreak: <br />, signupLawyer, signupClient, login }}
             />
           </div>
         </div>
@@ -104,9 +117,30 @@ const TopbarMobileMenu = props => {
         {currentUser?.attributes?.profile?.protectedData?.isLawyer ? (
           <NamedLink
             className={classNames(css.navigationLink, currentPageClass('CreateListingPage'))}
-            name="NewListingPage"
+            name="CreateListing"
           >
             {<FormattedMessage id="OwnListingLink.addYourListingLink" />}
+          </NamedLink>
+        ) : (
+          ''
+        )}
+        {currentUser?.attributes?.profile?.protectedData?.isLawyer ? (
+          <NamedLink
+            className={classNames(css.navigationLink, currentPageClass('ManageListingsPage'))}
+            name="ManageListingsPage"
+          >
+            <FormattedMessage id="TopbarMobile.manageListingsLink" />
+          </NamedLink>
+        ) : (
+          ''
+        )}
+        {currentUser?.attributes?.profile?.protectedData?.isLawyer ? (
+          <NamedLink
+            className={classNames(css.navigationLink, currentPageClass('SalesBasePage'))}
+            name="Salespage"
+            params={{ tab: 'pending' }}
+          >
+            <FormattedMessage id="TopbarMobile.mySalesLink" />
           </NamedLink>
         ) : (
           ''
@@ -118,28 +152,19 @@ const TopbarMobileMenu = props => {
         >
           <FormattedMessage id="TopbarMobileMenu.myAppointment" />
         </NamedLink>
-        {currentUser?.attributes?.profile?.protectedData?.isLawyer ? (
-          <NamedLink
-            className={classNames(css.navigationLink, currentPageClass('ManageListingsPage'))}
-            name="ManageListingsPage"
-          >
-            <FormattedMessage id="TopbarMobile.manageListingsLink" />
-          </NamedLink>
-        ) : (
-          ''
-        )}
+
         <NamedLink
           className={classNames(css.navigationLink, currentPageClass('PromotionPage'))}
-          name="PromotionPage"
+          name="PromotionBasePage"
         >
           <FormattedMessage id="TopbarMobile.promotionLink" />
         </NamedLink>
-        <NamedLink
+        {/* <NamedLink
           className={classNames(css.navigationLink, currentPageClass('ServicesPage'))}
           name="ServicesPage"
         >
           <FormattedMessage id="TopbarMobile.ServicesLink" />
-        </NamedLink>
+        </NamedLink> */}
         <NamedLink
           className={classNames(css.navigationLink, currentPageClass('ProfileSettingsPage'))}
           name="ProfileSettingsPage"
@@ -155,7 +180,7 @@ const TopbarMobileMenu = props => {
       </div>
       {!currentUser ? (
         <div className={css.footer}>
-          <NamedLink className={css.createNewListingLink} name="NewListingPage">
+          <NamedLink className={css.createNewListingLink} name="CreateListing">
             <FormattedMessage id="TopbarMobileMenu.newListingLink" />
           </NamedLink>
         </div>

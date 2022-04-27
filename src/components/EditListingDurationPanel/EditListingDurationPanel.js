@@ -10,8 +10,6 @@ import { ListingLink } from '../../components';
 
 import css from './EditListingDurationPanel.module.css';
 
-const FEATURES_NAME = 'yogaStyles';
-
 const EditListingDurationPanel = props => {
   const {
     rootClassName,
@@ -25,6 +23,7 @@ const EditListingDurationPanel = props => {
     panelUpdated,
     updateInProgress,
     errors,
+    category,
   } = props;
 
   const classes = classNames(rootClassName || css.root, className);
@@ -32,21 +31,61 @@ const EditListingDurationPanel = props => {
   const { publicData } = currentListing.attributes;
   //   const { duration, durationUnit } = publicData;
 
+  
+
   const isPublished = currentListing.id && currentListing.attributes.state !== LISTING_STATE_DRAFT;
-  const panelTitle = isPublished ? (
-    <FormattedMessage
-      id="EditListingDurationPanel.title"
-      values={{
-        listingTitle: (
-          <ListingLink listing={listing}>
-            <FormattedMessage id="EditListingDurationPanel.listingTitle" />
-          </ListingLink>
-        ),
-      }}
-    />
-  ) : (
-    <FormattedMessage id="EditListingDurationPanel.listingTitle" />
-  );
+  const panelTitle =
+    category === 'customOral' ? (
+      isPublished ? (
+        <FormattedMessage
+          id="EditListingDurationPanel.customOralTitleEdit"
+          values={{
+            listingTitle: (
+              <ListingLink listing={listing}>
+                {/* <FormattedMessage id="EditListingDurationPanel.listingTitle" /> */}
+                {listing?.title}
+              </ListingLink>
+            ),
+          }}
+        />
+      ) : (
+        <FormattedMessage
+          id="EditListingDurationPanel.publicOralTitle"
+          values={{
+            listingTitle: (
+              <ListingLink listing={listing}>
+                {/* <FormattedMessage id="EditListingDurationPanel.listingTitle" /> */}
+                {listing?.title}
+              </ListingLink>
+            ),
+          }}
+        />
+      )
+    ) : isPublished ? (
+      <FormattedMessage
+        id="EditListingDurationPanel.publicOralTitleEdit"
+        values={{
+          listingTitle: (
+            <ListingLink listing={listing}>
+              {/* <FormattedMessage id="EditListingDurationPanel.listingTitle" /> */}
+              {listing?.title}
+            </ListingLink>
+          ),
+        }}
+      />
+    ) : (
+      <FormattedMessage
+        id="EditListingDurationPanel.publicOralTitle"
+        values={{
+          listingTitle: (
+            <ListingLink listing={listing}>
+              {/* <FormattedMessage id="EditListingDurationPanel.listingTitle" /> */}
+              {listing?.title}
+            </ListingLink>
+          ),
+        }}
+      />
+    );
 
   const durationHour = publicData && publicData.durationHour;
   const durationMinute = publicData && publicData.durationMinute;

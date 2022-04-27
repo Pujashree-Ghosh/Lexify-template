@@ -4,16 +4,101 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { showUser } from '../../containers/ProfilePage/ProfilePage.duck';
 import { FormattedMessage, intlShape, injectIntl } from '../../util/reactIntl';
+import routeConfiguration from '../../routeConfiguration';
+import { createResourceLocatorString } from '../../util/routes';
+import { withRouter } from 'react-router-dom';
 import css from './AppointmentCard.module.css';
 import { AvatarMedium } from '..';
 import biolocationIcon from '../../assets/material-location-on.svg';
 import moment from 'moment';
+import jsonwebtoken from 'jsonwebtoken';
+import config from '../../config';
+import Button, { PrimaryButton } from '../Button/Button';
+import axios from 'axios';
+import Modal from '../Modal/Modal';
 function AppointmentCardComponent(props) {
-  const { unitType, type, tx, intl, stateData } = props;
+  const [countryData, setCountryData] = useState();
+  const [progress, setProgress] = useState(false);
+  const [isEditPlanModalOpen, setIsEditPlanModalOpen] = useState(false);
+  const [joinMeetingProgress, setJoinMeetingProgress] = useState(false);
+  useEffect(() => {
+    axios
+      .get('https://countriesnow.space/api/v0.1/countries/states')
+      .then(res => setCountryData(res.data.data))
+      .catch(err => console.log('somer error occurred', err));
+  }, []);
+
+  const {
+    unitType,
+    type,
+    tx,
+    intl,
+    stateData,
+    onConfirmConsultation,
+    confirmConsultationInProgress,
+    confirmConsultationSuccess,
+    history,
+    onJoinMeeting,
+    txBothJoined,
+    txCustomerJoined1,
+  } = props;
   const provider = tx && tx.provider;
   const listing = tx && tx.listing;
   const booking = tx && tx.booking;
-  // const { provider, listing, booking } = tx;
+  const category = listing?.attributes?.publicData?.category;
+  const city = listing?.attributes?.publicData?.city[0];
+  const country = countryData?.filter(
+    c =>
+      c.iso3 ===
+      (listing?.attributes?.publicData?.country?.length > 0
+        ? listing?.attributes?.publicData?.country[0]
+        : '')
+  )[0]?.name;
+  const state = countryData
+    ?.filter(c => c.iso3 === 'USA')[0]
+    ?.states?.filter(s =>
+      s.state_code === listing?.attributes?.publicData?.state?.length > 0
+        ? listing?.attributes?.publicData?.state[0]
+        : ''
+    )[0]?.name;
+  const goToConference = async transaction => {
+    let startTime = transaction?.booking?.attributes?.start;
+    let endTime = transaction?.booking?.attributes?.end;
+    let transactionId = transaction?.id?.uuid;
+    let listingId = transaction?.listing?.id?.uuid;
+    let listingTitle = transaction?.listing?.attributes?.title;
+    let transaction_customer_id = transaction?.customer?.id?.uuid;
+    let transaction_provider_id = transaction?.provider?.id?.uuid;
+    let role = 'CUSTOMER';
+
+    if (!transactionId) {
+      return;
+    }
+    const beforeBufferTime =
+      transaction?.provider?.attributes?.profile?.publicData?.beforeBufferTime || 0;
+    const afterBufferTime =
+      transaction?.provider?.attributes?.profile?.publicData?.afterBufferTime || 0;
+
+    let jwtToken = jsonwebtoken.sign(
+      {
+        startTime,
+        endTime,
+        transactionId,
+        listingId,
+        listingTitle,
+        transaction_customer_id,
+        transaction_provider_id,
+        role,
+        beforeBufferTime,
+        afterBufferTime,
+      },
+      config.secretCode
+    );
+    setJoinMeetingProgress(false);
+    window.open(`/meeting-new/${jwtToken}`);
+  };
+
+  // console.log(stateData, tx);
 
   return (
     <div className={css.cardContainer}>
@@ -29,8 +114,8 @@ function AppointmentCardComponent(props) {
           {stateData === 'pending' ? (
             <p className={css.status}>Pending Confimation</p>
           ) : stateData === 'upcoming' ? (
-            <p className={`${css.status} ${css.statuspending}`}>Pending</p>
-          ) : stateData === 'completed' ? (
+            <p className={`${css.status} ${css.statuspending}`}>Accepted</p>
+          ) : stateData === 'complete' ? (
             <p className={`${css.status} ${css.statuscom}`}>Completed</p>
           ) : (
             ''
@@ -46,7 +131,7 @@ function AppointmentCardComponent(props) {
             <p className={css.listingInfo}>{listing?.attributes?.title}</p>
 
             <div className={css.durationDeadline}>
-              {listing?.attributes?.publicData?.category !== 'customService' ? (
+              {category !== 'customService' ? (
                 <span className={css.duration}>
                   <span>Duration: </span>
                   {listing?.attributes?.publicData?.durationHour > 0
@@ -72,7 +157,7 @@ function AppointmentCardComponent(props) {
               <div className={css.userName}>{provider?.attributes?.profile?.displayName}</div>
               {/* <div className={css.userLisence}>{listing.attributes.title}</div> */}
               <div className={css.userLocation}>
-                {false ? (
+                {true ? (
                   <>
                     <img src={biolocationIcon} className={css.locationIcon} />
 
@@ -82,7 +167,7 @@ function AppointmentCardComponent(props) {
                     </span>
                   </>
                 ) : (
-                  'Kolkata,India'
+                  ''
                 )}
               </div>
             </div>
@@ -92,35 +177,87 @@ function AppointmentCardComponent(props) {
           {stateData === 'pending' ? (
             <>
               <div className={css.cctxtp}>
-                Please click on 'confirm' to confirm that you have recieved the consultation
+                Please click on 'confirm' to confirm that you have received the consultation
               </div>
               <div className={css.profileBtnContainer}>
-                <button
-                  className={css.profileBtn}
-                  // onClick={() => {
-                  //   if (listing?.attributes?.publicData?.isProviderType) {
-                  //     history.push(
-                  //       createResourceLocatorString(
-                  //         'ProfilePage',
-                  //         routeConfiguration(),
-                  //         { id: ensuredUser.id.uuid },
-                  //         {}
-                  //       )
-                  //     );
-                  //   } else {
-                  //     history.push(
-                  //       createResourceLocatorString(
-                  //         'ListingPage',
-                  //         routeConfiguration(),
-                  //         { id: listing.id.uuid, slug },
-                  //         {}
-                  //       )
-                  //     );
-                  //   }
-                  // }}
+                <Button
+                  className={css.confirmBtn}
+                  inProgress={progress}
+                  // ready={ready}
+                  onClick={() => {
+                    setIsEditPlanModalOpen(true);
+                  }}
                 >
                   <FormattedMessage id="AppointmentCard.confirmButton" />
-                </button>
+                </Button>
+                <Modal
+                  id="ConfirmConsultation"
+                  isOpen={isEditPlanModalOpen}
+                  onClose={() => setIsEditPlanModalOpen(false)}
+                  onManageDisableScrolling={() => {}}
+                  containerClassName={css.modalContainer}
+                  usePortal
+                >
+                  <div className={css.popup}>
+                    <div className={css.popupMessage}>
+                      <FormattedMessage id="AppointmentCard.popupMessage" />
+                    </div>
+
+                    <Button
+                      className={css.confirmBtn}
+                      inProgress={progress}
+                      onClick={() => {
+                        setProgress(true);
+                        onConfirmConsultation(tx.id.uuid).then(resp => {
+                          setProgress(false);
+                          history.push(
+                            createResourceLocatorString(
+                              'MyAppoinmentBasePage',
+                              routeConfiguration(),
+                              // { id: resp.data.data.id.uuid },
+                              {}
+                            )
+                          );
+                        });
+                      }}
+                    >
+                      Confirm
+                    </Button>
+                  </div>
+                </Modal>
+              </div>
+            </>
+          ) : stateData === 'upcoming' ? (
+            <>
+              <div className={css.cctxtp}>Video Join button will appear here on time.</div>
+              <div className={css.profileBtnContainer}>
+                {category !== 'customService' ? (
+                  <div className={css.profileBtn}>
+                    <PrimaryButton
+                      inProgress={joinMeetingProgress}
+                      className={css.joinBtn}
+                      onClick={() => {
+                        setJoinMeetingProgress(true);
+                        // if (txBothJoined(tx) || txCustomerJoined1(tx)) {
+                        //   goToConference(tx);
+                        // } else {
+                        //   onJoinMeeting(tx.id, true)
+                        //     .then(res => {
+                        //       goToConference(tx);
+                        //     })
+                        //     .catch(e => {
+                        //       console.error(e);
+                        //     });
+                        // }
+                        goToConference(tx);
+                      }}
+                    >
+                      Join Meeting
+                    </PrimaryButton>
+                  </div>
+                ) : (
+                  ''
+                )}
               </div>
             </>
           ) : (
@@ -167,6 +304,7 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const AppointmentCard = compose(
+  withRouter,
   connect(mapStateToProps, mapDispatchToProps),
   injectIntl
 )(AppointmentCardComponent);

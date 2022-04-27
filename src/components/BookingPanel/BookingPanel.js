@@ -13,6 +13,7 @@ import { ModalInMobile, Button } from '../../components';
 import { BookingTimeForm } from '../../forms';
 
 import css from './BookingPanel.module.css';
+import moment from 'moment';
 
 // This defines when ModalInMobile shows content as Modal
 const MODAL_BREAKPOINT = 1023;
@@ -102,6 +103,8 @@ const BookingPanel = props => {
   const classes = classNames(rootClassName || css.root, className);
   const titleClasses = classNames(titleClassName || css.bookingTitle);
   const publicData = listing.attributes.publicData ? listing.attributes.publicData : 0;
+  const isCustomService = listing?.attributes?.publicData?.category === 'customService';
+  const deadline = listing?.attributes?.publicData?.Deadline;
 
   return (
     <div className={classes}>
@@ -128,6 +131,11 @@ const BookingPanel = props => {
           <div className={css.bookingHeadingContainer}>
             <h2 className={titleClasses}>{title}</h2>
             {subTitleText ? <div className={css.bookingHelp}>{subTitleText}</div> : null}
+            {isCustomService ? (
+              <div className={css.deadLine}>
+                Deadline : {moment(deadline).format('ddd, MMMM Do YYYY')}
+              </div>
+            ) : null}
           </div>
         </div>
 

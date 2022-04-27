@@ -9,6 +9,10 @@
 
 .form {
   flex-grow: 1;
+  padding-bottom: 120px;
+  @media (max-width: 1023px) {
+    padding-bottom: 210px;
+  }
 }
 
 .title {

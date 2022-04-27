@@ -88,16 +88,6 @@ const TopbarDesktop = props => {
       </MenuLabel>
       {currentUser?.attributes?.profile?.protectedData?.isLawyer ? (
         <MenuContent className={css.profileMenuContent}>
-          <MenuItem key="MyAppointmentPage">
-            <NamedLink
-              className={classNames(css.profileSettingsLink, currentPageClass('MyAppointmentPage'))}
-              name="MyAppointmentPage"
-              params={{ tab: 'pending' }}
-            >
-              <span className={css.menuItemBorder} />
-              <FormattedMessage id="TopbarDesktop.appointmentsLink" />
-            </NamedLink>
-          </MenuItem>
           <MenuItem key="ManageListingsPage">
             <NamedLink
               className={classNames(
@@ -110,16 +100,37 @@ const TopbarDesktop = props => {
               <FormattedMessage id="TopbarDesktop.manageListingsLink" />
             </NamedLink>
           </MenuItem>
-          <MenuItem key="PromotionPage">
+          <MenuItem key="Salespage">
+            <NamedLink
+              className={classNames(css.profileSettingsLink, currentPageClass('SalesBasePage'))}
+              name="Salespage"
+              params={{ tab: 'pending' }}
+            >
+              <span className={css.menuItemBorder} />
+              <FormattedMessage id="TopbarDesktop.mySalesLink" />
+            </NamedLink>
+          </MenuItem>
+          <MenuItem key="MyAppointmentPage">
+            <NamedLink
+              className={classNames(css.profileSettingsLink, currentPageClass('MyAppointmentPage'))}
+              name="MyAppointmentPage"
+              params={{ tab: 'pending' }}
+            >
+              <span className={css.menuItemBorder} />
+              <FormattedMessage id="TopbarDesktop.appointmentsLink" />
+            </NamedLink>
+          </MenuItem>
+
+          <MenuItem key="PromotionBasePage">
             <NamedLink
               className={classNames(css.promotionLink, currentPageClass('PromotionPage'))}
-              name="PromotionPage"
+              name="PromotionBasePage"
             >
               <span className={css.menuItemBorder} />
               <FormattedMessage id="TopbarDesktop.promotionLink" />
             </NamedLink>
           </MenuItem>
-          <MenuItem key="ServicesPage">
+          {/* <MenuItem key="ServicesPage">
             <NamedLink
               className={classNames(css.promotionLink, currentPageClass('ServicesPage'))}
               name="ServicesPage"
@@ -127,7 +138,7 @@ const TopbarDesktop = props => {
               <span className={css.menuItemBorder} />
               <FormattedMessage id="TopbarDesktop.ServicesLink" />
             </NamedLink>
-          </MenuItem>
+          </MenuItem> */}
 
           <MenuItem key="ProfileSettingsPage">
             <NamedLink
@@ -169,16 +180,16 @@ const TopbarDesktop = props => {
               <FormattedMessage id="TopbarDesktop.appointmentsLink" />
             </NamedLink>
           </MenuItem>
-          <MenuItem key="PromotionPage">
+          <MenuItem key="PromotionBasePage">
             <NamedLink
               className={classNames(css.promotionLink, currentPageClass('PromotionPage'))}
-              name="PromotionPage"
+              name="PromotionBasePage"
             >
               <span className={css.menuItemBorder} />
               <FormattedMessage id="TopbarDesktop.promotionLink" />
             </NamedLink>
           </MenuItem>
-          <MenuItem key="ServicesPage">
+          {/* <MenuItem key="ServicesPage">
             <NamedLink
               className={classNames(css.promotionLink, currentPageClass('ServicesPage'))}
               name="ServicesPage"
@@ -186,7 +197,7 @@ const TopbarDesktop = props => {
               <span className={css.menuItemBorder} />
               <FormattedMessage id="TopbarDesktop.ServicesLink" />
             </NamedLink>
-          </MenuItem>
+          </MenuItem> */}
           <MenuItem key="ProfileSettingsPage">
             <NamedLink
               className={classNames(

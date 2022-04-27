@@ -287,3 +287,13 @@ export const formatCurrencyMajorUnit = (intl, currency, valueWithoutSubunits) =>
 
   return intl.formatNumber(valueAsNumber, numberFormatOptions);
 };
+
+export const convertDecimalJSToNumber = decimalValue => {
+  if (!isSafeNumber(decimalValue)) {
+    throw new Error(
+      `Cannot represent Decimal.js value ${decimalValue.toString()} safely as a number`
+    );
+  }
+
+  return decimalValue.toNumber();
+};

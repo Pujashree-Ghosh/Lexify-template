@@ -61,33 +61,42 @@ const UserNav = props => {
         ...listingTab(listing, selectedPageName),
       },
       {
-        text: <FormattedMessage id="UserNav.myAppointments" />,
-        selected: selectedPageName === 'MyAppoinmentBasePage',
-        linkProps: {
-          name: 'MyAppoinmentBasePage',
-        },
-      },
-      {
         text: <FormattedMessage id="UserNav.yourListings" />,
         selected: selectedPageName === 'ManageListingsPage',
         linkProps: {
           name: 'ManageListingsPage',
         },
       },
+
+      {
+        text: <FormattedMessage id="UserNav.sales" />,
+        selected: selectedPageName === 'SalesBasePage',
+        linkProps: {
+          name: 'SalesBasepage',
+        },
+      },
+      {
+        text: <FormattedMessage id="UserNav.myAppointments" />,
+        selected: selectedPageName === 'MyAppoinmentBasePage',
+        linkProps: {
+          name: 'MyAppoinmentBasePage',
+        },
+      },
+
       {
         text: <FormattedMessage id="UserNav.PromotionPage" />,
-        selected: selectedPageName === 'PromotionPage',
+        selected: selectedPageName === 'PromotionBasePage',
         linkProps: {
-          name: 'PromotionPage',
+          name: 'PromotionBasePage',
         },
       },
-      {
-        text: <FormattedMessage id="UserNav.ServicesPage" />,
-        selected: selectedPageName === 'ServicesPage',
-        linkProps: {
-          name: 'ServicesPage',
-        },
-      },
+      // {
+      //   text: <FormattedMessage id="UserNav.ServicesPage" />,
+      //   selected: selectedPageName === 'ServicesPage',
+      //   linkProps: {
+      //     name: 'ServicesPage',
+      //   },
+      // },
       {
         text: <FormattedMessage id="UserNav.profileSettingsPage" />,
         selected: selectedPageName === 'ProfileSettingsPage',
@@ -116,18 +125,18 @@ const UserNav = props => {
       },
       {
         text: <FormattedMessage id="UserNav.PromotionPage" />,
-        selected: selectedPageName === 'PromotionPage',
+        selected: selectedPageName === 'PromotionBasePage',
         linkProps: {
-          name: 'PromotionPage',
+          name: 'PromotionBasePage',
         },
       },
-      {
-        text: <FormattedMessage id="UserNav.ServicesPage" />,
-        selected: selectedPageName === 'ServicesPage',
-        linkProps: {
-          name: 'ServicesPage',
-        },
-      },
+      // {
+      //   text: <FormattedMessage id="UserNav.ServicesPage" />,
+      //   selected: selectedPageName === 'ServicesPage',
+      //   linkProps: {
+      //     name: 'ServicesPage',
+      //   },
+      // },
       {
         text: <FormattedMessage id="UserNav.profileSettingsPage" />,
         selected: selectedPageName === 'ProfileSettingsPage',

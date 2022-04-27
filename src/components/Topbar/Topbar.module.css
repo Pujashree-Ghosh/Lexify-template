@@ -6,6 +6,10 @@
   /* Top Bar's drop shadow should always be visible */
   z-index: var(--zIndexTopbar);
   position: relative;
+
+  @media (max-width: 575px) {
+    overflow-x: hiddin;
+  }
 }
 
 .container {
@@ -82,6 +86,10 @@
 }
 .searchMenu {
   padding: 12px 24px;
+
+  @media (max-width: 575px) {
+    padding: 12px 14px 12px 24px;
+  }
 }
 
 .menuIcon,

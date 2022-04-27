@@ -9,7 +9,7 @@ import { ensureCurrentUser } from '../../util/data';
 import arrayMutators from 'final-form-arrays';
 import { propTypes } from '../../util/types';
 import * as validators from '../../util/validators';
-import { required, bookingDateRequired, composeValidators } from '../../util/validators';
+import { required, composeValidators } from '../../util/validators';
 import config from '../../config';
 import { isUploadImageOverLimitError } from '../../util/errors';
 import {
@@ -20,18 +20,13 @@ import {
   IconSpinner,
   FieldTextInput,
   FieldSelect,
-  FieldDateInput,
 } from '../../components';
 import Select from 'react-select';
 import PhoneInput from 'react-phone-input-2';
 import css from './ProfileSettingsForm.module.css';
 import './PhoneInput2.css';
-import moment from 'moment';
 import axios from 'axios';
-import { FieldArray } from 'react-final-form-arrays';
 import { apiBaseUrl } from '../../util/api';
-import cloneDeep from 'lodash.clonedeep';
-import ProfilePageSideNav from '../../components/ProfilePageSideNav/ProfilePageSideNav';
 
 const ACCEPT_IMAGES = 'image/*';
 const UPLOAD_CHANGE_DELAY = 2000; // Show spinner so that browser has time to load img srcset
@@ -113,8 +108,6 @@ class ProfileSettingsFormComponent extends Component {
               form,
               values,
               initialValues,
-              areaOfLawOptions,
-              country,
               languages,
             } = fieldRenderProps;
             // let { values } = fieldRenderProps;
@@ -217,48 +210,6 @@ class ProfileSettingsFormComponent extends Component {
             });
             const otpRequired = validators.required(otpRequiredMessage);
 
-            const startTimePlaceholder = intl.formatMessage({
-              id: 'ProfileSettingsForm.startTimePlaceholder',
-            });
-            const startTimeLabel = intl.formatMessage({ id: 'ProfileSettingsForm.startTimeLabel' });
-
-            const DateLabel = intl.formatMessage({ id: 'ProfileSettingsForm.DateLabel' });
-
-            const startTimeRequiredMessage = intl.formatMessage({
-              id: 'ProfileSettingsForm.startTimeRequired',
-            });
-
-            const endTimePlaceholder = intl.formatMessage({
-              id: 'ProfileSettingsForm.endTimePlaceholder',
-            });
-            const endTimeLabel = intl.formatMessage({ id: 'ProfileSettingsForm.endTimeLabel' });
-
-            const endTimeRequiredMessage = intl.formatMessage({
-              id: 'ProfileSettingsForm.endTimeRequired',
-            });
-
-            // const pracTiceDatePlaceholder = intl.formatMessage({
-            //   id: 'ProfileSettingsForm.practiceDatePlaceholder',
-            // });
-            const practiceDateLabel = intl.formatMessage({
-              id: 'ProfileSettingsForm.practiceDateLabel',
-            });
-
-            const practiceDateRequiredMessage = intl.formatMessage({
-              id: 'ProfileSettingsForm.practiceDateRequired',
-            });
-
-            const statusPlaceholder = intl.formatMessage({
-              id: 'ProfileSettingsForm.statusPlaceholder',
-            });
-            const statusLabel = intl.formatMessage({
-              id: 'ProfileSettingsForm.statusLabel',
-            });
-
-            const statusRequiredMessage = intl.formatMessage({
-              id: 'ProfileSettingsForm.statusRequired',
-            });
-
             const languagePlaceholder = intl.formatMessage({
               id: 'ProfileSettingsForm.languagePlaceholder',
             });
@@ -268,125 +219,6 @@ class ProfileSettingsFormComponent extends Component {
 
             const languageRequiredMessage = intl.formatMessage({
               id: 'ProfileSettingsForm.languageRequired',
-            });
-
-            const timeZonePlaceholder = intl.formatMessage({
-              id: 'ProfileSettingsForm.timeZonePlaceholder',
-            });
-            const timeZoneLabel = intl.formatMessage({
-              id: 'ProfileSettingsForm.timeZoneLabel',
-            });
-
-            const timeZoneRequiredMessage = intl.formatMessage({
-              id: 'ProfileSettingsForm.timeZoneRequired',
-            });
-
-            const institutePlaceholder = intl.formatMessage({
-              id: 'ProfileSettingsForm.institutePlaceholder',
-            });
-            const instituteLabel = intl.formatMessage({
-              id: 'ProfileSettingsForm.instituteLabel',
-            });
-
-            const instituteRequiredMessage = intl.formatMessage({
-              id: 'ProfileSettingsForm.instituteRequired',
-            });
-
-            const degreePlaceholder = intl.formatMessage({
-              id: 'ProfileSettingsForm.degreePlaceholder',
-            });
-            const degreeLabel = intl.formatMessage({
-              id: 'ProfileSettingsForm.degreeLabel',
-            });
-
-            const degreeRequiredMessage = intl.formatMessage({
-              id: 'ProfileSettingsForm.degreeRequired',
-            });
-
-            const graduationPlaceholder = intl.formatMessage({
-              id: 'ProfileSettingsForm.graduationPlaceholder',
-            });
-            const graduationLabel = intl.formatMessage({
-              id: 'ProfileSettingsForm.graduationLabel',
-            });
-
-            const graduationRequiredMessage = intl.formatMessage({
-              id: 'ProfileSettingsForm.graduationRequired',
-            });
-
-            const practiceAreaPlaceholder = intl.formatMessage({
-              id: 'ProfileSettingsForm.practiceAreaPlaceholder',
-            });
-            const practiceAreaLabel = intl.formatMessage({
-              id: 'ProfileSettingsForm.practiceAreaLabel',
-            });
-
-            const practiceAreaRequiredMessage = intl.formatMessage({
-              id: 'ProfileSettingsForm.practiceAreaRequired',
-            });
-
-            const industryPlaceholder = intl.formatMessage({
-              id: 'ProfileSettingsForm.industryPlaceholder',
-            });
-            const industryLabel = intl.formatMessage({
-              id: 'ProfileSettingsForm.industryLabel',
-            });
-
-            // const industryRequiredMessage = intl.formatMessage({
-            //   id: 'ProfileSettingsForm.industryRequired',
-            // });
-
-            const recentWorkPlaceholder = intl.formatMessage({
-              id: 'ProfileSettingsForm.recentWorkPlaceholder',
-            });
-            const recentWorkLabel = intl.formatMessage({
-              id: 'ProfileSettingsForm.recentWorkLabel',
-            });
-
-            // const recentWorkRequiredMessage = intl.formatMessage({
-            //   id: 'ProfileSettingsForm.recentWorkRequired',
-            // });
-
-            // const fromPlaceholder = intl.formatMessage({
-            //   id: 'ProfileSettingsForm.fromPlaceholder',
-            // });
-            const fromLabel = intl.formatMessage({
-              id: 'ProfileSettingsForm.fromLabel',
-            });
-
-            // const fromRequiredMessage = intl.formatMessage({
-            //   id: 'ProfileSettingsForm.fromRequired',
-            // });
-
-            // const toPlaceholder = intl.formatMessage({
-            //   id: 'ProfileSettingsForm.toPlaceholder',
-            // });
-            const toLabel = intl.formatMessage({
-              id: 'ProfileSettingsForm.toLabel',
-            });
-
-            // const toRequiredMessage = intl.formatMessage({
-            //   id: 'ProfileSettingsForm.toRequired',
-            // });
-
-            const descriptionLabel = intl.formatMessage({
-              id: 'ProfileSettingsForm.descriptionLabel',
-            });
-            const descriptionPlaceholder = intl.formatMessage({
-              id: 'ProfileSettingsForm.descriptionPlaceholder',
-            });
-            const postalCodeLabel = intl.formatMessage({
-              id: 'ProfileSettingsForm.postalCodeLabel',
-            });
-            const postalCodePlaceholder = intl.formatMessage({
-              id: 'ProfileSettingsForm.postalCodePlaceholder',
-            });
-            const postalCodeRequiredMessage = intl.formatMessage({
-              id: 'ProfileSettingsForm.postalCodeRequiredMessage',
-            });
-
-            const stateLabel = intl.formatMessage({
-              id: 'ProfileSettingsForm.stateLabel',
             });
 
             const onLanguageChangeHandler = e => {
@@ -414,34 +246,6 @@ class ProfileSettingsFormComponent extends Component {
             const langOption = languages.map(l => {
               return { label: l.name, value: l.code };
             });
-
-            const time = [
-              '00:00',
-              '01:00',
-              '02:00',
-              '03:00',
-              '04:00',
-              '05:00',
-              '06:00',
-              '07:00',
-              '08:00',
-              '09:00',
-              '10:00',
-              '11:00',
-              '12:00',
-              '13:00',
-              '14:00',
-              '15:00',
-              '16:00',
-              '17:00',
-              '18:00',
-              '19:00',
-              '20:00',
-              '21:00',
-              '22:00',
-              '23:00',
-              '24:00',
-            ];
 
             const phnChange = initialValues.phoneNumber !== values.phoneNumber;
 
@@ -631,45 +435,6 @@ class ProfileSettingsFormComponent extends Component {
                   </div>
                 </div>
 
-                {/* {user &&
-              !user?.attributes?.profile?.protectedData?.isLawyer &&
-              !user?.attributes?.profile?.protectedData?.changedOnce ? (
-                <div className={css.psradioButtons}>
-                  <label className={css.radio}>
-                    <input
-                      className={css.radioInput}
-                      name="clientType"
-                      type="radio"
-                      value="legalEntity"
-                      checked={this.state.selectedOption === 'legalEntity'}
-                      onChange={e => {
-                        this.setState({ selectedOption: 'legalEntity' });
-                        form.reset();
-                        form.change('clientType', e.target.value);
-                        // console.log();
-                      }}
-                    />
-                    Legal entity
-                  </label>
-                  <label className={css.radio}>
-                    <input
-                      className={css.radioInput}
-                      name="clientType"
-                      type="radio"
-                      value="privateIndividual"
-                      checked={this.state.selectedOption === 'privateIndividual'}
-                      onChange={e => {
-                        this.setState({ selectedOption: 'privateIndividual' });
-                        form.reset();
-                        form.change('clientType', e.target.value);
-                      }}
-                    />
-                    Private individual
-                  </label>
-                </div>
-              ) : (
-                ''
-              )} */}
                 {!user?.attributes?.profile?.protectedData?.isLawyer && clientType ? (
                   <div className={css.sectionContainer}>
                     <h3 className={css.sectionTitle}>
@@ -704,6 +469,157 @@ class ProfileSettingsFormComponent extends Component {
                       validate={lastNameRequired}
                     />
                   </div>
+                </div>
+                <div className={css.client}>
+                  {user?.attributes?.profile?.publicData?.clientType === 'legalEntity' ? (
+                    <div className={css.sectionContainer}>
+                      <h3 className={css.sectionTitle}>
+                        <FormattedMessage id="ProfileSettingsForm.companyDetail" />
+                      </h3>
+                      {/* <div className={css.nameContainer}> */}
+
+                      <div className={css.fromgroup}>
+                        <FieldTextInput
+                          className={css.companyName}
+                          type="text"
+                          id="companyName"
+                          name="companyName"
+                          placeholder={companyNamePlaceholder}
+                          validate={companyNameRequired}
+                        />
+                      </div>
+                      <div className={css.fromgroup}>
+                        <FieldTextInput
+                          className={css.companyNumber}
+                          type="text"
+                          id="companyNumber"
+                          name="companyNumber"
+                          placeholder={companyNumberPlaceholder}
+                          // validate={companyNumberRequired}
+                        />
+                      </div>
+                      <div className={css.fromgroup}>
+                        <FieldSelect
+                          id="country"
+                          name="country"
+                          // label="Choose an option:"
+                          validate={composeValidators(required(countryRequiredMessage))}
+                        >
+                          <option value="">{countryPlaceHolder}</option>
+                          {this.state.countryData.map(m => (
+                            <option value={m.iso3} key={m.iso3}>
+                              {m.name}
+                            </option>
+                          ))}
+                        </FieldSelect>
+                      </div>
+                      <div className={css.fromgroup}>
+                        <FieldTextInput
+                          className={css.street}
+                          type="text"
+                          id="street"
+                          name="street"
+                          placeholder={streetPlaceholder}
+                          validate={streetRequired}
+                        />
+                      </div>
+                      <div className={css.fromgroup}>
+                        <FieldTextInput
+                          className={css.city}
+                          type="text"
+                          id="city"
+                          name="city"
+                          placeholder={cityPlaceholder}
+                          validate={cityRequired}
+                        />
+                      </div>
+                      <div className={css.fromgroup}>
+                        <FieldTextInput
+                          className={css.state}
+                          type="text"
+                          id="state"
+                          name="state"
+                          placeholder={statePlaceholder}
+                          validate={stateRequired}
+                        />
+                      </div>
+                      <div className={css.fromgroup}>
+                        <FieldTextInput
+                          className={css.ZipCode}
+                          type="text"
+                          id="zipCode"
+                          name="zipCode"
+                          placeholder={zipCodePlaceholder}
+                          validate={zipCodeRequired}
+                        />
+                      </div>
+                      {/* </div> */}
+                    </div>
+                  ) : (
+                    <div className={css.sectionContainer}>
+                      <h3 className={css.sectionTitle}>
+                        <FormattedMessage id="ProfileSettingsForm.address" />
+                      </h3>
+                      {/* <div className={css.nameContainer}> */}
+
+                      <div className={css.fromgroup}>
+                        <FieldSelect
+                          id="country"
+                          name="country"
+                          // label="Choose an option:"
+                          // validate={required}
+                        >
+                          <option value="">{countryPlaceHolder}</option>
+                          {this.state.countryData.map(m => (
+                            <option value={m.iso3} key={m.iso3}>
+                              {m.name}
+                            </option>
+                          ))}
+                        </FieldSelect>
+                      </div>
+                      <div className={css.fromgroup}>
+                        <FieldTextInput
+                          className={css.street}
+                          type="text"
+                          id="street"
+                          name="street"
+                          placeholder={streetPlaceholder}
+                          validate={streetRequired}
+                        />
+                      </div>
+                      <div className={css.fromgroup}>
+                        <FieldTextInput
+                          className={css.city}
+                          type="text"
+                          id="city"
+                          name="city"
+                          placeholder={cityPlaceholder}
+                          validate={cityRequired}
+                        />
+                      </div>
+                      <div className={css.fromgroup}>
+                        <FieldTextInput
+                          className={css.state}
+                          type="text"
+                          id="state"
+                          name="state"
+                          placeholder={statePlaceholder}
+                          validate={stateRequired}
+                        />
+                      </div>
+                      <div className={css.fromgroup}>
+                        <FieldTextInput
+                          className={css.zipCode}
+                          type="text"
+                          id="zipCode"
+                          name="zipCode"
+                          placeholder={zipCodePlaceholder}
+                          validate={zipCodeRequired}
+                        />
+                      </div>
+                      {/* </div> */}
+                    </div>
+                  )}
                 </div>
 
                 <div className={css.sectionContainer}>
@@ -798,174 +714,8 @@ class ProfileSettingsFormComponent extends Component {
                   )}
                 </div>
 
-                {user && !user?.attributes?.profile?.protectedData?.isLawyer ? (
+                {user && !user?.attributes?.profile?.protectedData?.isLawyer && (
                   <div className={css.client}>
-                    {user?.attributes?.profile?.publicData?.clientType === 'legalEntity' ? (
-                      <div className={css.sectionContainer}>
-                        <h3 className={css.sectionTitle}>
-                          <FormattedMessage id="ProfileSettingsForm.companyDetail" />
-                        </h3>
-                        {/* <div className={css.nameContainer}> */}
-
-                        <div className={css.fromgroup}>
-                          <FieldTextInput
-                            className={css.companyName}
-                            type="text"
-                            id="companyName"
-                            name="companyName"
-                            placeholder={companyNamePlaceholder}
-                            validate={companyNameRequired}
-                          />
-                        </div>
-                        <div className={css.fromgroup}>
-                          <FieldTextInput
-                            className={css.companyNumber}
-                            type="text"
-                            id="companyNumber"
-                            name="companyNumber"
-                            placeholder={companyNumberPlaceholder}
-                            // validate={companyNumberRequired}
-                          />
-                        </div>
-                        <div className={css.fromgroup}>
-                          <FieldSelect
-                            id="country"
-                            name="country"
-                            // label="Choose an option:"
-                            validate={composeValidators(required(countryRequiredMessage))}
-                          >
-                            <option value="">{countryPlaceHolder}</option>
-                            {this.state.countryData.map(m => (
-                              <option value={m.iso3} key={m.iso3}>
-                                {m.name}
-                              </option>
-                            ))}
-                          </FieldSelect>
-                        </div>
-                        <div className={css.fromgroup}>
-                          <FieldTextInput
-                            className={css.street}
-                            type="text"
-                            id="street"
-                            name="street"
-                            placeholder={streetPlaceholder}
-                            validate={streetRequired}
-                          />
-                        </div>
-                        <div className={css.fromgroup}>
-                          <FieldTextInput
-                            className={css.city}
-                            type="text"
-                            id="city"
-                            name="city"
-                            placeholder={cityPlaceholder}
-                            validate={cityRequired}
-                          />
-                        </div>
-                        <div className={css.fromgroup}>
-                          <FieldTextInput
-                            className={css.state}
-                            type="text"
-                            id="state"
-                            name="state"
-                            placeholder={statePlaceholder}
-                            validate={stateRequired}
-                          />
-                        </div>
-                        <div className={css.fromgroup}>
-                          <FieldTextInput
-                            className={css.ZipCode}
-                            type="text"
-                            id="zipCode"
-                            name="zipCode"
-                            placeholder={zipCodePlaceholder}
-                            validate={zipCodeRequired}
-                          />
-                        </div>
-                        {/* </div> */}
-                      </div>
-                    ) : (
-                      <div className={css.sectionContainer}>
-                        <h3 className={css.sectionTitle}>
-                          <FormattedMessage id="ProfileSettingsForm.address" />
-                        </h3>
-                        {/* <div className={css.nameContainer}> */}
-
-                        <div className={css.fromgroup}>
-                          <FieldSelect
-                            id="country"
-                            name="country"
-                            // label="Choose an option:"
-                            // validate={required}
-                          >
-                            <option value="">{countryPlaceHolder}</option>
-                            {this.state.countryData.map(m => (
-                              <option value={m.iso3} key={m.iso3}>
-                                {m.name}
-                              </option>
-                            ))}
-                          </FieldSelect>
-                        </div>
-                        <div className={css.fromgroup}>
-                          <FieldTextInput
-                            className={css.street}
-                            type="text"
-                            id="street"
-                            name="street"
-                            placeholder={streetPlaceholder}
-                            validate={streetRequired}
-                          />
-                        </div>
-                        <div className={css.fromgroup}>
-                          <FieldTextInput
-                            className={css.city}
-                            type="text"
-                            id="city"
-                            name="city"
-                            placeholder={cityPlaceholder}
-                            validate={cityRequired}
-                          />
-                        </div>
-                        <div className={css.fromgroup}>
-                          <FieldTextInput
-                            className={css.state}
-                            type="text"
-                            id="state"
-                            name="state"
-                            placeholder={statePlaceholder}
-                            validate={stateRequired}
-                          />
-                        </div>
-                        <div className={css.fromgroup}>
-                          <FieldTextInput
-                            className={css.zipCode}
-                            type="text"
-                            id="zipCode"
-                            name="zipCode"
-                            placeholder={zipCodePlaceholder}
-                            validate={zipCodeRequired}
-                          />
-                        </div>
-                        {/* </div> */}
-                      </div>
-                    )}
-
-                    <div className={css.sectionContainer}>
-                      <h3 className={css.sectionTitle}>
-                        <FormattedMessage id="ProfileSettingsForm.timeZone" />
-                      </h3>
-                      {/* <div className={css.nameContainer}> */}
-                      <FieldSelect
-                        id="timeZone"
-                        name="timeZone"
-                        // label="Choose an option:"
-                        // validate={required}
-                      >
-                        <option value="">{timeZonePlaceholder}</option>
-                        <option value="first">First option</option>
-                        <option value="second">Second option</option>
-                      </FieldSelect>
-                    </div>
                     <div className={css.sectionContainer}>
                       <h3 className={css.sectionTitle}>
                         <FormattedMessage id="ProfileSettingsForm.vatNo" />
@@ -984,205 +734,6 @@ class ProfileSettingsFormComponent extends Component {
                       <h3 className={css.sectionTitle}>
                         <FormattedMessage id="ProfileSettingsForm.languages" />
                       </h3>
-                      {/* <div className={css.nameContainer}> */}
-                      {/* <FieldSelect
-                      id="language"
-                      name="language"
-                      // label="Choose an option:"
-                      validate={composeValidators(required(languageRequiredMessage))}
-                    >
-                      <option value="">{languagePlaceholder}</option>
-                      <option value="first">First option</option>
-                      <option value="second">Second option</option>
-                    </FieldSelect> */}
-                      <Select
-                        closeMenuOnSelect={false}
-                        className={css.reactSelect}
-                        isSearchable={true}
-                        name="language"
-                        placeholder={languagePlaceholder}
-                        onChange={onLanguageChangeHandler}
-                        defaultValue={
-                          initialValues.languages && JSON.parse(initialValues.languages)
-                        }
-                        isMulti
-                        options={langOption}
-                        onBlur={onLanguageBlurHandler}
-                      />
-                      {this.state.languageError ? (
-                        <div className={css.errorMessage}>{languageRequiredMessage}</div>
-                      ) : (
-                        ''
-                      )}
-                    </div>
-                  </div>
-                ) : (
-                  <div className={css.lawyer}>
-                    <FieldArray name="jurisdictionPractice">
-                      {({ fields }) => {
-                        return (
-                          <div className={css.sectionContainer}>
-                            <h3 className={css.sectionTitle}>
-                              <FormattedMessage id="ProfileSettingsForm.jurisdictionPracticeTitle" />
-                            </h3>
-                            {fields.map((name, i) => {
-                              return (
-                                <div key={name + i}>
-                                  <div className={css.fromgroup}>
-                                    <FieldSelect
-                                      id={`${name}.country`}
-                                      name={`${name}.country`}
-                                      // label="Choose an option:"
-                                      // validate={countryPlaceHolder}
-                                      validate={composeValidators(required(countryRequiredMessage))}
-                                      onChange={() => {
-                                        if (values?.jurisdictionPractice[i]?.state) {
-                                          delete values.jurisdictionPractice[i].state;
-                                        }
-                                        if (values?.jurisdictionPractice[i]?.city) {
-                                          delete values.jurisdictionPractice[i].city;
-                                        }
-                                        if (values?.jurisdictionPractice[i]?.zipCode) {
-                                          delete values.jurisdictionPractice[i].postalCode;
-                                        }
-                                      }}
-                                    >
-                                      <option value="">{countryPlaceHolder}</option>
-                                      {this.state.countryData.map(m => (
-                                        <option value={m.iso3} key={m.iso3}>
-                                          {m.name}
-                                        </option>
-                                      ))}
-                                    </FieldSelect>
-                                  </div>
-                                  {values.jurisdictionPractice[i]?.country === 'USA' ? (
-                                    <>
-                                      <div className={css.fromgroup}>
-                                        <FieldSelect
-                                          id={`${name}.state`}
-                                          name={`${name}.state`}
-                                          // label="Choose an option:"
-                                          // validate={countryPlaceHolder}
-                                          validate={composeValidators(
-                                            required(stateRequiredMessage)
-                                          )}
-                                        >
-                                          <option value="">{statePlaceholder}</option>
-                                          {this.state.countryData
-                                            .filter(c => c.iso3 === 'USA')[0]
-                                            ?.states?.map(s => (
-                                              <option value={s.state_code}>{s.name}</option>
-                                            ))}
-                                        </FieldSelect>
-                                      </div>
-                                      <div className={css.fromgroup}>
-                                        <FieldTextInput
-                                          className={css.postalCode}
-                                          type="text"
-                                          id={`${name}.postalCode`}
-                                          name={`${name}.postalCode`}
-                                          placeholder={postalCodePlaceholder}
-                                          validate={composeValidators(
-                                            required(postalCodeRequiredMessage)
-                                          )}
-                                          label={postalCodeLabel}
-                                        />
-                                      </div>
-                                    </>
-                                  ) : (
-                                    <div className={css.fromgroup}>
-                                      <FieldTextInput
-                                        className={css.city}
-                                        type="text"
-                                        id={`${name}.city`}
-                                        name={`${name}.city`}
-                                        placeholder={cityPlaceholder}
-                                        validate={composeValidators(required(cityRequiredMessage))}
-                                        label={cityLabel}
-                                      />
-                                    </div>
-                                  )}
-
-                                  <div className={`${css.fromgroup} ${css.inlinefrom}`}>
-                                    <FieldTextInput
-                                      className={css.halfinput}
-                                      type="date"
-                                      id={`${name}.date`}
-                                      name={`${name}.date`}
-                                      // placeholder={pracTiceDatePlaceholder}
-                                      validate={composeValidators(
-                                        required(practiceDateRequiredMessage)
-                                      )}
-                                      label={practiceDateLabel}
-                                    />
-
-                                    <FieldSelect
-                                      className={css.halfinput}
-                                      id={`${name}.status`}
-                                      name={`${name}.status`}
-                                      label={statusLabel}
-                                      validate={composeValidators(required(statusRequiredMessage))}
-                                    >
-                                      <option value="">{statusPlaceholder}</option>
-                                      <option value="status1">Status 1</option>
-                                      <option value="status2">Status 1</option>
-                                      <option value="status3">Status 1</option>
-                                    </FieldSelect>
-                                  </div>
-                                </div>
-                              );
-                            })}
-                            <div className={`${css.fromgroup} ${css.inlinefrom}`}>
-                              <Button
-                                className={css.addMore}
-                                type="button"
-                                onClick={() => {
-                                  fields.push();
-                                }}
-                                disabled={
-                                  !values.jurisdictionPractice[
-                                    values.jurisdictionPractice?.length - 1
-                                  ]?.country ||
-                                  !values.jurisdictionPractice[
-                                    values.jurisdictionPractice?.length - 1
-                                  ]?.date ||
-                                  !values.jurisdictionPractice[
-                                    values.jurisdictionPractice?.length - 1
-                                  ]?.status
-                                }
-                              >
-                                <FormattedMessage id="ProfileSettingsForm.addMore" />
-                              </Button>
-                              <Button
-                                className={css.remove}
-                                type="button"
-                                onClick={() => {
-                                  fields.pop();
-                                }}
-                                disabled={values.jurisdictionPractice?.length < 2}
-                              >
-                                <FormattedMessage id="ProfileSettingsForm.remove" />
-                              </Button>
-                            </div>
-                          </div>
-                        );
-                      }}
-                    </FieldArray>
-                    <div className={css.sectionContainer}>
-                      <h3 className={css.sectionTitle}>
-                        <FormattedMessage id="ProfileSettingsForm.lawyerLanguages" />
-                      </h3>
-                      {/* <div className={css.nameContainer}> */}
-                      {/* <FieldSelect
-                      id="language"
-                      name="language"
-                      // label="Choose an option:"
-                      validate={composeValidators(required(languageRequiredMessage))}
-                    >
-                      <option value="">{languagePlaceholder}</option>
-                      <option value="first">First option</option>
-                      <option value="second">Second option</option>
-                    </FieldSelect> */}
 
                       <Select
                         closeMenuOnSelect={false}
@@ -1204,396 +755,9 @@ class ProfileSettingsFormComponent extends Component {
                         ''
                       )}
                     </div>
-                    <div className={css.sectionContainer}>
-                      <h3 className={css.sectionTitle}>
-                        <FormattedMessage id="ProfileSettingsForm.timeZone" />
-                      </h3>
-                      {/* <div className={css.nameContainer}> */}
-                      <FieldSelect
-                        id="timeZone"
-                        name="timeZone"
-                        // label="Choose an option:"
-                        validate={composeValidators(required(timeZoneRequiredMessage))}
-                      >
-                        <option value="">{timeZonePlaceholder}</option>
-                        <option value="first">First option</option>
-                        <option value="second">Second option</option>
-                      </FieldSelect>
-                    </div>
-                    <FieldArray name="education">
-                      {({ fields }) => {
-                        return (
-                          <div className={css.sectionContainer}>
-                            <h3 className={css.sectionTitle}>
-                              <FormattedMessage id="ProfileSettingsForm.rducationTitle" />
-                            </h3>
-                            <p>
-                              It is important to start with your most recent education and work
-                              backwards
-                            </p>
-                            {fields.map((name, i) => {
-                              return (
-                                <div key={name + i}>
-                                  <div className={css.fromgroup}>
-                                    <FieldTextInput
-                                      className={css.institute}
-                                      type="text"
-                                      id={`${name}.instituteName`}
-                                      name={`${name}.instituteName`}
-                                      placeholder={institutePlaceholder}
-                                      validate={composeValidators(
-                                        required(instituteRequiredMessage)
-                                      )}
-                                      label={instituteLabel}
-                                    />
-                                  </div>
-
-                                  <div className={`${css.fromgroup} ${css.inlinefrom}`}>
-                                    <FieldTextInput
-                                      className={`${css.degree} ${css.halfinput}`}
-                                      type="text"
-                                      id={`${name}.degree`}
-                                      name={`${name}.degree`}
-                                      placeholder={degreePlaceholder}
-                                      validate={composeValidators(required(degreeRequiredMessage))}
-                                      label={degreeLabel}
-                                    />
-
-                                    <FieldSelect
-                                      className={css.halfinput}
-                                      id={`${name}.graduationYear`}
-                                      name={`${name}.graduationYear`}
-                                      label={graduationLabel}
-                                      validate={composeValidators(
-                                        required(graduationRequiredMessage)
-                                      )}
-                                    >
-                                      <option value="">{graduationPlaceholder}</option>
-                                      <option value="2022">2022</option>
-                                      <option value="2021">2021</option>
-                                      <option value="2020">2020</option>
-                                    </FieldSelect>
-                                  </div>
-                                </div>
-                              );
-                            })}
-
-                            <div className={css.inlinefrom}>
-                              <Button
-                                className={css.addMore}
-                                type="button"
-                                onClick={() => {
-                                  fields.push();
-                                }}
-                                disabled={
-                                  !values.education[values.education?.length - 1]?.instituteName ||
-                                  !values.education[values.education?.length - 1]?.degree ||
-                                  !values.education[values.education?.length - 1]?.graduationYear
-                                }
-                              >
-                                <FormattedMessage id="ProfileSettingsForm.addMore" />
-                              </Button>
-                              <Button
-                                className={css.remove}
-                                type="button"
-                                onClick={() => {
-                                  fields.pop();
-                                }}
-                                disabled={values.education?.length < 2}
-                              >
-                                <FormattedMessage id="ProfileSettingsForm.remove" />
-                              </Button>
-                            </div>
-                          </div>
-                        );
-                      }}
-                    </FieldArray>
-                    <FieldArray name="practice">
-                      {({ fields }) => {
-                        return (
-                          <div className={css.sectionContainer}>
-                            <h3 className={css.sectionTitle}>
-                              <FormattedMessage id="ProfileSettingsForm.practiceAreaTitle" />
-                              {/* Practice area */}
-                            </h3>
-
-                            {fields.map((name, i) => {
-                              const options = cloneDeep(areaOfLawOptions).filter(
-                                ({ key }) =>
-                                  !values.practice.filter((m, index) => index !== i).includes(key)
-                              );
-                              return (
-                                <div key={name + i}>
-                                  <div className={css.fromgroup}>
-                                    <FieldSelect
-                                      id={`${name}`}
-                                      name={`${name}`}
-                                      validate={composeValidators(
-                                        required(practiceAreaRequiredMessage)
-                                      )}
-                                    >
-                                      <option value="">{practiceAreaPlaceholder}</option>
-                                      {cloneDeep(options).map(m => (
-                                        <option value={m.key} key={m.key}>
-                                          {m.label}
-                                        </option>
-                                      ))}
-                                    </FieldSelect>
-                                  </div>
-                                </div>
-                              );
-                            })}
-
-                            <div className={css.inlinefrom}>
-                              <Button
-                                className={css.addMore}
-                                type="button"
-                                onClick={() => {
-                                  fields.push();
-                                }}
-                                disabled={!values.practice[values.practice?.length - 1]}
-                              >
-                                <FormattedMessage id="ProfileSettingsForm.addMore" />
-                              </Button>
-                              <Button
-                                className={css.remove}
-                                type="button"
-                                onClick={() => {
-                                  fields.pop();
-                                }}
-                                disabled={values.practice?.length < 2}
-                              >
-                                <FormattedMessage id="ProfileSettingsForm.remove" />
-                              </Button>
-                            </div>
-                          </div>
-                        );
-                      }}
-                    </FieldArray>
-                    <FieldArray name="industry">
-                      {({ fields }) => {
-                        return (
-                          <div className={css.sectionContainer}>
-                            <h3 className={css.sectionTitle}>
-                              <FormattedMessage id="ProfileSettingsForm.industiesTitle" />
-                            </h3>
-                            <p>
-                              If you fill out industry you must also fill out at least one relevant
-                              recent work for each industry
-                            </p>
-                            {fields.map((name, i) => {
-                              return (
-                                <div key={name + i}>
-                                  <div className={css.fromgroup}>
-                                    <FieldTextInput
-                                      className={css.industry}
-                                      type="text"
-                                      id={`${name}.industryName`}
-                                      name={`${name}.industryName`}
-                                      placeholder={industryPlaceholder}
-                                      // validate={required}
-                                      label={industryLabel}
-                                    />
-                                  </div>
-                                  <div className={css.fromgroup}>
-                                    <FieldTextInput
-                                      className={css.recentWork}
-                                      type="text"
-                                      id={`${name}.recentWork`}
-                                      name={`${name}.recentWork`}
-                                      placeholder={
-                                        'Write your recent work relevant to this industry'
-                                      }
-                                      // validate={required}
-                                      label="Recent work"
-                                    />
-                                  </div>
-
-                                  <div className={css.fromgroup}>
-                                    <FieldTextInput
-                                      type="textarea"
-                                      id={`${name}.description`}
-                                      className={css.description}
-                                      name={`${name}.description`}
-                                      label={descriptionLabel}
-                                      placeholder={descriptionPlaceholder}
-                                    />
-                                    {values?.industry[i]?.description?.split(' ').length >
-                                    MAX_LIMIT ? (
-                                      <span className={css.errorMessage}>
-                                        {`You have exceeded the maximum word limit (max ${MAX_LIMIT} words)`}
-                                      </span>
-                                    ) : (
-                                      ''
-                                    )}
-                                  </div>
-
-                                  <div className={`${css.fromgroup} ${css.inlinefrom}`}>
-                                    <FieldTextInput
-                                      className={`${css.street} ${css.halfinput}`}
-                                      type="date"
-                                      id={`${name}.from`}
-                                      name={`${name}.from`}
-                                      label={fromLabel}
-                                      // placeholder={vatPlaceholder}
-                                      // validate={vatRequired}
-                                    />
-                                    <FieldTextInput
-                                      className={`${css.street} ${css.halfinput}`}
-                                      type="date"
-                                      id={`${name}.to`}
-                                      name={`${name}.to`}
-                                      label={toLabel}
-                                      // placeholder={vatPlaceholder}
-                                      // validate={vatRequired}
-                                    />
-                                  </div>
-                                </div>
-                              );
-                            })}
-                            <div className={css.inlinefrom}>
-                              <Button
-                                className={css.addMore}
-                                type="button"
-                                onClick={() => {
-                                  fields.push();
-                                }}
-                              >
-                                <FormattedMessage id="ProfileSettingsForm.addMore" />
-                              </Button>
-                              <Button
-                                className={css.remove}
-                                type="button"
-                                onClick={() => {
-                                  fields.pop();
-                                }}
-                                disabled={values.industry?.length < 2}
-                              >
-                                <FormattedMessage id="ProfileSettingsForm.remove" />
-                              </Button>
-                            </div>
-                          </div>
-                        );
-                      }}
-                    </FieldArray>
-                    <div className={classNames(css.sectionContainer, css.lastSection)}>
-                      <h3 className={css.sectionTitle}>
-                        <FormattedMessage id="ProfileSettingsForm.bioHeading" />
-                      </h3>
-                      <FieldTextInput
-                        type="textarea"
-                        id="bio"
-                        name="bio"
-                        label={bioLabel}
-                        placeholder={bioPlaceholder}
-                      />
-                    </div>
-                    {console.log(user?.attributes?.profile?.protectedData?.isProfileVerified)}
                   </div>
                 )}
-                {user?.attributes?.profile?.protectedData?.isProfileVerified ? (
-                  ''
-                ) : (
-                  <div>
-                    <FieldArray name="schedule">
-                      {({ fields }) => {
-                        return (
-                          <div className={css.sectionContainer}>
-                            <h3 className={css.sectionTitle}>
-                              <FormattedMessage id="ProfileSettingsForm.verification" />
-                            </h3>
-                            <p>Schedule a call for verification</p>
-                            {fields.map((name, i) => {
-                              return (
-                                <div key={name + i}>
-                                  <div className={`${css.fromgroup} ${css.inlinefrom}`}>
-                                    <FieldTextInput
-                                      className={`${css.street} ${css.thirdinput}`}
-                                      type="date"
-                                      id={`${name}.date`}
-                                      name={`${name}.date`}
-                                      label={DateLabel}
-                                      // placeholder={vatPlaceholder}
-                                      // validate={vatRequired}
-                                    />
-                                    <FieldSelect
-                                      className={`${css.serviceTime} ${css.thirdinput}`}
-                                      name={`${name}.startTime`}
-                                      id={`${name}.startTime`}
-                                      label={startTimeLabel}
-                                      placeholder={startTimePlaceholder}
-                                      validate={composeValidators(
-                                        required(startTimeRequiredMessage)
-                                      )}
-                                    >
-                                      {values &&
-                                        values.schedule[i] &&
-                                        values.schedule[i].date &&
-                                        time.map(c => (
-                                          <option key={c} value={c}>
-                                            {c ? c : startTimePlaceholder}
-                                          </option>
-                                        ))}
-                                    </FieldSelect>
 
-                                    <FieldSelect
-                                      className={`${css.endTime} ${css.thirdinput}`}
-                                      name={`${name}.endTime`}
-                                      id={`${name}.endTime`}
-                                      label={endTimeLabel}
-                                      placeholder={endTimePlaceholder}
-                                      validate={composeValidators(required(endTimeRequiredMessage))}
-                                    >
-                                      {values &&
-                                        values.schedule[i] &&
-                                        values.schedule[i].startTime &&
-                                        time
-                                          .slice(time.indexOf(values.schedule[i].startTime) + 1)
-                                          .map(c => (
-                                            <option key={c} value={c}>
-                                              {c ? c : startTimePlaceholder}
-                                            </option>
-                                          ))}
-                                    </FieldSelect>
-                                  </div>
-                                </div>
-                              );
-                            })}
-                            <div className={css.inlinefrom}>
-                              <Button
-                                className={css.addMore}
-                                type="button"
-                                onClick={() => {
-                                  fields.push();
-                                }}
-                                disabled={
-                                  !values.schedule[values.schedule?.length - 1]?.date ||
-                                  !values.schedule[values.schedule?.length - 1]?.startTime ||
-                                  !values.schedule[values.schedule?.length - 1]?.endTime
-                                }
-                              >
-                                <FormattedMessage id="ProfileSettingsForm.addMore" />
-                              </Button>
-                              <Button
-                                className={css.remove}
-                                type="button"
-                                onClick={() => {
-                                  fields.pop();
-                                }}
-                                disabled={values.schedule?.length < 2}
-                              >
-                                <FormattedMessage id="ProfileSettingsForm.remove" />
-                              </Button>
-                            </div>
-                          </div>
-                        );
-                      }}
-                    </FieldArray>
-                    <span className={css.info}>
-                      * Verification is required to complete registration
-                    </span>
-                  </div>
-                )}
                 {submitError}
                 <Button
                   className={css.submitButton}
@@ -1621,7 +785,6 @@ ProfileSettingsFormComponent.defaultProps = {
   className: null,
   uploadImageError: null,
   updateProfileError: null,
-  areaOfLawOptions: config.custom.areaOfLaw.options,
   country: config.custom.country,
   languages: config.custom.languages,
   updateProfileReady: false,
@@ -1636,7 +799,6 @@ ProfileSettingsFormComponent.propTypes = {
   updateInProgress: bool.isRequired,
   updateProfileError: propTypes.error,
   updateProfileReady: bool,
-  areaOfLawOptions: propTypes.areaOfLawOptions,
   country: array,
   languages: array,
 

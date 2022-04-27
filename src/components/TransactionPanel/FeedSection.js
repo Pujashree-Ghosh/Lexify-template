@@ -21,7 +21,6 @@ const FeedSection = props => {
     onOpenReviewModal,
     totalMessagePages,
   } = props;
-
   const txTransitions = currentTransaction.attributes.transitions
     ? currentTransaction.attributes.transitions
     : [];

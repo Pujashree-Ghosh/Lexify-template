@@ -28,15 +28,26 @@ const {
   getAllBooking,
   deleteBooking,
   getProviderBooking,
+  updateBooking,
+  setVerification,
+  updateVerification,
+  fetchVerificationList,
+  markAsVerified,
+  fetchUserVerification,
 } = require('./api/booking');
 
-const createProviderListing = require('./api/create-provider-listing');
 const updateProviderListing = require('./api/update-provider-listing');
+const createProviderListing = require('./api/create-provider-listing');
 const publishPublicListing = require('./api/publish-public-listing');
 const globalAvailability = require('./api/globalAvailability');
-
+const sortOwnListings = require('./api/sortOwnListings');
+const updateClientId = require('./api/update-client-id');
+const showListingsAuthor = require('./api/show-listings-author');
 const { getTwilioToken } = require('./api/twilio');
 const { listingExceptionCreate, listingExceptionDelete } = require('./api/unsolicitedException');
+const { unsolicitedTransition } = require('./api/unsolicited-transition');
+const { setAdminAvailability, getAdminAvailability } = require('./api/AdminAvailability');
+const { verifyLawyer } = require('./api/verifyLawyer');
 
 const router = express.Router();
 
@@ -71,6 +82,7 @@ router.use((req, res, next) => {
 router.post('/user', sendOtp);
 router.post('/user/verify', verifyOtp);
 router.post('/booking/setBooking', setBooking);
+router.patch('/booking/updateBooking', updateBooking);
 router.post('/booking/getBooking', getBooking);
 router.get('/booking/getBooking', getAllBooking);
 router.post('/booking/getProviderBooking', getProviderBooking);
@@ -78,9 +90,10 @@ router.delete('/booking/deleteBooking', deleteBooking);
 router.post('/fetchexception', fetchException);
 router.post('/createException', createException);
 router.delete('/deleteException', deleteException);
-
+router.post('/sortOwnListings', sortOwnListings);
+router.post('/updateClientId', updateClientId);
 router.post('/getTwilioToken', getTwilioToken);
-
+router.post('/showListingsAuthor', showListingsAuthor);
 router.post('/createProviderListing', createProviderListing);
 router.post('/updateProviderListing', updateProviderListing);
 router.post('/publishPublicListing', publishPublicListing);
@@ -88,6 +101,22 @@ router.post('/globalAvailability', globalAvailability);
 router.get('/globalAvailability', globalAvailability);
 router.post('/listing/createException', listingExceptionCreate);
 router.delete('/listing/exceptionDelete', listingExceptionDelete);
+router.get('/unsolicitedTransition/:id', unsolicitedTransition);
+
+// router.post('/setVerificationTime', setVerificationTime);
+// router.get('/getVerification/:id', getVerification);
+// router.get('/getAllVerifications', getAllVerifications);
+
+router.post('/setVerification', setVerification);
+router.post('/updateVerification', updateVerification);
+router.post('/fetchVerificationList', fetchVerificationList);
+router.post('/markAsVerified', markAsVerified);
+router.post('/fetchUserVerification', fetchUserVerification);
+
+router.post('/verifyLawyer', verifyLawyer);
+
+router.post('/setAdminAvailability', setAdminAvailability);
+router.get('/getAdminAvailability', getAdminAvailability);
 
 router.get('/initiate-login-as', initiateLoginAs);
 router.get('/login-as', loginAs);

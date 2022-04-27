@@ -10,22 +10,50 @@ import { Participant, TrackPublication } from 'twilio-video-ssr';
 export default function useScreenShareParticipant() {
   const { room } = useVideoContext();
   const [screenShareParticipant, setScreenShareParticipant] = useState();
+  // console.log(
+  //   6060911,
+  //   // Array.from < Participant > room,
+  //   // screenShareParticipant,
+  //   Array.from(room.participants.values()),
+  //   // &&
+  //   room.participants,
+  //   // room.localParticipant,
+  //   // room.participants.entries().value,
+  //   // // the screenshare participant could be the localParticipant
+  //   Array.from(room.participants.values()).concat(room.localParticipant),
+  //   Array.from(room.participants.values())
+  //     .concat(room.localParticipant)
+  //     .map(m => Array.from(m.tracks.values())),
+  //   // .map(v => v),
+  //   Array.from(room.participants.values())
+  //     .concat(room.localParticipant)
+  //     .find(participant =>
+  //       Array.from(participant.tracks.values()).find(track => track.trackName.includes('screen'))
+  //     )
+  // );
 
   useEffect(() => {
     if (room.state === 'connected') {
       const updateScreenShareParticipant = () => {
         setScreenShareParticipant(
-          Array.from < Participant > room &&
-            room.participants
-              .values()
-              // the screenshare participant could be the localParticipant
-              .concat(room.localParticipant)
-              .find(
-                participant =>
-                  Array.from <
-                  TrackPublication >
-                  participant.tracks.values().find(track => track.trackName.includes('screen'))
+          // Array.from < Participant > room &&
+          //   room.participants
+          //     .values()
+          //     // the screenshare participant could be the localParticipant
+          //     .concat(room.localParticipant)
+          //     .find(
+          //       participant =>
+          //         Array.from <
+          //         TrackPublication >
+          //         participant.tracks.values().find(track => track.trackName.includes('screen'))
+          //     )
+          Array.from(room.participants.values())
+            .concat(room.localParticipant)
+            .find(participant =>
+              Array.from(participant.tracks.values()).find(track =>
+                track.trackName.includes('screen')
               )
+            )
         );
       };
       updateScreenShareParticipant();

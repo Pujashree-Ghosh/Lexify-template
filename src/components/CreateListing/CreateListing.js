@@ -34,12 +34,12 @@ function CreateListingPageComponent(props) {
         <LayoutWrapperMain>
           <div className={css.content}>
             <div className={css.headingContainer}>
-              <h3>
+              <h4>
                 <FormattedMessage id="CreateListing.heading" />
-                <span>
+                {/* <span>
                   <FormattedMessage id="CreateListing.subHeading" />
-                </span>
-              </h3>
+                </span> */}
+              </h4>
             </div>
 
             <div className={css.typeContainer}>
@@ -49,7 +49,7 @@ function CreateListingPageComponent(props) {
                     history.push(pathByRouteName('NewListingPublicOralPage', routes, {}));
                   }}
                 >
-                  Public Oral
+                  <FormattedMessage id="CreateListing.publicOral" />
                 </button>
                 <div className={css.infoText}>
                   <FormattedMessage id="CreateListing.oralInfo" />
@@ -61,7 +61,7 @@ function CreateListingPageComponent(props) {
                     history.push(pathByRouteName('NewListingCustomOralPage', routes, {}));
                   }}
                 >
-                  Custom Oral
+                  <FormattedMessage id="CreateListing.customOral" />
                 </button>
                 <div className={css.infoText}>
                   <FormattedMessage id="CreateListing.customInfo" />
@@ -73,7 +73,7 @@ function CreateListingPageComponent(props) {
                     history.push(pathByRouteName('NewListingCustomServicePage', routes, {}));
                   }}
                 >
-                  Custom Service
+                  <FormattedMessage id="CreateListing.customService" />
                 </button>
                 <div className={css.infoText}>
                   <FormattedMessage id="CreateListing.serviceInfo" />

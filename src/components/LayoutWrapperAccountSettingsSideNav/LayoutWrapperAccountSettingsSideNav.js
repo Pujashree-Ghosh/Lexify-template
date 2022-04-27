@@ -7,7 +7,9 @@ import { node, number, string, shape } from 'prop-types';
 import { compose } from 'redux';
 import { FormattedMessage } from '../../util/reactIntl';
 import { withViewport } from '../../util/contextHelpers';
+import { ensureCurrentUser } from '../../util/data';
 import { LayoutWrapperSideNav } from '../../components';
+import { connect } from 'react-redux';
 
 const MAX_HORIZONTAL_NAV_SCREEN_WIDTH = 1023;
 
@@ -24,9 +26,13 @@ const scrollToTab = currentTab => {
 };
 
 const LayoutWrapperAccountSettingsSideNavComponent = props => {
-  const { currentTab, viewport } = props;
+  const { currentTab, viewport, currentUser } = props;
 
   let hasScrolledToTab = false;
+  const user = ensureCurrentUser(currentUser);
+  const protectedData = user?.attributes?.profile?.protectedData;
+  const isLawyer = protectedData?.isLawyer;
+  console.log(isLawyer, user);
 
   const { width } = viewport;
   const hasViewport = width > 0;
@@ -67,6 +73,42 @@ const LayoutWrapperAccountSettingsSideNavComponent = props => {
         name: 'StripePayoutPage',
       },
     },
+
+    {
+      text: <FormattedMessage id="LayoutWrapperAccountSettingsSideNav.paymentMethodsTabTitle" />,
+      selected: currentTab === 'PaymentMethodsPage',
+      id: 'PaymentMethodsPageTab',
+      linkProps: {
+        name: 'PaymentMethodsPage',
+      },
+    },
+  ];
+  const clienttabs = [
+    {
+      text: <FormattedMessage id="LayoutWrapperAccountSettingsSideNav.contactDetailsTabTitle" />,
+      selected: currentTab === 'ContactDetailsPage',
+      id: 'ContactDetailsPageTab',
+      linkProps: {
+        name: 'ContactDetailsPage',
+      },
+    },
+    {
+      text: <FormattedMessage id="LayoutWrapperAccountSettingsSideNav.passwordTabTitle" />,
+      selected: currentTab === 'PasswordChangePage',
+      id: 'PasswordChangePageTab',
+      linkProps: {
+        name: 'PasswordChangePage',
+      },
+    },
+    // {
+    //   text: <FormattedMessage id="LayoutWrapperAccountSettingsSideNav.paymentsTabTitle" />,
+    //   selected: currentTab === 'StripePayoutPage',
+    //   id: 'StripePayoutPageTab',
+    //   linkProps: {
+    //     name: 'StripePayoutPage',
+    //   },
+    // },
+
     {
       text: <FormattedMessage id="LayoutWrapperAccountSettingsSideNav.paymentMethodsTabTitle" />,
       selected: currentTab === 'PaymentMethodsPage',
@@ -77,7 +119,11 @@ const LayoutWrapperAccountSettingsSideNavComponent = props => {
     },
   ];
 
-  return <LayoutWrapperSideNav tabs={tabs} />;
+  return (
+    <>
+      {isLawyer ? <LayoutWrapperSideNav tabs={tabs} /> : <LayoutWrapperSideNav tabs={clienttabs} />}
+    </>
+  );
 };
 
 LayoutWrapperAccountSettingsSideNavComponent.defaultProps = {
@@ -100,8 +146,15 @@ LayoutWrapperAccountSettingsSideNavComponent.propTypes = {
   }).isRequired,
 };
 
-const LayoutWrapperAccountSettingsSideNav = compose(withViewport)(
-  LayoutWrapperAccountSettingsSideNavComponent
-);
+const mapStateToProps = state => {
+  const { currentUser } = state.user;
+
+  return { currentUser };
+};
+
+const LayoutWrapperAccountSettingsSideNav = compose(
+  withViewport,
+  connect(mapStateToProps)
+)(LayoutWrapperAccountSettingsSideNavComponent);
 
 export default LayoutWrapperAccountSettingsSideNav;

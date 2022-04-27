@@ -23,6 +23,7 @@ const EditListingClientIdPanel = props => {
     submitButtonText,
     panelUpdated,
     updateInProgress,
+    category,
     errors,
   } = props;
 
@@ -38,25 +39,50 @@ const EditListingClientIdPanel = props => {
       : null;
   const { publicData } = currentListing.attributes;
   const isPublished = currentListing.id && currentListing.attributes.state !== LISTING_STATE_DRAFT;
-  const panelTitle = isPublished ? (
-    <FormattedMessage
-      id="EditListingClientIdPanel.title"
-      values={{
-        listingTitle: (
-          <ListingLink listing={listing}>
-            <FormattedMessage id="EditListingClientIdPanel.listingTitle" />
-          </ListingLink>
-        ),
-      }}
-    />
-  ) : (
-    <FormattedMessage id="EditListingClientIdPanel.listingTitle" />
-  );
+  const panelTitle =
+    category === 'customOral' ? (
+      isPublished ? (
+        <FormattedMessage
+          id="EditListingClientIdPanel.customOralTitleEdit"
+          values={{
+            listingTitle: (
+              <ListingLink listing={listing}>
+                {/* <FormattedMessage id="EditListingClientIdPanel.listingTitle" /> */}
+                {listing?.title}
+              </ListingLink>
+            ),
+          }}
+        />
+      ) : (
+        <FormattedMessage id="EditListingClientIdPanel.customOralTitle"/>
+      )
+    ) : isPublished ? (
+      <FormattedMessage
+        id="EditListingClientIdPanel.customServiceTitleEdit"
+        values={{
+          listingTitle: (
+            <ListingLink listing={listing}>
+              {/* <FormattedMessage id="EditListingClientIdPanel.listingTitle" /> */}
+              {listing?.title}
+            </ListingLink>
+          ),
+        }}
+      />
+    ) : (
+      <FormattedMessage id="EditListingClientIdPanel.customServiceTitle" />
+    );
 
-  const type = publicData && publicData.type ? publicData.type : 'solicited';
-  const clientId = publicData && publicData.clientId ? publicData.clientId : [''];
+  const type =
+    category === 'customService'
+      ? 'unsolicited'
+      : publicData && publicData.type
+      ? publicData.type
+      : 'solicited';
+  const clientId = publicData && publicData?.clientId?.length > 0 ? publicData.clientId : [''];
   const startDate =
     publicData && publicData.startDate ? { date: moment(publicData.startDate).toDate() } : '';
+
+  // console.log(startDate);
   const endDate =
     publicData && publicData.endDate ? { date: moment(publicData.endDate).toDate() } : '';
   const startHour = publicData && publicData.startHour ? publicData.startHour : '';
@@ -72,6 +98,7 @@ const EditListingClientIdPanel = props => {
       <EditListingClientIdForm
         className={css.form}
         initialValues={{ clientId, type, startDate, endDate, startHour, endHour }}
+        category={category}
         onSubmit={values => {
           const { clientId, type, startDate, endDate, startHour, endHour } = values;
           const updatedValues = {
@@ -82,6 +109,7 @@ const EditListingClientIdPanel = props => {
               endDate: moment(endDate.date).format(),
               startHour,
               endHour,
+              alreadyBooked: [],
             },
             availabilityPlan:
               type !== 'unsolicited'

@@ -64,6 +64,8 @@ export class AvailabilityPageComponent extends Component {
     const profileImage = image || { imageId: profileImageId };
     const protectedData = user?.attributes?.profile?.protectedData;
     const publicData = user?.attributes?.profile?.publicData;
+    const isSuperAdmin = publicData?.isSuperAdmin;
+
     const uuid = user?.id?.uuid;
     // console.log(user.id.uuid);
     const isLawyer = protectedData?.isLawyer;
@@ -94,7 +96,7 @@ export class AvailabilityPageComponent extends Component {
         //   uploadedImage && uploadedImage.imageId && uploadedImage.file
         //     ? { ...profile, profileImageId: uploadedImage.imageId }
         //     : profile;
-        onUpdateProfile(updatedValues, uuid);
+        onUpdateProfile(updatedValues, uuid, isSuperAdmin);
       }
       if (isLawyer === false) {
         const {
@@ -183,6 +185,7 @@ export class AvailabilityPageComponent extends Component {
             //   onDeleteAvailabilityException={onDeleteAvailabilityException}
             onSubmit={handleSubmit}
             updateInProgress={updateInProgress}
+            updateSuccess={updateSuccess}
             //   onNextTab={() =>
             //     redirectAfterDraftUpdate(listing.id.uuid, params, tab, marketplaceTabs, history)
             //   }
@@ -361,7 +364,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => ({
   onImageUpload: data => dispatch(uploadImage(data)),
-  onUpdateProfile: (data, uuid) => dispatch(updateProfile(data, uuid)),
+  onUpdateProfile: (data, uuid, isSuperAdmin, tab = 'availability') =>
+    dispatch(updateProfile(data, uuid, isSuperAdmin, tab)),
 });
 
 const AvailabilityPage = compose(

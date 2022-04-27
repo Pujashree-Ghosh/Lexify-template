@@ -387,7 +387,6 @@ export class ListingPageComponent extends Component {
       </NamedLink>
     );
 
-    const yogaStylesOptions = findOptionsForSelectFilter('yogaStyles', filterConfig);
     const certificateOptions = findOptionsForSelectFilter('certificate', filterConfig);
 
     return (
@@ -464,23 +463,67 @@ export class ListingPageComponent extends Component {
                   />*/}
                   {/*<SectionReviews reviews={reviews} fetchReviewsError={fetchReviewsError} />*/}
                 </div>
-                <BookingPanel
-                  className={css.bookingPanel}
-                  listing={currentListing}
-                  isOwnListing={isOwnListing}
-                  unitType={unitType}
-                  onSubmit={handleBookingSubmit}
-                  title={bookingTitle}
-                  authorDisplayName={authorDisplayName}
-                  onManageDisableScrolling={onManageDisableScrolling}
-                  monthlyTimeSlots={monthlyTimeSlots}
-                  onFetchTimeSlots={onFetchTimeSlots}
-                  onFetchTransactionLineItems={onFetchTransactionLineItems}
-                  lineItems={lineItems}
-                  fetchLineItemsInProgress={fetchLineItemsInProgress}
-                  fetchLineItemsError={fetchLineItemsError}
-                  duration={duration}
-                />
+                {isOwnListing ? (
+                  <BookingPanel
+                    className={css.bookingPanel}
+                    listing={currentListing}
+                    isOwnListing={isOwnListing}
+                    unitType={unitType}
+                    onSubmit={handleBookingSubmit}
+                    title={bookingTitle}
+                    authorDisplayName={authorDisplayName}
+                    onManageDisableScrolling={onManageDisableScrolling}
+                    monthlyTimeSlots={monthlyTimeSlots}
+                    onFetchTimeSlots={onFetchTimeSlots}
+                    onFetchTransactionLineItems={onFetchTransactionLineItems}
+                    lineItems={lineItems}
+                    fetchLineItemsInProgress={fetchLineItemsInProgress}
+                    fetchLineItemsError={fetchLineItemsError}
+                    duration={duration}
+                  />
+                ) : currentListing?.attributes?.publicData?.category === 'publicOral' ? (
+                  <BookingPanel
+                    className={css.bookingPanel}
+                    listing={currentListing}
+                    isOwnListing={isOwnListing}
+                    unitType={unitType}
+                    onSubmit={handleBookingSubmit}
+                    title={bookingTitle}
+                    authorDisplayName={authorDisplayName}
+                    onManageDisableScrolling={onManageDisableScrolling}
+                    monthlyTimeSlots={monthlyTimeSlots}
+                    onFetchTimeSlots={onFetchTimeSlots}
+                    onFetchTransactionLineItems={onFetchTransactionLineItems}
+                    lineItems={lineItems}
+                    fetchLineItemsInProgress={fetchLineItemsInProgress}
+                    fetchLineItemsError={fetchLineItemsError}
+                    duration={duration}
+                  />
+                ) : currentListing?.attributes?.publicData?.clientId?.includes(
+                    currentUser?.attributes?.email
+                  ) ? (
+                  <BookingPanel
+                    className={css.bookingPanel}
+                    listing={currentListing}
+                    isOwnListing={isOwnListing}
+                    unitType={unitType}
+                    onSubmit={handleBookingSubmit}
+                    title={bookingTitle}
+                    authorDisplayName={authorDisplayName}
+                    onManageDisableScrolling={onManageDisableScrolling}
+                    monthlyTimeSlots={monthlyTimeSlots}
+                    onFetchTimeSlots={onFetchTimeSlots}
+                    onFetchTransactionLineItems={onFetchTransactionLineItems}
+                    lineItems={lineItems}
+                    fetchLineItemsInProgress={fetchLineItemsInProgress}
+                    fetchLineItemsError={fetchLineItemsError}
+                    duration={duration}
+                  />
+                ) : (
+                  <div className={css.errMsg}>
+                    Sorry you are not allowed to book this consultation
+                  </div>
+                )}
               </div>
             </div>
             <Modal

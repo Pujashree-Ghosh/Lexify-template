@@ -3,8 +3,8 @@ import { makeStyles, Typography, Grid, Button, Theme, Hidden } from '@material-u
 import LocalVideoPreview from './LocalVideoPreview/LocalVideoPreview';
 import SettingsMenu from './SettingsMenu/SettingsMenu';
 import { Steps } from '../PreJoinScreens';
-import ToggleAudioButton from '../../Buttons/ToggleAudioButton/ToggleAudioButton';
-import ToggleVideoButton from '../../Buttons/ToggleVideoButton/ToggleVideoButton';
+import ToggleAudio from '../../Buttons/ToggleAudio/ToggleAudio';
+import ToggleVideo from '../../Buttons/ToggleVideo/ToggleVideo';
 import { useAppState } from '../../../state';
 import useVideoContext from '../../../hooks/useVideoContext/useVideoContext';
 import { ListingContext } from './../../../../containers/MeetingNewPage/Meeting';
@@ -80,16 +80,14 @@ export default function DeviceSelectionScreen({
   const isFirefox = browser && browser.name === 'firefox';
   const handleJoin = () => {
     getToken(name, roomName).then(token => {
-      //
-      // connect(token);
       connect(token, {
         region: 'gll',
       });
       // setTimeout(() => {
       // SignalHelper.emit('meeting', JSON.stringify({ status: 'open', isProvider }));
       if (typeof window !== undefined) {
-        console.log('socket----->>>>>', window.socket);
-        // window.socket && window.socket.emit('meeting-server', { status: 'open', isProvider });
+        // console.log('socket----->>>>>', window.socket);
+        window.socket && window.socket.emit('meeting-server', { status: 'open', isProvider });
       }
 
       // }, 1000);
@@ -117,8 +115,8 @@ export default function DeviceSelectionScreen({
           </div>
           <div className={`${classes.mobileButtonBar} mbb`}>
             <Hidden mdUp>
-              <ToggleAudioButton className={classes.mobileButton} disabled={disableButtons} />
-              <ToggleVideoButton className={classes.mobileButton} disabled={disableButtons} />
+              <ToggleAudio className={classes.mobileButton} />
+              <ToggleVideo className={classes.mobileButton} />
             </Hidden>
             <SettingsMenu mobileButtonClass={classes.mobileButton} />
           </div>
@@ -127,8 +125,8 @@ export default function DeviceSelectionScreen({
           <Grid container direction="column" justify="space-between" style={{ height: '100%' }}>
             <div>
               <Hidden smDown>
-                <ToggleAudioButton className={classes.deviceButton} disabled={disableButtons} />
-                <ToggleVideoButton className={classes.deviceButton} />
+                <ToggleAudio className={classes.deviceButton} />
+                <ToggleVideo className={classes.deviceButton} />
               </Hidden>
             </div>
             {!isFirefox && (

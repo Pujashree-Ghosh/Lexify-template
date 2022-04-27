@@ -7,12 +7,14 @@ import { loadData as EditListingPageLoader } from './EditListingPage/EditListing
 import { loadData as EmailVerificationPageLoader } from './EmailVerificationPage/EmailVerificationPage.duck';
 import { loadData as InboxPageLoader } from './InboxPage/InboxPage.duck';
 import { loadData as MyAppointmentPageLoader } from './MyAppointmentPage/MyAppointmentPage.duck';
+import { loadData as SalespageLoader } from './Salespage/Salespage.duck';
 import { loadData as ListingPageLoader } from './ListingPage/ListingPage.duck';
 import { loadData as ManageListingsPageLoader } from './ManageListingsPage/ManageListingsPage.duck';
 import { loadData as PaymentMethodsPageLoader } from './PaymentMethodsPage/PaymentMethodsPage.duck';
 import { loadData as ProfilePageLoader } from './ProfilePage/ProfilePage.duck';
 import { loadData as SearchPageLoader } from './SearchPage/SearchPage.duck';
 import { loadData as StripePayoutPageLoader } from './StripePayoutPage/StripePayoutPage.duck';
+import { loadData as PromotionPageLoader } from './SearchPage/PromotionPage.duck';
 
 import {
   loadData as TransactionPageLoader,
@@ -39,6 +41,9 @@ const getPageDataLoadingAPI = () => {
     MyAppointmentPage: {
       loadData: MyAppointmentPageLoader,
     },
+    Salespage: {
+      loadData: SalespageLoader,
+    },
     ListingPage: {
       loadData: ListingPageLoader,
     },
@@ -53,6 +58,9 @@ const getPageDataLoadingAPI = () => {
     },
     SearchPage: {
       loadData: SearchPageLoader,
+    },
+    PromotionPage: {
+      loadData: PromotionPageLoader,
     },
     StripePayoutPage: {
       loadData: StripePayoutPageLoader,

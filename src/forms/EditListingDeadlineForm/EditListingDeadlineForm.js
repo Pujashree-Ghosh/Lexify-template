@@ -7,11 +7,13 @@ import arrayMutators from 'final-form-arrays';
 import { injectIntl, FormattedMessage } from '../../util/reactIntl';
 import { propTypes } from '../../util/types';
 import config from '../../config';
-import { Button, FieldTextInput, Form } from '../../components';
+import { Button, FieldDateInput, Form } from '../../components';
 import { required, composeValidators } from '../../util/validators';
 
 import css from './EditListingDeadlineForm.module.css';
 import moment from 'moment';
+import axios from 'axios';
+import { apiBaseUrl } from '../../util/api';
 
 const EditListingDeadlineFormComponent = props => (
   <FinalForm
@@ -32,6 +34,8 @@ const EditListingDeadlineFormComponent = props => (
         invalid,
         intl,
         values,
+        category,
+        currentListing,
       } = formRenderProps;
 
       const classes = classNames(rootClassName || css.root, className);
@@ -53,6 +57,8 @@ const EditListingDeadlineFormComponent = props => (
       ) : null;
       const VALID = undefined;
 
+      const seats = currentListing?.attributes?.publicData?.clientId?.length;
+
       const deadlineValidator = message => value => {
         if (
           moment().isAfter(value) &&
@@ -68,22 +74,58 @@ const EditListingDeadlineFormComponent = props => (
       const deadlineInvalidMessage = intl.formatMessage({
         id: 'EditListingDeadlineForm.deadlineInvalid',
       });
+      const deadlinePlaceholder = intl.formatMessage({
+        id: 'EditListingDeadlineForm.deadlinePlaceholder',
+      });
+
       return (
-        <Form className={classes} onSubmit={handleSubmit}>
+        <Form
+          className={classes}
+          onSubmit={e => {
+            e.preventDefault();
+            if (category === 'customService') {
+              axios
+                .post(`${apiBaseUrl()}/api/listing/createException`, {
+                  id: currentListing.id.uuid,
+                  startDate: moment()
+                    .clone()
+                    .startOf('hour')
+                    .add(30, 'm')
+                    .format(),
+                  endDate: moment(values.Deadline.date)
+                    .clone()
+                    .endOf('day')
+                    .startOf('hour')
+                    .format(),
+                  seats: seats,
+                })
+                .then(console.log('Saved'))
+                .catch(err => console.log(err));
+            }
+            handleSubmit(e);
+          }}
+        >
           {errorMessage}
           {errorMessageShowListing}
           <h3 className={css.sectionTitle}>
             <FormattedMessage id="EditListingDeadlineForm.subTitle" />
           </h3>
-          <FieldTextInput
-            className={css.street}
-            type="date"
+
+          <FieldDateInput
+            className={`${css.street} `}
             id="deadLineDate"
             name="Deadline"
+            // label={fromLabel}
+            placeholderText={deadlinePlaceholder}
             validate={composeValidators(
               deadlineValidator(deadlineInvalidMessage),
               required(deadlineRequiredMessage)
             )}
+            isDayBlocked={day => {
+              return false;
+            }}
+            // isOutsideRange={() => false}
+            useMobileMargins
           />
           <Button
             className={css.submitButton}

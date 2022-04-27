@@ -33,13 +33,14 @@ export const DESCRIPTION = 'description';
 export const FEATURES = 'features';
 export const POLICY = 'policy';
 export const LOCATION = 'location';
-export const PRICING = 'pricing';
+export const PRICING = 'fee';
 // export const PHOTOS = 'photos';
 export const AREAOFLAW = 'areaoflaw';
 export const CLIENT = 'client';
 export const DURATION = 'duration';
-export const DEADLINE = 'DEADLINE';
+export const DEADLINE = 'deadline';
 export const EXPIRY = 'expiry';
+export const DURATION_PRICING="durationfee"
 
 // EditListingWizardTab component supports these tabs
 export const SUPPORTED_TABS = [
@@ -54,6 +55,7 @@ export const SUPPORTED_TABS = [
   PRICING,
   // AVAILABILITY,
   EXPIRY,
+  DURATION_PRICING
   // PHOTOS,
 ];
 
@@ -270,6 +272,7 @@ const EditListingWizardTab = props => {
       return (
         <EditListingDeadlinePanel
           {...panelProps(DEADLINE)}
+          category={category}
           submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
           onSubmit={values => {
             onCompleteEditListingWizardTab(tab, values);
@@ -289,6 +292,7 @@ const EditListingWizardTab = props => {
       return (
         <EditListingClientIdPanel
           {...panelProps(CLIENT)}
+          category={category}
           submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
           onSubmit={values => {
             onCompleteEditListingWizardTab(tab, values);
@@ -303,6 +307,7 @@ const EditListingWizardTab = props => {
       return (
         <EditListingDurationPanel
           {...panelProps(DURATION)}
+          category={category}
           submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
           onSubmit={values => {
             onCompleteEditListingWizardTab(tab, values);
@@ -326,6 +331,30 @@ const EditListingWizardTab = props => {
       return (
         <EditListingPricingPanel
           {...panelProps(PRICING)}
+          category={category}
+          submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
+          onSubmit={values => {
+            onCompleteEditListingWizardTab(tab, values);
+          }}
+        />
+      );
+    }
+    case DURATION_PRICING: {
+      const submitButtonTranslationKey =
+        category === 'customService'
+          ? isNewListingFlow
+            ? 'EditListingWizard.saveNewCustomServicePricing'
+            : 'EditListingWizard.saveEditPricing'
+          : category === 'customOral'
+            ? isNewListingFlow
+              ? 'EditListingWizard.saveNewCustomOralPricing'
+              : 'EditListingWizard.saveEditDuraionPricing'
+            : isNewListingFlow
+                ? 'EditListingWizard.saveNewPricing'
+                : 'EditListingWizard.saveEditDuraionPricing';
+      return (
+        <EditListingPricingPanel
+          {...panelProps(DURATION_PRICING)}
           category={category}
           submitButtonText={intl.formatMessage({ id: submitButtonTranslationKey })}
           onSubmit={values => {

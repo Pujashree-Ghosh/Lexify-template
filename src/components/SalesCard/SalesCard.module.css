@@ -1,0 +1,411 @@
+@import '../../styles/propertySets.css';
+
+.root {
+  /* Layout */
+  display: flex;
+  flex-direction: column;
+
+  /* Remove link's hover effect */
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+.threeToTwoWrapper {
+  /* Layout */
+  display: block;
+  width: 100%;
+  position: relative;
+  transition: var(--transitionStyleButton);
+
+  &:hover {
+    transform: scale(1.02);
+    box-shadow: var(--boxShadowListingCard);
+  }
+}
+
+/* Firefox doesn't support image aspect ratio inside flexbox */
+.aspectWrapper {
+  padding-bottom: 66.6667%; /* 3:2 Aspect Ratio */
+  background: var(--matterColorNegative); /* Loading BG color */
+}
+
+.rootForImage {
+  /* Layout - image will take space defined by aspect ratio wrapper */
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  border-radius: var(--borderRadius);
+}
+
+.info {
+  /* Layout */
+  display: flex;
+  flex-direction: row;
+  padding: 16px 0 2px 0;
+}
+
+.price {
+  /* Layout */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  margin-right: 18px;
+}
+
+.priceValue {
+  /* Font */
+  @apply --marketplaceH3FontStyles;
+
+  /* Remove default margins from font */
+  margin-top: 0;
+  margin-bottom: 0;
+
+  @media (--viewportMedium) {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
+.perUnit {
+  /* Font */
+  @apply --marketplaceTinyFontStyles;
+  color: var(--matterColor);
+
+  /* Remove default margins from font */
+  margin-top: 0;
+  margin-bottom: 0;
+
+  @media (--viewportMedium) {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
+.mainInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.title {
+  /* Font */
+  @apply --marketplaceH3FontStyles;
+  color: var(--matterColor);
+
+  /* Remove default margins from font */
+  margin-top: 0;
+  margin-bottom: 0;
+
+  @media (--viewportMedium) {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
+.certificateInfo {
+  /* Font */
+  @apply --marketplaceTinyFontStyles;
+  color: var(--matterColor);
+
+  /* Remove default margins from font */
+  margin-top: 0;
+  margin-bottom: 0;
+
+  @media (--viewportMedium) {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
+.longWord {
+  /* fallback option */
+  word-break: break-all;
+  /* use break-word if available */
+  word-break: break-word;
+  hyphens: auto;
+}
+.SectionAvatarImg {
+  position: relative;
+  @media (max-width: 575px) {
+    margin: 0 15px 0 0;
+  }
+}
+
+.cardContainer {
+  background: #fff;
+  box-shadow: 1px 0px 8px rgba(0, 0, 0, 0.2);
+  width: 100%;
+  display: flex;
+  margin: 0 0 20px;
+  border-left: 7px solid #a91722;
+  position: relative;
+  /* min-height: 100%; */
+  @media (max-width: 575px) {
+    flex-direction: column;
+  }
+}
+.listingInfo {
+  margin: 0 0 15px;
+  color: #000;
+  font-weight: 600;
+  line-height: 20px;
+}
+.listingTitle {
+  margin: 0px;
+}
+.listingDescription {
+  margin: 0px;
+}
+.price {
+  padding: 10px;
+  margin: 0px;
+  align-items: center;
+  color: #a91722;
+}
+.bookingContent {
+  display: flex;
+  padding: 10px 0;
+  align-items: center;
+  @media (max-width: 575px) {
+    flex-direction: column;
+  }
+}
+.cctxtp {
+  font-size: 13px;
+  padding: 0 50px 0 0;
+  color: #7a7a7a;
+  line-height: 20px;
+  @media (max-width: 767px) {
+    padding: 0 20px 0 0;
+  }
+  @media (max-width: 575px) {
+    font-size: 12px;
+    line-height: 15px;
+    padding: 0 0 15px;
+  }
+}
+.dateInfo {
+  background-color: #ffdbde;
+  display: flex;
+  flex-direction: column;
+  flex-basis: 16%;
+  max-width: 16%;
+  position: relative;
+  justify-content: center;
+  padding: 0 10px;
+  align-items: center;
+  @media (max-width: 767px) {
+    box-sizing: content-box;
+  }
+  @media (max-width: 575px) {
+    flex-basis: 100%;
+    max-width: 100%;
+    flex-direction: row;
+    padding: 15px;
+  }
+}
+.dateInfo span {
+  color: #000;
+  font-size: 14px;
+  line-height: 16px;
+  text-align: center;
+}
+.dateInfo span.stday {
+  font-size: 30px;
+  font-weight: 900;
+  margin: 20px 0;
+  @media (max-width: 575px) {
+    margin: 0 15px;
+  }
+}
+
+.status {
+  background-color: #ffdbde;
+  margin: 0;
+  padding: 7px 15px;
+  font-size: 14px;
+  font-weight: 100;
+  color: #a91722;
+  line-height: 16px;
+  border-radius: 5px;
+  @media (max-width: 575px) {
+    margin: 0 0 10px;
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+}
+
+.statuspending {
+  background-color: #fbebb3;
+  color: #836701;
+}
+
+.statuscom {
+  background-color: #c4c4c4;
+  color: #4e4e4e;
+}
+.statusContainer {
+  margin: 0 0 0 auto;
+}
+.providerAndListing {
+  display: flex;
+  flex-direction: row;
+  border-bottom: 1px solid #dadada;
+  padding: 0 0 20px;
+  margin: 0 0 15px;
+  @media (max-width: 767px) {
+    flex-direction: column;
+  }
+}
+.durationDeadline {
+  display: flex;
+  margin: 30px 0 0;
+  @media (max-width: 767px) {
+    margin: 0 0 15px;
+  }
+}
+.durationDeadline span {
+  font-size: 14px;
+  flex-basis: 100%;
+  padding: 0 10px 0 0;
+  font-weight: 400;
+
+  @media (max-width: 991px) {
+    font-size: 12px;
+  }
+  @media (max-width: 575px) {
+    flex-basis: 50%;
+    padding: 0 5px 0 0;
+  }
+}
+.durationDeadline span span {
+  color: #000;
+  margin: 0 5px 0 0;
+  padding: 0;
+}
+.horizontal {
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+  flex-basis: 84%;
+  max-width: 84%;
+  @media (max-width: 575px) {
+    flex-basis: 100%;
+    max-width: 100%;
+  }
+}
+
+.userContent {
+  display: flex;
+  border-left: 1px solid #dadada;
+  flex-basis: 40%;
+  max-width: 40%;
+  padding: 10px;
+  align-items: center;
+  @media (max-width: 767px) {
+    border-top: 1px solid #dadada;
+    flex-basis: 100%;
+    max-width: 100%;
+    padding: 15px 0 0;
+    border-left: 0;
+  }
+}
+.userInfo {
+  margin-left: 10px;
+  justify-items: center;
+  text-transform: capitalize;
+  @media (max-width: 575px) {
+    text-align: left;
+    margin: 10px 0;
+  }
+  & .userName {
+    font-size: 14px;
+    color: #38394e;
+    line-height: 18px;
+    margin: 0 0 5px;
+  }
+}
+.profileBtnContainer {
+  margin-left: auto;
+  flex-basis: 150px;
+  /* margin-right: 20px; */
+  @media (max-width: 575px) {
+    margin-right: auto;
+    flex-basis: 100%;
+  }
+}
+.confirmBtn {
+  background-color: var(--marketplaceColor);
+  color: var(--matterColorLight);
+  padding: 7px 15px;
+  text-align: center;
+  display: block;
+  border-radius: 5px;
+  width: 100%;
+  font-size: 15px;
+  font-weight: 300;
+  cursor: pointer;
+  border: 0;
+  max-width: 200px;
+  line-height: 20px;
+  min-height: 0px;
+}
+.joinBtn {
+  background-color: var(--successColorDark);
+  color: var(--matterColorLight);
+  padding: 7px 15px;
+  text-align: center;
+  display: block;
+  border-radius: 5px;
+  width: 100%;
+  font-size: 15px;
+  font-weight: 300;
+  cursor: pointer;
+  border: 0;
+  max-width: 200px;
+  line-height: 20px;
+  min-height: 0px;
+}
+.joinBtn:hover {
+  background-color: var(--successColorDark);
+}
+.confirmBtn:hover {
+  background-color: var(--marketplaceColorDark);
+}
+.locationIconContainer {
+  margin-right: 10px;
+}
+.locationIcon {
+  max-height: 12px;
+  margin: 0 6px 0 0;
+  opacity: 0.5;
+}
+.userLocation {
+  font-size: 13px;
+  color: #a3a3a3;
+  line-height: 18px;
+}
+.listingDurationDeadline {
+  max-width: 60%;
+  flex-basis: 60%;
+  padding: 0 10px 0 0;
+  @media (max-width: 767px) {
+    max-width: 100%;
+    flex-basis: 100%;
+    padding: 0;
+  }
+}
+.startTime {
+  color: #4e4e4e;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+}
+.startTime img {
+  height: 16px;
+  margin: 0 5px 0 0;
+}

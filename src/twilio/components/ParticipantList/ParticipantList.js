@@ -18,7 +18,7 @@ const useStyles = makeStyles(theme =>
       position: 'absolute',
       right: '0',
       overflowY: 'auto',
-      background: 'rgb(79, 83, 85)',
+      // background: 'rgba(79, 83, 85, 0.8)',
       gridArea: '1 / 2 / 1 / 3',
       zIndex: 5,
       [theme.breakpoints.down('sm')]: {
@@ -28,7 +28,11 @@ const useStyles = makeStyles(theme =>
         display: 'flex',
         padding: `${theme.sidebarMobilePadding}px`,
       },
+      maxHeight: '100vh',
+      overflowY: 'auto',
+      padding: '5px 5px 70px',
     },
+
     transparentBackground: {
       background: 'transparent',
     },
@@ -83,7 +87,9 @@ export default function ParticipantList() {
               key={participant.sid}
               participant={participant}
               isSelected={participant === selectedParticipant}
-              onClick={() => setSelectedParticipant(participant)}
+              onClick={() => {
+                setSelectedParticipant(participant);
+              }}
               hideParticipant={hideParticipant}
             />
           );

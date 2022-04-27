@@ -96,11 +96,25 @@
 }
 .cdin {
   margin-bottom: 30px;
+  @media (max-width: 575px) {
+    align-items: flex-start;
+    flex-direction: column;
+    width: 100%;
+  }
   & .cdinwd {
     width: 48%;
+    @media (max-width: 575px) {
+      width: 100%;
+      margin-bottom: 30px;
+    }
 
     & input {
       padding-bottom: 0;
     }
   }
+}
+.endTime :disabled {
+  border-bottom: 2px solid var(--successColor);
+  color: var(--matterColor);
+  cursor: not-allowed;
 }

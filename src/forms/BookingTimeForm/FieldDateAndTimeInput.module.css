@@ -9,9 +9,9 @@
   flex-shrink: 0;
 
   /* This container uses flexbox layout */
-  display: flex;
+  /* display: flex; */
   justify-content: space-between;
-  flex-wrap: wrap;
+  /* flex-wrap: wrap; */
 
   width: 100%;
   margin-top: 30px;
@@ -38,10 +38,15 @@
 
     &:nth-child(2n) {
       margin-top: unset;
+      width: auto;
     }
   }
 }
-
+.bookinghhmm {
+  @media (max-width: 767px) {
+    width: 100% !important;
+  }
+}
 .fieldDisabled {
   background: none;
   color: --matterColorNegative;

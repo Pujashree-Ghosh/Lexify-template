@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { arrayOf, bool, number, oneOf, shape, string } from 'prop-types';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
@@ -9,10 +9,17 @@ import {
   txIsCanceled,
   txIsDeclined,
   txIsEnquired,
+  txIsRescheduled,
   txIsRequested,
   txHasBeenDelivered,
   txIsPaymentExpired,
   txIsPaymentPending,
+  txIsPendingConfirmation,
+  txIsAcceptedOral,
+  txCustomerJoined1,
+  txProviderJoined1,
+  txBothJoined,
+  txIsPendingConfirmationOral,
 } from '../../util/transaction';
 import { propTypes, DATE_TYPE_DATETIME } from '../../util/types';
 import { createSlug, stringify } from '../../util/urlHelpers';
@@ -36,12 +43,17 @@ import {
   IconSpinner,
   UserDisplayName,
   UserNav,
+  VerificationCardLawyer,
 } from '../../components';
 import { TopbarContainer, NotFoundPage } from '..';
 import config from '../../config';
 
 import css from './MyAppointmentPage.module.css';
 import AppointmentCard from '../../components/AppointmentCard/AppointmentCard';
+import { confirmConsultation, joinMeeting } from '../TransactionPage/TransactionPage.duck';
+import axios from 'axios';
+import { apiBaseUrl } from '../../util/api';
+import VerificationCard from '../../components/VerificatoinCard/VerificationCard';
 
 const formatDate = (intl, date) => {
   return {
@@ -59,27 +71,24 @@ export const txState = (intl, tx, type) => {
 
   if (txIsAccepted(tx)) {
     return 'upcoming';
+  } else if (txIsAcceptedOral(tx)) {
+    return 'upcoming';
   }
-
-  /*********************************************** 
-
-commentout section needs to be changed later acoording to confirm state
-
-*********************************************** */
-
-  //    else if (txIsCanceled(tx)) {
-  //     return {
-  //       nameClassName: css.nameNotEmphasized,
-  //       bookingClassName: css.bookingNoActionNeeded,
-  //       lastTransitionedAtClassName: css.lastTransitionedAtNotEmphasized,
-  //       stateClassName: css.stateNoActionNeeded,
-  //       state: intl.formatMessage({
-  //         id: 'InboxPage.stateCanceled',
-  //       }),
-  //     };
-  //   }
-  else if (txHasBeenDelivered(tx)) {
-    return 'completed';
+  // else if (txCustomerJoined1(tx)) {
+  //   return 'upcoming';
+  // } else if (txProviderJoined1(tx)) {
+  //   return 'upcoming';
+  // } else if (txBothJoined(tx)) {
+  //   return 'upcoming';
+  // }
+  else if (txIsPendingConfirmation(tx)) {
+    return 'pending';
+  } else if (txIsPendingConfirmationOral(tx)) {
+    return 'pending';
+  } else if (txHasBeenDelivered(tx)) {
+    return 'complete';
+  } else if (txIsRescheduled(tx)) {
+    return 'upcoming';
   } else {
     console.warn('This transition is unknown:', tx.attributes.lastTransition);
     return null;
@@ -144,7 +153,35 @@ export const MyAppointmentPageComponent = props => {
     providerNotificationCount,
     scrollingDisabled,
     transactions,
+    onConfirmConsultation,
+    confirmConsultationInProgress,
+    confirmConsultationSuccess,
+    confirmConsultationError,
+    onJoinMeeting,
   } = props;
+
+  const [verificationDetail, setVerificationDetail] = useState('');
+
+  useEffect(() => {
+    let unmounted = false;
+    if (currentUser?.id?.uuid) {
+      axios
+        .post(`${apiBaseUrl()}/api/fetchUserVerification`, {
+          customerId: currentUser.id.uuid,
+        })
+        .then(resp => {
+          if (!unmounted) {
+            setVerificationDetail(resp.data);
+          }
+        });
+    }
+
+    return () => {
+      unmounted = true;
+    };
+  }, []);
+
+  // console.log(confirmConsultationSuccess);
   const { tab } = params;
   const ensuredCurrentUser = ensureCurrentUser(currentUser);
 
@@ -160,11 +197,11 @@ export const MyAppointmentPageComponent = props => {
   const upcomingTitle = 'Upcoming'; // intl.formatMessage({ id: 'InboxPage.salesTitle' });
   const completeTitle = 'Complete';
   const title = isPending ? pendingTitle : isUpcoming ? upcomingTitle : completeTitle;
+  const isLawyer = currentUser?.profile?.attributes?.protectedData?.isLawyer;
 
   const toTxItem = tx => {
     const type = isPending ? 'pending' : isUpcoming ? 'upcoming' : 'complete';
     const stateData = txState(intl, tx, type);
-    console.log(tx);
 
     // Render InboxItem only if the latest transition of the transaction is handled in the `txState` function.
     return stateData ? (
@@ -175,6 +212,12 @@ export const MyAppointmentPageComponent = props => {
           tx={tx}
           intl={intl}
           stateData={stateData}
+          onConfirmConsultation={onConfirmConsultation}
+          confirmConsultationInProgress={confirmConsultationInProgress}
+          confirmConsultationSuccess={confirmConsultationSuccess}
+          onJoinMeeting={onJoinMeeting}
+          txBothJoined={txBothJoined}
+          txCustomerJoined1={txCustomerJoined1}
         />
       </div>
     ) : null;
@@ -252,6 +295,8 @@ export const MyAppointmentPageComponent = props => {
   ];
   const nav = <TabNav rootClassName={css.tabs} tabRootClassName={css.tab} tabs={tabs} />;
 
+  const isProfileVerified = currentUser?.attributes?.profile?.protectedData?.isProfileVerified;
+
   return (
     <Page title={title} scrollingDisabled={scrollingDisabled}>
       <LayoutSideNavigation>
@@ -265,21 +310,27 @@ export const MyAppointmentPageComponent = props => {
           <UserNav selectedPageName="MyAppoinmentBasePage" />
         </LayoutWrapperTopbar>
         <LayoutWrapperSideNav className={css.navigation}>{nav}</LayoutWrapperSideNav>
-        <LayoutWrapperMain>
+        <LayoutWrapperMain className={css.Appointmentlwm}>
           {error}
-          {/* <ul className={css.itemList}>
-            {!fetchInProgress ? (
-              transactions.map(toTxItem)
+          {isLawyer ? (
+            isProfileVerified ? (
+              <>
+                {!fetchInProgress ? transactions.map(toTxItem) : <IconSpinner />}
+                {noResults}
+                {pagingLinks}
+              </>
+            ) : verificationDetail ? (
+              <VerificationCardLawyer detail={verificationDetail} />
             ) : (
-              <li className={css.listItemsLoading}>
-                <IconSpinner />
-              </li>
-            )}
-            {noResults}
-          </ul> */}
-          {!fetchInProgress ? transactions.map(toTxItem) : <IconSpinner />}
-          {noResults}
-          {pagingLinks}
+              <IconSpinner />
+            )
+          ) : (
+            <>
+              {!fetchInProgress ? transactions.map(toTxItem) : <IconSpinner />}
+              {noResults}
+              {pagingLinks}
+            </>
+          )}
         </LayoutWrapperMain>
         <LayoutWrapperFooter>
           <Footer />
@@ -326,6 +377,11 @@ const mapStateToProps = state => {
     currentUserListing,
     currentUserNotificationCount: providerNotificationCount,
   } = state.user;
+  const {
+    confirmConsultationInProgress,
+    confirmConsultationSuccess,
+    confirmConsultationError,
+  } = state.TransactionPage;
   return {
     currentUser,
     currentUserListing,
@@ -335,9 +391,22 @@ const mapStateToProps = state => {
     providerNotificationCount,
     scrollingDisabled: isScrollingDisabled(state),
     transactions: getMarketplaceEntities(state, transactionRefs),
+    confirmConsultationInProgress,
+    confirmConsultationSuccess,
+    confirmConsultationError,
   };
 };
 
-const MyAppointmentPage = compose(connect(mapStateToProps), injectIntl)(MyAppointmentPageComponent);
+const mapDispatchToProps = dispatch => {
+  return {
+    onConfirmConsultation: transactionId => dispatch(confirmConsultation(transactionId)),
+    onJoinMeeting: (transactionId, isCustomer) => dispatch(joinMeeting(transactionId, isCustomer)),
+  };
+};
+
+const MyAppointmentPage = compose(
+  connect(mapStateToProps, mapDispatchToProps),
+  injectIntl
+)(MyAppointmentPageComponent);
 
 export default MyAppointmentPage;

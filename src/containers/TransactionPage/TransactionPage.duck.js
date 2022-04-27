@@ -9,10 +9,17 @@ import {
   getReview1Transition,
   getReview2Transition,
   txIsInFirstReviewBy,
+  joinMeeting1Transition,
+  joinMeeting2Transition,
   TRANSITION_ACCEPT,
   TRANSITION_DECLINE,
+  TRANSITION_COMPLETE,
   TRANSITION_CANCEL_PROVIDER,
   TRANSITION_CANCEL_CUSTOMER,
+  TRANSITION_CANCEL_PROVIDER_ORAL,
+  TRANSITION_CANCEL_CUSTOMER_ORAL,
+  TRANSITION_RESCHEDULE_PROVIDER,
+  TRANSITION_RESCHEDULE_CUSTOMER,
 } from '../../util/transaction';
 import { apiBaseUrl, transactionLineItems } from '../../util/api';
 import * as log from '../../util/log';
@@ -63,6 +70,18 @@ export const CANCEL_SALE_CUSTOMER_REQUEST = 'app/TransactionPage/CANCEL_SALE_CUS
 export const CANCEL_SALE_CUSTOMER_SUCCESS = 'app/TransactionPage/CANCEL_SALE_CUSTOMER_SUCCESS';
 export const CANCEL_SALE_CUSTOMER_ERROR = 'app/TransactionPage/CANCEL_SALE_CUSTOMER_ERROR';
 
+export const RESCHEDULE_CUSTOMER_REQUEST = 'app/TransactionPage/RESCHEDULE_CUSTOMER_REQUEST';
+export const RESCHEDULE_CUSTOMER_SUCCESS = 'app/TransactionPage/RESCHEDULE_CUSTOMER_SUCCESS';
+export const RESCHEDULE_CUSTOMER_ERROR = 'app/TransactionPage/RESCHEDULE_CUSTOMER_ERROR';
+
+export const RESCHEDULE_PROVIDER_REQUEST = 'app/TransactionPage/RESCHEDULE_PROVIDER_REQUEST';
+export const RESCHEDULE_PROVIDER_SUCCESS = 'app/TransactionPage/RESCHEDULE_PROVIDER_SUCCESS';
+export const RESCHEDULE_PROVIDER_ERROR = 'app/TransactionPage/RESCHEDULE_PROVIDER_ERROR';
+
+export const CONFIRM_CONSULTATION_REQUEST = 'app/TransactionPage/CONFIRM_CONSULTATION_REQUEST';
+export const CONFIRM_CONSULTATION_SUCCESS = 'app/TransactionPage/CONFIRM_CONSULTATION_SUCCESS';
+export const CONFIRM_CONSULTATION_ERROR = 'app/TransactionPage/CONFIRM_CONSULTATION_ERROR';
+
 export const FETCH_MESSAGES_REQUEST = 'app/TransactionPage/FETCH_MESSAGES_REQUEST';
 export const FETCH_MESSAGES_SUCCESS = 'app/TransactionPage/FETCH_MESSAGES_SUCCESS';
 export const FETCH_MESSAGES_ERROR = 'app/TransactionPage/FETCH_MESSAGES_ERROR';
@@ -96,6 +115,15 @@ const initialState = {
   cancelProviderInProgress: false,
   cancelSaleCustomerError: null,
   cancelSaleProviderError: null,
+  rescheduleCustomerInProgress: false,
+  rescheduleProviderInProgress: false,
+  rescheduleCustomerError: null,
+  rescheduleProviderError: null,
+  rescheduleProviderSuccess: false,
+  rescheduleCustomerSuccess: false,
+  confirmConsultationSuccess: false,
+  confirmConsultationError: false,
+  confirmConsultationInProgress: false,
   declineSaleError: null,
   fetchMessagesInProgress: false,
   fetchMessagesError: null,
@@ -204,6 +232,51 @@ export default function checkoutPageReducer(state = initialState, action = {}) {
       return { ...state, cancelProviderInProgress: false };
     case CANCEL_SALE_PROVIDER_ERROR:
       return { ...state, cancelProviderInProgress: false, cancelSaleProviderError: payload };
+
+    case RESCHEDULE_CUSTOMER_REQUEST:
+      return {
+        ...state,
+        rescheduleCustomerInProgress: true,
+      };
+    case RESCHEDULE_CUSTOMER_SUCCESS:
+      return { ...state, rescheduleCustomerInProgress: false, rescheduleCustomerSuccess: false };
+    case RESCHEDULE_CUSTOMER_ERROR:
+      return {
+        ...state,
+        rescheduleCustomerInProgress: false,
+        rescheduleCustomerSuccess: false,
+        rescheduleSaleCustomerError: payload,
+      };
+
+    case RESCHEDULE_PROVIDER_REQUEST:
+      return {
+        ...state,
+        rescheduleProviderInProgress: true,
+      };
+    case RESCHEDULE_PROVIDER_SUCCESS:
+      return { ...state, rescheduleProviderInProgress: false, rescheduleProviderSuccess: true };
+    case RESCHEDULE_PROVIDER_ERROR:
+      return {
+        ...state,
+        rescheduleProviderInProgress: false,
+        rescheduleProviderSuccess: false,
+        rescheduleProviderError: payload,
+      };
+
+    case CONFIRM_CONSULTATION_REQUEST:
+      return {
+        ...state,
+        confirmConsultationInProgress: true,
+      };
+    case CONFIRM_CONSULTATION_SUCCESS:
+      return { ...state, confirmConsultationInProgress: false, confirmConsultationSuccess: true };
+    case CONFIRM_CONSULTATION_ERROR:
+      return {
+        ...state,
+        confirmConsultationInProgress: false,
+        confirmConsultationSuccess: false,
+        confirmConsultationError: payload,
+      };
 
     case FETCH_MESSAGES_REQUEST:
       return { ...state, fetchMessagesInProgress: true, fetchMessagesError: null };
@@ -341,6 +414,30 @@ const cancelSaleCustomerRequest = () => ({ type: CANCEL_SALE_CUSTOMER_REQUEST })
 const cancelSaleCustomerSuccess = () => ({ type: CANCEL_SALE_CUSTOMER_SUCCESS });
 const cancelSaleCustomerError = e => ({
   type: CANCEL_SALE_CUSTOMER_ERROR,
+  error: true,
+  payload: e,
+});
+
+const rescheduleCustomerRequest = () => ({ type: RESCHEDULE_CUSTOMER_REQUEST });
+const rescheduleCustomerSuccess = () => ({ type: RESCHEDULE_CUSTOMER_SUCCESS });
+const rescheduleCustomerError = e => ({
+  type: RESCHEDULE_CUSTOMER_ERROR,
+  error: true,
+  payload: e,
+});
+
+const rescheduleProviderRequest = () => ({ type: RESCHEDULE_PROVIDER_REQUEST });
+const rescheduleProviderSuccess = () => ({ type: RESCHEDULE_PROVIDER_SUCCESS });
+const rescheduleProviderError = e => ({
+  type: RESCHEDULE_PROVIDER_ERROR,
+  error: true,
+  payload: e,
+});
+
+const confirmConsultationRequest = () => ({ type: CONFIRM_CONSULTATION_REQUEST });
+const confirmConsultationSuccess = () => ({ type: CONFIRM_CONSULTATION_SUCCESS });
+const confirmConsultationError = e => ({
+  type: CONFIRM_CONSULTATION_ERROR,
   error: true,
   payload: e,
 });
@@ -551,25 +648,41 @@ export const joinMeeting = (id, isCustomer) => (dispatch, getState, sdk) => {
     })
     .catch(e => {
       if (isTransactionsTransitionInvalidTransition(storableError(e))) {
-        console.log('557 first catch', e);
         return joinMeetingSecond(id, isCustomer, dispatch, sdk, getState);
       } else {
-        console.log('557 first else catch');
         dispatch(joinMeetingError(storableError(e)));
 
         // Rethrow so the page can track whether the sending failed, and
         // keep the message in the form for a retry.
         throw e;
       }
-      // dispatch(joinMeetingError(storableError(e)));
-      // log.error(e, 'accept-sale-failed', {
-      //   txId: id,
-      //   transition,
-      // });
-      // throw e;
     });
 };
 
+export const joinMeetingSecond = (id, isCustomer, dispatch, sdk, getState) => {
+  if (acceptOrDeclineInProgress(getState())) {
+    return Promise.reject(new Error('Join meeting already in progress'));
+  }
+  dispatch(joinMeetingRequest());
+  const transition = joinMeeting2Transition(isCustomer);
+  console.log('557 join meeting second', transition);
+  return sdk.transactions
+    .transition({ id, transition, params: {} }, { expand: true })
+    .then(response => {
+      dispatch(addMarketplaceEntities(response));
+      dispatch(joinMeetingSuccess());
+      dispatch(fetchCurrentUserNotifications());
+      return response;
+    })
+    .catch(e => {
+      dispatch(joinMeetingError(storableError(e)));
+      log.error(e, 'join-meeting-second-failed', {
+        txId: id,
+        transition,
+      });
+      throw e;
+    });
+};
 export const cancelSaleCustomer = id => (dispatch, getState, sdk) => {
   if (acceptOrDeclineInProgress(getState())) {
     return Promise.reject(new Error('Accept or decline already in progress'));
@@ -619,6 +732,185 @@ export const cancelSaleProvider = id => (dispatch, getState, sdk) => {
       log.error(e, 'cancel-sale-provider-failed', {
         txId: id,
         transition: TRANSITION_CANCEL_PROVIDER,
+      });
+      throw e;
+    });
+};
+
+export const cancelSaleCustomerOral = id => (dispatch, getState, sdk) => {
+  if (acceptOrDeclineInProgress(getState())) {
+    return Promise.reject(new Error('Accept or decline already in progress'));
+  }
+  dispatch(cancelSaleCustomerRequest());
+
+  return sdk.transactions
+    .transition({ id, transition: TRANSITION_CANCEL_CUSTOMER_ORAL, params: {} }, { expand: true })
+    .then(response => {
+      axios.delete(`${apiBaseUrl()}/api/booking/deleteBooking`, {
+        data: { orderId: response.data.data.id.uuid },
+      });
+      dispatch(addMarketplaceEntities(response));
+      dispatch(cancelSaleCustomerSuccess());
+      dispatch(fetchCurrentUserNotifications());
+      return response;
+    })
+    .catch(e => {
+      dispatch(cancelSaleCustomerError(storableError(e)));
+      log.error(e, 'cancel-sale-customer-failed', {
+        txId: id,
+        transition: TRANSITION_CANCEL_CUSTOMER_ORAL,
+      });
+      throw e;
+    });
+};
+
+export const cancelSaleProviderOral = id => (dispatch, getState, sdk) => {
+  if (acceptOrDeclineInProgress(getState())) {
+    return Promise.reject(new Error('Accept or decline already in progress'));
+  }
+  dispatch(cancelSaleProviderRequest());
+
+  return sdk.transactions
+    .transition({ id, transition: TRANSITION_CANCEL_PROVIDER_ORAL, params: {} }, { expand: true })
+    .then(response => {
+      axios.delete(`${apiBaseUrl()}/api/booking/deleteBooking`, {
+        orderId: response.data.data.id.uuid,
+      });
+      dispatch(addMarketplaceEntities(response));
+      dispatch(cancelSaleProviderSuccess());
+      dispatch(fetchCurrentUserNotifications());
+      return response;
+    })
+    .catch(e => {
+      dispatch(cancelSaleProviderError(storableError(e)));
+      log.error(e, 'cancel-sale-provider-failed', {
+        txId: id,
+        transition: TRANSITION_CANCEL_PROVIDER_ORAL,
+      });
+      throw e;
+    });
+};
+
+export const confirmConsultation = id => (dispatch, getState, sdk) => {
+  if (acceptOrDeclineInProgress(getState())) {
+    return Promise.reject(new Error('Accept or decline already in progress'));
+  }
+  dispatch(confirmConsultationRequest());
+
+  return sdk.transactions
+    .transition(
+      {
+        id,
+        transition: TRANSITION_COMPLETE,
+        params: {},
+      },
+      { expand: true }
+    )
+    .then(response => {
+      // axios.patch(`${apiBaseUrl()}/api/booking/updateBooking`, {
+      //   orderId: response.data.data.id.uuid,
+      //   start: bookingStartTime,
+      //   end: bookingEndTime,
+      // });
+      dispatch(addMarketplaceEntities(response));
+      dispatch(confirmConsultationSuccess());
+      dispatch(fetchCurrentUserNotifications());
+      return new Promise((resolve, reject) => {
+        resolve(response);
+      });
+    })
+    .catch(e => {
+      dispatch(confirmConsultationError(storableError(e)));
+      log.error(e, 'confirm-consultation-failed', {
+        txId: id,
+        transition: TRANSITION_COMPLETE,
+      });
+      throw e;
+    });
+};
+
+export const rescheduleCustomer = (id, params) => (dispatch, getState, sdk) => {
+  const bookingStartTime = params.bookingStartTime;
+  const bookingEndTime = params.bookingEndTime;
+  // console.log(bookingEndTime, new Date(bookingEndTime).toISOString);
+  if (acceptOrDeclineInProgress(getState())) {
+    return Promise.reject(new Error('Accept or decline already in progress'));
+  }
+  dispatch(rescheduleCustomerRequest());
+
+  return sdk.transactions
+    .transition(
+      {
+        id,
+        transition: TRANSITION_RESCHEDULE_CUSTOMER,
+        params: {
+          bookingStart: bookingStartTime,
+          bookingEnd: bookingEndTime,
+        },
+      },
+      { expand: true }
+    )
+    .then(response => {
+      axios.patch(`${apiBaseUrl()}/api/booking/updateBooking`, {
+        orderId: response.data.data.id.uuid,
+        start: bookingStartTime,
+        end: bookingEndTime,
+      });
+      dispatch(addMarketplaceEntities(response));
+      dispatch(rescheduleCustomerSuccess());
+      dispatch(fetchCurrentUserNotifications());
+      return new Promise((resolve, reject) => {
+        resolve(response);
+      });
+    })
+    .catch(e => {
+      dispatch(rescheduleCustomerError(storableError(e)));
+      log.error(e, 'reschedule-customer-failed', {
+        txId: id,
+        transition: TRANSITION_RESCHEDULE_CUSTOMER,
+      });
+      throw e;
+    });
+};
+
+export const rescheduleProvider = (id, params) => (dispatch, getState, sdk) => {
+  if (acceptOrDeclineInProgress(getState())) {
+    return Promise.reject(new Error('Accept or decline already in progress'));
+  }
+  dispatch(rescheduleProviderRequest());
+
+  const bookingStartTime = params.bookingStartTime;
+  const bookingEndTime = params.bookingEndTime;
+  return sdk.transactions
+    .transition(
+      {
+        id,
+        transition: TRANSITION_RESCHEDULE_PROVIDER,
+        params: {
+          bookingStart: bookingStartTime,
+          bookingEnd: bookingEndTime,
+        },
+      },
+      { expand: true }
+    )
+    .then(response => {
+      axios.patch(`${apiBaseUrl()}/api/booking/updateBooking`, {
+        orderId: response.data.data.id.uuid,
+        start: bookingStartTime,
+        end: bookingEndTime,
+      });
+      dispatch(addMarketplaceEntities(response));
+      dispatch(rescheduleProviderSuccess());
+      dispatch(fetchCurrentUserNotifications());
+      return new Promise((resolve, reject) => {
+        resolve(response);
+      });
+    })
+    .catch(e => {
+      dispatch(rescheduleProviderError(storableError(e)));
+      log.error(e, 'reschedule-provider-failed', {
+        txId: id,
+        transition: TRANSITION_RESCHEDULE_PROVIDER,
       });
       throw e;
     });

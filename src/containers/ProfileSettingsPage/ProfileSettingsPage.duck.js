@@ -137,7 +137,8 @@ export function uploadImage(actionPayload) {
   };
 }
 
-export const updateProfile = (actionPayload, id) => {
+export const updateProfile = (actionPayload, id, isSuperAdmin, tab) => {
+  console.log(tab);
   return (dispatch, getState, sdk) => {
     dispatch(updateProfileRequest());
     const queryParams = {
@@ -148,14 +149,42 @@ export const updateProfile = (actionPayload, id) => {
 
     return sdk.currentUser
       .updateProfile(actionPayload, queryParams)
-      .then(response => {
-        axios
-          .post(`${apiBaseUrl()}/api/updateProviderListing`, { id })
-          .then(
-            axios
-              .post(`${apiBaseUrl()}/api/globalAvailability`, { authorId: id })
-              .then(() => dispatch(updateProfileSuccess(response)))
-          );
+      .then(async response => {
+        const res = await axios.post(`${apiBaseUrl()}/api/updateProviderListing`, { id });
+        const availability =
+          tab === 'availability'
+            ? await axios.post(`${apiBaseUrl()}/api/globalAvailability`, {
+                authorId: id,
+              })
+            : Promise.resolve();
+        const superAdmin =
+          tab === 'availability' && isSuperAdmin
+            ? await axios.post(`${apiBaseUrl()}/api/setAdminAvailability`, {
+                userId: id,
+              })
+            : Promise.resolve();
+
+        // Promise.all[(res, availability, superAdmin)];
+        dispatch(updateProfileSuccess(response));
+
+        // axios.post(`${apiBaseUrl()}/api/updateProviderListing`, { id }).then(() => {
+        //   if (tab === 'availability') {
+        //     axios.post(`${apiBaseUrl()}/api/globalAvailability`, { authorId: id }).then(() => {
+        //       if (isSuperAdmin) {
+        //         axios
+        //           .post(`${apiBaseUrl()}/api/setAdminAvailability`, {
+        //             userId: id,
+        //           })
+        //           .then(() => {
+        //             return dispatch(updateProfileSuccess(response));
+        //           })
+        //           .catch(e => {
+        //             console.log('Error occurred' + e);
+        //           });
+        //       } else return dispatch(updateProfileSuccess(response));
+        //     });
+        //   } else return dispatch(updateProfileSuccess(response));
+        // });
 
         const entities = denormalisedResponseEntities(response);
         if (entities.length !== 1) {

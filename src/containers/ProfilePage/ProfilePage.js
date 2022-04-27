@@ -50,13 +50,14 @@ import { MdEmail, MdLocalPhone } from 'react-icons/md';
 import { TopbarContainer, NotFoundPage } from '../../containers';
 import config from '../../config';
 import locationIcon from '../../assets/locationicon.svg';
-
+import Select from 'react-select';
 import biolocationIcon from '../../assets/material-location-on.svg';
 import biowebsite from '../../assets/feather-globe.svg';
 import biophone from '../../assets/zocial-call.svg';
 import biolinkedin from '../../assets/awesome-linkedin-in.svg';
-
+import ReactMultiSelectCheckboxes from 'react-multiselect-checkboxes';
 import css from './ProfilePage.module.css';
+import { loadData } from './ProfilePage.duck';
 // import CustomPaginate from '../CustomPaginate/CustomPaginate';
 
 // import CustomPagination from '../Pagination/Pagination';
@@ -92,6 +93,7 @@ export class ProfilePageComponent extends Component {
       showProfileDetail: false,
       countryData: [],
       pageNumber: 0,
+      practiceAreaSort: '',
     };
 
     this.showOfProviderReviews = this.showOfProviderReviews.bind(this);
@@ -136,8 +138,13 @@ export class ProfilePageComponent extends Component {
       queryParams,
       listings,
       areaOfLawOptions,
+      onLoadData,
     } = this.props;
-    // console.log(listings);
+    console.log(
+      456,
+      listings.map(m => m?.attributes?.publicData?.areaOfLaw)
+    );
+    console.log(123, this.state.practiceAreaSort);
     const ensuredCurrentUser = ensureCurrentUser(currentUser);
     const profileUser = ensureUser(user);
     const isCurrentUser =
@@ -148,11 +155,40 @@ export class ProfilePageComponent extends Component {
     const isMobileLayout = viewport.width < MAX_MOBILE_SCREEN_WIDTH;
     const publicData = user?.attributes?.profile?.publicData;
 
-    // console.log(profileUser, currentUser);
-
     const page = queryParams ? queryParams.page : 1;
     const hasPaginationInfo = !!pagination && pagination.totalItems != null;
     const listingsAreLoaded = !queryInProgress && hasPaginationInfo;
+    const practiceAreaCheckBoxOptions = [
+      {
+        value: 'contractsAndAgreements',
+        label: 'Contract And Agreements',
+      },
+      { value: 'employeeBenefits', label: 'Employee Benefits' },
+      { value: 'employmentAndLabor', label: 'Employment And Labor' },
+    ];
+
+    const practiceAreaSortSelectCheckbox = (
+      <div className={css.areaOfLawFilter}>
+        <label className={css.label}>Area of Law</label>
+        <ReactMultiSelectCheckboxes
+          // value={this.state.practiceAreaSort?.key}
+          isClearable={true}
+          options={practiceAreaCheckBoxOptions}
+          className={css.aofftd}
+          // isMulti={true}
+          onChange={e => {
+            e === null
+              ? this.setState({ practiceAreaSort: '' })
+              : this.setState({ practiceAreaSort: e?.map(e => e?.value) });
+            onLoadData({
+              id: user.id.uuid,
+              practiceAreaSort: e?.map(e => e?.value),
+            });
+          }}
+        />
+      </div>
+    );
+
     const noResults =
       listingsAreLoaded && pagination.totalItems <= 1 ? (
         <h1 className={css.title}>
@@ -532,13 +568,14 @@ export class ProfilePageComponent extends Component {
                 </div>
               ) : (
                 <div className={listingsContainerClasses}>
-                  <h2 className={css.listingsTitle}>
+                  <h1 className={css.listingsTitle}>
                     {/* <FormattedMessage
                       id="ProfilePage.listingsTitle"
                       values={{ count: listings.length }}
                     /> */}
                     Consultations provided by {user?.attributes?.profile?.displayName}
-                  </h2>
+                  </h1>
+                  {practiceAreaSortSelectCheckbox}
                   {/* {queryInProgress ? loadingResults : null}
                   {queryListingsError ? queryError : null} */}
 
@@ -844,7 +881,7 @@ const mapStateToProps = state => {
   } = state.ProfilePage;
   const userMatches = getMarketplaceEntities(state, [{ type: 'user', id: userId }]);
   const listings = getMarketplaceEntities(state, userListingRefs);
-  console.log(listings, userListingRefs);
+  // console.log(listings, userListingRefs);
   const user = userMatches.length === 1 ? userMatches[0] : null;
 
   return {
@@ -861,10 +898,13 @@ const mapStateToProps = state => {
     queryParams,
   };
 };
+const mapDispatchToProps = dispatch => ({
+  onLoadData: params => dispatch(loadData(params)),
+});
 
 const ProfilePage = compose(
   withRouter,
-  connect(mapStateToProps),
+  connect(mapStateToProps, mapDispatchToProps),
   withViewport,
   injectIntl
 )(ProfilePageComponent);

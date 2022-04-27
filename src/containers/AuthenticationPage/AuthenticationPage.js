@@ -113,11 +113,13 @@ export class AuthenticationPageComponent extends Component {
       (!isLogin &&
         currentUserLoaded &&
         user.attributes.emailVerified &&
-        !user.attributes.profile.protectedData.isProfileVerified) ||
+        !user.attributes.profile.protectedData.isProfileVerified &&
+        user.attributes.profile.protectedData.isLawyer) ||
       (isLogin &&
         currentUserLoaded &&
         user.attributes.emailVerified &&
-        !user.attributes.profile.protectedData.isProfileVerified);
+        !user.attributes.profile.protectedData.isProfileVerified &&
+        user.attributes.profile.protectedData.isLawyer);
 
     // Already authenticated, redirect away from auth page
     if (isAuthenticated && from) {

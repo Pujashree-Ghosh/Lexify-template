@@ -5,6 +5,11 @@ const { Money } = types;
 
 const { getAmountAsDecimalJS, convertDecimalJSToNumber } = require('./currency');
 
+const firstPercentage = parseInt(process.env.REACT_APP_FIRST_PRICE_PERCENT);
+const secondPercentage = parseInt(process.env.REACT_APP_SECOND_PRICE_PERCENT);
+const thirdPercentage = parseInt(process.env.REACT_APP_THIRD_PRICE_PERCENT);
+const fixedPrice = parseInt(process.env.REACT_APP_FIXED_PRICE);
+
 /** Helper functions for constructing line items*/
 
 /**
@@ -51,6 +56,24 @@ exports.calculateTotalPriceFromPercentage = (unitPrice, percentage) => {
   const numericTotalPrice = convertDecimalJSToNumber(totalPrice);
 
   return new Money(numericTotalPrice, unitPrice.currency);
+};
+
+exports.resolveVatPrice = (unitPrice, vatData) => {
+  const amountFromUnitPrice = getAmountAsDecimalJS(unitPrice);
+
+  if (vatData) {
+    const totalPrice = amountFromUnitPrice
+      .times(vatData.vat * 1)
+      .dividedBy(100)
+      .toNearest(1, Decimal.ROUND_HALF_UP);
+
+    // Get total price as Number (and validate that the conversion is safe)
+    const numericTotalPrice = convertDecimalJSToNumber(totalPrice);
+
+    return new Money(numericTotalPrice, unitPrice.currency);
+  }
+
+  return null;
 };
 
 /**
@@ -126,6 +149,35 @@ exports.calculateLineTotal = lineItem => {
     throw new Error(
       `Can't calculate the lineTotal of lineItem: ${code}. Make sure the lineItem has quantity, percentage or both seats and units`
     );
+  }
+};
+
+exports.calculateCommission = lineItems => {
+  const totalPrice = lineItems.reduce((sum, lineItem) => {
+    const lineTotal = this.calculateLineTotal(lineItem);
+    return getAmountAsDecimalJS(lineTotal).add(sum);
+  }, 0);
+
+  const numericTotalPrice = convertDecimalJSToNumber(totalPrice);
+  const unitPrice = lineItems[0].unitPrice;
+  if (numericTotalPrice <= parseInt(process.env.REACT_APP_FIRST_PRICE_THRES)) {
+    const total = (numericTotalPrice * firstPercentage) / 100;
+    // .times(firstPercentage)
+    // .dividedBy(100)
+    // .toNearest(1, Decimal.ROUND_HALF_UP);
+    return new Money(-(total + fixedPrice), unitPrice.currency);
+  } else if (numericTotalPrice <= parseInt(process.env.REACT_APP_SECOND_PRICE_THRES)) {
+    const total = (numericTotalPrice * secondPercentage) / 100;
+    // .times(secondPercentage)
+    // .dividedBy(100)
+    // .toNearest(1, Decimal.ROUND_HALF_UP);
+    return new Money(-total, unitPrice.currency);
+  } else {
+    const total = (numericTotalPrice * thirdPercentage) / 100;
+    // .times(thirdPercentage)
+    // .dividedBy(100)
+    // .toNearest(1, Decimal.ROUND_HALF_UP);
+    return new Money(-total, unitPrice.currency);
   }
 };
 

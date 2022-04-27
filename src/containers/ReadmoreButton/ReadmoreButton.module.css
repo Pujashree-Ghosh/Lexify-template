@@ -5,6 +5,9 @@
   font-size: 14px;
   line-height: 20px;
   font-weight: 200;
+  @media (max-width: 575px) {
+    padding: 0 10px 0 0;
+  }
 }
 .showdisbth {
   color: #a91722;

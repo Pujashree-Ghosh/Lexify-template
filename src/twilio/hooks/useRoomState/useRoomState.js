@@ -58,10 +58,8 @@ export default function useRoomState() {
       (room && room.participants && Array.from(room.participants.values())) || [];
     // const participants = Array.from(room.participants.values());
     if (participants.length > 0) {
-      print('443 participants', participants, stateData);
       const moderatorParticipant =
         stateData && participants.filter(p => p.identity == stateData.moderator);
-      print('443 moderator participants', moderatorParticipant);
       if (moderatorParticipant && moderatorParticipant.length > 0) {
         SignalHelper.emit('moderator', JSON.stringify({ isEnter: true }));
       }

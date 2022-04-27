@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 
 import Button from '@material-ui/core/Button';
@@ -8,14 +8,20 @@ import Menu from './Menu/Menu';
 
 import useRoomState from '../../hooks/useRoomState/useRoomState';
 import useVideoContext from '../../hooks/useVideoContext/useVideoContext';
-import { Typography, Grid, Hidden } from '@material-ui/core';
+import { Typography, Grid, Hidden, Backdrop } from '@material-ui/core';
 import ToggleAudioButton from '../Buttons/ToggleAudioButton/ToggleAudioButton';
 import ToggleVideoButton from '../Buttons/ToggleVideoButton/ToggleVideoButton';
 import ToggleScreenShareButton from '../Buttons/ToogleScreenShareButton/ToggleScreenShareButton';
 // import ChatScreen from './../../../containers/MeetingNewPage/Chat';
 import { ListingContext } from './../../../containers/MeetingNewPage/Meeting';
 import SignalHelper from '../../../util/signalHelper';
-import { print } from '../../../util/data';
+// import { print } from '../../../util/data';
+import ChatButton from '../Buttons/ChatButton';
+import useLocalAudioToggle from '../../../twilio/hooks/useLocalAudioToggle/useLocalAudioToggle';
+import useLocalVideoToggle from '../../../twilio/hooks/useLocalVideoToggle/useLocalVideoToggle';
+
+import Chat from '../../../containers/MeetingNewPage/Chat';
+// import Back from '../Buttons/Back';
 const useStyles = makeStyles(theme =>
   createStyles({
     container: {
@@ -72,14 +78,30 @@ export default function MenuBar({ isProvider, extendMeeting, isShortBooking, isE
   const isReconnecting = roomState === 'reconnecting';
   const { room } = useVideoContext();
   const { listingTitle, listingId, transactionId } = useContext(ListingContext);
+  const [newmessage, setNewmessage] = useState(false);
   useEffect(() => {
     SignalHelper.on('timer', data => {
-      // console.log('timer', data);
       const timerData = JSON.parse(data);
       if (timerData.status == 'meeting_duration') room.disconnect();
       if (timerData.status == 'waiting_duration') room.disconnect();
     });
   }, [room]);
+  const [sideChat, setSidechat] = useState(false);
+  const toggleChat = () => {
+    document.body.setAttribute('style', 'overflow:hidden');
+    setSidechat(prevState => !prevState);
+    setNewmessage(false);
+  };
+  const closeChat = () => {
+    document.body.setAttribute('style', '');
+    setSidechat(!sideChat);
+
+    setNewmessage(false);
+  };
+  const [isAudioEnabled, toggleAudioEnabled] = useLocalAudioToggle();
+  const [isVideoEnabled, toggleVideoEnabled] = useLocalVideoToggle();
+
+  console.log(555444, isAudioEnabled);
   return (
     <>
       {isSharingScreen && (
@@ -88,6 +110,9 @@ export default function MenuBar({ isProvider, extendMeeting, isShortBooking, isE
           <Button onClick={() => toggleScreenShare()}>Stop Sharing</Button>
         </Grid>
       )}
+      <Chat sideChat={sideChat} closeChat={closeChat} setNewmessage={setNewmessage} />
+      {/* <Back sideChat={sideChat} /> */}
+
       <footer className={`${classes.container} footer-mod`}>
         <Grid container justify="space-around" alignItems="center">
           <Hidden smDown>
@@ -101,12 +126,26 @@ export default function MenuBar({ isProvider, extendMeeting, isShortBooking, isE
           </Hidden>
           <Grid item className="mob-wid">
             <Grid container justify="center" className="mob-inline">
-              <ToggleAudioButton disabled={isReconnecting} />
-              <ToggleVideoButton disabled={isReconnecting} />
+              <ToggleAudioButton
+                className={isAudioEnabled ? 'btnmod' : 'btnmod active'}
+                disabled={isReconnecting}
+              />
+              <ToggleVideoButton
+                className={isVideoEnabled ? 'btnmod' : 'btnmod active'}
+                disabled={isReconnecting}
+              />
+
               <Hidden smDown>
-                {<ToggleScreenShareButton disabled={isReconnecting} />}
+                {
+                  <ToggleScreenShareButton
+                    // className={isSharingScreen ? '' : 'active'}
+                    disabled={isReconnecting}
+                  />
+                }
+
                 {/* {!isSharingScreen && <ToggleScreenShareButton disabled={isReconnecting} />} */}
               </Hidden>
+              <ChatButton openChatbar={toggleChat} newmessage={newmessage} sideChat={sideChat} />
               <FlipCameraButton />
 
               {/* <button className="MuiButtonBase-root MuiButton-root MuiButton-text ct-btn">
@@ -127,9 +166,10 @@ export default function MenuBar({ isProvider, extendMeeting, isShortBooking, isE
               <ChatScreen />
             </Grid>
           </Grid> */}
-          <Hidden smDown>
+
+          <Hidden>
             <Grid style={{ flex: 1 }}>
-              <Grid container justify="flex-end">
+              <Grid container alignItems="center" justify="flex-end">
                 <Menu />
                 <EndCallButton isProvider={isProvider} />
               </Grid>

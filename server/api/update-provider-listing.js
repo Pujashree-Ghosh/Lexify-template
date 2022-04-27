@@ -1,9 +1,6 @@
-const flexIntegrationSdk = require('sharetribe-flex-integration-sdk');
+const {getIntegrationSdk} = require("../api-util/sdk");
 
-const integrationSdk = flexIntegrationSdk.createInstance({
-  clientId: '66ce8e58-5769-4f62-81d7-19073cfab535',
-  clientSecret: '73f5d2b697f7a9aa9372c8a601826c37cabbbab7',
-});
+const integrationSdk=getIntegrationSdk();
 
 module.exports = async (req, response) => {
   const { id } = req.body;
@@ -16,17 +13,23 @@ module.exports = async (req, response) => {
           const languages = JSON.parse(res.data.data.attributes.profile.publicData.languages).map(
             m => m.value
           );
-          const country = res.data.data.attributes.profile.publicData.jurisdictionPractice.map(
+          const country = res.data.data.attributes.profile.publicData?.jurisdictionPractice?.map(
             m => m.country
           );
-          const state = res.data.data.attributes.profile.publicData.jurisdictionPractice.map(
-            s => s.state
-          );
-          const city = res.data.data.attributes.profile.publicData.jurisdictionPractice.map(
-            m => m.city
-          );
-          const description = res.data.data.attributes.profile.bio;
-          const practiceArea = res.data.data.attributes.profile.publicData.practice.map(m => m);
+          const state = res.data.data.attributes.profile.publicData?.jurisdictionPractice
+            ?.map(s => s.state)
+            ?.filter(f => f !== undefined);
+          const city = res.data.data.attributes.profile.publicData?.jurisdictionPractice
+            ?.map(m => m.city?.toLowerCase())
+            ?.filter(f => f !== undefined);
+          const zip = res.data.data.attributes.profile.publicData?.jurisdictionPractice
+            ?.map(m => m.postalCode)
+            ?.filter(f => f !== undefined);
+          const industry = res.data.data.attributes.profile.publicData?.industry
+            ?.map(m => m.industryName)
+            ?.filter(f => f !== undefined);
+          const description = res.data.data.attributes.profile?.bio;
+          const practiceArea = res.data.data.attributes.profile.publicData?.practice?.map(m => m);
           integrationSdk.listings
             .update({
               id: res.data.data.attributes.profile.publicData.providerListing,
@@ -35,12 +38,14 @@ module.exports = async (req, response) => {
                 languages,
                 country,
                 practiceArea,
-                state,
-                city,
+                state: state.length ? state : null,
+                city: city.length ? city : null,
+                postalCode: zip.length ? zip : null,
+                industry: industry.length ? industry : null,
               },
             })
             .then(res => {
-              console.log('listing updated');
+              // console.log('listing updated');
               response.send('success');
               return resolve('success');
             })
@@ -48,7 +53,6 @@ module.exports = async (req, response) => {
               return reject(new Error('Update failed', err));
             });
         } else {
-          console.log('Client Account');
           response.send('success');
           return resolve('success');
         }

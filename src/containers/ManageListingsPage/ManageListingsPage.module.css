@@ -62,6 +62,10 @@
   @media (max-width: 1023px) {
     padding: 0 15px 20px;
   }
+  @media (max-width: 575px) {
+    font-size: 22px;
+    font-weight: 500;
+  }
 }
 
 .listingCards {
@@ -136,7 +140,63 @@
     margin-right: 0;
   }
 }
+.label {
+  text-shadow: #4a4a4a;
+  font-size: 17px;
+  padding: 5px;
+}
+.loading {
+  width: 100%;
+  margin: 24px auto;
+  /* overflow-x: hidden; */
 
+  @media (--viewportMedium) {
+    margin: 48px auto;
+  }
+
+  @media (--viewportLarge) {
+    margin: 50px auto;
+    max-width: 1040px;
+  }
+}
+
+.filters {
+  margin-right: 15px;
+  margin-left: 15px;
+  /* top: 286px;
+  left: 558px;
+  width: 464px;
+  height: 51px; */
+  width: 100%;
+  margin: 24px auto;
+  /* overflow-x: hidden; */
+
+  @media (--viewportMedium) {
+    margin: 48px auto;
+  }
+
+  @media (--viewportLarge) {
+    margin: 50px auto;
+    max-width: 1040px;
+  }
+}
+
+/* .categoryFilter {
+  top: 286px;
+  left: 64px;
+  width: 464px;
+  height: 51px;
+  margin-right: 15px;
+  margin-left: 15px;
+}
+.areaOfLawFilter {
+  top: 286px;
+  left: 867px;
+  width: 436px;
+  height: 51px;
+  margin-right: 15px;
+  margin-left: 15px;
+} */
 .pagination {
   /* margin-top: auto; pushes pagination to the end of the page. */
   margin: auto 24px 0 24px;
@@ -146,6 +206,97 @@
   }
 }
 
+.loading {
+  width: 100%;
+  margin: 24px auto;
+  /* overflow-x: hidden; */
+
+  @media (--viewportMedium) {
+    margin: 48px auto;
+  }
+
+  @media (--viewportLarge) {
+    margin: 50px auto;
+    max-width: 1040px;
+  }
+}
+.lformrow {
+  width: 100%;
+  margin: 24px auto;
+
+  margin: 50px auto 0;
+  max-width: 1040px;
+  justify-content: flex-start;
+  display: flex;
+  flex-direction: row;
+
+  @media (max-width: 1199px) {
+    padding: 0 15px;
+  }
+  @media (max-width: 767px) {
+    flex-wrap: wrap;
+  }
+
+  @media (--viewportMedium) {
+    margin: 48px auto 0;
+  }
+
+  @media (--viewportLarge) {
+  }
+
+  & .label {
+    font-size: 14px;
+    color: #000;
+    padding: 0;
+    display: block;
+    margin: 0 0 8px;
+    font-weight: 500;
+  }
+}
+
+.categoryFilter,
+.statusFilter {
+  flex-basis: 50%;
+  max-width: 50%;
+  @media (max-width: 767px) {
+    flex-basis: 48%;
+    max-width: 48%;
+    margin: 0 0 15px;
+  }
+  @media (max-width: 575px) {
+    flex-basis: 100%;
+    max-width: 100%;
+  }
+}
+.statusFilter {
+  margin: 0 15px;
+  @media (max-width: 767px) {
+    margin: 0 0 0 15px;
+  }
+  @media (max-width: 575px) {
+    margin: 0 0 15px 0;
+  }
+}
+.areaOfLawFilter {
+  flex-basis: 48%;
+  max-width: 48%;
+  @media (max-width: 767px) {
+    flex-basis: 100%;
+    max-width: 100%;
+  }
+}
+.areaOfLawFilter button {
+  width: 100%;
+  min-height: 46px;
+  border: 1px solid hsl(0, 0%, 80%);
+  border-radius: 4px;
+  font-size: 15px;
+  box-shadow: none;
+  padding-top: 3px;
+  @media (max-width: 767px) {
+    min-height: 38px;
+  }
+}
 .heading {
   position: relative;
   /* width: 80vw; */
@@ -237,6 +388,15 @@
     padding-bottom: 0;
   }
 }
+.lastprice {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  @media (max-width: 575px) {
+    flex-direction: row;
+    width: 100%;
+  }
+}
 .rightlowerdiv {
   display: flex;
   flex-direction: column;
@@ -263,6 +423,10 @@
   color: #ffffff;
   font-weight: 500;
   cursor: pointer;
+  @media (max-width: 575px) {
+    flex-basis: 50%;
+    margin: 10px auto 0;
+  }
 }
 .price {
   padding: 20px;
@@ -270,6 +434,11 @@
   font-size: 25px;
   font-weight: bold;
   font-family: poppins;
+  @media (max-width: 575px) {
+    padding: 10px 0 10px 0;
+    font-size: 20px;
+    margin: 0 0 0 auto;
+  }
 }
 .togglemenu {
   position: absolute;
@@ -310,4 +479,7 @@
   width: auto !important;
   background: #fff;
   border: 1px solid #d2d2d2;
+}
+.openListingButton{
+  cursor: pointer;
 }

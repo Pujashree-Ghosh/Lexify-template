@@ -248,7 +248,7 @@ class TopbarComponent extends Component {
             ) : isLawyer ? (
               <NamedLink
                 className={classNames(css.signupLink, css.bottom_line)}
-                name="NewListingPage"
+                name="CreateListing"
               >
                 <FormattedMessage id="Topbar.createListing" />
               </NamedLink>

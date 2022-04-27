@@ -9,6 +9,7 @@ import { EditListingClientIdForm, EditListingDeadlineForm } from '../../forms';
 import { ListingLink } from '../../components';
 
 import css from './EditListingDeadlinePanel.module.css';
+import moment from 'moment';
 
 const EditListingDeadlinePanel = props => {
   const {
@@ -23,6 +24,7 @@ const EditListingDeadlinePanel = props => {
     panelUpdated,
     updateInProgress,
     errors,
+    category,
   } = props;
 
   const classes = classNames(rootClassName || css.root, className);
@@ -32,21 +34,21 @@ const EditListingDeadlinePanel = props => {
   const isPublished = currentListing.id && currentListing.attributes.state !== LISTING_STATE_DRAFT;
   const panelTitle = isPublished ? (
     <FormattedMessage
-      id="EditListingDeadlinePanel.title"
+      id="EditListingDeadlinePanel.customServiceTitleEdit"
       values={{
         listingTitle: (
           <ListingLink listing={listing}>
-            <FormattedMessage id="EditListingDeadlinePanel.listingTitle" />
+            {/* <FormattedMessage id="EditListingDeadlinePanel.listingTitle" /> */}
+            {listing?.title}
           </ListingLink>
         ),
       }}
     />
   ) : (
-    <FormattedMessage id="EditListingDeadlinePanel.listingTitle" />
+    <FormattedMessage id="EditListingDeadlinePanel.customServiceTitle" />
   );
 
-  const Deadline = publicData && publicData.Deadline;
-
+  const Deadline = publicData && { date: moment(publicData.Deadline).toDate() };
   return (
     <div className={classes}>
       <h1 className={css.title}>{panelTitle}</h1>
@@ -56,11 +58,13 @@ const EditListingDeadlinePanel = props => {
         onSubmit={values => {
           const { Deadline } = values;
           const updatedValues = {
-            publicData: { Deadline },
+            publicData: { Deadline: moment(Deadline.date).format() },
           };
           onSubmit(updatedValues);
         }}
+        currentListing={currentListing}
         onChange={onChange}
+        category={category}
         saveActionMsg={submitButtonText}
         disabled={disabled}
         ready={ready}

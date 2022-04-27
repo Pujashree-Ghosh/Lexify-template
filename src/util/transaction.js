@@ -24,6 +24,7 @@ export const TRANSITION_REQUEST_PAYMENT_AFTER_ENQUIRY = 'transition/request-paym
 // Therefore we need to make another transition to Marketplace API,
 // to tell that the payment is confirmed.
 export const TRANSITION_CONFIRM_PAYMENT = 'transition/confirm-payment';
+export const TRANSITION_CONFIRM_PAYMENT_ORAL = 'transition/confirm-payment-oral';
 
 // If the payment is not confirmed in the time limit set in transaction process (by default 15min)
 // the transaction will expire automatically.
@@ -32,6 +33,7 @@ export const TRANSITION_EXPIRE_PAYMENT = 'transition/expire-payment';
 // When the provider accepts or declines a transaction from the
 // SalePage, it is transitioned with the accept or decline transition.
 export const TRANSITION_ACCEPT = 'transition/accept';
+export const TRANSITION_ACCEPT_ORAL = 'transition/accept-oral';
 export const TRANSITION_DECLINE = 'transition/decline';
 
 // The backend automatically expire the transaction.
@@ -41,6 +43,31 @@ export const TRANSITION_EXPIRE = 'transition/expire';
 export const TRANSITION_CANCEL = 'transition/cancel';
 export const TRANSITION_CANCEL_PROVIDER = 'transition/cancel-provider';
 export const TRANSITION_CANCEL_CUSTOMER = 'transition/cancel-customer';
+export const TRANSITION_CANCEL_ORAL = 'transition/cancel-oral';
+export const TRANSITION_CANCEL_PROVIDER_ORAL = 'transition/cancel-provider-oral';
+export const TRANSITION_CANCEL_CUSTOMER_ORAL = 'transition/cancel-customer-oral';
+export const TRANSITION_RESCHEDULE_PROVIDER = 'transition/reschedule-provider';
+export const TRANSITION_RESCHEDULE_CUSTOMER = 'transition/reschedule-customer';
+export const TRANSITION_PENDING_CONFIRMATION = 'transition/pending-confirmation';
+export const TRANSITION_PENDING_CONFIRMATION_ORAL = 'transition/pending-confirmation-oral';
+
+//----------------------------------------------------------------//
+
+export const TRANSITION_CUSTOMER_JOIN_1 = 'transition/customer-join-1';
+
+export const TRANSITION_CUSTOMER_JOIN_2 = 'transition/customer-join-2';
+
+export const TRANSITION_PROVIDER_JOIN_1 = 'transition/provider-join-1';
+
+export const TRANSITION_PROVIDER_JOIN_2 = 'transition/provider-join-2';
+
+export const TRANSITION_CUSTOMER_MISSING = 'transition/customer-missing';
+
+export const TRANSITION_PROVIDER_MISSING = 'transition/provider-missing';
+
+export const TRANSITION_MEETING_EXPIRED = 'transition/meeting-expired';
+
+//----------------------------------------------------------------//
 
 // The backend will mark the transaction completed.
 export const TRANSITION_COMPLETE = 'transition/complete';
@@ -89,9 +116,18 @@ const STATE_ENQUIRY = 'enquiry';
 const STATE_PENDING_PAYMENT = 'pending-payment';
 const STATE_PAYMENT_EXPIRED = 'payment-expired';
 const STATE_PREAUTHORIZED = 'preauthorized';
+const STATE_PREAUTHORIZED_ORAL = 'preauthorized-oral';
 const STATE_DECLINED = 'declined';
 const STATE_ACCEPTED = 'accepted';
+const STATE_ACCEPTED_ORAL = 'accepted-oral';
+const STATE_EXPIRED = 'expired';
+const STATE_CUSTOMER_JOINED_1 = 'customer-joined-1';
+const STATE_PROVIDER_JOINED_1 = 'provider-joined-1';
+const STATE_BOTH_JOINED = 'meeting-both-joined';
 const STATE_CANCELED = 'canceled';
+const STATE_RESCHEDULE = 'rescheduled';
+const STATE_PENDING_CONFIRMATION = 'pending-confirmation';
+const STATE_PENDING_CONFIRMATION_ORAL = 'pending-confirmation-oral';
 const STATE_DELIVERED = 'delivered';
 const STATE_REVIEWED = 'reviewed';
 const STATE_REVIEWED_BY_CUSTOMER = 'reviewed-by-customer';
@@ -133,6 +169,7 @@ const stateDescription = {
       on: {
         [TRANSITION_EXPIRE_PAYMENT]: STATE_PAYMENT_EXPIRED,
         [TRANSITION_CONFIRM_PAYMENT]: STATE_PREAUTHORIZED,
+        [TRANSITION_CONFIRM_PAYMENT_ORAL]: STATE_PREAUTHORIZED_ORAL,
       },
     },
 
@@ -144,6 +181,13 @@ const stateDescription = {
         [TRANSITION_ACCEPT]: STATE_ACCEPTED,
       },
     },
+    [STATE_PREAUTHORIZED_ORAL]: {
+      on: {
+        [TRANSITION_DECLINE]: STATE_DECLINED,
+        [TRANSITION_EXPIRE]: STATE_DECLINED,
+        [TRANSITION_ACCEPT_ORAL]: STATE_ACCEPTED_ORAL,
+      },
+    },
 
     [STATE_DECLINED]: {},
     [STATE_ACCEPTED]: {
@@ -151,6 +195,54 @@ const stateDescription = {
         [TRANSITION_CANCEL]: STATE_CANCELED,
         [TRANSITION_CANCEL_PROVIDER]: STATE_CANCELED,
         [TRANSITION_CANCEL_CUSTOMER]: STATE_CANCELED,
+        [TRANSITION_RESCHEDULE_PROVIDER]: STATE_RESCHEDULE,
+        [TRANSITION_RESCHEDULE_CUSTOMER]: STATE_RESCHEDULE,
+        [TRANSITION_PENDING_CONFIRMATION]: STATE_PENDING_CONFIRMATION,
+      },
+    },
+    [STATE_ACCEPTED_ORAL]: {
+      on: {
+        [TRANSITION_CANCEL_ORAL]: STATE_CANCELED,
+        [TRANSITION_CANCEL_PROVIDER_ORAL]: STATE_CANCELED,
+        [TRANSITION_CANCEL_CUSTOMER_ORAL]: STATE_CANCELED,
+        [TRANSITION_RESCHEDULE_PROVIDER]: STATE_RESCHEDULE,
+        [TRANSITION_RESCHEDULE_CUSTOMER]: STATE_RESCHEDULE,
+        [TRANSITION_MEETING_EXPIRED]: STATE_EXPIRED,
+        // [TRANSITION_CUSTOMER_JOIN_1]: STATE_CUSTOMER_JOINED_1,
+        // [TRANSITION_PROVIDER_JOIN_1]: STATE_PROVIDER_JOINED_1,
+        [TRANSITION_PENDING_CONFIRMATION_ORAL]: STATE_PENDING_CONFIRMATION_ORAL,
+      },
+    },
+
+    // [STATE_CUSTOMER_JOINED_1]: {
+    //   on: {
+    //     [TRANSITION_PROVIDER_JOIN_2]: STATE_BOTH_JOINED,
+    //     [TRANSITION_PROVIDER_MISSING]: STATE_EXPIRED,
+    //   },
+    // },
+    // [STATE_PROVIDER_JOINED_1]: {
+    //   on: {
+    //     [TRANSITION_CUSTOMER_JOIN_2]: STATE_BOTH_JOINED,
+    //     [TRANSITION_CUSTOMER_MISSING]: STATE_EXPIRED,
+    //   },
+    // },
+    // [STATE_BOTH_JOINED]: {
+    //   on: {
+    //     [TRANSITION_PENDING_CONFIRMATION]: STATE_PENDING_CONFIRMATION,
+    //     [TRANSITION_PENDING_CONFIRMATION_ORAL]: STATE_PENDING_CONFIRMATION_ORAL,
+    //   },
+    // },
+
+    [STATE_RESCHEDULE]: {},
+    [STATE_EXPIRED]: {},
+
+    [STATE_PENDING_CONFIRMATION]: {
+      on: {
+        [TRANSITION_COMPLETE]: STATE_DELIVERED,
+      },
+    },
+    [STATE_PENDING_CONFIRMATION_ORAL]: {
+      on: {
         [TRANSITION_COMPLETE]: STATE_DELIVERED,
       },
     },
@@ -216,6 +308,7 @@ const getTransitionsToState = getTransitionsToStateFn(stateDescription);
 // This is needed to fetch transactions that need response from provider.
 // I.e. transactions which provider needs to accept or decline
 export const transitionsToRequested = getTransitionsToState(STATE_PREAUTHORIZED);
+export const transitionsToRequestedOral = getTransitionsToState(STATE_PREAUTHORIZED_ORAL);
 
 /**
  * Helper functions to figure out if transaction is in a specific state.
@@ -238,8 +331,35 @@ export const txIsPaymentExpired = tx =>
 export const txIsRequested = tx =>
   getTransitionsToState(STATE_PREAUTHORIZED).includes(txLastTransition(tx));
 
+export const txIsRequestedOral = tx =>
+  getTransitionsToState(STATE_PREAUTHORIZED_ORAL).includes(txLastTransition(tx));
+
 export const txIsAccepted = tx =>
   getTransitionsToState(STATE_ACCEPTED).includes(txLastTransition(tx));
+
+export const txIsAcceptedOral = tx =>
+  getTransitionsToState(STATE_ACCEPTED_ORAL).includes(txLastTransition(tx));
+
+export const txIsRescheduled = tx =>
+  getTransitionsToState(STATE_RESCHEDULE).includes(txLastTransition(tx));
+
+export const txIsPendingConfirmation = tx =>
+  getTransitionsToState(STATE_PENDING_CONFIRMATION).includes(txLastTransition(tx));
+
+export const txIsPendingConfirmationOral = tx =>
+  getTransitionsToState(STATE_PENDING_CONFIRMATION_ORAL).includes(txLastTransition(tx));
+
+export const txCustomerJoined1 = tx =>
+  getTransitionsToState(STATE_CUSTOMER_JOINED_1).includes(txLastTransition(tx));
+
+export const txProviderJoined1 = tx =>
+  getTransitionsToState(STATE_PROVIDER_JOINED_1).includes(txLastTransition(tx));
+
+export const txBothJoined = tx =>
+  getTransitionsToState(STATE_BOTH_JOINED).includes(txLastTransition(tx));
+
+export const txIsExpired = tx =>
+  getTransitionsToState(STATE_EXPIRED).includes(txLastTransition(tx));
 
 export const txIsDeclined = tx =>
   getTransitionsToState(STATE_DECLINED).includes(txLastTransition(tx));
@@ -278,6 +398,7 @@ const hasPassedStateFn = state => tx =>
 
 export const txHasBeenAccepted = hasPassedStateFn(STATE_ACCEPTED);
 export const txHasBeenDelivered = hasPassedStateFn(STATE_DELIVERED);
+export const txHasBeenExpired = hasPassedStateFn(STATE_EXPIRED);
 
 /**
  * Other transaction related utility functions
@@ -297,23 +418,45 @@ export const getReview1Transition = isCustomer =>
 export const getReview2Transition = isCustomer =>
   isCustomer ? TRANSITION_REVIEW_2_BY_CUSTOMER : TRANSITION_REVIEW_2_BY_PROVIDER;
 
+export const joinMeeting1Transition = isCustomer =>
+  isCustomer ? TRANSITION_CUSTOMER_JOIN_1 : TRANSITION_PROVIDER_JOIN_1;
+
+export const joinMeeting2Transition = isCustomer =>
+  isCustomer ? TRANSITION_CUSTOMER_JOIN_2 : TRANSITION_PROVIDER_JOIN_2;
+
 // Check if a transition is the kind that should be rendered
 // when showing transition history (e.g. ActivityFeed)
 // The first transition and most of the expiration transitions made by system are not relevant
 export const isRelevantPastTransition = transition => {
   return [
     TRANSITION_ACCEPT,
+    TRANSITION_ACCEPT_ORAL,
     TRANSITION_CANCEL,
     TRANSITION_CANCEL_PROVIDER,
     TRANSITION_CANCEL_CUSTOMER,
+    TRANSITION_CANCEL_ORAL,
+    TRANSITION_CANCEL_PROVIDER_ORAL,
+    TRANSITION_CANCEL_CUSTOMER_ORAL,
+    TRANSITION_RESCHEDULE_PROVIDER,
+    TRANSITION_RESCHEDULE_CUSTOMER,
+    TRANSITION_PENDING_CONFIRMATION,
+    TRANSITION_PENDING_CONFIRMATION_ORAL,
     TRANSITION_COMPLETE,
     TRANSITION_CONFIRM_PAYMENT,
+    TRANSITION_CONFIRM_PAYMENT_ORAL,
     TRANSITION_DECLINE,
     TRANSITION_EXPIRE,
     TRANSITION_REVIEW_1_BY_CUSTOMER,
     TRANSITION_REVIEW_1_BY_PROVIDER,
     TRANSITION_REVIEW_2_BY_CUSTOMER,
     TRANSITION_REVIEW_2_BY_PROVIDER,
+    TRANSITION_CUSTOMER_JOIN_1,
+    TRANSITION_CUSTOMER_JOIN_2,
+    TRANSITION_PROVIDER_JOIN_1,
+    TRANSITION_PROVIDER_JOIN_2,
+    TRANSITION_CUSTOMER_MISSING,
+    TRANSITION_PROVIDER_MISSING,
+    TRANSITION_MEETING_EXPIRED,
   ].includes(transition);
 };
 

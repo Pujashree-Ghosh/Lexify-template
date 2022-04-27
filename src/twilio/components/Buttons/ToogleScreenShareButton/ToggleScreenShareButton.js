@@ -9,6 +9,8 @@ import Tooltip from '@material-ui/core/Tooltip';
 import useScreenShareParticipant from '../../../hooks/useScreenShareParticipant/useScreenShareParticipant';
 import useVideoContext from '../../../hooks/useVideoContext/useVideoContext';
 
+import { MdScreenShare, MdStopScreenShare } from 'react-icons/md';
+
 export const SCREEN_SHARE_TEXT = 'Share Screen';
 export const STOP_SCREEN_SHARE_TEXT = 'Stop Sharing';
 export const SHARE_IN_PROGRESS_TEXT = 'Cannot share screen when another user is sharing';
@@ -31,11 +33,20 @@ const useStyles = makeStyles(theme =>
 export default function ToggleScreenShareButton(props) {
   const classes = useStyles();
   const screenShareParticipant = useScreenShareParticipant();
-  const { toggleScreenShare, isSharingScreen } = useVideoContext();
-  const disableScreenShareButton = Boolean(screenShareParticipant);
+  const { toggleScreenShare, isSharingScreen, room } = useVideoContext();
+  const disableScreenShareButton = Boolean(
+    screenShareParticipant &&
+      !(JSON.stringify(room.localParticipant) === JSON.stringify(screenShareParticipant))
+  );
+  // const disableScreenShareButton = Boolean(screenShareParticipant);
   const isScreenShareSupported = navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia;
   const isDisabled = props.disabled || disableScreenShareButton || !isScreenShareSupported;
-
+  // console.log(
+  //   606098,
+  //   Array.from(room.participants.values()),
+  //   JSON.stringify(room.localParticipant) === JSON.stringify(screenShareParticipant),
+  //   screenShareParticipant
+  // );
   let tooltipMessage = '';
 
   if (disableScreenShareButton) {
@@ -57,13 +68,17 @@ export default function ToggleScreenShareButton(props) {
         {/* The span element is needed because a disabled button will not emit hover events and we want to display
           a tooltip when screen sharing is disabled */}
         <Button
-          className={classes.button}
+          className={
+            isSharingScreen
+              ? `${classes.button} btnmod shareicon`
+              : `${classes.button} btnmod shareicon active`
+          }
           onClick={toggleScreenShare}
           disabled={isDisabled}
-          startIcon={isSharingScreen ? <StopScreenShareIcon /> : <ScreenShareIcon />}
+          startIcon={isSharingScreen ? <MdScreenShare /> : <MdStopScreenShare />}
           data-cy-share-screen
         >
-          {isSharingScreen ? STOP_SCREEN_SHARE_TEXT : SCREEN_SHARE_TEXT}
+          {/* {isSharingScreen ? STOP_SCREEN_SHARE_TEXT : SCREEN_SHARE_TEXT} */}
         </Button>
       </span>
     </Tooltip>

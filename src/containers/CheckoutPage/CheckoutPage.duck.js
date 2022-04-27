@@ -7,12 +7,16 @@ import {
   TRANSITION_REQUEST_PAYMENT,
   TRANSITION_REQUEST_PAYMENT_AFTER_ENQUIRY,
   TRANSITION_CONFIRM_PAYMENT,
+  TRANSITION_CONFIRM_PAYMENT_ORAL,
   isPrivileged,
 } from '../../util/transaction';
 import * as log from '../../util/log';
-import { fetchCurrentUserHasOrdersSuccess, fetchCurrentUser } from '../../ducks/user.duck';
+import {
+  fetchCurrentUserHasOrdersSuccess,
+  fetchCurrentUser,
+  currentUserShowError,
+} from '../../ducks/user.duck';
 import axios from 'axios';
-
 // ================ Action types ================ //
 
 export const SET_INITIAL_VALUES = 'app/CheckoutPage/SET_INITIAL_VALUES';
@@ -163,6 +167,8 @@ export const stripeCustomerError = e => ({
 /* ================ Thunks ================ */
 
 export const initiateOrder = (orderParams, transactionId) => (dispatch, getState, sdk) => {
+  const category = orderParams.category;
+
   dispatch(initiateOrderRequest());
 
   // If we already have a transaction ID, we should transition, not
@@ -176,6 +182,7 @@ export const initiateOrder = (orderParams, transactionId) => (dispatch, getState
   const bookingData = {
     startDate: orderParams.bookingStart,
     endDate: orderParams.bookingEnd,
+    hasVat: orderParams.hasVat,
   };
 
   const bodyParams = isTransition
@@ -197,15 +204,48 @@ export const initiateOrder = (orderParams, transactionId) => (dispatch, getState
   const handleSucces = response => {
     const entities = denormalisedResponseEntities(response);
     const order = entities[0];
+    const alreadyBooked = [];
+    if (
+      orderParams?.listing &&
+      typeof orderParams?.listing?.attributes?.publicData?.alreadyBooked === 'undefined'
+    ) {
+      alreadyBooked?.push(orderParams?.currentUserEmail);
+    } else {
+      orderParams?.listing?.attributes?.publicData?.alreadyBooked?.push(
+        orderParams?.currentUserEmail
+      );
+    }
+
     dispatch(initiateOrderSuccess(order));
     dispatch(fetchCurrentUserHasOrdersSuccess(true));
-    axios.post(`${apiBaseUrl()}/api/booking/setBooking`, {
-      orderId: order?.id.uuid,
-      providerId: orderParams.providerId,
-      customerId: orderParams.customerId,
-      start: orderParams.bookingStart,
-      end: orderParams.bookingEnd,
-    });
+    if (category !== 'customService') {
+      axios.post(`${apiBaseUrl()}/api/booking/setBooking`, {
+        orderId: order?.id.uuid,
+        providerId: orderParams.providerId,
+        customerId: orderParams.customerId,
+        start: orderParams.bookingStart,
+        end: orderParams.bookingEnd,
+      });
+    }
+    if (category !== 'publicOral') {
+      axios
+        .post(`${apiBaseUrl()}/api/updateClientId`, {
+          id: orderParams?.listingId?.uuid,
+          alreadyBooked:
+            alreadyBooked.length === 0
+              ? orderParams?.listing?.attributes?.publicData?.alreadyBooked
+              : alreadyBooked,
+          clientId:
+            orderParams &&
+            orderParams.listing &&
+            orderParams.listing?.attributes?.publicData?.clientId?.filter(
+              e => e !== orderParams?.currentUserEmail
+            ),
+        })
+        .then(e => console.log(e))
+        .catch(e => console.log(e));
+    }
+
     return order;
   };
 
@@ -274,6 +314,34 @@ export const confirmPayment = orderParams => (dispatch, getState, sdk) => {
     });
 };
 
+export const confirmPaymentOral = orderParams => (dispatch, getState, sdk) => {
+  dispatch(confirmPaymentRequest());
+
+  const bodyParams = {
+    id: orderParams.transactionId,
+    transition: TRANSITION_CONFIRM_PAYMENT_ORAL,
+    params: {},
+  };
+
+  return sdk.transactions
+    .transition(bodyParams)
+    .then(response => {
+      const order = response.data.data;
+      dispatch(confirmPaymentSuccess(order.id));
+      return order;
+    })
+    .catch(e => {
+      dispatch(confirmPaymentError(storableError(e)));
+      const transactionIdMaybe = orderParams.transactionId
+        ? { transactionId: orderParams.transactionId.uuid }
+        : {};
+      log.error(e, 'initiate-order-failed', {
+        ...transactionIdMaybe,
+      });
+      throw e;
+    });
+};
+
 export const sendMessage = params => (dispatch, getState, sdk) => {
   const message = params.message;
   const orderId = params.id;
@@ -320,6 +388,7 @@ export const speculateTransaction = (orderParams, transactionId) => (dispatch, g
   const bookingData = {
     startDate: orderParams.bookingStart,
     endDate: orderParams.bookingEnd,
+    vatData: orderParams.hasVat,
   };
 
   const params = {
