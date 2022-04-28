@@ -124,6 +124,7 @@ export class ManageListingsPageComponent extends Component {
     const queryParams = parse(this.props.location.search);
     const page = queryParams.page || 1;
     if (this.props.currentUser !== null) {
+      this.setState({isAutoSearch:false})
       axios
         .post(`${apiBaseUrl()}/api/sortOwnListings`, {
           authorId: this.props.currentUser && this.props.currentUser?.id?.uuid,
@@ -143,7 +144,6 @@ export class ManageListingsPageComponent extends Component {
               listingsFromApi: res?.data?.data,
               metaFromApi: res?.data?.meta,
               listingsFromApiLoaded: true,
-              isAutoSearch:false
             });
           }
         })
