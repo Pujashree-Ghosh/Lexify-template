@@ -5,7 +5,7 @@ const integrationSdk=getIntegrationSdk();
 
 module.exports = async (req, response) => {
   const { authorId, states, pub_category, pub_areaOfLaw, page,pub_clientId } = req.body;
-  console.log("req body",req.body);
+  //console.log("req body",req.body);
 
   return new Promise((resolve, reject) => {
     integrationSdk.listings
