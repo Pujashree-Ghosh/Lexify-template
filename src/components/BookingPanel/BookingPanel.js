@@ -109,7 +109,7 @@ const BookingPanel = props => {
   return (
     <div className={classes}>
       <ModalInMobile
-        containerClassName={css.modalContainer}
+        containerClassName={`${css.modalContainer} mbclfix`}
         id="BookingTimeFormInModal"
         isModalOpenOnMobile={isBook}
         onClose={() => closeBookModal(history, location)}

@@ -93,7 +93,7 @@ const EditListingExpiryFormComponent = props => (
           </h3>
 
           <FieldDateInput
-            className={`${css.street} `}
+            className={`${css.street} ${css.expdate}`}
             id="expiryDate"
             name="expiry"
             validate={composeValidators(

@@ -182,7 +182,7 @@ class JurisdictionFormComponent extends Component {
                         </h3>
                         {fields.map((name, i) => {
                           return (
-                            <div key={name + i}>
+                            <div className={css.addformgb} key={name + i}>
                               <div className={css.fromgroup}>
                                 <FieldSelect
                                   id={`${name}.country`}
@@ -274,7 +274,7 @@ class JurisdictionFormComponent extends Component {
                                 />
 
                                 <FieldSelect
-                                  className={css.halfinput}
+                                  className={`${css.halfinput} mobiledsd `}
                                   id={`${name}.status`}
                                   name={`${name}.status`}
                                   label={statusLabel}
@@ -288,7 +288,7 @@ class JurisdictionFormComponent extends Component {
                             </div>
                           );
                         })}
-                        <div className={`${css.fromgroup} ${css.inlinefrom}`}>
+                        <div className={`${css.fromgroup} ${css.inlinefrom} ${css.mobilefixd}`}>
                           <Button
                             className={css.addMore}
                             type="button"

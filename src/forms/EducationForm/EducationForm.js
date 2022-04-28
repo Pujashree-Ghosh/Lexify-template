@@ -90,578 +90,576 @@ class EducationFormComponent extends Component {
 
     return (
       <>
-      <FinalForm
-        {...this.props}
-        mutators={{ ...arrayMutators }}
-        render={fieldRenderProps => {
-          const {
-            className,
-            currentUser,
-            handleSubmit,
-            intl,
-            invalid,
-            onImageUpload,
-            pristine,
-            profileImage,
-            rootClassName,
-            updateInProgress,
-            updateProfileError,
-            uploadImageError,
-            uploadInProgress,
-            form,
-            values,
-            initialValues,
-            areaOfLawOptions,
-            country,
-            languages,
-          } = fieldRenderProps;
-          // let { values } = fieldRenderProps;
+        <FinalForm
+          {...this.props}
+          mutators={{ ...arrayMutators }}
+          render={fieldRenderProps => {
+            const {
+              className,
+              currentUser,
+              handleSubmit,
+              intl,
+              invalid,
+              onImageUpload,
+              pristine,
+              profileImage,
+              rootClassName,
+              updateInProgress,
+              updateProfileError,
+              uploadImageError,
+              uploadInProgress,
+              form,
+              values,
+              initialValues,
+              areaOfLawOptions,
+              country,
+              languages,
+            } = fieldRenderProps;
+            // let { values } = fieldRenderProps;
 
-          // console.log(this.state.languages, initialValues.languages)
-          const user = ensureCurrentUser(currentUser);
+            // console.log(this.state.languages, initialValues.languages)
+            const user = ensureCurrentUser(currentUser);
 
-          // First name
-          const firstNameLabel = intl.formatMessage({
-            id: 'ProfileSettingsForm.firstNameLabel',
-          });
-          const firstNamePlaceholder = intl.formatMessage({
-            id: 'ProfileSettingsForm.firstNamePlaceholder',
-          });
-          const firstNameRequiredMessage = intl.formatMessage({
-            id: 'ProfileSettingsForm.firstNameRequired',
-          });
-          const firstNameRequired = validators.required(firstNameRequiredMessage);
+            // First name
+            const firstNameLabel = intl.formatMessage({
+              id: 'ProfileSettingsForm.firstNameLabel',
+            });
+            const firstNamePlaceholder = intl.formatMessage({
+              id: 'ProfileSettingsForm.firstNamePlaceholder',
+            });
+            const firstNameRequiredMessage = intl.formatMessage({
+              id: 'ProfileSettingsForm.firstNameRequired',
+            });
+            const firstNameRequired = validators.required(firstNameRequiredMessage);
 
-          // Last name
-          const lastNameLabel = intl.formatMessage({
-            id: 'ProfileSettingsForm.lastNameLabel',
-          });
-          const lastNamePlaceholder = intl.formatMessage({
-            id: 'ProfileSettingsForm.lastNamePlaceholder',
-          });
-          const lastNameRequiredMessage = intl.formatMessage({
-            id: 'ProfileSettingsForm.lastNameRequired',
-          });
-          const lastNameRequired = validators.required(lastNameRequiredMessage);
+            // Last name
+            const lastNameLabel = intl.formatMessage({
+              id: 'ProfileSettingsForm.lastNameLabel',
+            });
+            const lastNamePlaceholder = intl.formatMessage({
+              id: 'ProfileSettingsForm.lastNamePlaceholder',
+            });
+            const lastNameRequiredMessage = intl.formatMessage({
+              id: 'ProfileSettingsForm.lastNameRequired',
+            });
+            const lastNameRequired = validators.required(lastNameRequiredMessage);
 
-          // Bio
-          const bioLabel = intl.formatMessage({
-            id: 'ProfileSettingsForm.bioLabel',
-          });
-          const bioPlaceholder = intl.formatMessage({
-            id: 'ProfileSettingsForm.bioPlaceholder',
-          });
+            // Bio
+            const bioLabel = intl.formatMessage({
+              id: 'ProfileSettingsForm.bioLabel',
+            });
+            const bioPlaceholder = intl.formatMessage({
+              id: 'ProfileSettingsForm.bioPlaceholder',
+            });
 
-          const companyNamePlaceholder = intl.formatMessage({
-            id: 'ProfileSettingsForm.companyNamePlaceholder',
-          });
-          const companyNameRequiredMessage = intl.formatMessage({
-            id: 'ProfileSettingsForm.companyNameRequired',
-          });
-          const companyNameRequired = validators.required(companyNameRequiredMessage);
+            const companyNamePlaceholder = intl.formatMessage({
+              id: 'ProfileSettingsForm.companyNamePlaceholder',
+            });
+            const companyNameRequiredMessage = intl.formatMessage({
+              id: 'ProfileSettingsForm.companyNameRequired',
+            });
+            const companyNameRequired = validators.required(companyNameRequiredMessage);
 
-          const companyNumberPlaceholder = intl.formatMessage({
-            id: 'ProfileSettingsForm.companyNumberPlaceholder',
-          });
+            const companyNumberPlaceholder = intl.formatMessage({
+              id: 'ProfileSettingsForm.companyNumberPlaceholder',
+            });
 
-          const countryPlaceHolder = intl.formatMessage({
-            id: 'ProfileSettingsForm.countryPlaceHolder',
-          });
-          const countryRequiredMessage = intl.formatMessage({
-            id: 'ProfileSettingsForm.countryRequired',
-          });
-          const streetPlaceholder = intl.formatMessage({
-            id: 'ProfileSettingsForm.streetPlaceholder',
-          });
-          const streetRequiredMessage = intl.formatMessage({
-            id: 'ProfileSettingsForm.streetRequired',
-          });
-          const streetRequired = validators.required(streetRequiredMessage);
+            const countryPlaceHolder = intl.formatMessage({
+              id: 'ProfileSettingsForm.countryPlaceHolder',
+            });
+            const countryRequiredMessage = intl.formatMessage({
+              id: 'ProfileSettingsForm.countryRequired',
+            });
+            const streetPlaceholder = intl.formatMessage({
+              id: 'ProfileSettingsForm.streetPlaceholder',
+            });
+            const streetRequiredMessage = intl.formatMessage({
+              id: 'ProfileSettingsForm.streetRequired',
+            });
+            const streetRequired = validators.required(streetRequiredMessage);
 
-          const cityLabel = intl.formatMessage({
-            id: 'ProfileSettingsForm.cityLabel',
-          });
-          const cityPlaceholder = intl.formatMessage({
-            id: 'ProfileSettingsForm.cityPlaceholder',
-          });
-          const cityRequiredMessage = intl.formatMessage({
-            id: 'ProfileSettingsForm.cityRequired',
-          });
-          const cityRequired = validators.required(cityRequiredMessage);
+            const cityLabel = intl.formatMessage({
+              id: 'ProfileSettingsForm.cityLabel',
+            });
+            const cityPlaceholder = intl.formatMessage({
+              id: 'ProfileSettingsForm.cityPlaceholder',
+            });
+            const cityRequiredMessage = intl.formatMessage({
+              id: 'ProfileSettingsForm.cityRequired',
+            });
+            const cityRequired = validators.required(cityRequiredMessage);
 
-          const statePlaceholder = intl.formatMessage({
-            id: 'ProfileSettingsForm.statePlaceholder',
-          });
-          const stateRequiredMessage = intl.formatMessage({
-            id: 'ProfileSettingsForm.stateRequired',
-          });
-          const stateRequired = validators.required(stateRequiredMessage);
+            const statePlaceholder = intl.formatMessage({
+              id: 'ProfileSettingsForm.statePlaceholder',
+            });
+            const stateRequiredMessage = intl.formatMessage({
+              id: 'ProfileSettingsForm.stateRequired',
+            });
+            const stateRequired = validators.required(stateRequiredMessage);
 
-          const zipCodePlaceholder = intl.formatMessage({
-            id: 'ProfileSettingsForm.zipCodePlaceholder',
-          });
-          const zipCodeRequiredMessage = intl.formatMessage({
-            id: 'ProfileSettingsForm.zipCodeRequired',
-          });
-          const zipCodeRequired = validators.required(zipCodeRequiredMessage);
+            const zipCodePlaceholder = intl.formatMessage({
+              id: 'ProfileSettingsForm.zipCodePlaceholder',
+            });
+            const zipCodeRequiredMessage = intl.formatMessage({
+              id: 'ProfileSettingsForm.zipCodeRequired',
+            });
+            const zipCodeRequired = validators.required(zipCodeRequiredMessage);
 
-          const otpPlaceholder = intl.formatMessage({
-            id: 'ProfileSettingsForm.otpPlaceholder',
-          });
-          const otpLabel = intl.formatMessage({ id: 'ProfileSettingsForm.otpLabel' });
+            const otpPlaceholder = intl.formatMessage({
+              id: 'ProfileSettingsForm.otpPlaceholder',
+            });
+            const otpLabel = intl.formatMessage({ id: 'ProfileSettingsForm.otpLabel' });
 
-          const otpRequiredMessage = intl.formatMessage({
-            id: 'ProfileSettingsForm.otpRequired',
-          });
-          const otpRequired = validators.required(otpRequiredMessage);
+            const otpRequiredMessage = intl.formatMessage({
+              id: 'ProfileSettingsForm.otpRequired',
+            });
+            const otpRequired = validators.required(otpRequiredMessage);
 
-          const startTimePlaceholder = intl.formatMessage({
-            id: 'ProfileSettingsForm.startTimePlaceholder',
-          });
-          const startTimeLabel = intl.formatMessage({ id: 'ProfileSettingsForm.startTimeLabel' });
+            const startTimePlaceholder = intl.formatMessage({
+              id: 'ProfileSettingsForm.startTimePlaceholder',
+            });
+            const startTimeLabel = intl.formatMessage({ id: 'ProfileSettingsForm.startTimeLabel' });
 
-          const DateLabel = intl.formatMessage({ id: 'ProfileSettingsForm.DateLabel' });
+            const DateLabel = intl.formatMessage({ id: 'ProfileSettingsForm.DateLabel' });
 
-          const startTimeRequiredMessage = intl.formatMessage({
-            id: 'ProfileSettingsForm.startTimeRequired',
-          });
+            const startTimeRequiredMessage = intl.formatMessage({
+              id: 'ProfileSettingsForm.startTimeRequired',
+            });
 
-          const endTimePlaceholder = intl.formatMessage({
-            id: 'ProfileSettingsForm.endTimePlaceholder',
-          });
-          const endTimeLabel = intl.formatMessage({ id: 'ProfileSettingsForm.endTimeLabel' });
+            const endTimePlaceholder = intl.formatMessage({
+              id: 'ProfileSettingsForm.endTimePlaceholder',
+            });
+            const endTimeLabel = intl.formatMessage({ id: 'ProfileSettingsForm.endTimeLabel' });
 
-          const endTimeRequiredMessage = intl.formatMessage({
-            id: 'ProfileSettingsForm.endTimeRequired',
-          });
+            const endTimeRequiredMessage = intl.formatMessage({
+              id: 'ProfileSettingsForm.endTimeRequired',
+            });
 
-          // const pracTiceDatePlaceholder = intl.formatMessage({
-          //   id: 'ProfileSettingsForm.practiceDatePlaceholder',
-          // });
-          const practiceDateLabel = intl.formatMessage({
-            id: 'ProfileSettingsForm.practiceDateLabel',
-          });
+            // const pracTiceDatePlaceholder = intl.formatMessage({
+            //   id: 'ProfileSettingsForm.practiceDatePlaceholder',
+            // });
+            const practiceDateLabel = intl.formatMessage({
+              id: 'ProfileSettingsForm.practiceDateLabel',
+            });
 
-          const practiceDateRequiredMessage = intl.formatMessage({
-            id: 'ProfileSettingsForm.practiceDateRequired',
-          });
+            const practiceDateRequiredMessage = intl.formatMessage({
+              id: 'ProfileSettingsForm.practiceDateRequired',
+            });
 
-          const statusPlaceholder = intl.formatMessage({
-            id: 'ProfileSettingsForm.statusPlaceholder',
-          });
-          const statusLabel = intl.formatMessage({
-            id: 'ProfileSettingsForm.statusLabel',
-          });
+            const statusPlaceholder = intl.formatMessage({
+              id: 'ProfileSettingsForm.statusPlaceholder',
+            });
+            const statusLabel = intl.formatMessage({
+              id: 'ProfileSettingsForm.statusLabel',
+            });
 
-          const statusRequiredMessage = intl.formatMessage({
-            id: 'ProfileSettingsForm.statusRequired',
-          });
+            const statusRequiredMessage = intl.formatMessage({
+              id: 'ProfileSettingsForm.statusRequired',
+            });
 
-          const languagePlaceholder = intl.formatMessage({
-            id: 'ProfileSettingsForm.languagePlaceholder',
-          });
-          const languageLabel = intl.formatMessage({
-            id: 'ProfileSettingsForm.languageLabel',
-          });
+            const languagePlaceholder = intl.formatMessage({
+              id: 'ProfileSettingsForm.languagePlaceholder',
+            });
+            const languageLabel = intl.formatMessage({
+              id: 'ProfileSettingsForm.languageLabel',
+            });
 
-          const languageRequiredMessage = intl.formatMessage({
-            id: 'ProfileSettingsForm.languageRequired',
-          });
+            const languageRequiredMessage = intl.formatMessage({
+              id: 'ProfileSettingsForm.languageRequired',
+            });
 
-          const timeZonePlaceholder = intl.formatMessage({
-            id: 'ProfileSettingsForm.timeZonePlaceholder',
-          });
-          const timeZoneLabel = intl.formatMessage({
-            id: 'ProfileSettingsForm.timeZoneLabel',
-          });
+            const timeZonePlaceholder = intl.formatMessage({
+              id: 'ProfileSettingsForm.timeZonePlaceholder',
+            });
+            const timeZoneLabel = intl.formatMessage({
+              id: 'ProfileSettingsForm.timeZoneLabel',
+            });
 
-          const timeZoneRequiredMessage = intl.formatMessage({
-            id: 'ProfileSettingsForm.timeZoneRequired',
-          });
+            const timeZoneRequiredMessage = intl.formatMessage({
+              id: 'ProfileSettingsForm.timeZoneRequired',
+            });
 
-          const institutePlaceholder = intl.formatMessage({
-            id: 'ProfileSettingsForm.institutePlaceholder',
-          });
-          const instituteLabel = intl.formatMessage({
-            id: 'ProfileSettingsForm.instituteLabel',
-          });
+            const institutePlaceholder = intl.formatMessage({
+              id: 'ProfileSettingsForm.institutePlaceholder',
+            });
+            const instituteLabel = intl.formatMessage({
+              id: 'ProfileSettingsForm.instituteLabel',
+            });
 
-          const instituteRequiredMessage = intl.formatMessage({
-            id: 'ProfileSettingsForm.instituteRequired',
-          });
+            const instituteRequiredMessage = intl.formatMessage({
+              id: 'ProfileSettingsForm.instituteRequired',
+            });
 
-          const degreePlaceholder = intl.formatMessage({
-            id: 'ProfileSettingsForm.degreePlaceholder',
-          });
-          const degreeLabel = intl.formatMessage({
-            id: 'ProfileSettingsForm.degreeLabel',
-          });
+            const degreePlaceholder = intl.formatMessage({
+              id: 'ProfileSettingsForm.degreePlaceholder',
+            });
+            const degreeLabel = intl.formatMessage({
+              id: 'ProfileSettingsForm.degreeLabel',
+            });
 
-          const degreeRequiredMessage = intl.formatMessage({
-            id: 'ProfileSettingsForm.degreeRequired',
-          });
+            const degreeRequiredMessage = intl.formatMessage({
+              id: 'ProfileSettingsForm.degreeRequired',
+            });
 
-          const graduationPlaceholder = intl.formatMessage({
-            id: 'ProfileSettingsForm.graduationPlaceholder',
-          });
-          const graduationLabel = intl.formatMessage({
-            id: 'ProfileSettingsForm.graduationLabel',
-          });
+            const graduationPlaceholder = intl.formatMessage({
+              id: 'ProfileSettingsForm.graduationPlaceholder',
+            });
+            const graduationLabel = intl.formatMessage({
+              id: 'ProfileSettingsForm.graduationLabel',
+            });
 
-          const graduationRequiredMessage = intl.formatMessage({
-            id: 'ProfileSettingsForm.graduationRequired',
-          });
+            const graduationRequiredMessage = intl.formatMessage({
+              id: 'ProfileSettingsForm.graduationRequired',
+            });
 
-          const practiceAreaPlaceholder = intl.formatMessage({
-            id: 'ProfileSettingsForm.practiceAreaPlaceholder',
-          });
-          const practiceAreaLabel = intl.formatMessage({
-            id: 'ProfileSettingsForm.practiceAreaLabel',
-          });
+            const practiceAreaPlaceholder = intl.formatMessage({
+              id: 'ProfileSettingsForm.practiceAreaPlaceholder',
+            });
+            const practiceAreaLabel = intl.formatMessage({
+              id: 'ProfileSettingsForm.practiceAreaLabel',
+            });
 
-          const practiceAreaRequiredMessage = intl.formatMessage({
-            id: 'ProfileSettingsForm.practiceAreaRequired',
-          });
+            const practiceAreaRequiredMessage = intl.formatMessage({
+              id: 'ProfileSettingsForm.practiceAreaRequired',
+            });
 
-          const industryPlaceholder = intl.formatMessage({
-            id: 'ProfileSettingsForm.industryPlaceholder',
-          });
-          const industryLabel = intl.formatMessage({
-            id: 'ProfileSettingsForm.industryLabel',
-          });
+            const industryPlaceholder = intl.formatMessage({
+              id: 'ProfileSettingsForm.industryPlaceholder',
+            });
+            const industryLabel = intl.formatMessage({
+              id: 'ProfileSettingsForm.industryLabel',
+            });
 
-          // const industryRequiredMessage = intl.formatMessage({
-          //   id: 'ProfileSettingsForm.industryRequired',
-          // });
+            // const industryRequiredMessage = intl.formatMessage({
+            //   id: 'ProfileSettingsForm.industryRequired',
+            // });
 
-          const recentWorkPlaceholder = intl.formatMessage({
-            id: 'ProfileSettingsForm.recentWorkPlaceholder',
-          });
-          const recentWorkLabel = intl.formatMessage({
-            id: 'ProfileSettingsForm.recentWorkLabel',
-          });
+            const recentWorkPlaceholder = intl.formatMessage({
+              id: 'ProfileSettingsForm.recentWorkPlaceholder',
+            });
+            const recentWorkLabel = intl.formatMessage({
+              id: 'ProfileSettingsForm.recentWorkLabel',
+            });
 
-          // const recentWorkRequiredMessage = intl.formatMessage({
-          //   id: 'ProfileSettingsForm.recentWorkRequired',
-          // });
+            // const recentWorkRequiredMessage = intl.formatMessage({
+            //   id: 'ProfileSettingsForm.recentWorkRequired',
+            // });
 
-          // const fromPlaceholder = intl.formatMessage({
-          //   id: 'ProfileSettingsForm.fromPlaceholder',
-          // });
-          const fromLabel = intl.formatMessage({
-            id: 'ProfileSettingsForm.fromLabel',
-          });
+            // const fromPlaceholder = intl.formatMessage({
+            //   id: 'ProfileSettingsForm.fromPlaceholder',
+            // });
+            const fromLabel = intl.formatMessage({
+              id: 'ProfileSettingsForm.fromLabel',
+            });
 
-          // const fromRequiredMessage = intl.formatMessage({
-          //   id: 'ProfileSettingsForm.fromRequired',
-          // });
+            // const fromRequiredMessage = intl.formatMessage({
+            //   id: 'ProfileSettingsForm.fromRequired',
+            // });
 
-          // const toPlaceholder = intl.formatMessage({
-          //   id: 'ProfileSettingsForm.toPlaceholder',
-          // });
-          const toLabel = intl.formatMessage({
-            id: 'ProfileSettingsForm.toLabel',
-          });
+            // const toPlaceholder = intl.formatMessage({
+            //   id: 'ProfileSettingsForm.toPlaceholder',
+            // });
+            const toLabel = intl.formatMessage({
+              id: 'ProfileSettingsForm.toLabel',
+            });
 
-          // const toRequiredMessage = intl.formatMessage({
-          //   id: 'ProfileSettingsForm.toRequired',
-          // });
+            // const toRequiredMessage = intl.formatMessage({
+            //   id: 'ProfileSettingsForm.toRequired',
+            // });
 
-          const descriptionLabel = intl.formatMessage({
-            id: 'ProfileSettingsForm.descriptionLabel',
-          });
-          const descriptionPlaceholder = intl.formatMessage({
-            id: 'ProfileSettingsForm.descriptionPlaceholder',
-          });
-          const postalCodeLabel = intl.formatMessage({
-            id: 'ProfileSettingsForm.postalCodeLabel',
-          });
-          const postalCodePlaceholder = intl.formatMessage({
-            id: 'ProfileSettingsForm.postalCodePlaceholder',
-          });
-          const postalCodeRequiredMessage = intl.formatMessage({
-            id: 'ProfileSettingsForm.postalCodeRequiredMessage',
-          });
+            const descriptionLabel = intl.formatMessage({
+              id: 'ProfileSettingsForm.descriptionLabel',
+            });
+            const descriptionPlaceholder = intl.formatMessage({
+              id: 'ProfileSettingsForm.descriptionPlaceholder',
+            });
+            const postalCodeLabel = intl.formatMessage({
+              id: 'ProfileSettingsForm.postalCodeLabel',
+            });
+            const postalCodePlaceholder = intl.formatMessage({
+              id: 'ProfileSettingsForm.postalCodePlaceholder',
+            });
+            const postalCodeRequiredMessage = intl.formatMessage({
+              id: 'ProfileSettingsForm.postalCodeRequiredMessage',
+            });
 
-          const stateLabel = intl.formatMessage({
-            id: 'ProfileSettingsForm.stateLabel',
-          });
+            const stateLabel = intl.formatMessage({
+              id: 'ProfileSettingsForm.stateLabel',
+            });
 
-          const onLanguageChangeHandler = e => {
-            form.change('languages', JSON.stringify(this.state.languages));
+            const onLanguageChangeHandler = e => {
+              form.change('languages', JSON.stringify(this.state.languages));
 
-            // setEquipments(e);
-            // setEquipmentsError(false);
-            this.setState({ languages: e, languageError: false, languageChange: true });
-          };
-          const onLanguageBlurHandler = e => {
-            form.change('languages', JSON.stringify(this.state.languages));
-            this.setState({ languageChange: true });
-            if (!this.state.languages.length) {
-              this.setState({ languageError: true });
-            } else {
-              this.setState({ languageError: false });
-            }
-          };
+              // setEquipments(e);
+              // setEquipmentsError(false);
+              this.setState({ languages: e, languageError: false, languageChange: true });
+            };
+            const onLanguageBlurHandler = e => {
+              form.change('languages', JSON.stringify(this.state.languages));
+              this.setState({ languageChange: true });
+              if (!this.state.languages.length) {
+                this.setState({ languageError: true });
+              } else {
+                this.setState({ languageError: false });
+              }
+            };
 
-          const clientType =
-            user?.attributes?.profile?.publicData?.clientType === 'privateIndividual'
-              ? 'Private Individual'
-              : 'Legal Entity';
+            const clientType =
+              user?.attributes?.profile?.publicData?.clientType === 'privateIndividual'
+                ? 'Private Individual'
+                : 'Legal Entity';
 
-          const langOption = languages.map(l => {
-            return { label: l.name, value: l.code };
-          });
+            const langOption = languages.map(l => {
+              return { label: l.name, value: l.code };
+            });
 
-          const time = [
-            '00:00',
-            '01:00',
-            '02:00',
-            '03:00',
-            '04:00',
-            '05:00',
-            '06:00',
-            '07:00',
-            '08:00',
-            '09:00',
-            '10:00',
-            '11:00',
-            '12:00',
-            '13:00',
-            '14:00',
-            '15:00',
-            '16:00',
-            '17:00',
-            '18:00',
-            '19:00',
-            '20:00',
-            '21:00',
-            '22:00',
-            '23:00',
-            '24:00',
-          ];
+            const time = [
+              '00:00',
+              '01:00',
+              '02:00',
+              '03:00',
+              '04:00',
+              '05:00',
+              '06:00',
+              '07:00',
+              '08:00',
+              '09:00',
+              '10:00',
+              '11:00',
+              '12:00',
+              '13:00',
+              '14:00',
+              '15:00',
+              '16:00',
+              '17:00',
+              '18:00',
+              '19:00',
+              '20:00',
+              '21:00',
+              '22:00',
+              '23:00',
+              '24:00',
+            ];
 
-          const phnChange = initialValues.phoneNumber !== values.phoneNumber;
+            const phnChange = initialValues.phoneNumber !== values.phoneNumber;
 
-          const uploadingOverlay =
-            uploadInProgress || this.state.uploadDelay ? (
-              <div className={css.uploadingImageOverlay}>
-                <IconSpinner />
+            const uploadingOverlay =
+              uploadInProgress || this.state.uploadDelay ? (
+                <div className={css.uploadingImageOverlay}>
+                  <IconSpinner />
+                </div>
+              ) : null;
+
+            const hasUploadError = !!uploadImageError && !uploadInProgress;
+            const errorClasses = classNames({ [css.avatarUploadError]: hasUploadError });
+            const transientUserProfileImage = profileImage.uploadedImage || user.profileImage;
+            const transientUser = { ...user, profileImage: transientUserProfileImage };
+
+            // Ensure that file exists if imageFromFile is used
+            const fileExists = !!profileImage.file;
+            const fileUploadInProgress = uploadInProgress && fileExists;
+            const delayAfterUpload = profileImage.imageId && this.state.uploadDelay;
+            const imageFromFile =
+              fileExists && (fileUploadInProgress || delayAfterUpload) ? (
+                <ImageFromFile
+                  id={profileImage.id}
+                  className={errorClasses}
+                  rootClassName={css.uploadingImage}
+                  aspectRatioClassName={css.squareAspectRatio}
+                  file={profileImage.file}
+                >
+                  {uploadingOverlay}
+                </ImageFromFile>
+              ) : null;
+
+            // Avatar is rendered in hidden during the upload delay
+            // Upload delay smoothes image change process:
+            // responsive img has time to load srcset stuff before it is shown to user.
+            const avatarClasses = classNames(errorClasses, css.avatar, {
+              [css.avatarInvisible]: this.state.uploadDelay,
+            });
+            const avatarComponent =
+              !fileUploadInProgress && profileImage.imageId ? (
+                <Avatar
+                  className={avatarClasses}
+                  renderSizes="(max-width: 767px) 96px, 240px"
+                  user={transientUser}
+                  disableProfileLink
+                />
+              ) : null;
+
+            const chooseAvatarLabel =
+              profileImage.imageId || fileUploadInProgress ? (
+                <div className={css.avatarContainer}>
+                  {imageFromFile}
+                  {avatarComponent}
+                  <div className={css.changeAvatar}>
+                    <FormattedMessage id="ProfileSettingsForm.changeAvatar" />
+                  </div>
+                </div>
+              ) : (
+                <div className={css.avatarPlaceholder}>
+                  <div className={css.avatarPlaceholderText}>
+                    <FormattedMessage id="ProfileSettingsForm.addYourProfilePicture" />
+                  </div>
+                  <div className={css.avatarPlaceholderTextMobile}>
+                    <FormattedMessage id="ProfileSettingsForm.addYourProfilePictureMobile" />
+                  </div>
+                </div>
+              );
+
+            const submitError = updateProfileError ? (
+              <div className={css.error}>
+                <FormattedMessage id="ProfileSettingsForm.updateProfileFailed" />
               </div>
             ) : null;
 
-          const hasUploadError = !!uploadImageError && !uploadInProgress;
-          const errorClasses = classNames({ [css.avatarUploadError]: hasUploadError });
-          const transientUserProfileImage = profileImage.uploadedImage || user.profileImage;
-          const transientUser = { ...user, profileImage: transientUserProfileImage };
+            const classes = classNames(rootClassName || css.root, className);
+            const submitInProgress = updateInProgress;
+            const submittedOnce = Object.keys(this.submittedValues).length > 0;
+            const pristineSinceLastSubmit = submittedOnce && isEqual(values, initialValues);
 
-          // Ensure that file exists if imageFromFile is used
-          const fileExists = !!profileImage.file;
-          const fileUploadInProgress = uploadInProgress && fileExists;
-          const delayAfterUpload = profileImage.imageId && this.state.uploadDelay;
-          const imageFromFile =
-            fileExists && (fileUploadInProgress || delayAfterUpload) ? (
-              <ImageFromFile
-                id={profileImage.id}
-                className={errorClasses}
-                rootClassName={css.uploadingImage}
-                aspectRatioClassName={css.squareAspectRatio}
-                file={profileImage.file}
+            const submitDisabled =
+              invalid ||
+              pristine ||
+              pristineSinceLastSubmit ||
+              uploadInProgress ||
+              submitInProgress ||
+              values?.industry?.filter(f => f?.description?.split(' ').length > MAX_LIMIT).length >
+                0
+                ? true
+                : false;
+
+            return (
+              <Form
+                className={classes}
+                onSubmit={e => {
+                  e.preventDefault();
+                  this.submittedValues = values;
+                  if (phnChange) {
+                    axios
+                      .post(`${apiBaseUrl()}/api/user/verify`, {
+                        otp: values.otp * 1,
+                        mobile: '+' + values.phoneNumber,
+                      })
+                      .then(resp => {
+                        handleSubmit(e);
+                      })
+                      .catch(err => {
+                        if (err.response.status === 401 || err.response.status === 404) {
+                          this.setState({ otpErr: true });
+                        }
+                        // setTimeout(() => {
+                        //   // setSubmitProgress(false);
+                        // }, 2000);
+                        console.log(err.response.status);
+                      });
+                  } else {
+                    handleSubmit(e);
+                  }
+                }}
               >
-                {uploadingOverlay}
-              </ImageFromFile>
-            ) : null;
-
-          // Avatar is rendered in hidden during the upload delay
-          // Upload delay smoothes image change process:
-          // responsive img has time to load srcset stuff before it is shown to user.
-          const avatarClasses = classNames(errorClasses, css.avatar, {
-            [css.avatarInvisible]: this.state.uploadDelay,
-          });
-          const avatarComponent =
-            !fileUploadInProgress && profileImage.imageId ? (
-              <Avatar
-                className={avatarClasses}
-                renderSizes="(max-width: 767px) 96px, 240px"
-                user={transientUser}
-                disableProfileLink
-              />
-            ) : null;
-
-          const chooseAvatarLabel =
-            profileImage.imageId || fileUploadInProgress ? (
-              <div className={css.avatarContainer}>
-                {imageFromFile}
-                {avatarComponent}
-                <div className={css.changeAvatar}>
-                  <FormattedMessage id="ProfileSettingsForm.changeAvatar" />
-                </div>
-              </div>
-            ) : (
-              <div className={css.avatarPlaceholder}>
-                <div className={css.avatarPlaceholderText}>
-                  <FormattedMessage id="ProfileSettingsForm.addYourProfilePicture" />
-                </div>
-                <div className={css.avatarPlaceholderTextMobile}>
-                  <FormattedMessage id="ProfileSettingsForm.addYourProfilePictureMobile" />
-                </div>
-              </div>
-            );
-
-          const submitError = updateProfileError ? (
-            <div className={css.error}>
-              <FormattedMessage id="ProfileSettingsForm.updateProfileFailed" />
-            </div>
-          ) : null;
-
-          const classes = classNames(rootClassName || css.root, className);
-          const submitInProgress = updateInProgress;
-          const submittedOnce = Object.keys(this.submittedValues).length > 0;
-          const pristineSinceLastSubmit = submittedOnce && isEqual(values, initialValues);
-        
-          const submitDisabled =
-            invalid ||
-            pristine ||
-            pristineSinceLastSubmit ||
-            uploadInProgress ||
-            submitInProgress ||
-            values?.industry?.filter(f => f?.description?.split(' ').length > MAX_LIMIT).length > 0
-              ? true
-              : false;
-
-          return (
-            
-            <Form
-              className={classes}
-              onSubmit={e => {
-                e.preventDefault();
-                this.submittedValues = values;
-                if (phnChange) {
-                  axios
-                    .post(`${apiBaseUrl()}/api/user/verify`, {
-                      otp: values.otp * 1,
-                      mobile: '+' + values.phoneNumber,
-                    })
-                    .then(resp => {
-                      handleSubmit(e);
-                    })
-                    .catch(err => {
-                      if (err.response.status === 401 || err.response.status === 404) {
-                        this.setState({ otpErr: true });
-                      }
-                      // setTimeout(() => {
-                      //   // setSubmitProgress(false);
-                      // }, 2000);
-                      console.log(err.response.status);
-                    });
-                } else {
-                  handleSubmit(e);
-                }
-              }}
-            >
                 <FieldArray name="education">
-                    {({ fields }) => {
-                      return (
-                        <div className={css.sectionContainer}>
-                          <h3 className={css.sectionTitle}>
-                            <FormattedMessage id="ProfileSettingsForm.rducationTitle" />
-                          </h3>
-                          <p>
-                            It is important to start with your most recent education and work
-                            backwards
-                          </p>
-                          {fields.map((name, i) => {
-                            return (
-                              <div key={name + i}>
-                                <div className={css.fromgroup}>
-                                  <FieldTextInput
-                                    className={css.institute}
-                                    type="text"
-                                    id={`${name}.instituteName`}
-                                    name={`${name}.instituteName`}
-                                    placeholder={institutePlaceholder}
-                                    validate={composeValidators(required(instituteRequiredMessage))}
-                                    label={instituteLabel}
-                                  />
-                                </div>
-
-                                <div className={`${css.fromgroup} ${css.inlinefrom}`}>
-                                  <FieldTextInput
-                                    className={`${css.degree} ${css.halfinput}`}
-                                    type="text"
-                                    id={`${name}.degree`}
-                                    name={`${name}.degree`}
-                                    placeholder={degreePlaceholder}
-                                    validate={composeValidators(required(degreeRequiredMessage))}
-                                    label={degreeLabel}
-                                  />
-
-                                  <FieldSelect
-                                    className={css.halfinput}
-                                    id={`${name}.graduationYear`}
-                                    name={`${name}.graduationYear`}
-                                    label={graduationLabel}
-                                    validate={composeValidators(
-                                      required(graduationRequiredMessage)
-                                    )}
-                                  >
-                                    <option value="">{graduationPlaceholder}</option>
-                                    <option value="2022">2022</option>
-                                    <option value="2021">2021</option>
-                                    <option value="2020">2020</option>
-                                  </FieldSelect>
-                                </div>
+                  {({ fields }) => {
+                    return (
+                      <div className={css.sectionContainer}>
+                        <h3 className={css.sectionTitle}>
+                          <FormattedMessage id="ProfileSettingsForm.rducationTitle" />
+                        </h3>
+                        <p>
+                          It is important to start with your most recent education and work
+                          backwards
+                        </p>
+                        {fields.map((name, i) => {
+                          return (
+                            <div className={css.addformgb} key={name + i}>
+                              <div className={css.fromgroup}>
+                                <FieldTextInput
+                                  className={css.institute}
+                                  type="text"
+                                  id={`${name}.instituteName`}
+                                  name={`${name}.instituteName`}
+                                  placeholder={institutePlaceholder}
+                                  validate={composeValidators(required(instituteRequiredMessage))}
+                                  label={instituteLabel}
+                                />
                               </div>
-                            );
-                          })}
 
-                          <div className={css.inlinefrom}>
-                            <Button
-                              className={css.addMore}
-                              type="button"
-                              onClick={() => {
-                                fields.push();
-                              }}
-                              disabled={
-                                !values.education[values.education?.length - 1]?.instituteName ||
-                                !values.education[values.education?.length - 1]?.degree ||
-                                !values.education[values.education?.length - 1]?.graduationYear
-                              }
-                            >
-                              <FormattedMessage id="ProfileSettingsForm.addMore" />
-                            </Button>
-                            <Button
-                              className={css.remove}
-                              type="button"
-                              onClick={() => {
-                                fields.pop();
-                              }}
-                              disabled={values.education?.length < 2}
-                            >
-                              <FormattedMessage id="ProfileSettingsForm.remove" />
-                            </Button>
-                          </div>
+                              <div className={`${css.fromgroup} ${css.inlinefrom}  `}>
+                                <FieldTextInput
+                                  className={`${css.degree} ${css.halfinput}`}
+                                  type="text"
+                                  id={`${name}.degree`}
+                                  name={`${name}.degree`}
+                                  placeholder={degreePlaceholder}
+                                  validate={composeValidators(required(degreeRequiredMessage))}
+                                  label={degreeLabel}
+                                />
+
+                                <FieldSelect
+                                  className={css.halfinput}
+                                  id={`${name}.graduationYear`}
+                                  name={`${name}.graduationYear`}
+                                  label={graduationLabel}
+                                  validate={composeValidators(required(graduationRequiredMessage))}
+                                >
+                                  <option value="">{graduationPlaceholder}</option>
+                                  <option value="2022">2022</option>
+                                  <option value="2021">2021</option>
+                                  <option value="2020">2020</option>
+                                </FieldSelect>
+                              </div>
+                            </div>
+                          );
+                        })}
+
+                        <div className={`${css.inlinefrom} ${css.mobilefixd}`}>
+                          <Button
+                            className={css.addMore}
+                            type="button"
+                            onClick={() => {
+                              fields.push();
+                            }}
+                            disabled={
+                              !values.education[values.education?.length - 1]?.instituteName ||
+                              !values.education[values.education?.length - 1]?.degree ||
+                              !values.education[values.education?.length - 1]?.graduationYear
+                            }
+                          >
+                            <FormattedMessage id="ProfileSettingsForm.addMore" />
+                          </Button>
+                          <Button
+                            className={css.remove}
+                            type="button"
+                            onClick={() => {
+                              fields.pop();
+                            }}
+                            disabled={values.education?.length < 2}
+                          >
+                            <FormattedMessage id="ProfileSettingsForm.remove" />
+                          </Button>
                         </div>
-                      );
-                    }}
-                  </FieldArray>
-              
-              
-              <Button
-                className={css.submitButton}
-                type="submit"
-                inProgress={submitInProgress}
-                disabled={
-                  !(this.state.languageChange && this.state.languages.length > 0) && submitDisabled
-                }
-                ready={pristineSinceLastSubmit}
-              >
-                <FormattedMessage id="ProfileSettingsForm.saveChanges" />
-              </Button>
-            </Form>
-          );
-        }}
-      />
+                      </div>
+                    );
+                  }}
+                </FieldArray>
+
+                <Button
+                  className={css.submitButton}
+                  type="submit"
+                  inProgress={submitInProgress}
+                  disabled={
+                    !(this.state.languageChange && this.state.languages.length > 0) &&
+                    submitDisabled
+                  }
+                  ready={pristineSinceLastSubmit}
+                >
+                  <FormattedMessage id="ProfileSettingsForm.saveChanges" />
+                </Button>
+              </Form>
+            );
+          }}
+        />
       </>
     );
   }

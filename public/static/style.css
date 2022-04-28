@@ -36,8 +36,20 @@
  margin: 0 !important;
 width: 100% !important;
 }
-
+.SingleDatePickerInput{
+    margin: 0 !important;
+    width: 100% !important;
+  }
+  .stdtupmob{
+    margin: 0 24px;
+  }
+  .stdtupmob label{
+    margin: 0;
+  }
+  /* .mbclfix button {
+    position: absolute;
+} */
 }
 @media (max-width: 575px) {
-
+  
 }

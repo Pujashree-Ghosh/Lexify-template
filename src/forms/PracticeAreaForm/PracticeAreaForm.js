@@ -191,7 +191,7 @@ class PracticeAreaFormComponent extends Component {
                               !values.practice.filter((m, index) => index !== i).includes(key)
                           );
                           return (
-                            <div key={name + i}>
+                            <div className={css.addformgb} key={name + i}>
                               <div className={css.fromgroup}>
                                 <FieldSelect
                                   id={`${name}`}
@@ -212,7 +212,7 @@ class PracticeAreaFormComponent extends Component {
                           );
                         })}
 
-                        <div className={css.inlinefrom}>
+                        <div className={`${css.inlinefrom} ${css.mobilefixd}`}>
                           <Button
                             className={css.addMore}
                             type="button"
@@ -251,7 +251,7 @@ class PracticeAreaFormComponent extends Component {
                         </p>
                         {fields.map((name, i) => {
                           return (
-                            <div key={name + i}>
+                            <div className={css.addformgb} key={name + i}>
                               <div className={css.fromgroup}>
                                 <FieldTextInput
                                   className={css.industry}
@@ -344,7 +344,7 @@ class PracticeAreaFormComponent extends Component {
                             </div>
                           );
                         })}
-                        <div className={css.inlinefrom}>
+                        <div className={`${css.inlinefrom} ${css.mobilefixd}`}>
                           <Button
                             className={css.addMore}
                             type="button"

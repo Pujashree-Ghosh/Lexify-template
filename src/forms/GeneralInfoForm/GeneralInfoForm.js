@@ -930,7 +930,7 @@ class GeneralInfoFormComponent extends Component {
                             {fields.map((name, i) => {
                               return ( 
                                 <div key={name + i}>*/}
-                    <div className={`${css.fromgroup} ${css.inlinefrom}`}>
+                    <div className={`${css.fromgroup} ${css.inlinefrom} `}>
                       <FieldDateInput
                         label={DateLabel}
                         className={`${css.bookingDates} ${css.halfinput}`}
