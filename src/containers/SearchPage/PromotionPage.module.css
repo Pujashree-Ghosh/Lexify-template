@@ -67,6 +67,10 @@
     flex-direction: row;
     flex-wrap: wrap;
   } */
+
+  @media (max-width: 767px) {
+    padding: 0;
+  }
   @media (--viewportLarge) {
     padding: 0 36px 96px 36px;
   }
@@ -101,6 +105,9 @@
     margin-left: 0;
   }
 }
-.wrapperMain{
+.wrapperMain {
   padding: 0 40px 0 40px;
+  @media (max-width: 767px) {
+    padding: 0 15px;
+  }
 }

@@ -228,7 +228,7 @@
   font-weight: 900;
   margin: 20px 0;
   @media (max-width: 575px) {
-    margin: 0 15px;
+    margin: 0 5px;
   }
 }
 

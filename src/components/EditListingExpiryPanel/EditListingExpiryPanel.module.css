@@ -9,13 +9,17 @@
 
 .form {
   flex-grow: 1;
+  min-height: 100vh;
+  @media (max-width: 575px) {
+    min-height: 500px;
+  }
   & input {
-    max-width: 30%;
+    max-width: 100%;
     @media (max-width: 767px) {
-      max-width: 60%;
+      max-width: 38%;
     }
     @media (max-width: 575px) {
-      max-width: 100%;
+      max-width: 90%;
     }
   }
 }

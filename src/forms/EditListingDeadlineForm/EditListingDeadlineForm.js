@@ -112,7 +112,7 @@ const EditListingDeadlineFormComponent = props => (
           </h3>
 
           <FieldDateInput
-            className={`${css.street} `}
+            className={`${css.street} ${css.expdate}`}
             id="deadLineDate"
             name="Deadline"
             // label={fromLabel}

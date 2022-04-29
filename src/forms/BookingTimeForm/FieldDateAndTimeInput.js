@@ -819,7 +819,7 @@ class FieldDateAndTimeInput extends Component {
         <div className={css.formRow}>
           <div className={classNames(css.field, css.startDate)}>
             <FieldDateInput
-              className={css.fieldDateInput}
+              className={`${css.fieldDateInput} stdtupmob`}
               name="bookingStartDate"
               id={formId ? `${formId}.bookingStartDate` : 'bookingStartDate'}
               label={startDateInputProps.label}

@@ -45,9 +45,11 @@
 
 .lastSection {
   margin-bottom: 69px;
-
+  @media (max-width: 767px) {
+    margin-bottom: 30px;
+  }
   @media (--viewportMedium) {
-    margin-bottom: 111px;
+    margin-bottom: 30px;
 
     & .sectionTitle {
       margin-bottom: 16px;
@@ -385,10 +387,21 @@
   align-items: center;
   @media (max-width: 767px) {
     flex-direction: column;
+    margin-bottom: 0;
   }
 }
+
 .halfinput {
   flex-basis: 48%;
+  @media (max-width: 767px) {
+    margin: 0 0 35px;
+    width: 100%;
+  }
+}
+.halfinput label {
+  @media (max-width: 767px) {
+    margin: 0;
+  }
 }
 .thirdinput {
   flex-basis: 30%;
@@ -460,7 +473,22 @@
   margin: 0 20px 0 0;
   transform: scale(2);
 }
+.serviceTime {
+  @media (max-width: 767px) {
+    width: 100%;
+  }
+}
 .serviceTime select {
-  border-width: 3px;
   padding-bottom: 7px;
+}
+.mobilefixd {
+  @media (max-width: 767px) {
+    flex-direction: row;
+  }
+}
+.addformgb {
+  background: #f4f4f4;
+  padding: 25px;
+  margin: 0 0 20px;
+  border: 1px solid #dbdbdb;
 }
