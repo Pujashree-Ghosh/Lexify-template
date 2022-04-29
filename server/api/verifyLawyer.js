@@ -1,8 +1,8 @@
 const jwt = require('jsonwebtoken');
 // const { default: config } = require('../../src/config');
-const {getIntegrationSdk} = require("../api-util/sdk");
+const { getIntegrationSdk } = require('../api-util/sdk');
 
-const integrationSdk=getIntegrationSdk();
+const integrationSdk = getIntegrationSdk();
 const secretCode = process.env.REACT_APP_JWT_SECRET_CODE;
 
 module.exports.verifyLawyer = async (req, res) => {

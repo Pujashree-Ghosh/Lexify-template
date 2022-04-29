@@ -20,6 +20,7 @@ import {
   txIsExpired,
   txIsPendingConfirmation,
   txIsRequestedOral,
+  txIsPendingConfirmationOral,
 } from '../../util/transaction';
 import { LINE_ITEM_NIGHT, LINE_ITEM_DAY, propTypes } from '../../util/types';
 import {
@@ -60,6 +61,7 @@ import PanelHeading, {
   HEADING_CANCELED,
   HEADING_DELIVERED,
   HEADING_EXPIRED,
+  HEADING_PENDING_CONFIRMATION,
 } from './PanelHeading';
 import Axios from 'axios';
 import { PrimaryButton } from '../Button/Button';
@@ -399,7 +401,7 @@ export class TransactionPanelComponent extends Component {
       lineItems,
       fetchLineItemsInProgress,
       fetchLineItemsError,
-      onJoinMeeting,
+      // onJoinMeeting,
     } = this.props;
     const currentTransaction = ensureTransaction(transaction);
     const currentListing = ensureListing(currentTransaction.listing);
@@ -453,13 +455,6 @@ export class TransactionPanelComponent extends Component {
           showSaleButtons: isProvider && !isCustomerBanned,
           showCalendar: true,
         };
-      } else if (txIsPendingConfirmation(tx)) {
-        return {
-          headingState: HEADING_ACCEPTED,
-          showDetailCardHeadings: isCustomer,
-          showAddress: isCustomer,
-          showCalendar: true,
-        };
       } else if (txIsAccepted(tx)) {
         return {
           headingState: HEADING_ACCEPTED,
@@ -468,6 +463,20 @@ export class TransactionPanelComponent extends Component {
           showCalendar: true,
         };
       } else if (txIsAcceptedOral(tx)) {
+        return {
+          headingState: HEADING_ACCEPTED,
+          showDetailCardHeadings: isCustomer,
+          showAddress: isCustomer,
+          showCalendar: true,
+        };
+      } else if (txIsPendingConfirmation(tx)) {
+        return {
+          headingState: HEADING_PENDING_CONFIRMATION,
+          showDetailCardHeadings: isCustomer,
+          showAddress: isCustomer,
+          showCalendar: true,
+        };
+      } else if (txIsPendingConfirmationOral(tx)) {
         return {
           headingState: HEADING_ACCEPTED,
           showDetailCardHeadings: isCustomer,
@@ -533,6 +542,7 @@ export class TransactionPanelComponent extends Component {
         return { headingState: 'unknown' };
       }
     };
+    console.log(currentTransaction);
     const stateData = stateDataFn(currentTransaction);
 
     const deletedListingTitle = intl.formatMessage({

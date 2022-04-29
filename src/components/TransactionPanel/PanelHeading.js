@@ -11,6 +11,7 @@ export const HEADING_PAYMENT_PENDING = 'pending-payment';
 export const HEADING_PAYMENT_EXPIRED = 'payment-expired';
 export const HEADING_REQUESTED = 'requested';
 export const HEADING_ACCEPTED = 'accepted';
+export const HEADING_PENDING_CONFIRMATION = 'pending-confirmation';
 export const HEADING_RESCHEDULED = 'rescheduled';
 export const HEADING_DECLINED = 'declined';
 export const HEADING_CANCELED = 'canceled';
@@ -213,6 +214,22 @@ const PanelHeading = props => {
         <HeadingProvider
           className={titleClasses}
           id="TransactionPanel.saleAcceptedTitle"
+          values={{ customerName, listingLink }}
+        />
+      );
+    case HEADING_PENDING_CONFIRMATION:
+      return isCustomer ? (
+        <HeadingCustomerWithSubtitle
+          className={titleClasses}
+          id="TransactionPanel.pendingConfirmationTitle"
+          values={{ providerName, listingLink }}
+          subtitleId="TransactionPanel.pendingConfirmationSubtitle"
+          // subtitleValues={{ listingLink }}
+        />
+      ) : (
+        <HeadingProvider
+          className={titleClasses}
+          id="TransactionPanel.pendingConfimationTitle"
           values={{ customerName, listingLink }}
         />
       );

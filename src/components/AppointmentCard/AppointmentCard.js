@@ -35,12 +35,12 @@ function AppointmentCardComponent(props) {
     intl,
     stateData,
     onConfirmConsultation,
-    confirmConsultationInProgress,
-    confirmConsultationSuccess,
+    // confirmConsultationInProgress,
+    // confirmConsultationSuccess,
     history,
-    onJoinMeeting,
-    txBothJoined,
-    txCustomerJoined1,
+    // onJoinMeeting,
+    // txBothJoined,
+    // txCustomerJoined1,
   } = props;
   const provider = tx && tx.provider;
   const listing = tx && tx.listing;
@@ -143,7 +143,8 @@ function AppointmentCardComponent(props) {
                 </span>
               ) : (
                 <span className={css.deadline}>
-                  <span>Deadline:</span> {listing?.attributes?.publicData?.deadline}
+                  <span>Deadline:</span>{' '}
+                  {moment(listing?.attributes?.publicData?.Deadline).format('ddd, LL')}
                 </span>
               )}
             </div>
@@ -229,7 +230,11 @@ function AppointmentCardComponent(props) {
             </>
           ) : stateData === 'upcoming' ? (
             <>
-              <div className={css.cctxtp}>Video Join button will appear here on time.</div>
+              {category !== 'customService' ? (
+                <div className={css.cctxtp}>Video Join button will appear here on time.</div>
+              ) : (
+                ''
+              )}
               <div className={css.profileBtnContainer}>
                 {category !== 'customService' ? (
                   <div className={css.profileBtn}>

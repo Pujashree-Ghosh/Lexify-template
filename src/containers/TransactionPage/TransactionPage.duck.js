@@ -9,8 +9,8 @@ import {
   getReview1Transition,
   getReview2Transition,
   txIsInFirstReviewBy,
-  joinMeeting1Transition,
-  joinMeeting2Transition,
+  // joinMeeting1Transition,
+  // joinMeeting2Transition,
   TRANSITION_ACCEPT,
   TRANSITION_DECLINE,
   TRANSITION_COMPLETE,
@@ -20,6 +20,7 @@ import {
   TRANSITION_CANCEL_CUSTOMER_ORAL,
   TRANSITION_RESCHEDULE_PROVIDER,
   TRANSITION_RESCHEDULE_CUSTOMER,
+  TRANSITION_SERVICE_DELIVERED_PROVIDER,
 } from '../../util/transaction';
 import { apiBaseUrl, transactionLineItems } from '../../util/api';
 import * as log from '../../util/log';
@@ -61,6 +62,12 @@ export const JOIN_MEETING_ERROR = 'app/TransactionPage/JOIN_MEETING_ERROR';
 export const DECLINE_SALE_REQUEST = 'app/TransactionPage/DECLINE_SALE_REQUEST';
 export const DECLINE_SALE_SUCCESS = 'app/TransactionPage/DECLINE_SALE_SUCCESS';
 export const DECLINE_SALE_ERROR = 'app/TransactionPage/DECLINE_SALE_ERROR';
+
+export const DELIVER_SERVICE_PROVIDER_REQUEST =
+  'app/TransactionPage/DELIVER_SERVICE_PROVIDER_REQUEST';
+export const DELIVER_SERVICE_PROVIDER_SUCCESS =
+  'app/TransactionPage/DELIVER_SERVICE_PROVIDER_SUCCESS';
+export const DELIVER_SERVICE_PROVIDER_ERROR = 'app/TransactionPage/DELIVER_SERVICE_PROVIDER_ERROR';
 
 export const CANCEL_SALE_PROVIDER_REQUEST = 'app/TransactionPage/CANCEL_SALE_PROVIDER_REQUEST';
 export const CANCEL_SALE_PROVIDER_SUCCESS = 'app/TransactionPage/CANCEL_SALE_PROVIDER_SUCCESS';
@@ -208,6 +215,21 @@ export default function checkoutPageReducer(state = initialState, action = {}) {
       return { ...state, declineInProgress: false };
     case DECLINE_SALE_ERROR:
       return { ...state, declineInProgress: false, declineSaleError: payload };
+
+    case DELIVER_SERVICE_PROVIDER_REQUEST:
+      return {
+        ...state,
+        deliverServiceProviderInProgress: true,
+        deliverServiceProviderError: null,
+      };
+    case DELIVER_SERVICE_PROVIDER_SUCCESS:
+      return { ...state, deliverServiceProviderInProgress: false };
+    case DELIVER_SERVICE_PROVIDER_ERROR:
+      return {
+        ...state,
+        deliverServiceProviderInProgress: false,
+        deliverServiceProviderError: payload,
+      };
 
     case CANCEL_SALE_CUSTOMER_REQUEST:
       return {
@@ -401,6 +423,14 @@ const joinMeetingError = e => ({ type: JOIN_MEETING_ERROR, error: true, payload:
 const declineSaleRequest = () => ({ type: DECLINE_SALE_REQUEST });
 const declineSaleSuccess = () => ({ type: DECLINE_SALE_SUCCESS });
 const declineSaleError = e => ({ type: DECLINE_SALE_ERROR, error: true, payload: e });
+
+const deliverServiceProviderRequest = () => ({ type: DELIVER_SERVICE_PROVIDER_REQUEST });
+const deliverServiceProviderSuccess = () => ({ type: DELIVER_SERVICE_PROVIDER_SUCCESS });
+const deliverServiceProviderError = e => ({
+  type: DELIVER_SERVICE_PROVIDER_ERROR,
+  error: true,
+  payload: e,
+});
 
 const cancelSaleProviderRequest = () => ({ type: CANCEL_SALE_PROVIDER_REQUEST });
 const cancelSaleProviderSuccess = () => ({ type: CANCEL_SALE_PROVIDER_SUCCESS });
@@ -632,57 +662,57 @@ export const acceptSale = id => (dispatch, getState, sdk) => {
 };
 
 //meeting dispatch function
-export const joinMeeting = (id, isCustomer) => (dispatch, getState, sdk) => {
-  if (acceptOrDeclineInProgress(getState())) {
-    return Promise.reject(new Error('Join meeting already in progress'));
-  }
-  dispatch(joinMeetingRequest());
-  const transition = joinMeeting1Transition(isCustomer);
-  return sdk.transactions
-    .transition({ id, transition, params: {} }, { expand: true })
-    .then(response => {
-      dispatch(addMarketplaceEntities(response));
-      dispatch(joinMeetingSuccess());
-      dispatch(fetchCurrentUserNotifications());
-      return response;
-    })
-    .catch(e => {
-      if (isTransactionsTransitionInvalidTransition(storableError(e))) {
-        return joinMeetingSecond(id, isCustomer, dispatch, sdk, getState);
-      } else {
-        dispatch(joinMeetingError(storableError(e)));
+// export const joinMeeting = (id, isCustomer) => (dispatch, getState, sdk) => {
+//   if (acceptOrDeclineInProgress(getState())) {
+//     return Promise.reject(new Error('Join meeting already in progress'));
+//   }
+//   dispatch(joinMeetingRequest());
+//   const transition = joinMeeting1Transition(isCustomer);
+//   return sdk.transactions
+//     .transition({ id, transition, params: {} }, { expand: true })
+//     .then(response => {
+//       dispatch(addMarketplaceEntities(response));
+//       dispatch(joinMeetingSuccess());
+//       dispatch(fetchCurrentUserNotifications());
+//       return response;
+//     })
+//     .catch(e => {
+//       if (isTransactionsTransitionInvalidTransition(storableError(e))) {
+//         return joinMeetingSecond(id, isCustomer, dispatch, sdk, getState);
+//       } else {
+//         dispatch(joinMeetingError(storableError(e)));
 
-        // Rethrow so the page can track whether the sending failed, and
-        // keep the message in the form for a retry.
-        throw e;
-      }
-    });
-};
+//         // Rethrow so the page can track whether the sending failed, and
+//         // keep the message in the form for a retry.
+//         throw e;
+//       }
+//     });
+// };
 
-export const joinMeetingSecond = (id, isCustomer, dispatch, sdk, getState) => {
-  if (acceptOrDeclineInProgress(getState())) {
-    return Promise.reject(new Error('Join meeting already in progress'));
-  }
-  dispatch(joinMeetingRequest());
-  const transition = joinMeeting2Transition(isCustomer);
-  console.log('557 join meeting second', transition);
-  return sdk.transactions
-    .transition({ id, transition, params: {} }, { expand: true })
-    .then(response => {
-      dispatch(addMarketplaceEntities(response));
-      dispatch(joinMeetingSuccess());
-      dispatch(fetchCurrentUserNotifications());
-      return response;
-    })
-    .catch(e => {
-      dispatch(joinMeetingError(storableError(e)));
-      log.error(e, 'join-meeting-second-failed', {
-        txId: id,
-        transition,
-      });
-      throw e;
-    });
-};
+// export const joinMeetingSecond = (id, isCustomer, dispatch, sdk, getState) => {
+//   if (acceptOrDeclineInProgress(getState())) {
+//     return Promise.reject(new Error('Join meeting already in progress'));
+//   }
+//   dispatch(joinMeetingRequest());
+//   const transition = joinMeeting2Transition(isCustomer);
+//   console.log('557 join meeting second', transition);
+//   return sdk.transactions
+//     .transition({ id, transition, params: {} }, { expand: true })
+//     .then(response => {
+//       dispatch(addMarketplaceEntities(response));
+//       dispatch(joinMeetingSuccess());
+//       dispatch(fetchCurrentUserNotifications());
+//       return response;
+//     })
+//     .catch(e => {
+//       dispatch(joinMeetingError(storableError(e)));
+//       log.error(e, 'join-meeting-second-failed', {
+//         txId: id,
+//         transition,
+//       });
+//       throw e;
+//     });
+// };
 export const cancelSaleCustomer = id => (dispatch, getState, sdk) => {
   if (acceptOrDeclineInProgress(getState())) {
     return Promise.reject(new Error('Accept or decline already in progress'));
@@ -786,6 +816,33 @@ export const cancelSaleProviderOral = id => (dispatch, getState, sdk) => {
       log.error(e, 'cancel-sale-provider-failed', {
         txId: id,
         transition: TRANSITION_CANCEL_PROVIDER_ORAL,
+      });
+      throw e;
+    });
+};
+
+export const deliverServiceProvider = id => (dispatch, getState, sdk) => {
+  if (acceptOrDeclineInProgress(getState())) {
+    return Promise.reject(new Error('Accept or decline already in progress'));
+  }
+  dispatch(deliverServiceProviderRequest());
+
+  return sdk.transactions
+    .transition(
+      { id, transition: TRANSITION_SERVICE_DELIVERED_PROVIDER, params: {} },
+      { expand: true }
+    )
+    .then(response => {
+      dispatch(addMarketplaceEntities(response));
+      dispatch(deliverServiceProviderSuccess());
+      dispatch(fetchCurrentUserNotifications());
+      return response;
+    })
+    .catch(e => {
+      dispatch(deliverServiceProviderError(storableError(e)));
+      log.error(e, 'cancel-sale-provider-failed', {
+        txId: id,
+        transition: TRANSITION_SERVICE_DELIVERED_PROVIDER,
       });
       throw e;
     });

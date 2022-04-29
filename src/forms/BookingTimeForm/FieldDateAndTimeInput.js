@@ -613,7 +613,7 @@ class FieldDateAndTimeInput extends Component {
     );
 
     form.batch(() => {
-      // form.change('bookingStartTime', startTime);
+      form.change('bookingStartTime', null);
       form.change('bookingEndDate', { date: endDate });
       // form.change('bookingEndTime', endTime);
     });

@@ -154,7 +154,7 @@ export const SalespageComponent = props => {
     confirmConsultationInProgress,
     confirmConsultationSuccess,
     confirmConsultationError,
-    onJoinMeeting,
+    // onJoinMeeting,
   } = props;
   const { tab } = params;
   const ensuredCurrentUser = ensureCurrentUser(currentUser);
@@ -198,7 +198,7 @@ export const SalespageComponent = props => {
           onConfirmConsultation={onConfirmConsultation}
           confirmConsultationInProgress={confirmConsultationInProgress}
           confirmConsultationSuccess={confirmConsultationSuccess}
-          onJoinMeeting={onJoinMeeting}
+          // onJoinMeeting={onJoinMeeting}
           txProviderJoined1={txProviderJoined1}
           txBothJoined={txBothJoined}
         />
@@ -403,7 +403,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     onConfirmConsultation: transactionId => dispatch(confirmConsultation(transactionId)),
-    onJoinMeeting: (transactionId, isCustomer) => dispatch(joinMeeting(transactionId, isCustomer)),
+    // onJoinMeeting: (transactionId, isCustomer) => dispatch(joinMeeting(transactionId, isCustomer)),
   };
 };
 

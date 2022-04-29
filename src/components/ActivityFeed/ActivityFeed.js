@@ -35,6 +35,7 @@ import {
   TRANSITION_MEETING_EXPIRED,
   TRANSITION_PROVIDER_JOIN_1,
   TRANSITION_CUSTOMER_JOIN_1,
+  TRANSITION_SERVICE_DELIVERED_PROVIDER,
   transitionIsReviewed,
   txIsDelivered,
   txIsInFirstReviewBy,
@@ -182,7 +183,6 @@ const resolveTransitionMessage = (
   const isOwnTransition = transition.by === ownRole;
   const currentTransition = transition.transition;
   const displayName = otherUsersName;
-
   switch (currentTransition) {
     case TRANSITION_CONFIRM_PAYMENT:
       return isOwnTransition ? (
@@ -240,6 +240,12 @@ const resolveTransitionMessage = (
       return <FormattedMessage id="ActivityFeed.transitionRescheduleCustomer" />;
     case TRANSITION_CANCEL:
       return <FormattedMessage id="ActivityFeed.transitionCancel" />;
+    case TRANSITION_SERVICE_DELIVERED_PROVIDER:
+      return isOwnTransition ? (
+        <FormattedMessage id="ActivityFeed.ownTransitionServiceDelivered" />
+      ) : (
+        <FormattedMessage id="ActivityFeed.transitionServiceDelivered" values={{ displayName }} />
+      );
     case TRANSITION_COMPLETE:
       // Show the leave a review link if the state is delivered and if the current user is the first to leave a review
       const reviewPeriodJustStarted = txIsDelivered(transaction);

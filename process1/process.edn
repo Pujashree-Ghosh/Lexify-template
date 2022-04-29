@@ -150,6 +150,12 @@
 ;;    :to :state/expired}
 
 
+{:name :transition/service-delivered,
+   :actor :actor.role/provider,
+   :actions [],
+   :from :state/accepted,
+   :to :state/pending-confirmation}
+
   {:name :transition/pending-confirmation,
    :at {:fn/timepoint [:time/booking-end]},
    :actions [],

@@ -6,18 +6,18 @@ import { FormattedMessage, injectIntl, intlShape } from '../../util/reactIntl';
 import classNames from 'classnames';
 import {
   txIsAccepted,
-  txIsCanceled,
-  txIsDeclined,
+  // txIsCanceled,
+  // txIsDeclined,
   txIsEnquired,
   txIsRescheduled,
-  txIsRequested,
+  // txIsRequested,
   txHasBeenDelivered,
-  txIsPaymentExpired,
-  txIsPaymentPending,
+  // txIsPaymentExpired,
+  // txIsPaymentPending,
   txIsPendingConfirmation,
   txIsAcceptedOral,
-  txCustomerJoined1,
-  txProviderJoined1,
+  // txCustomerJoined1,
+  // txProviderJoined1,
   txBothJoined,
   txIsPendingConfirmationOral,
 } from '../../util/transaction';
@@ -157,7 +157,7 @@ export const MyAppointmentPageComponent = props => {
     confirmConsultationInProgress,
     confirmConsultationSuccess,
     confirmConsultationError,
-    onJoinMeeting,
+    // onJoinMeeting,
   } = props;
 
   const [verificationDetail, setVerificationDetail] = useState('');
@@ -215,9 +215,9 @@ export const MyAppointmentPageComponent = props => {
           onConfirmConsultation={onConfirmConsultation}
           confirmConsultationInProgress={confirmConsultationInProgress}
           confirmConsultationSuccess={confirmConsultationSuccess}
-          onJoinMeeting={onJoinMeeting}
-          txBothJoined={txBothJoined}
-          txCustomerJoined1={txCustomerJoined1}
+          // onJoinMeeting={onJoinMeeting}
+          // txBothJoined={txBothJoined}
+          // txCustomerJoined1={txCustomerJoined1}
         />
       </div>
     ) : null;
@@ -400,7 +400,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     onConfirmConsultation: transactionId => dispatch(confirmConsultation(transactionId)),
-    onJoinMeeting: (transactionId, isCustomer) => dispatch(joinMeeting(transactionId, isCustomer)),
+    // onJoinMeeting: (transactionId, isCustomer) => dispatch(joinMeeting(transactionId, isCustomer)),
   };
 };
 

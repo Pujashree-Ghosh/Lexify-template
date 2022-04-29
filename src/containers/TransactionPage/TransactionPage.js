@@ -35,7 +35,7 @@ import {
   fetchMoreMessages,
   fetchTimeSlots,
   fetchTransactionLineItems,
-  joinMeeting
+  // joinMeeting
 } from './TransactionPage.duck';
 import css from './TransactionPage.module.css';
 
@@ -83,7 +83,7 @@ export const TransactionPageComponent = props => {
     lineItems,
     fetchLineItemsInProgress,
     fetchLineItemsError,
-    onJoinMeeting
+    // onJoinMeeting
   } = props;
 
   const currentTransaction = ensureTransaction(transaction);
@@ -260,7 +260,7 @@ export const TransactionPageComponent = props => {
       lineItems={lineItems}
       fetchLineItemsInProgress={fetchLineItemsInProgress}
       fetchLineItemsError={fetchLineItemsError}
-      onJoinMeeting={onJoinMeeting}
+      // onJoinMeeting={onJoinMeeting}
     />
   ) : (
     loadingOrFailedFetching
@@ -415,7 +415,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onJoinMeeting: (transactionId, isCustomer) => dispatch(joinMeeting(transactionId, isCustomer)),
+    // onJoinMeeting: (transactionId, isCustomer) => dispatch(joinMeeting(transactionId, isCustomer)),
     onAcceptSale: transactionId => dispatch(acceptSale(transactionId)),
     onDeclineSale: transactionId => dispatch(declineSale(transactionId)),
     onShowMoreMessages: txId => dispatch(fetchMoreMessages(txId)),
@@ -435,10 +435,7 @@ const mapDispatchToProps = dispatch => {
 
 const TransactionPage = compose(
   withRouter,
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  ),
+  connect(mapStateToProps, mapDispatchToProps),
   injectIntl
 )(TransactionPageComponent);
 

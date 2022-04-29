@@ -138,3 +138,12 @@
   min-height: 45px;
   margin-top: 20px;
 }
+.deliveredBtn{
+  margin-top: 20px;
+  background-color: var(--successColor);
+  border-radius: 1px;
+  
+  @media (max-width: 575px) {
+    font-size: 14px;
+  }
+}

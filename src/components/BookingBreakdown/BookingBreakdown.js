@@ -34,7 +34,7 @@ import LineItemProviderCommissionRefundMaybe from './LineItemProviderCommissionR
 import LineItemRefundMaybe from './LineItemRefundMaybe';
 import LineItemTotalPrice from './LineItemTotalPrice';
 import LineItemUnknownItemsMaybe from './LineItemUnknownItemsMaybe';
-import Button from '../Button/Button';
+import Button, { PrimaryButton } from '../Button/Button';
 import {
   cancelSaleCustomer,
   cancelSaleProvider,
@@ -42,6 +42,7 @@ import {
   cancelSaleProviderOral,
   rescheduleCustomer,
   rescheduleProvider,
+  deliverServiceProvider,
 } from '../../containers/TransactionPage/TransactionPage.duck';
 
 import css from './BookingBreakdown.module.css';
@@ -66,6 +67,7 @@ export const BookingBreakdownComponent = props => {
     timeZone,
     cancelCustomerInProgress,
     cancelProviderInProgress,
+    onDeliverServiceProvider,
     onCancelSaleCustomer,
     onCancelSaleProvider,
     onCancelSaleCustomerOral,
@@ -243,14 +245,26 @@ export const BookingBreakdownComponent = props => {
                 Cancel
               </Button>
             ) : (
-              <Button
-                className={css.bkcnclbtn}
-                inProgress={cancelProviderInProgress}
-                onClick={() => onCancelSaleProvider(transaction.id)}
-              >
-                {' '}
-                Cancel
-              </Button>
+              <>
+                <Button
+                  className={css.bkcnclbtn}
+                  inProgress={cancelProviderInProgress}
+                  onClick={() => onCancelSaleProvider(transaction.id)}
+                >
+                  {' '}
+                  Cancel
+                </Button>
+                <div>
+                  <PrimaryButton
+                    className={css.deliveredBtn}
+                    inProgress={cancelProviderInProgress}
+                    onClick={() => onDeliverServiceProvider(transaction.id)}
+                  >
+                    {' '}
+                    Delivered
+                  </PrimaryButton>
+                </div>
+              </>
             )
           ) : (
             ''
@@ -452,6 +466,7 @@ const mapDispatchToProps = dispatch => {
       dispatch(rescheduleCustomer(transactionId, param)),
     onRescheduleProvider: (transactionId, param) =>
       dispatch(rescheduleProvider(transactionId, param)),
+    onDeliverServiceProvider: transactionId => dispatch(deliverServiceProvider(transactionId)),
     onLoadListingData: listingId => dispatch(loadData({ id: listingId })),
     onFetchTimeSlots: (listingId, start, end, timeZone) =>
       dispatch(fetchTimeSlots(listingId, start, end, timeZone)),

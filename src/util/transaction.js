@@ -44,6 +44,7 @@ export const TRANSITION_CANCEL = 'transition/cancel';
 export const TRANSITION_CANCEL_PROVIDER = 'transition/cancel-provider';
 export const TRANSITION_CANCEL_CUSTOMER = 'transition/cancel-customer';
 export const TRANSITION_CANCEL_ORAL = 'transition/cancel-oral';
+export const TRANSITION_SERVICE_DELIVERED_PROVIDER = 'transition/service-delivered';
 export const TRANSITION_CANCEL_PROVIDER_ORAL = 'transition/cancel-provider-oral';
 export const TRANSITION_CANCEL_CUSTOMER_ORAL = 'transition/cancel-customer-oral';
 export const TRANSITION_RESCHEDULE_PROVIDER = 'transition/reschedule-provider';
@@ -197,6 +198,7 @@ const stateDescription = {
         [TRANSITION_CANCEL_CUSTOMER]: STATE_CANCELED,
         [TRANSITION_RESCHEDULE_PROVIDER]: STATE_RESCHEDULE,
         [TRANSITION_RESCHEDULE_CUSTOMER]: STATE_RESCHEDULE,
+        [TRANSITION_SERVICE_DELIVERED_PROVIDER]: STATE_PENDING_CONFIRMATION,
         [TRANSITION_PENDING_CONFIRMATION]: STATE_PENDING_CONFIRMATION,
       },
     },
@@ -418,11 +420,11 @@ export const getReview1Transition = isCustomer =>
 export const getReview2Transition = isCustomer =>
   isCustomer ? TRANSITION_REVIEW_2_BY_CUSTOMER : TRANSITION_REVIEW_2_BY_PROVIDER;
 
-export const joinMeeting1Transition = isCustomer =>
-  isCustomer ? TRANSITION_CUSTOMER_JOIN_1 : TRANSITION_PROVIDER_JOIN_1;
+// export const joinMeeting1Transition = isCustomer =>
+//   isCustomer ? TRANSITION_CUSTOMER_JOIN_1 : TRANSITION_PROVIDER_JOIN_1;
 
-export const joinMeeting2Transition = isCustomer =>
-  isCustomer ? TRANSITION_CUSTOMER_JOIN_2 : TRANSITION_PROVIDER_JOIN_2;
+// export const joinMeeting2Transition = isCustomer =>
+//   isCustomer ? TRANSITION_CUSTOMER_JOIN_2 : TRANSITION_PROVIDER_JOIN_2;
 
 // Check if a transition is the kind that should be rendered
 // when showing transition history (e.g. ActivityFeed)
@@ -435,6 +437,7 @@ export const isRelevantPastTransition = transition => {
     TRANSITION_CANCEL_PROVIDER,
     TRANSITION_CANCEL_CUSTOMER,
     TRANSITION_CANCEL_ORAL,
+    TRANSITION_SERVICE_DELIVERED_PROVIDER,
     TRANSITION_CANCEL_PROVIDER_ORAL,
     TRANSITION_CANCEL_CUSTOMER_ORAL,
     TRANSITION_RESCHEDULE_PROVIDER,
