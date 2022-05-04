@@ -438,7 +438,7 @@ const EditListingClientIdFormComponent = props => (
                         );
                       })}
 
-                      <div className={css.inlinefrom}>
+                      {/* <div className={css.inlinefrom}>
                         <InlineTextButton
                           className={css.addMore}
                           type="button"
@@ -449,7 +449,7 @@ const EditListingClientIdFormComponent = props => (
                         >
                           <FormattedMessage id="EditListingClientIdForm.addMoreClient" />
                         </InlineTextButton>
-                      </div>
+                      </div> */}
                     </div>
                   );
                 }}

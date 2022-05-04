@@ -31,29 +31,35 @@ const EditListingDescriptionPanel = props => {
   } = props;
 
   const country = useSelector(state =>
-    state?.user?.currentUser?.attributes?.profile?.publicData?.jurisdictionPractice.map(
+    state?.user?.currentUser?.attributes?.profile?.publicData?.jurisdictionPractice?.map(
       m => m.country
     )
   );
   const state = useSelector(state =>
-    state?.user?.currentUser?.attributes?.profile?.publicData?.jurisdictionPractice.map(
+    state?.user?.currentUser?.attributes?.profile?.publicData?.jurisdictionPractice?.map(
       m => m.state
     )
   );
   const city = useSelector(state =>
-    state?.user?.currentUser?.attributes?.profile?.publicData?.jurisdictionPractice.map(m => m.city)
+    state?.user?.currentUser?.attributes?.profile?.publicData?.jurisdictionPractice?.map(
+      m => m.city
+    )
   );
   // const languages = JSON.parse(useSelector(state => state?.user?.currentUser?.attributes?.profile?.publicData?.languages.map(m=>m.value)));
   const practiceArea = useSelector(state =>
-    state?.user?.currentUser?.attributes?.profile?.publicData?.practice.map(m => m)
+    state?.user?.currentUser?.attributes?.profile?.publicData?.practice?.map(m => m)
   );
   const industry = useSelector(state =>
-    state?.user.currentUser?.attributes?.profile?.publicData.industry.map(m => m.industryName)
+    state?.user.currentUser?.attributes?.profile?.publicData.industry?.map(m => m.industryName)
   );
 
   const languagesObject = useSelector(
     state =>
       state.user.currentUser &&
+      state.user.currentUser.attributes &&
+      state.user.currentUser.attributes.profile &&
+      state.user.currentUser.attributes.profile.publicData &&
+      state.user.currentUser.attributes.profile.publicData.languages &&
       JSON.parse(state?.user?.currentUser?.attributes?.profile?.publicData?.languages)
   );
 

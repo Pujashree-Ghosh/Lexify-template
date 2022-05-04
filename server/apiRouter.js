@@ -48,6 +48,7 @@ const { listingExceptionCreate, listingExceptionDelete } = require('./api/unsoli
 const { unsolicitedTransition } = require('./api/unsolicited-transition');
 const { setAdminAvailability, getAdminAvailability } = require('./api/AdminAvailability');
 const { verifyLawyer } = require('./api/verifyLawyer');
+const { clientMailSendAfterPublishListing } = require('./api/clientMailAfterPublishListing');
 
 const router = express.Router();
 
@@ -102,6 +103,8 @@ router.get('/globalAvailability', globalAvailability);
 router.post('/listing/createException', listingExceptionCreate);
 router.delete('/listing/exceptionDelete', listingExceptionDelete);
 router.get('/unsolicitedTransition/:id', unsolicitedTransition);
+
+router.post('/clientMailSend', clientMailSendAfterPublishListing);
 
 // router.post('/setVerificationTime', setVerificationTime);
 // router.get('/getVerification/:id', getVerification);

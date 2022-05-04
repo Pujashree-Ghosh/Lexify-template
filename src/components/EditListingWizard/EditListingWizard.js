@@ -31,7 +31,7 @@ import EditListingWizardTab, {
   PRICING,
   // PHOTOS,
   EXPIRY,
-  DURATION_PRICING
+  DURATION_PRICING,
 } from './EditListingWizardTab';
 import css from './EditListingWizard.module.css';
 import axios from 'axios';
@@ -94,8 +94,7 @@ const tabLabel = (intl, tab) => {
   // }
   else if (tab === EXPIRY) {
     key = 'EditListingWizard.tabLabelExpiry';
-  }
-  else if(tab===DURATION_PRICING){
+  } else if (tab === DURATION_PRICING) {
     key = 'EditListingWizard.tabLabelDurationPricing';
   }
 
@@ -142,7 +141,7 @@ const tabCompleted = (tab, listing) => {
     case PRICING:
       return !!price;
     case DURATION_PRICING:
-        return !!price && !!(publicData && publicData.durationHour && publicData.durationMinute)
+      return !!price && !!(publicData && publicData.durationHour && publicData.durationMinute);
     case EXPIRY:
       return !!(publicData && publicData.expiry);
     // case PHOTOS:
@@ -268,11 +267,17 @@ class EditListingWizard extends Component {
 
     if (stripeConnected && !requirementsMissing) {
       const uuid = this.props.currentUser?.id?.uuid;
+      const listingId = this.props.listing.id.uuid;
       onPublishListingDraft(id).then(resp => {
         if (this.props.category === 'publicOral') {
           axios
             .post(`${apiBaseUrl()}/api/publishPublicListing`, { id: uuid })
             .then(() => console.log('updated'))
+            .catch(err => console.log(err));
+        } else {
+          axios
+            .post(`${apiBaseUrl()}/api/clientMailSend`, { listingId })
+            .then(() => console.log('mail sent'))
             .catch(err => console.log(err));
         }
       });
@@ -327,7 +332,7 @@ class EditListingWizard extends Component {
       category,
       ...rest
     } = this.props;
-    if(!category) return null;
+    if (!category) return null;
     let TABS =
       category === 'publicOral'
         ? [DESCRIPTION, AREAOFLAW, DURATION_PRICING]
