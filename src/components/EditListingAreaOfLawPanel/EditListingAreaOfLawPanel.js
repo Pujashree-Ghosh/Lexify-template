@@ -48,15 +48,12 @@ const EditListingAreaOfLawPanel = props => {
     <FormattedMessage
       id="EditListingAreaOfLawPanel.publicOralTitle"
       values={{
-        listingTitle: (
-          <ListingLink listing={listing}>
-            {/* <FormattedMessage id="EditListingAreaOfLawPanel.listingTitle" /> */}
-            {listing?.title}
-          </ListingLink>
-        ),
+        listingTitle: <div className={css.listingTitle}>{listing.attributes.title}</div>,
       }}
     />
   );
+
+  console.log(listing);
 
   const areaOfLaw = publicData && publicData.areaOfLaw;
   const initialValues = areaOfLaw ? areaOfLaw : [{}];

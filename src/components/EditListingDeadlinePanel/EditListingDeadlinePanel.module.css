@@ -29,3 +29,12 @@
     padding: 1px 0 7px 0;
   }
 }
+
+.listingTitle{
+  display: inline;
+    margin: 0;
+    padding: 0;
+    border: none;
+    color: var(--marketplaceColor);
+    text-decoration: none
+}

@@ -23,3 +23,12 @@
 .priceCurrencyInvalid {
   color: var(--failColor);
 }
+
+.listingTitle{
+  display: inline;
+    margin: 0;
+    padding: 0;
+    border: none;
+    color: var(--marketplaceColor);
+    text-decoration: none
+}

@@ -33,14 +33,11 @@ const EditListingPricingPanel = props => {
   const currentListing = ensureOwnListing(listing);
   const { publicData } = currentListing.attributes;
   const { price } = currentListing.attributes;
-  const vatData = publicData.vatData
-    ? currentListing?.attributes?.publicData?.vatData
-    : [{}];
+  const vatData = publicData.vatData ? currentListing?.attributes?.publicData?.vatData : [{}];
   const vattype = currentListing?.attributes?.publicData?.vattype;
 
   const durationHour = publicData && publicData.durationHour;
   const durationMinute = publicData && publicData.durationMinute;
-  console.log(category,"listingCategory");
 
   const isPublished = currentListing.id && currentListing.attributes.state !== LISTING_STATE_DRAFT;
   const panelTitle =
@@ -49,30 +46,34 @@ const EditListingPricingPanel = props => {
         <FormattedMessage
           id="EditListingPricePanel.publicOralTitleEdit"
           values={{
-            listingTitle: (
-              <ListingLink listing={listing}>
-                {listing?.title}
-              </ListingLink>
-            ),
+            listingTitle: <ListingLink listing={listing}>{listing?.title}</ListingLink>,
           }}
         />
       ) : (
-        <FormattedMessage id="EditListingPricePanel.publicOralTitle" />
+        // <FormattedMessage id="EditListingPricePanel.publicOralTitle" />
+        <FormattedMessage
+          id="EditListingPricePanel.publicOralTitle"
+          values={{
+            listingTitle: <div className={css.listingTitle}>{listing.attributes.title}</div>,
+          }}
+        />
       )
     ) : category === 'customOral' ? (
       isPublished ? (
         <FormattedMessage
           id="EditListingPricePanel.customOralTitleEdit"
           values={{
-            listingTitle: (
-              <ListingLink listing={listing}>
-                {listing?.title}
-              </ListingLink>
-            ),
+            listingTitle: <ListingLink listing={listing}>{listing?.title}</ListingLink>,
           }}
         />
       ) : (
-        <FormattedMessage id="EditListingPricePanel.customOralTitle" />
+        // <FormattedMessage id="EditListingPricePanel.customOralTitle" />
+        <FormattedMessage
+          id="EditListingPricePanel.customOralTitle"
+          values={{
+            listingTitle: <div className={css.listingTitle}>{listing.attributes.title}</div>,
+          }}
+        />
       )
     ) : category === 'customService' ? (
       isPublished ? (
@@ -88,8 +89,13 @@ const EditListingPricingPanel = props => {
           }}
         />
       ) : (
-        
-        <FormattedMessage id="EditListingPricePanel.customServiceTitle" />
+        // <FormattedMessage id="EditListingPricePanel.customServiceTitle" />
+        <FormattedMessage
+          id="EditListingPricePanel.customServiceTitle"
+          values={{
+            listingTitle: <div className={css.listingTitle}>{listing.attributes.title}</div>,
+          }}
+        />
       )
     ) : (
       ''
@@ -124,11 +130,11 @@ const EditListingPricingPanel = props => {
   const form = priceCurrencyValid ? (
     <EditListingPricingForm
       className={css.form}
-      initialValues={{ price, vatData ,durationHour,durationMinute}}
+      initialValues={{ price, vatData, durationHour, durationMinute }}
       onSubmit={values => {
-        const { price, vatData,durationHour, durationMinute  } = values;
+        const { price, vatData, durationHour, durationMinute } = values;
         const updatedValues = {
-          publicData: { vatData,durationHour, durationMinute  },
+          publicData: { vatData, durationHour, durationMinute },
           price: price,
         };
 

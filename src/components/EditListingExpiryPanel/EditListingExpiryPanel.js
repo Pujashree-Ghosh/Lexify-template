@@ -48,7 +48,13 @@ const EditListingExpiryPanel = props => {
           }}
         />
       ) : (
-        <FormattedMessage id="EditListingExpiryPanel.customOralTitle" />
+        // <FormattedMessage id="EditListingExpiryPanel.customOralTitle" />
+        <FormattedMessage
+          id="EditListingExpiryPanel.customOralTitle"
+          values={{
+            listingTitle: <div className={css.listingTitle}>{listing.attributes.title}</div>,
+          }}
+        />
       )
     ) : isPublished ? (
       <FormattedMessage
@@ -63,9 +69,16 @@ const EditListingExpiryPanel = props => {
         }}
       />
     ) : (
-      <FormattedMessage id="EditListingExpiryPanel.customServiceTitle" />
+      // <FormattedMessage id="EditListingExpiryPanel.customServiceTitle" />
+      <FormattedMessage
+        id="EditListingExpiryPanel.customServiceTitle"
+        values={{
+          listingTitle: <div className={css.listingTitle}>{listing.attributes.title}</div>,
+        }}
+      />
     );
-  const expiry = publicData && { date: moment(publicData.expiry).toDate() };
+  const expiry =
+    publicData && publicData.expiry ? { date: moment(publicData.expiry).toDate() } : {};
 
   return (
     <div className={classes}>

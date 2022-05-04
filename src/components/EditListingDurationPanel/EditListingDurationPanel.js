@@ -31,8 +31,6 @@ const EditListingDurationPanel = props => {
   const { publicData } = currentListing.attributes;
   //   const { duration, durationUnit } = publicData;
 
-  
-
   const isPublished = currentListing.id && currentListing.attributes.state !== LISTING_STATE_DRAFT;
   const panelTitle =
     category === 'customOral' ? (
@@ -52,12 +50,7 @@ const EditListingDurationPanel = props => {
         <FormattedMessage
           id="EditListingDurationPanel.publicOralTitle"
           values={{
-            listingTitle: (
-              <ListingLink listing={listing}>
-                {/* <FormattedMessage id="EditListingDurationPanel.listingTitle" /> */}
-                {listing?.title}
-              </ListingLink>
-            ),
+            listingTitle: <div className={css.listingTitle}>{listing.attributes.title}</div>,
           }}
         />
       )
