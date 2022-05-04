@@ -65,8 +65,8 @@ import {
   truncateToSubUnitPrecision,
 } from '../../util/currency';
 import ReactMultiSelectCheckboxes from 'react-multiselect-checkboxes';
-import searchIcon from "../../assets/search.png";
-import searchActiveIcon from "../../assets/search_active.png";
+import searchIcon from '../../assets/search.png';
+import searchActiveIcon from '../../assets/search_active.png';
 
 const MENU_CONTENT_OFFSET = -12;
 const FILTER_DROPDOWN_OFFSET = 14;
@@ -105,26 +105,30 @@ export class ManageListingsPageComponent extends Component {
       listingsFromApi: [],
       metaFromApi: [],
       listingsFromApiLoaded: false,
-      clientId:"",
-      isFormFocused:false,
-      isAutoSearch:true,
+      clientId: '',
+      isFormFocused: false,
+      isAutoSearch: true,
+      currentPage: 1,
     };
     this.onToggleMenu = this.onToggleMenu.bind(this);
   }
   componentDidUpdate() {
-    this.state.isAutoSearch && this.searchListingByClientId();
+    const queryParams = parse(this.props.location.search);
+    const page = queryParams.page || 1;
+    (this.state.isAutoSearch || page !== this.state.currentPage) && this.searchListingByClientId();
   }
 
   onToggleMenu(listing) {
     this.setState({ listingMenuOpen: listing });
   }
 
-  searchListingByClientId=(e)=>{
-    if(!!e) e.preventDefault()
+  searchListingByClientId = e => {
+    if (!!e) e.preventDefault();
     const queryParams = parse(this.props.location.search);
     const page = queryParams.page || 1;
+
     if (this.props.currentUser !== null) {
-      this.setState({isAutoSearch:false})
+      this.setState({ isAutoSearch: false, currentPage: page });
       axios
         .post(`${apiBaseUrl()}/api/sortOwnListings`, {
           authorId: this.props.currentUser && this.props.currentUser?.id?.uuid,
@@ -133,7 +137,7 @@ export class ManageListingsPageComponent extends Component {
           pub_areaOfLaw:
             this.state.practiceAreaSort.length !== 0 ? this.state.practiceAreaSort : null,
           page: page !== null ? page : null,
-          pub_clientId:!!this.state.clientId?this.state.clientId:null
+          pub_clientId: !!this.state.clientId ? this.state.clientId : null,
         })
         .then(res => {
           if (
@@ -149,7 +153,7 @@ export class ManageListingsPageComponent extends Component {
         })
         .catch();
     }
-  }
+  };
 
   render() {
     const {
@@ -272,10 +276,18 @@ export class ManageListingsPageComponent extends Component {
             options={typeOptions}
             className={css.formcontrol}
             onChange={e => {
-              e === null ? this.setState({ typeSort: '',clientId:"",isFormFocused:false,isAutoSearch:true }) : this.setState({ typeSort: e?.key,isAutoSearch:true });
-              if(e && e.value === "publicOral") this.setState({clientId:"",isFormFocused:false})
-              if (e?.value !== 'publicOral') this.setState({practiceAreaSort: '',isAutoSearch:true});
-              
+              e === null
+                ? this.setState({
+                    typeSort: '',
+                    clientId: '',
+                    isFormFocused: false,
+                    isAutoSearch: true,
+                  })
+                : this.setState({ typeSort: e?.key, isAutoSearch: true });
+              if (e && e.value === 'publicOral')
+                this.setState({ clientId: '', isFormFocused: false });
+              if (e?.value !== 'publicOral')
+                this.setState({ practiceAreaSort: '', isAutoSearch: true });
             }}
           />
         </div>
@@ -288,8 +300,8 @@ export class ManageListingsPageComponent extends Component {
             className={css.formcontrol}
             onChange={e => {
               e === null
-                ? this.setState({ statusSort: '' ,isAutoSearch:true})
-                : this.setState({ statusSort: e?.key,isAutoSearch:true });
+                ? this.setState({ statusSort: '', isAutoSearch: true })
+                : this.setState({ statusSort: e?.key, isAutoSearch: true });
             }}
           />
         </div>
@@ -303,32 +315,47 @@ export class ManageListingsPageComponent extends Component {
               className={css.aofftd}
               // isMulti={true}
               onChange={e => {
-                console.log('hello', e);
                 e === null
-                  ? this.setState({ practiceAreaSort: '' ,isAutoSearch:true})
-                  : this.setState({ practiceAreaSort: e?.map(e => e?.value),isAutoSearch:true});
+                  ? this.setState({ practiceAreaSort: '', isAutoSearch: true })
+                  : this.setState({ practiceAreaSort: e?.map(e => e?.value), isAutoSearch: true });
               }}
             />
           </div>
         ) : null}
-        {(this.state.typeSort === "customOral" || this.state.typeSort === "customService") &&
-            <div className={css.categoryFilter}>
-              <label className={css.label}>Client ID</label>
-              <form action="" onSubmit={this.searchListingByClientId}
-                    className={classNames(css.clientIdSearchForm,{[css.activeClientIdSearchForm]:this.state.isFormFocused})} >
-                  <input type="text" value={this.state.clientId} placeholder="client id..." onFocus={()=>this.setState({isFormFocused:true})}
-                      onChange={(e)=>this.setState({clientId:e.target.value,isAutoSearch:false})}  onBlur={()=>this.setState({isFormFocused:false})}/>
-                  {!!this.state.clientId && <button type="button" 
-                      onClick={()=>{
-                        this.setState({clientId:""},this.searchListingByClientId);
-                      }}>&times;</button>
-                  }
-                  <button type="submit" disabled={!this.state.clientId}>
-                    <img src={!!this.state.clientId?searchActiveIcon:searchIcon} alt=""/>
-                  </button>
-              </form>
-            </div>
-        }     
+        {(this.state.typeSort === 'customOral' || this.state.typeSort === 'customService') && (
+          <div className={css.categoryFilter}>
+            <label className={css.label}>Client ID</label>
+            <form
+              action=""
+              onSubmit={this.searchListingByClientId}
+              className={classNames(css.clientIdSearchForm, {
+                [css.activeClientIdSearchForm]: this.state.isFormFocused,
+              })}
+            >
+              <input
+                type="text"
+                value={this.state.clientId}
+                placeholder="client id..."
+                onFocus={() => this.setState({ isFormFocused: true })}
+                onChange={e => this.setState({ clientId: e.target.value, isAutoSearch: false })}
+                onBlur={() => this.setState({ isFormFocused: false })}
+              />
+              {!!this.state.clientId && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    this.setState({ clientId: '' }, this.searchListingByClientId);
+                  }}
+                >
+                  &times;
+                </button>
+              )}
+              <button type="submit" disabled={!this.state.clientId}>
+                <img src={!!this.state.clientId ? searchActiveIcon : searchIcon} alt="" />
+              </button>
+            </form>
+          </div>
+        )}
       </div>
     );
     const title = intl.formatMessage({ id: 'ManageListingsPage.title' });
@@ -475,7 +502,6 @@ export class ManageListingsPageComponent extends Component {
                               useArrow={false}
                               onToggleActive={isOpen => {
                                 listingOpen = isOpen ? m : null;
-                                console.log(listingOpen);
                                 this.onToggleMenu(listingOpen);
                               }}
                               // isMenuOpen={!!listingMenuOpen && listingMenuOpen.id.uuid === l.id.uuid}

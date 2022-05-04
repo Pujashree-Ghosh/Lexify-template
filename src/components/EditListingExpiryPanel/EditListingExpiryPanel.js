@@ -11,6 +11,7 @@ import config from '../../config';
 
 import css from './EditListingExpiryPanel.module.css';
 import moment from 'moment';
+import IconSpinner from '../IconSpinner/IconSpinner';
 
 const EditListingExpiryPanel = props => {
   const {
@@ -79,36 +80,40 @@ const EditListingExpiryPanel = props => {
     );
   const expiry =
     publicData && publicData.expiry ? { date: moment(publicData.expiry).toDate() } : {};
-
+  console.log(updateInProgress);
   return (
     <div className={classes}>
       <h1 className={css.title}>{panelTitle}</h1>
-      <EditListingExpiryForm
-        className={css.form}
-        initialValues={{ expiry }}
-        saveActionMsg={submitButtonText}
-        onSubmit={values => {
-          const { expiry } = values;
-          const updateValues = {
-            publicData: {
-              expiry: moment(expiry.date)
-                .clone()
-                .endOf('day')
-                .valueOf(),
-            },
-          };
+      {updateInProgress ? (
+        <IconSpinner />
+      ) : (
+        <EditListingExpiryForm
+          className={css.form}
+          initialValues={{ expiry }}
+          saveActionMsg={submitButtonText}
+          onSubmit={values => {
+            const { expiry } = values;
+            const updateValues = {
+              publicData: {
+                expiry: moment(expiry.date)
+                  .clone()
+                  .endOf('day')
+                  .valueOf(),
+              },
+            };
 
-          onSubmit(updateValues);
-        }}
-        onChange={onChange}
-        disabled={disabled}
-        ready={ready}
-        updated={panelUpdated}
-        updateInProgress={updateInProgress}
-        fetchErrors={errors}
-        category={category}
-        listing={currentListing}
-      />
+            onSubmit(updateValues);
+          }}
+          onChange={onChange}
+          disabled={disabled}
+          ready={ready}
+          updated={panelUpdated}
+          updateInProgress={updateInProgress}
+          fetchErrors={errors}
+          category={category}
+          listing={currentListing}
+        />
+      )}
     </div>
   );
 };
