@@ -13,6 +13,7 @@ import { useSelector } from 'react-redux';
 import { getListingsById } from '../../ducks/marketplaceData.duck';
 import unionWith from 'lodash/unionWith';
 import css from './EditListingDescriptionPanel.module.css';
+import IconSpinner from '../IconSpinner/IconSpinner';
 
 const EditListingDescriptionPanel = props => {
   const {
@@ -151,43 +152,47 @@ const EditListingDescriptionPanel = props => {
   return (
     <div className={classes}>
       <h1 className={css.title}>{panelTitle}</h1>
-      <EditListingDescriptionForm
-        className={css.form}
-        // initialValues={{ title, description, disclaimer: publicData.disclaimer }}
-        initialValues={{
-          title: savedCategory !== category ? '' : title,
-          description: savedCategory !== category ? '' : description,
-          disclaimer: savedCategory !== category ? '' : publicData.disclaimer,
-        }}
-        saveActionMsg={submitButtonText}
-        onSubmit={values => {
-          const { title, description, disclaimer } = values;
-          const updateValues = {
-            title: title.trim(),
-            description,
-            publicData: {
-              disclaimer,
-              category,
-              country,
-              state,
-              city,
-              practiceArea,
-              industry,
-              languages,
-            },
-            availabilityPlan: availabilityPlan ? availabilityPlan : globalAvailabilityPlan,
-          };
-          onSubmit(updateValues);
-        }}
-        onChange={onChange}
-        disabled={disabled}
-        ready={ready}
-        updated={panelUpdated}
-        updateInProgress={updateInProgress}
-        fetchErrors={errors}
-        certificateOptions={certificateOptions}
-        category={category}
-      />
+      {updateInProgress ? (
+        <IconSpinner />
+      ) : (
+        <EditListingDescriptionForm
+          className={css.form}
+          // initialValues={{ title, description, disclaimer: publicData.disclaimer }}
+          initialValues={{
+            title: savedCategory !== category ? '' : title,
+            description: savedCategory !== category ? '' : description,
+            disclaimer: savedCategory !== category ? '' : publicData.disclaimer,
+          }}
+          saveActionMsg={submitButtonText}
+          onSubmit={values => {
+            const { title, description, disclaimer } = values;
+            const updateValues = {
+              title: title.trim(),
+              description,
+              publicData: {
+                disclaimer,
+                category,
+                country,
+                state,
+                city,
+                practiceArea,
+                industry,
+                languages,
+              },
+              availabilityPlan: availabilityPlan ? availabilityPlan : globalAvailabilityPlan,
+            };
+            onSubmit(updateValues);
+          }}
+          onChange={onChange}
+          disabled={disabled}
+          ready={ready}
+          updated={panelUpdated}
+          updateInProgress={updateInProgress}
+          fetchErrors={errors}
+          certificateOptions={certificateOptions}
+          category={category}
+        />
+      )}
     </div>
   );
 };

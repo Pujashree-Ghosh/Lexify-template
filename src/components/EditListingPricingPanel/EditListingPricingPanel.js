@@ -10,6 +10,7 @@ import { types as sdkTypes } from '../../util/sdkLoader';
 import config from '../../config';
 
 import css from './EditListingPricingPanel.module.css';
+import IconSpinner from '../IconSpinner/IconSpinner';
 
 const { Money } = sdkTypes;
 
@@ -128,27 +129,31 @@ const EditListingPricingPanel = props => {
 
   const priceCurrencyValid = price instanceof Money ? price.currency === config.currency : true;
   const form = priceCurrencyValid ? (
-    <EditListingPricingForm
-      className={css.form}
-      initialValues={{ price, vatData, durationHour, durationMinute }}
-      onSubmit={values => {
-        const { price, vatData, durationHour, durationMinute } = values;
-        const updatedValues = {
-          publicData: { vatData, durationHour, durationMinute },
-          price: price,
-        };
+    updateInProgress ? (
+      <IconSpinner />
+    ) : (
+      <EditListingPricingForm
+        className={css.form}
+        initialValues={{ price, vatData, durationHour, durationMinute }}
+        onSubmit={values => {
+          const { price, vatData, durationHour, durationMinute } = values;
+          const updatedValues = {
+            publicData: { vatData, durationHour, durationMinute },
+            price: price,
+          };
 
-        onSubmit(updatedValues);
-      }}
-      onChange={onChange}
-      saveActionMsg={submitButtonText}
-      category={category}
-      disabled={disabled}
-      ready={ready}
-      updated={panelUpdated}
-      updateInProgress={updateInProgress}
-      fetchErrors={errors}
-    />
+          onSubmit(updatedValues);
+        }}
+        onChange={onChange}
+        saveActionMsg={submitButtonText}
+        category={category}
+        disabled={disabled}
+        ready={ready}
+        updated={panelUpdated}
+        updateInProgress={updateInProgress}
+        fetchErrors={errors}
+      />
+    )
   ) : (
     <div className={css.priceCurrencyInvalid}>
       <FormattedMessage id="EditListingPricingPanel.listingPriceCurrencyInvalid" />

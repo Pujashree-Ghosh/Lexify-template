@@ -10,6 +10,7 @@ import { ListingLink } from '../../components';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
 import css from './EditListingClientIdPanel.module.css';
+import IconSpinner from '../IconSpinner/IconSpinner';
 
 const EditListingClientIdPanel = props => {
   const {
@@ -86,7 +87,7 @@ const EditListingClientIdPanel = props => {
 
   const type =
     category === 'customService'
-      ? 'unsolicited'
+      ? 'solicited'
       : publicData && publicData.type
       ? publicData.type
       : 'solicited';
@@ -94,7 +95,6 @@ const EditListingClientIdPanel = props => {
   const startDate =
     publicData && publicData.startDate ? { date: moment(publicData.startDate).toDate() } : '';
 
-  // console.log(startDate);
   const endDate =
     publicData && publicData.endDate ? { date: moment(publicData.endDate).toDate() } : '';
   const startHour = publicData && publicData.startHour ? publicData.startHour : '';
@@ -107,43 +107,47 @@ const EditListingClientIdPanel = props => {
   return (
     <div className={classes}>
       <h1 className={css.title}>{panelTitle}</h1>
-      <EditListingClientIdForm
-        className={css.form}
-        initialValues={{ clientId, type, startDate, endDate, startHour, endHour }}
-        category={category}
-        onSubmit={values => {
-          const { clientId, type, startDate, endDate, startHour, endHour } = values;
-          const updatedValues = {
-            publicData: {
-              clientId,
-              type,
-              startDate: moment(startDate.date).format(),
-              endDate: moment(endDate.date).format(),
-              startHour,
-              endHour,
-              alreadyBooked: [],
-            },
-            availabilityPlan:
-              type !== 'unsolicited'
-                ? globalAvailabilityPlan
-                : {
-                    entries: [],
-                    timezone: availabilityPlan.timezone,
-                    type: availabilityPlan.type,
-                  },
-          };
-          onSubmit(updatedValues);
-        }}
-        onChange={onChange}
-        saveActionMsg={submitButtonText}
-        disabled={disabled}
-        ready={ready}
-        updated={panelUpdated}
-        updateInProgress={updateInProgress}
-        fetchErrors={errors}
-        currentListing={currentListing}
-        duration={duration}
-      />
+      {updateInProgress ? (
+        <IconSpinner />
+      ) : (
+        <EditListingClientIdForm
+          className={css.form}
+          initialValues={{ clientId, type, startDate, endDate, startHour, endHour }}
+          category={category}
+          onSubmit={values => {
+            const { clientId, type, startDate, endDate, startHour, endHour } = values;
+            const updatedValues = {
+              publicData: {
+                clientId,
+                type,
+                startDate: moment(startDate.date).format(),
+                endDate: moment(endDate.date).format(),
+                startHour,
+                endHour,
+                alreadyBooked: [],
+              },
+              availabilityPlan:
+                type !== 'unsolicited'
+                  ? globalAvailabilityPlan
+                  : {
+                      entries: [],
+                      timezone: availabilityPlan.timezone,
+                      type: availabilityPlan.type,
+                    },
+            };
+            onSubmit(updatedValues);
+          }}
+          onChange={onChange}
+          saveActionMsg={submitButtonText}
+          disabled={disabled}
+          ready={ready}
+          updated={panelUpdated}
+          updateInProgress={updateInProgress}
+          fetchErrors={errors}
+          currentListing={currentListing}
+          duration={duration}
+        />
+      )}
     </div>
   );
 };

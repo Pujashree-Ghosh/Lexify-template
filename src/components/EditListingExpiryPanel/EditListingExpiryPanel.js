@@ -80,7 +80,6 @@ const EditListingExpiryPanel = props => {
     );
   const expiry =
     publicData && publicData.expiry ? { date: moment(publicData.expiry).toDate() } : {};
-  console.log(updateInProgress);
   return (
     <div className={classes}>
       <h1 className={css.title}>{panelTitle}</h1>

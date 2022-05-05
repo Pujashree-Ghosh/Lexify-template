@@ -9,6 +9,7 @@ import { EditListingAreaOfLawForm } from '../../forms';
 import { ListingLink } from '../../components';
 
 import css from './EditListingAreaOfLawPanel.module.css';
+import IconSpinner from '../IconSpinner/IconSpinner';
 
 const FEATURES_NAME = 'yogaStyles';
 
@@ -53,33 +54,34 @@ const EditListingAreaOfLawPanel = props => {
     />
   );
 
-  console.log(listing);
-
   const areaOfLaw = publicData && publicData.areaOfLaw;
   const initialValues = areaOfLaw ? areaOfLaw : [{}];
 
   return (
     <div className={classes}>
       <h1 className={css.title}>{panelTitle}</h1>
-      <EditListingAreaOfLawForm
-        className={css.form}
-        initialValues={{ areaOfLaw: initialValues }}
-        onSubmit={values => {
-          const { areaOfLaw } = values;
-          console.log(typeof areaOfLaw);
-          const updatedValues = {
-            publicData: { areaOfLaw },
-          };
-          onSubmit(updatedValues);
-        }}
-        onChange={onChange}
-        saveActionMsg={submitButtonText}
-        disabled={disabled}
-        ready={ready}
-        updated={panelUpdated}
-        updateInProgress={updateInProgress}
-        fetchErrors={errors}
-      />
+      {updateInProgress ? (
+        <IconSpinner />
+      ) : (
+        <EditListingAreaOfLawForm
+          className={css.form}
+          initialValues={{ areaOfLaw: initialValues }}
+          onSubmit={values => {
+            const { areaOfLaw } = values;
+            const updatedValues = {
+              publicData: { areaOfLaw },
+            };
+            onSubmit(updatedValues);
+          }}
+          onChange={onChange}
+          saveActionMsg={submitButtonText}
+          disabled={disabled}
+          ready={ready}
+          updated={panelUpdated}
+          updateInProgress={updateInProgress}
+          fetchErrors={errors}
+        />
+      )}
     </div>
   );
 };

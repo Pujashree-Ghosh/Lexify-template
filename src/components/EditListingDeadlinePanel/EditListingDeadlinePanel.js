@@ -10,6 +10,7 @@ import { ListingLink } from '../../components';
 
 import css from './EditListingDeadlinePanel.module.css';
 import moment from 'moment';
+import IconSpinner from '../IconSpinner/IconSpinner';
 
 const EditListingDeadlinePanel = props => {
   const {
@@ -59,26 +60,30 @@ const EditListingDeadlinePanel = props => {
   return (
     <div className={classes}>
       <h1 className={css.title}>{panelTitle}</h1>
-      <EditListingDeadlineForm
-        className={css.form}
-        initialValues={{ Deadline }}
-        onSubmit={values => {
-          const { Deadline } = values;
-          const updatedValues = {
-            publicData: { Deadline: moment(Deadline.date).format() },
-          };
-          onSubmit(updatedValues);
-        }}
-        currentListing={currentListing}
-        onChange={onChange}
-        category={category}
-        saveActionMsg={submitButtonText}
-        disabled={disabled}
-        ready={ready}
-        updated={panelUpdated}
-        updateInProgress={updateInProgress}
-        fetchErrors={errors}
-      />
+      {updateInProgress ? (
+        <IconSpinner />
+      ) : (
+        <EditListingDeadlineForm
+          className={css.form}
+          initialValues={{ Deadline }}
+          onSubmit={values => {
+            const { Deadline } = values;
+            const updatedValues = {
+              publicData: { Deadline: moment(Deadline.date).format() },
+            };
+            onSubmit(updatedValues);
+          }}
+          currentListing={currentListing}
+          onChange={onChange}
+          category={category}
+          saveActionMsg={submitButtonText}
+          disabled={disabled}
+          ready={ready}
+          updated={panelUpdated}
+          updateInProgress={updateInProgress}
+          fetchErrors={errors}
+        />
+      )}
     </div>
   );
 };

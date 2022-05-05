@@ -9,6 +9,7 @@ import { EditListingDurationForm } from '../../forms';
 import { ListingLink } from '../../components';
 
 import css from './EditListingDurationPanel.module.css';
+import IconSpinner from '../IconSpinner/IconSpinner';
 
 const EditListingDurationPanel = props => {
   const {
@@ -88,24 +89,28 @@ const EditListingDurationPanel = props => {
   return (
     <div className={classes}>
       <h1 className={css.title}>{panelTitle}</h1>
-      <EditListingDurationForm
-        className={css.form}
-        initialValues={{ durationHour, durationMinute }}
-        onSubmit={values => {
-          const { durationHour, durationMinute } = values;
-          const updatedValues = {
-            publicData: { durationHour, durationMinute },
-          };
-          onSubmit(updatedValues);
-        }}
-        onChange={onChange}
-        saveActionMsg={submitButtonText}
-        disabled={disabled}
-        ready={ready}
-        updated={panelUpdated}
-        updateInProgress={updateInProgress}
-        fetchErrors={errors}
-      />
+      {updateInProgress ? (
+        <IconSpinner />
+      ) : (
+        <EditListingDurationForm
+          className={css.form}
+          initialValues={{ durationHour, durationMinute }}
+          onSubmit={values => {
+            const { durationHour, durationMinute } = values;
+            const updatedValues = {
+              publicData: { durationHour, durationMinute },
+            };
+            onSubmit(updatedValues);
+          }}
+          onChange={onChange}
+          saveActionMsg={submitButtonText}
+          disabled={disabled}
+          ready={ready}
+          updated={panelUpdated}
+          updateInProgress={updateInProgress}
+          fetchErrors={errors}
+        />
+      )}
     </div>
   );
 };

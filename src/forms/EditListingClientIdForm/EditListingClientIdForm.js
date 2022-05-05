@@ -79,7 +79,7 @@ const EditListingClientIdFormComponent = props => (
       const classes = classNames(rootClassName || css.root, className);
       const submitReady = (updated && pristine) || ready;
       const submitInProgress = updateInProgress;
-      const submitDisabled = disabled || invalid || submitInProgress;
+      const submitDisabled = disabled || invalid || submitInProgress || pristine;
 
       const { updateListingError, showListingsError } = fetchErrors || {};
       const errorMessage = updateListingError ? (
