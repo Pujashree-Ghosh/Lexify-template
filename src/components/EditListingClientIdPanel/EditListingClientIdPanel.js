@@ -87,7 +87,7 @@ const EditListingClientIdPanel = props => {
 
   const type =
     category === 'customService'
-      ? 'solicited'
+      ? 'unsolicited'
       : publicData && publicData.type
       ? publicData.type
       : 'solicited';
