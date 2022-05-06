@@ -20,7 +20,7 @@ const RESET_TIMEOUT = 800;
 class PasswordChangeFormComponent extends Component {
   constructor(props) {
     super(props);
-    this.state = { showResetPasswordMessage: false, otpSend: false, otpError: false };
+    this.state = { showResetPasswordMessage: false, otpSend: false, otpErr: false };
     this.resetTimeoutId = null;
     this.submittedValues = {};
     this.handleResetPassword = this.handleResetPassword.bind(this);
@@ -143,13 +143,27 @@ class PasswordChangeFormComponent extends Component {
           const submitDisabled = invalid || pristineSinceLastSubmit || inProgress;
 
           const sendPasswordLink = (
-            <span className={css.helperLink} onClick={this.handleResetPassword} role="button">
+            <span
+              className={css.helperLink}
+              onClick={() => {
+                sendOtp();
+                this.handleResetPassword();
+              }}
+              role="button"
+            >
               <FormattedMessage id="PasswordChangeForm.resetPasswordLinkText" />
             </span>
           );
 
           const resendPasswordLink = (
-            <span className={css.helperLink} onClick={this.handleResetPassword} role="button">
+            <span
+              className={css.helperLink}
+              onClick={() => {
+                sendOtp();
+                this.handleResetPassword();
+              }}
+              role="button"
+            >
               <FormattedMessage id="PasswordChangeForm.resendPasswordLinkText" />
             </span>
           );
@@ -170,7 +184,7 @@ class PasswordChangeFormComponent extends Component {
             );
 
           const otpRequiredMessage = intl.formatMessage({
-            id: 'ContactDetailsForm.otpRequired',
+            id: 'PasswordChangeForm.otpRequired',
           });
           const otpRequired = validators.required(otpRequiredMessage);
 
@@ -201,16 +215,10 @@ class PasswordChangeFormComponent extends Component {
                   .then(resp => {
                     this.setState({ otpSend: false });
                     handleSubmit(e);
-                    // .then(() => {
-                    //   this.resetTimeoutId = window.setTimeout(form.reset, RESET_TIMEOUT);
-                    // })
-                    // .catch(() => {
-                    //   // Error is handled in duck file already.
-                    // });
                   })
                   .catch(err => {
                     if (err.response.status === 401) {
-                      this.setState({ otpError: true });
+                      this.setState({ otpErr: true });
                     }
 
                     console.log(err.response.status);
@@ -275,6 +283,14 @@ class PasswordChangeFormComponent extends Component {
                       validate={otpRequired}
                     />
                   </>
+                ) : (
+                  ''
+                )}
+                {this.state.otpErr ? (
+                  <span className={css.otpErrMsg}>
+                    {' '}
+                    <FormattedMessage id="PasswordChangeForm.otpErrMsg" />
+                  </span>
                 ) : (
                   ''
                 )}
