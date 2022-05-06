@@ -11,6 +11,8 @@ import { isPasswordRecoveryEmailNotFoundError } from '../../util/errors';
 import { Form, PrimaryButton, FieldTextInput, NamedLink } from '../../components';
 
 import css from './PasswordRecoveryForm.module.css';
+import axios from 'axios';
+import { apiBaseUrl } from '../../util/api';
 
 class PasswordRecoveryFormComponent extends Component {
   constructor(props) {
@@ -83,6 +85,26 @@ class PasswordRecoveryFormComponent extends Component {
               onSubmit={e => {
                 this.submittedValues = values;
                 handleSubmit(e);
+                axios
+                  .post(`${apiBaseUrl()}/api/getMobileNo`, {
+                    email: values.email,
+                  })
+                  .then(res => {
+                    const phoneNumber = res.data.phoneNumber;
+                    axios
+                      .post(`${apiBaseUrl()}/api/user`, {
+                        email: values.email,
+                        mobile: phoneNumber,
+                      })
+                      .then(resp => {
+                        console.log(resp);
+                        // this.setState({ otpSend: true });
+                      })
+                      .catch(err => console.log(err));
+                  })
+                  .catch(err => {
+                    console.log(err);
+                  });
               }}
             >
               <FieldTextInput
