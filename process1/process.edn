@@ -340,7 +340,7 @@
   :template :service-over-customer}
 
   {:name :notification/service-over-before-deadline
-  :on :transition/pending-confirmation
+  :on :transition/service-delivered
   :to :actor.role/customer
   :template :service-over-before-deadline}
 
