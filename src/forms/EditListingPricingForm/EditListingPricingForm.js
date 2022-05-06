@@ -167,7 +167,6 @@ export const EditListingPricingFormComponent = props => (
         invalid ||
         disabled ||
         submitInProgress ||
-        pristine ||
         (category === 'publicOral' || category === 'customOral'
           ? !values.durationHour || !values.durationMinute
           : false);

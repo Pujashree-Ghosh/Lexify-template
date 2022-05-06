@@ -56,7 +56,7 @@ const EditListingExpiryFormComponent = props => (
       const classes = classNames(css.root, className);
       const submitReady = (updated && pristine) || ready;
       const submitInProgress = updateInProgress;
-      const submitDisabled = invalid || disabled || submitInProgress || pristine;
+      const submitDisabled = invalid || disabled || submitInProgress;
 
       const VALID = undefined;
 
