@@ -9,16 +9,18 @@ import { propTypes } from '../../util/types';
 import * as validators from '../../util/validators';
 import { ensureCurrentUser } from '../../util/data';
 import { isChangePasswordWrongPassword } from '../../util/errors';
-import { Form, PrimaryButton, FieldTextInput } from '../../components';
+import { Form, PrimaryButton, FieldTextInput, Button } from '../../components';
 
 import css from './PasswordChangeForm.module.css';
+import { apiBaseUrl } from '../../util/api';
+import axios from 'axios';
 
 const RESET_TIMEOUT = 800;
 
 class PasswordChangeFormComponent extends Component {
   constructor(props) {
     super(props);
-    this.state = { showResetPasswordMessage: false };
+    this.state = { showResetPasswordMessage: false, otpSend: false, otpError: false };
     this.resetTimeoutId = null;
     this.submittedValues = {};
     this.handleResetPassword = this.handleResetPassword.bind(this);
@@ -57,6 +59,9 @@ class PasswordChangeFormComponent extends Component {
           } = fieldRenderProps;
 
           const user = ensureCurrentUser(currentUser);
+
+          const email = user?.attributes?.email;
+          const currentPhoneNumber = user?.attributes?.profile?.protectedData?.phoneNumber;
 
           if (!user.id) {
             return null;
@@ -164,17 +169,51 @@ class PasswordChangeFormComponent extends Component {
               sendPasswordLink
             );
 
+          const otpRequiredMessage = intl.formatMessage({
+            id: 'ContactDetailsForm.otpRequired',
+          });
+          const otpRequired = validators.required(otpRequiredMessage);
+
+          const sendOtp = () => {
+            axios
+              .post(`${apiBaseUrl()}/api/user`, {
+                email: email,
+                mobile: currentPhoneNumber,
+              })
+              .then(resp => {
+                console.log(resp);
+                // this.setState({ otpSend: true });
+              })
+              .catch(err => console.log(err));
+          };
+
           return (
             <Form
               className={classes}
               onSubmit={e => {
+                e.preventDefault();
                 this.submittedValues = values;
-                handleSubmit(e)
-                  .then(() => {
-                    this.resetTimeoutId = window.setTimeout(form.reset, RESET_TIMEOUT);
+                axios
+                  .post(`${apiBaseUrl()}/api/user/verify`, {
+                    otp: values.otp * 1,
+                    mobile: currentPhoneNumber,
                   })
-                  .catch(() => {
-                    // Error is handled in duck file already.
+                  .then(resp => {
+                    this.setState({ otpSend: false });
+                    handleSubmit(e);
+                    // .then(() => {
+                    //   this.resetTimeoutId = window.setTimeout(form.reset, RESET_TIMEOUT);
+                    // })
+                    // .catch(() => {
+                    //   // Error is handled in duck file already.
+                    // });
+                  })
+                  .catch(err => {
+                    if (err.response.status === 401) {
+                      this.setState({ otpError: true });
+                    }
+
+                    console.log(err.response.status);
                   });
               }}
             >
@@ -223,16 +262,50 @@ class PasswordChangeFormComponent extends Component {
                   customErrorText={passwordTouched ? null : passwordErrorText}
                 />
               </div>
+              <div className={css.otp}>
+                {this.state.otpSend ? (
+                  <>
+                    <FieldTextInput
+                      className={css.otp}
+                      type="text"
+                      id={formId ? `${formId}.otp` : 'otp'}
+                      name="otp"
+                      label={'Enter the otp send to your mobile'}
+                      // placeholder={otpPlaceholder}
+                      validate={otpRequired}
+                    />
+                  </>
+                ) : (
+                  ''
+                )}
+              </div>
+
               <div className={css.bottomWrapper}>
                 {genericFailure}
-                <PrimaryButton
-                  type="submit"
-                  inProgress={inProgress}
-                  ready={ready}
-                  disabled={submitDisabled}
-                >
-                  <FormattedMessage id="PasswordChangeForm.saveChanges" />
-                </PrimaryButton>
+                {!this.state.otpSend ? (
+                  <Button
+                    type="button"
+                    inProgress={inProgress}
+                    ready={ready}
+                    disabled={submitDisabled}
+                    onClick={() => {
+                      sendOtp();
+                      this.setState({ otpSend: true });
+                    }}
+                  >
+                    <FormattedMessage id="PasswordChangeForm.saveChanges" />
+                    {/* Send OTP */}
+                  </Button>
+                ) : (
+                  <PrimaryButton
+                    type="submit"
+                    inProgress={inProgress}
+                    ready={ready}
+                    disabled={submitDisabled}
+                  >
+                    <FormattedMessage id="PasswordChangeForm.saveChanges" />
+                  </PrimaryButton>
+                )}
               </div>
             </Form>
           );

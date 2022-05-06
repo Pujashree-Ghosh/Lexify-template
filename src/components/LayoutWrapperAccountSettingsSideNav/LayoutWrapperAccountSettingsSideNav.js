@@ -32,7 +32,6 @@ const LayoutWrapperAccountSettingsSideNavComponent = props => {
   const user = ensureCurrentUser(currentUser);
   const protectedData = user?.attributes?.profile?.protectedData;
   const isLawyer = protectedData?.isLawyer;
-  console.log(isLawyer, user);
 
   const { width } = viewport;
   const hasViewport = width > 0;
