@@ -207,6 +207,7 @@ class PasswordChangeFormComponent extends Component {
               onSubmit={e => {
                 e.preventDefault();
                 this.submittedValues = values;
+                this.setState({ otpErr: false });
                 axios
                   .post(`${apiBaseUrl()}/api/user/verify`, {
                     otp: values.otp * 1,
@@ -288,7 +289,6 @@ class PasswordChangeFormComponent extends Component {
                 )}
                 {this.state.otpErr ? (
                   <span className={css.otpErrMsg}>
-                    {' '}
                     <FormattedMessage id="PasswordChangeForm.otpErrMsg" />
                   </span>
                 ) : (
