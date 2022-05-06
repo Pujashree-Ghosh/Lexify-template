@@ -273,10 +273,11 @@
    :from :state/reviewed-by-provider,
    :to :state/reviewed}],
  :notifications
- [{:name :notification/new-booking-request,
-   :on :transition/confirm-payment,
-   :to :actor.role/provider,
-   :template :new-booking-request}
+ [
+  ;;  {:name :notification/new-booking-request,
+  ;;  :on :transition/confirm-payment,
+  ;;  :to :actor.role/provider,
+  ;;  :template :new-booking-request}
   ;; {:name :notification/booking-request-accepted,
   ;;  :on :transition/accept,
   ;;  :to :actor.role/customer,
@@ -289,10 +290,96 @@
   ;;  :on :transition/expire,
   ;;  :to :actor.role/customer,
   ;;  :template :booking-request-auto-declined}
-  {:name :notification/money-paid,
-   :on :transition/complete,
-   :to :actor.role/provider,
-   :template :money-paid}
+  ;; {:name :notification/money-paid,
+  ;;  :on :transition/complete,
+  ;;  :to :actor.role/provider,
+  ;;  :template :money-paid}
+
+  
+  {:name :notification/booking-join-link-customer
+   :on :transition/accept-oral
+   :at {:fn/minus [{:fn/timepoint [:time/booking-start]} {:fn/period ["PT2H"]}]}
+   :to :actor.role/customer
+   :template :booking-join-link-customer}
+   
+    {:name :notification/booking-join-link-provider
+   :on :transition/accept-oral
+   :at {:fn/minus [{:fn/timepoint [:time/booking-start]} {:fn/period ["PT2H"]}]}
+   :to :actor.role/provider
+   :template :booking-join-link-provider}
+
+
+  {:name :notification/booking-reschedule-provider
+  :on :transition/reschedule-provider
+  :to :actor.role/customer
+  :template :booking-reschedule-by-provider}
+
+  {:name :notification/booking-reschedule-customer
+  :on :transition/reschedule-customer
+  :to :actor.role/provider
+  :template :booking-reschedule-by-customer}
+
+  {:name :notification/cosultation-over-provider
+  :on :transition/pending-confirmation-oral
+  :to :actor.role/customer
+  :template :consultation-over-customer}
+
+  {:name :notification/consultation-over-customer
+  :on :transition/pending-confirmation-oral
+  :to :actor.role/provider
+  :template :consultation-over-provider}
+
+  {:name :notification/service-over-customer
+  :on :transition/pending-confirmation
+  :to :actor.role/provider
+  :template :service-over-provider}
+
+  {:name :notification/service-over-provider
+  :on :transition/pending-confirmation
+  :to :actor.role/customer
+  :template :service-over-customer}
+
+  {:name :notification/service-over-before-deadline
+  :on :transition/pending-confirmation
+  :to :actor.role/customer
+  :template :service-over-before-deadline}
+
+  {:name :notification/pending-confirmation-reminder-service-1H
+  :on :transition/pending-confirmation
+  :at {:fn/plus [{:fn/timepoint [:time/booking-end]} {:fn/period ["PT1H"]}]}
+  :to :actor.role/customer
+  :template :pending-confirmation-reminder-service-1H}
+
+  {:name :notification/pending-confirmation-reminder-service-12H
+  :on :transition/pending-confirmation
+  :at {:fn/plus [{:fn/timepoint [:time/booking-end]} {:fn/period ["PT12H"]}]}
+  :to :actor.role/customer
+  :template :pending-confirmation-reminder-service-12H}
+
+  {:name :notification/pending-confirmation-reminder-service-24H
+  :on :transition/pending-confirmation
+  :at {:fn/plus [{:fn/timepoint [:time/booking-end]} {:fn/period ["PT24H"]}]}
+  :to :actor.role/customer
+  :template :pending-confirmation-reminder-service-24H}
+
+  {:name :notification/pending-confirmation-reminder-oral-1H
+  :on :transition/pending-confirmation-oral
+  :at {:fn/plus [{:fn/timepoint [:time/booking-end]} {:fn/period ["PT1H"]}]}
+  :to :actor.role/customer
+  :template :pending-confirmation-reminder-oral-1H}
+
+  {:name :notification/pending-confirmation-reminder-oral-12H,
+  :on :transition/pending-confirmation-oral,
+  :at {:fn/plus [{:fn/timepoint [:time/booking-end]} {:fn/period ["PT12H"]}]},
+  :to :actor.role/customer,
+  :template :pending-confirmation-reminder-oral-12H}
+
+  {:name :notification/pending-confirmation-reminder-oral-24H,
+  :on :transition/pending-confirmation-oral,
+  :at {:fn/plus [{:fn/timepoint [:time/booking-end]} {:fn/period ["PT24H"]}]},
+  :to :actor.role/customer,
+  :template :pending-confirmation-reminder-oral-24H}
+
   {:name :notification/review-period-start-provider,
    :on :transition/complete,
    :to :actor.role/provider,

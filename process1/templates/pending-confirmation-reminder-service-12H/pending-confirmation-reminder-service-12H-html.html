@@ -1,0 +1,44 @@
+{{~#*inline "format-date"~}} {{#with transaction.listing.availability-plan}} {{date date
+    format="h:mm a" tz=timezone}} on {{date date format="MMM d, YYYY" tz=timezone}} {{/with}}
+    {{~/inline~}}
+    
+    <html>
+      <body style="font-family: sans-serif;">
+        {{#with transaction}}
+    
+        <h3>Consultation - Rescheduled: {{listing.title}}</h3>
+        <p>Hi {{customer.display-name}},</p>
+
+        <p>Its been almost 12 hour you have received the {{listing.title}} service. Please Confirm it from your dashboard</p>
+
+
+        
+        <!-- <p>
+          <a
+            style="text-align: center; display: block; font-weight: 700;"
+            href="{{marketplace.url}}/order/{{url-encode id}}/details"
+            >Join Meeting</a
+          >
+        </p> -->
+       
+    
+        <p style="font-weight: 700; color: #032264;"></p>
+        
+        <p style="font-weight: 700; color: #032264;">
+         
+        </p>
+    
+        <!-- <hr /> -->
+    
+        <!-- <p>
+          You have received this email notification because you are a member of {{marketplace.name}}. If
+          you no longer wish to receive these emails, please contact {{marketplace.name}} team.
+        </p> -->
+    
+        {{/with}}
+        <footer style="font-family: sans-serif;">
+          
+        </footer>
+      </body>
+    </html>
+    
