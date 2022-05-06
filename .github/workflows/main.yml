@@ -12,6 +12,6 @@ jobs:
       - uses: actions/checkout@v2
       - uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
         with:
-          heroku_api_key: d6018b03-3a15-4afa-b6d1-33da2fbc97e9
+          heroku_api_key: 5bba4eec-5ec3-4a66-bf69-dabc28efbd55
           heroku_app_name: 'lexify-dev-bitcanny'
           heroku_email: 'development@bitcanny.com'
