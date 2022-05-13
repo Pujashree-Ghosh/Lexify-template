@@ -10,6 +10,9 @@ import { createResourceLocatorString } from '../../util/routes';
 import { isAnyFilterActive } from '../../util/search';
 import { propTypes } from '../../util/types';
 import io from 'socket.io-client';
+// import banner_img from '../../assets/Header_Image.png';
+import { GoLocation } from 'react-icons/go';
+import { IoMdClose } from 'react-icons/io';
 
 import {
   SearchResultsPanel,
@@ -609,12 +612,15 @@ class MainPanelComponent extends Component {
       <div className={classes}>
         <div className={css.sectionContent}>
           <div className={css.updthmform}>
+            {/* <img src={banner_img} alt="banner_img"></img> */}
             <h2>Find Legal Advice Online</h2>
             <p>Find experienced lawyers you need. Anytime. Anywhere.</p>
 
             <div className={css.lformrow}>
               <div className={css.lformcol}>
                 <label>Country</label>
+                {/* <GoLocation /> */}
+
                 <Select
                   isClearable={this.state.isClearable}
                   options={countryOptions}
@@ -636,6 +642,8 @@ class MainPanelComponent extends Component {
                     this.setState({ city: [], state: [], postalCode: [] });
                   }}
                 >
+                  {/* <GoLocation /> */}
+                  {/* <IoMdClose /> */}
                   {/* <option value="">Select Country</option>
                   {this.state.countryData.map(c => (
                     <option value={c.iso3} key={c.iso3}>
